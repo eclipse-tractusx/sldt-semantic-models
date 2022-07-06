@@ -43,4 +43,4 @@ Project committers or leaders who do not follow the Code of Conduct in good fait
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org) , version 1.4, available at [https://www.contributor-covenant.org/version/1/4/code-of-conduct.html](https://www.contributor-covenant.org/version/1/4/code-of-conduct/)
+This Code of Conduct adapted from the [Contributor Covenant](https://www.contributor-covenant.org) , version 1.4, available at [https://www.contributor-covenant.org/version/1/4/code-of-conduct.html](https://www.contributor-covenant.org/version/1/4/code-of-conduct/) for the Eclipse Foundation Code of Conduct version 1.2, which also serves our project.
