@@ -4,11 +4,11 @@ Thanks for your interest in this project.
 
 ## Project description
 
-The companies involved want to increase the automotive industry's
+The companies involved want to increase automotive industry's
 competitiveness, improve efficiency through industry-specific cooperation and
 accelerate company processes through standardization and access to information
 and data. A special focus is also on SMEs, whose active participation is of
-central importance for the networkâ€™s success. That is why Catena-X has been
+central importance for the success of the network. That is why Catena-X has been
 conceived from the outset as an open network with solutions ready for SMEs,
 where these companies will be able to participate quickly and with little IT
 infrastructure investment. Tractus-X is meant to be the PoC project of the
