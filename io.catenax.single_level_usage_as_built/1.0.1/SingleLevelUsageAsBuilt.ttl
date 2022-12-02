@@ -1,0 +1,129 @@
+#######################################################################
+# Copyright (c) 2022 BASF SE
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#>.
+
+:catenaXId a bamm:Property;
+    bamm:name "catenaXId";
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:description "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace."@en;
+    bamm:characteristic :CatenaXIdTraitCharacteristic;
+    bamm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d".
+:CatenaXIdTraitCharacteristic a bamm-c:Trait;
+    bamm:name "CatenaXIdTraitCharacteristic";
+    bamm:description "Trait to ensure UUID v4 data format"@en;
+    bamm-c:baseCharacteristic :UUIDv4Characteristic;
+    bamm-c:constraint :UUIDv4RegularExpression.
+:UUIDv4Characteristic a bamm:Characteristic;
+    bamm:name "UUIDv4Characteristic";
+    bamm:preferredName "UUID v4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:name "UUIDv4RegularExpression";
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
+:createdOn a bamm:Property;
+    bamm:name "createdOn";
+    bamm:preferredName "Created On"@en;
+    bamm:description "Timestamp when the relation between the parent part and the child part was created, e.g. when the given child part was assembled into the parent part."@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+:quantity a bamm:Property;
+    bamm:name "quantity";
+    bamm:preferredName "Quantity"@en;
+    bamm:description "Quantity of which the child part is assembled into the parent part. In general it is '1' for serialized parts."@en;
+    bamm:characteristic :QuantityCharacteristic.
+:QuantityCharacteristic a bamm-c:Quantifiable;
+    bamm:name "QuantityCharacteristic";
+    bamm:description "Describes the quantity in which the child part is assembled in the parent object by providing a quantity value and the measurement unit in which the quantity is measured."@en;
+    bamm:dataType :Quantity.
+:lastModifiedOn a bamm:Property;
+    bamm:name "lastModifiedOn";
+    bamm:preferredName "Last Modification Date"@en;
+    bamm:description "Timestamp when the assembly relationship between parent part and child part was last modified."@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+:Quantity a bamm:Entity;
+    bamm:name "Quantity";
+    bamm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en;
+    bamm:properties (:quantityNumber :measurementUnit).
+:quantityNumber a bamm:Property;
+    bamm:name "quantityNumber";
+    bamm:preferredName "Quantity Number"@en;
+    bamm:description "The number of objects related to the measurement unit"@en;
+    bamm:characteristic :NumberOfObjects;
+    bamm:exampleValue "2.5"^^xsd:double.
+:measurementUnit a bamm:Property;
+    bamm:name "measurementUnit";
+    bamm:description "Unit of Measurement for the quantity of serialized objects"@en;
+    bamm:characteristic bamm-c:UnitReference;
+    bamm:exampleValue "litre"^^bamm:curie;
+    bamm:see <https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/appendix/unitcatalog.html>.
+:NumberOfObjects a bamm:Characteristic;
+    bamm:name "NumberOfObjects";
+    bamm:description "Quantifiable number of objects in reference to the measurementUnit"@en;
+    bamm:dataType xsd:double.
+:SingleLevelUsageAsBuilt a bamm:Aspect;
+    bamm:name "SingleLevelUsageAsBuilt";
+    bamm:preferredName "SingleLevelUsageAsBuilt"@en;
+    bamm:description "The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part. "@en;
+    bamm:properties (:catenaXId :parentParts);
+    bamm:operations ();
+    bamm:events ().
+:parentParts a bamm:Property;
+    bamm:name "parentParts";
+    bamm:preferredName "Parent Parts"@en;
+    bamm:description "Set of parent parts, in which the given child object is assembled in (one structural level up)."@en;
+    bamm:characteristic :SetOfParentPartsCharacteristic.
+:SetOfParentPartsCharacteristic a bamm-c:Set;
+    bamm:name "SetOfParentPartsCharacteristic";
+    bamm:preferredName "Set of Parent Parts"@en;
+    bamm:description "Set of parent parts the given child object is assembled in (one structural level up)."@en;
+    bamm:dataType :ParentData.
+:ParentData a bamm:Entity;
+    bamm:name "ParentData";
+    bamm:preferredName "Parent Data"@en;
+    bamm:description "Catena-X ID and meta data of the parent part."@en;
+    bamm:properties (:createdOn :quantity [
+  bamm:property :lastModifiedOn;
+  bamm:optional "true"^^xsd:boolean
+] :parentCatenaXId).
+
+:parentCatenaXId a bamm:Property;
+    bamm:name "parentCatenaXId";
+    bamm:preferredName "Catena-X Parent Identifier"@en;
+    bamm:description "The Catena-X ID of the parent object, into which the given child object is assembled in."@en;
+    bamm:characteristic :CatenaXIdTraitCharacteristic.

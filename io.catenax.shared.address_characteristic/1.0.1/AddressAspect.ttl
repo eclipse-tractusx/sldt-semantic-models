@@ -1,0 +1,298 @@
+#######################################################################
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix : <urn:bamm:io.catenax.shared.address_characteristic:1.0.1#>.
+
+:AddressAspect a bamm:Aspect;
+    bamm:name "AddressAspect";
+    bamm:preferredName "Address Aspect"@en;
+    bamm:description "Aspect used for the Characteristic :PostalAddress to reference adress data"@en;
+    bamm:properties (:address);
+    bamm:operations ().
+:address a bamm:Property;
+    bamm:name "address";
+    bamm:preferredName "Adress"@en;
+    bamm:description "the adress of the data provider"@en;
+    bamm:characteristic :PostalAddress.
+:PostalAddress a bamm:Characteristic;
+    bamm:name "PostalAddress";
+    bamm:description "A characteristic to express the postal adress and which is intended to be referenced by other aspects"@en;
+    bamm:dataType :AddressEntity.
+:AddressEntity a bamm:Entity;
+    bamm:name "AddressEntity";
+    bamm:preferredName "Address Entity"@en;
+    bamm:description "Entity of an address. Model follows specification of BPDM (Business Partner Data Management)."@en;
+    bamm:properties (:thoroughfare :locality [
+  bamm:property :premise;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :postalDeliveryPoint;
+  bamm:optional "true"^^xsd:boolean
+] :country :postCode).
+:thoroughfare a bamm:Property;
+    bamm:name "thoroughfare";
+    bamm:preferredName "Thoroughfare"@en;
+    bamm:description "Street or thorough road name"@en;
+    bamm:characteristic :ThoroughfareCharacteristic.
+:locality a bamm:Property;
+    bamm:name "locality";
+    bamm:preferredName "Locality"@en;
+    bamm:description "Locality belonging to an address"@en;
+    bamm:characteristic :LocalityCharacteristic.
+:premise a bamm:Property;
+    bamm:name "premise";
+    bamm:preferredName "Premise"@en;
+    bamm:description "Premise of an address, e.g. a specific \"BUILDING\" but can also be used for naming a particular site"@en;
+    bamm:characteristic :PremiseCharacteristic.
+:postalDeliveryPoint a bamm:Property;
+    bamm:name "postalDeliveryPoint";
+    bamm:preferredName "Postal Delivery Point"@en;
+    bamm:description "Delivery point, e.g. designation of a gate"@en;
+    bamm:characteristic :PostalDeliveryPointCharacteristic.
+:country a bamm:Property;
+    bamm:name "country";
+    bamm:preferredName "Country"@en;
+    bamm:description "Country of an address"@en;
+    bamm:characteristic :CountryCharacteristic  .
+:postCode a bamm:Property;
+    bamm:name "postCode";
+    bamm:preferredName "Post Code"@en;
+    bamm:characteristic :PostCodeCharacteristic.
+:ThoroughfareCharacteristic a bamm-c:SingleEntity;
+    bamm:name "ThoroughfareCharacteristic";
+    bamm:preferredName "Thoroughfare Characteristic"@en;
+    bamm:description "Characteristic for defining a thoroughfare which can consist of a type (e.g. \"STREET\"), value (e.g. \"Bernstraße\") and number (e.g. \"45\"). Model follows the specification of BPDM."@en;
+    bamm:dataType :ThoroughfareEntity.
+:LocalityCharacteristic a bamm-c:SingleEntity;
+    bamm:name "LocalityCharacteristic";
+    bamm:preferredName "Locality Characteristic"@en;
+    bamm:description "Characteristic for defining a locality which belongs to an address and which consists of a type (e.g. \"CITY\") and value (e.g. \"Mannheim\"). Model follows the specification of BPDM."@en;
+    bamm:dataType :LocalityEntity.
+:PremiseCharacteristic a bamm-c:SingleEntity;
+    bamm:name "PremiseCharacteristic";
+    bamm:description "Characteristic for defining a premise which consists of a technical key (e.g. \"BUILDING\" or \"OTHER\") and a value (e.g. \"Werk 1\")."@en;
+    bamm:dataType :PremiseEntity.
+:PostalDeliveryPointCharacteristic a bamm-c:SingleEntity;
+    bamm:name "PostalDeliveryPointCharacteristic";
+    bamm:preferredName "Postal Delivery Point Characteristic"@en;
+    bamm:description "Characteristic for defining a postal delivery point which consists of a technical key (e.g. \"MAILBOX\" or \"OTHER\") and a value. Model follows the specification of BPDM."@en;
+    bamm:dataType :PostalDeliveryPointEntity.
+:CountryCharacteristic a bamm-c:SingleEntity;
+    bamm:name "CountryCharacteristic";
+    bamm:preferredName "Country Characteristic"@en;
+    bamm:description "Characteristic of a country belonging to an address"@en;
+    bamm:dataType :CountryEntity.
+:PostCodeCharacteristic a bamm-c:SingleEntity;
+    bamm:name "PostCodeCharacteristic";
+    bamm:preferredName "PostCode Characteristic"@en;
+    bamm:description "Characteristic for defining a postcode which can consist of a type (e.g. \"REGULAR\" for zip codes) and a value (e.g. \"68161\\12\"). Model follows the specification of BPDM."@en;
+    bamm:dataType :PostCodeEntity.
+:PostCodeEntity a bamm:Entity;
+    bamm:name "PostCodeEntity";
+    bamm:preferredName "PostCode Entity"@en;
+    bamm:description "Entity for a postcode which consists of a type plus a value"@en;
+    bamm:properties ([
+  bamm:property :postCodeValue;
+  bamm:payloadName "value"
+] [
+  bamm:property :postCodeTechnicalKey;
+  bamm:payloadName "technicalKey"
+]).
+:CountryEntity a bamm:Entity;
+    bamm:name "CountryEntity";
+    bamm:preferredName "Country Entity"@en;
+    bamm:description "Entity definition for a country"@en;
+    bamm:properties ([
+  bamm:property :countryShortName;
+  bamm:payloadName "shortName"
+]).
+:PostCodeTrait a bamm-c:Trait;
+    bamm:name "PostCodeTrait";
+    bamm-c:baseCharacteristic bamm-c:Text;
+    bamm-c:constraint :PostCodeConstraint.
+:PostCodeConstraint a bamm-c:RegularExpressionConstraint;
+    bamm:name "PostCodeConstraint";
+    bamm:preferredName "Post Code Constraint"@en;
+    bamm:description "Regular expression for post codes"@en;
+    bamm:value "^[a-z0-9][a-z0-9\\- ]{0,10}$".
+:CountryTrait a bamm-c:Trait;
+    bamm:name "CountryTrait";
+    bamm-c:baseCharacteristic :CountryShortNameCharacteristic;
+    bamm-c:constraint :CountryShortNameConstraint.
+:CountryShortNameCharacteristic a bamm:Characteristic;
+    bamm:name "CountryShortNameCharacteristic";
+    bamm:preferredName "Country Short Name Characteristic"@en;
+    bamm:description "Characteristic for a short name of a country belonging to an address"@en;
+    bamm:dataType xsd:string.
+:CountryShortNameConstraint a bamm-c:RegularExpressionConstraint;
+    bamm:name "CountryShortNameConstraint";
+    bamm:preferredName "CountryShortNameConstraint"@en;
+    bamm:description "Regular expression for designation of a short name of a country as defined in ISO 3166-2"@en;
+    bamm:value "([A-Z]{2}-[A-Z0-9]{1,3}|)".
+:countryShortName a bamm:Property;
+    bamm:name "countryShortName";
+    bamm:preferredName "Country Short Name"@en;
+    bamm:characteristic :CountryTrait.
+:ThoroughfareEntity a bamm:Entity;
+    bamm:name "ThoroughfareEntity";
+    bamm:preferredName "Thoroughfare Entity"@en;
+    bamm:description "Entity for a thoroughfare which consists of a type, value and number."@en;
+    bamm:properties ([
+  bamm:property :thoroughfareTechnicalKey;
+  bamm:payloadName "technicalKey"
+] [
+  bamm:property :thoroughfareValue;
+  bamm:payloadName "value"
+] [
+  bamm:property :thoroughfareNumber;
+  bamm:payloadName "number"
+]).
+:thoroughfareTechnicalKey a bamm:Property;
+    bamm:name "thoroughfareTechnicalKey";
+    bamm:preferredName "Thoroughfare Technical Key "@en;
+    bamm:description "Technical key of a thoroughfare. As specified by BPDM, this can be a \"STREET\" or a different type."@en;
+    bamm:characteristic :ThoroughfareTechnicalKeyCharacteristic;
+    bamm:exampleValue "STREET".
+:thoroughfareValue a bamm:Property;
+    bamm:name "thoroughfareValue";
+    bamm:preferredName "Value Thoroughfare"@en;
+    bamm:description "Value of a thoroughfare, e.g. name of a street."@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "Bernstraße".
+:thoroughfareNumber a bamm:Property;
+    bamm:name "thoroughfareNumber";
+    bamm:preferredName "Thoroughfare Number"@en;
+    bamm:description "Number of a thoroughfare. As used differently in international context, this number can contain both numerical and alphanumerical values"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "45".
+:ThoroughfareTechnicalKeyCharacteristic a bamm-c:Enumeration;
+    bamm:name "ThoroughfareTechnicalKeyCharacteristic";
+    bamm:preferredName "Thoroughfare Technical Key Characteristic"@en;
+    bamm:description "Characteristic of the technical key of a thoroughfare"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("STREET" "INDUSTRIAL_ZONE" "OTHER" "RIVER" "SQUARE").
+:Text a bamm:Characteristic;
+    bamm:name "Text";
+    bamm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en;
+    bamm:dataType xsd:string.
+:postCodeValue a bamm:Property;
+    bamm:name "postCodeValue";
+    bamm:preferredName "Post Code Value "@en;
+    bamm:description "The value of a post code"@en;
+    bamm:characteristic :PostCodeTrait;
+    bamm:exampleValue "68161\\12".
+:postCodeTechnicalKey a bamm:Property;
+    bamm:name "postCodeTechnicalKey";
+    bamm:preferredName "Post Code Technical Key"@en;
+    bamm:description "The technical key of a post code"@en;
+    bamm:characteristic :PostCodeTechnicalKeyCharacteristic.
+:PostCodeTechnicalKeyCharacteristic a bamm-c:Enumeration;
+    bamm:name "PostCodeTechnicalKeyCharacteristic";
+    bamm:preferredName "Post Code Technical Key Characteristic"@en;
+    bamm:description "Characteristic for the technical key of a post code"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("CEDEX" "LARGE_MAIL_USER" "OTHER" "POST_BOX" "REGULAR").
+:LocalityEntity a bamm:Entity;
+    bamm:name "LocalityEntity";
+    bamm:preferredName "Thoroughfare Entity"@en;
+    bamm:description "Entity for a thoroughfare which consists of a type, value and number."@en;
+    bamm:properties ([
+  bamm:property :localityTechnicalKey;
+  bamm:payloadName "technicalKey"
+] [
+  bamm:property :localityValue;
+  bamm:payloadName "value"
+]).
+:localityTechnicalKey a bamm:Property;
+    bamm:name "localityTechnicalKey";
+    bamm:preferredName "Locality Technical Key"@en;
+    bamm:description "Technical key of a locality"@en;
+    bamm:characteristic :LocalityTechnicalKeyCharacteristic;
+    bamm:exampleValue "CITY".
+:localityValue a bamm:Property;
+    bamm:name "localityValue";
+    bamm:preferredName "Locality Value"@en;
+    bamm:description "Value of a locality, e.g. name of a city (\"Mannheim\")."@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "Mannheim".
+:LocalityTechnicalKeyCharacteristic a bamm-c:Enumeration;
+    bamm:name "LocalityTechnicalKeyCharacteristic";
+    bamm:preferredName "Locality Technical Key Characteristic"@en;
+    bamm:description "Characteristic of the technical key of a locality"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("BLOCK" "CITY" "DISTRICT" "OTHER" "POST_OFFICE_CITY" "QUARTER").
+:PremiseEntity a bamm:Entity;
+    bamm:name "PremiseEntity";
+    bamm:preferredName "Premise Entity"@en;
+    bamm:description "Entity for a premise which consists of a type (technical key) and a value"@en;
+    bamm:properties ([
+  bamm:property :premiseTechnicalKey;
+  bamm:payloadName "technicalKey"
+] [
+  bamm:property :premiseValue;
+  bamm:payloadName "value"
+]).
+:premiseTechnicalKey a bamm:Property;
+    bamm:name "premiseTechnicalKey";
+    bamm:preferredName "Premise Technical Key"@en;
+    bamm:description "Technical key of a premise"@en;
+    bamm:characteristic :PremiseTechnicalKeyCharacteristic;
+    bamm:exampleValue "OTHER".
+:premiseValue a bamm:Property;
+    bamm:name "premiseValue";
+    bamm:preferredName "Premise Value"@en;
+    bamm:description "Value of a premise, e.g. name or designation of a particular site"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "Werk 1".
+:PremiseTechnicalKeyCharacteristic a bamm-c:Enumeration;
+    bamm:name "PremiseTechnicalKeyCharacteristic";
+    bamm:preferredName "Premise Technical Key Characteristic"@en;
+    bamm:description "Characteristic of the technical key of a premise"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("BUILDING" "HARBOUR" "LEVEL" "OTHER" "ROOM" "SUITE" "UNIT" "WAREHOUSE").
+:PostalDeliveryPointEntity a bamm:Entity;
+    bamm:name "PostalDeliveryPointEntity";
+    bamm:preferredName "Postal Delivery Point Entity"@en;
+    bamm:description "Entity for a postal delivery point which consists of a technical key and a value."@en;
+    bamm:properties ([
+  bamm:property :postalDeliveryPointTechnicalKey;
+  bamm:payloadName "technicalKey"
+] [
+  bamm:property :postalDeliveryPointValue;
+  bamm:payloadName "value"
+]).
+:postalDeliveryPointTechnicalKey a bamm:Property;
+    bamm:name "postalDeliveryPointTechnicalKey";
+    bamm:preferredName "Postal Delivery Point Technical Key"@en;
+    bamm:description "Technical key of a postal delivery point"@en;
+    bamm:characteristic :PostalDeliveryPointTechnicalKeyCharacteristic;
+    bamm:exampleValue "OTHER".
+:postalDeliveryPointValue a bamm:Property;
+    bamm:name "postalDeliveryPointValue";
+    bamm:preferredName "Postal Delivery Point Value"@en;
+    bamm:description "Value of a postal delivery point, e.g. designation of a gate"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "Tor 1".
+:PostalDeliveryPointTechnicalKeyCharacteristic a bamm-c:Enumeration;
+    bamm:name "PostalDeliveryPointTechnicalKeyCharacteristic";
+    bamm:preferredName "Postal Delivery Point Technical Key Characteristic"@en;
+    bamm:description "Characteristic of the technical key of a postal delivery point"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("INTERURBAN_DELIVERY_POINT" "MAIL_STATION" "MAILBOX" "OTHER" "POST_OFFICE_BOX").

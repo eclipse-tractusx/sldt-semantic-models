@@ -1,0 +1,211 @@
+#######################################################################
+# Copyright (c) 2022 Badische Anilin und Sodafabrik societates Europaea
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. für ihre Institute IPK und IPK
+# Copyright (c) 2022 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <urn:bamm:io.catenax.vehicle.product_description:1.0.0#>.
+
+:productionDateGMT a bamm:Property;
+    bamm:name "productionDateGMT";
+    bamm:description "the production data in GMT time zone"@en;
+    bamm:preferredName "production Date GMT"@en;
+    bamm:characteristic :DateTimestamp;
+    bamm:exampleValue "2000-01-01"^^xsd:date.
+:DateTimestamp a bamm:Characteristic;
+    bamm:name "DateTimestamp";
+    bamm:description "Characteristic to describe a time stamp"@en;
+    bamm:preferredName "Date Timestamp"@en;
+    bamm:dataType xsd:date.
+:engine a bamm:Property;
+    bamm:name "engine";
+    bamm:description "engine of the vehicle"@en;
+    bamm:preferredName "engine"@en;
+    bamm:characteristic :EngineCharacteristic.
+:EngineCharacteristic a bamm:Characteristic;
+    bamm:name "EngineCharacteristic";
+    bamm:description "Characteristic to describe the more specific details of the engine"@en;
+    bamm:preferredName "Engine Characteristic"@en;
+    bamm:dataType :EngineEntity.
+:EngineEntity a bamm:Entity;
+    bamm:name "EngineEntity";
+    bamm:description "Engine with power and cubic size"@en;
+    bamm:preferredName "Engine Entity"@en;
+    bamm:properties (:size :power).
+:size a bamm:Property;
+    bamm:name "size";
+    bamm:description "size of the engine in cubic capacity"@en;
+    bamm:preferredName "size"@en;
+    bamm:characteristic :CubicCapacity.
+:power a bamm:Property;
+    bamm:name "power";
+    bamm:description "engine power is the power that an engine can put out"@en;
+    bamm:preferredName "power"@en;
+    bamm:characteristic :EnginePower;
+    bamm:exampleValue "45"^^xsd:integer.
+:CubicCapacity a bamm-c:Measurement;
+    bamm:name "CubicCapacity";
+    bamm:description "cubic capacity of the engine"@en;
+    bamm:preferredName "Cubic Capacity"@en;
+    bamm:dataType xsd:integer;
+    bamm-c:unit unit:cubicCentimetre.
+:EnginePower a bamm-c:Measurement;
+    bamm:name "EnginePower";
+    bamm:description "engine power expressed in kilowatt"@en;
+    bamm:preferredName "Engine Power"@en;
+    bamm:dataType xsd:integer;
+    bamm-c:unit unit:kilowatt.
+:mileage a bamm:Property;
+    bamm:name "mileage";
+    bamm:description "mileage of the vehicle"@en;
+    bamm:preferredName "mileage"@en;
+    bamm:characteristic :MileageCharacteristic.
+:MileageCharacteristic a bamm-c:Set;
+    bamm:name "MileageCharacteristic";
+    bamm:description "definition of mileage of a vehicle"@en;
+    bamm:preferredName "MileageCharacteristic"@en;
+    bamm:dataType :MileageEntity.
+:MileageEntity a bamm:Entity;
+    bamm:name "MileageEntity";
+    bamm:description "definition of mileage attributes"@en;
+    bamm:preferredName "mileage entity"@en;
+    bamm:properties (:mileageDistance :mileagePhase :mileageTimestamp).
+:mileageDistance a bamm:Property;
+    bamm:name "mileageDistance";
+    bamm:description "distance the vehicle has travelled"@en;
+    bamm:preferredName "mileage distance"@en;
+    bamm:characteristic :Distance;
+    bamm:exampleValue "120000"^^xsd:integer.
+:mileagePhase a bamm:Property;
+    bamm:name "mileagePhase";
+    bamm:description "Lifecycle phase in which the mileage was measured."@en;
+    bamm:preferredName "mileage phase"@en;
+    bamm:characteristic :LifecyclePhases.
+:mileageTimestamp a bamm:Property;
+    bamm:name "mileageTimestamp";
+    bamm:description "timestamp when the mileage was measured"@en;
+    bamm:preferredName "mileage timestamp"@en;
+    bamm:characteristic :DateTimestamp.
+:Distance a bamm-c:Measurement;
+    bamm:name "Distance";
+    bamm:description "distance in kilometre"@en;
+    bamm:preferredName "Distance"@en;
+    bamm:dataType xsd:integer;
+    bamm-c:unit unit:kilometre.
+:LifecyclePhases a bamm-c:Enumeration;
+    bamm:name "LifecyclePhases";
+    bamm:description "temporary definition of lifecycle phases as following in enumeration for: as specified by OEM, as built by OEM, as maintained by workshop, as recieved by dismantling"@en;
+    bamm:preferredName "Lifecycle phases"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("as maintained by workshop" "as recieved by dismantling").
+:fuel a bamm:Property;
+    bamm:name "fuel";
+    bamm:description "the fuel type of the vehicle"@en;
+    bamm:preferredName "fuel"@en;
+    bamm:characteristic :FuelType;
+    bamm:exampleValue "Diesel".
+:FuelType a bamm-c:Enumeration;
+    bamm:name "FuelType";
+    bamm:description "enumeration of possible fuel types of a vehicle"@en;
+    bamm:preferredName "fuel type"@en;
+    bamm:dataType xsd:string;
+    bamm:see <www.kba.de/SharedDocs/Downloads/DE/SV/sv221_m1_schad_pdf.pdf?__blob=publicationFile&v=3>;
+    bamm-c:values ("Unbekannt" "Diesel" "Benzin" "Vielstoff" "Elektro" "Flüssiggas" "Benzin/Flüssiggas" "Benzin/komp.Erdgas" "Hybr.Benzin/E" "Erdgas NG" "Hybr.Diesel/E" "Wasserstoff" "Hybr.Wasserst./E" "Wasserstoff/Benzin" "Wasserst./Benzin/E" "BZ/Wasserstoff" "BZ/Benzin" "BZ/Methanol" "BZ/Ethanol" "Hybr.Vielstoff/E" "Methan" "Benzin/Methan" "Hybr.Erdgas/E" "Benzin/Ethanol" "Hybr.Flüssiggas/E" "Hybr.B/E ext.aufl." "Hybr.D/E ext.aufl." "Hybr.LPG/E ext.aufl." "Hybr.W/E ext.aufl." "Hybr.V/E ext.aufl." "Hybr.NG/E ext.aufl." "Hybr.Wod.B/Eext.aufl" "Wasserstoff/NG" "Hybr.W/NG/E ext.aufl" "Ethanol" "Hybr.BZ/W/E" "Hybr.BZ/W/E ext. aufl." "Zweistoff LNG/Diesel" "Verflüssigtes Erdgas (LNG)" "Andere").
+:emptyWeight a bamm:Property;
+    bamm:name "emptyWeight";
+    bamm:description "The empty weight of the vehicle in kg as specified. For motor vehicles of class M1 registered up to December 31, 1996: Empty weight according to vehicle registration certificate or registration certificate Part I minus weight of tank contents at 90 percent filling. For motor vehicles of category M1 registered on or after January 1, 1997: Empty weight according to vehicle registration certificate or registration certificate Part I minus weight of tank contents at 90 percent filling and minus weight of driver (75 kg). For motor vehicles of class N1: empty weight according to the vehicle registration document or registration certificate Part I minus the weight of the tank contents with a 90 percent filling and minus the weight of the driver (75 kg)."@en;
+    bamm:preferredName "empty weight"@en;
+    bamm:characteristic :Weight.
+:Weight a bamm-c:Measurement;
+    bamm:name "Weight";
+    bamm:description "weight of an object"@en;
+    bamm:preferredName "Weight"@en;
+    bamm:dataType xsd:double;
+    bamm-c:unit unit:kilogram.
+:EquipmentVariantEntity a bamm:Entity;
+    bamm:name "EquipmentVariantEntity";
+    bamm:description "describes different vehicle equipment variants"@en;
+    bamm:preferredName "Variant Entity"@en;
+    bamm:properties (:code :description [
+  bamm:property :group;
+  bamm:optional "true"^^xsd:boolean
+]).
+:code a bamm:Property;
+    bamm:name "code";
+    bamm:description "The equipment variants code"@en;
+    bamm:preferredName "code"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "S248A".
+:description a bamm:Property;
+    bamm:name "description";
+    bamm:description "The equipment variants description"@en;
+    bamm:preferredName "description"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Lenkradheizung".
+:group a bamm:Property;
+    bamm:name "group";
+    bamm:description "The equipment variants group"@en;
+    bamm:preferredName "group"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Sonderausstattung".
+:equipmentVariants a bamm:Property;
+    bamm:name "equipmentVariants";
+    bamm:description "equipment variants which are build into a specific vehicle"@en;
+    bamm:preferredName "equipment variants"@en;
+    bamm:characteristic :EquipmentVariantCharacteristic.
+:EquipmentVariantCharacteristic a bamm-c:Set;
+    bamm:name "EquipmentVariantCharacteristic";
+    bamm:description "Characteristic to describe a set of equipment codes identified by a code, group and description. The list will undergo further standardization in upcoming versions."@en;
+    bamm:preferredName "equipment characteristic"@en;
+    bamm:dataType :EquipmentVariantEntity.
+:bodyVariant a bamm:Property;
+    bamm:name "bodyVariant";
+    bamm:description "vehicle variant - Body shapes: Sedan, station wagon, hatchback, coupe, convertible, SUV, pickup, Doka (double cab), etc. Also special models that may differ from the basic shapes (e.g. BMW M-series, Audi S-series, Long version, right-hand drive, special vehicles (armor). etc. )."@en;
+    bamm:preferredName "body variant"@en;
+    bamm:characteristic :KbaVariant;
+    bamm:exampleValue "SUV".
+:KbaVariant a bamm-c:Enumeration;
+    bamm:name "KbaVariant";
+    bamm:description "Current version of the Enumeration is sub-set of list defined from the German Federal Office for motor vehicles. "@en;
+    bamm:preferredName "KBA Variant"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("Limousine" "Schräghecklimousine" "Kombilimousine" "Coupé" "Kabrio-Limousine" "Cabrio-Limousine" "Mehrzweckfahrzeug" "Pkw-Pick-up" "Van" "Pick-up").
+:ProductDescription a bamm:Aspect;
+    bamm:name "ProductDescription";
+    bamm:description "vehicle specific data"@en;
+    bamm:preferredName "Product Description"@en;
+    bamm:properties (:equipmentVariants :productionDateGMT :engine :mileage :fuel :emptyWeight :vehicleModel :bodyVariant :anonymisedIdentifier);
+    bamm:operations ().
+:vehicleModel a bamm:Property;
+    bamm:name "vehicleModel";
+    bamm:description "base model / basic vehicle type"@en;
+    bamm:preferredName "vehicle model"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "X3 M40".
+:anonymisedIdentifier a bamm:Property;
+    bamm:name "anonymisedIdentifier";
+    bamm:description "anonymised IdentifierVehicle. Can be an anonymised number converted from a VIN"@en;
+    bamm:preferredName "anonymisedIdentifier"@en;
+    bamm:characteristic bamm-c:Text.

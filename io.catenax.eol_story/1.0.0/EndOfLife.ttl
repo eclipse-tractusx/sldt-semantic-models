@@ -1,0 +1,127 @@
+#######################################################################
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Badische Anilin und Sodafabrik societates Europaea
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. for the institutes IPK and IPA
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <urn:bamm:io.catenax.eol_story:1.0.0#>.
+
+:EndOfLife a bamm:Aspect;
+    bamm:name "EndOfLife";
+    bamm:preferredName "End of life"@en;
+    bamm:description "Aspect for End of Life Story for the Dismantler"@en;
+    bamm:properties (:disassemblyStatus :healthStatus :recyclingStatus :dateOfReceptionGMT :certificateOfDestruction 
+        [
+        bamm:property :lastMileage;
+        bamm:optional "true"^^xsd:boolean
+    ]
+    [
+        bamm:property :dateOfScrappingGMT;
+        bamm:optional "true"^^xsd:boolean
+    ]
+    [
+        bamm:property :sparePartQuality;
+        bamm:optional "true"^^xsd:boolean
+    ]
+    [
+        bamm:property :dateOfDissamblyGMT;
+        bamm:optional "true"^^xsd:boolean
+    ]
+     );
+    bamm:operations ().
+:disassemblyStatus a bamm:Property;
+    bamm:name "disassemblyStatus";
+    bamm:preferredName "disassembly status"@en;
+    bamm:description "Indicates the status of disassembly"@en;
+    bamm:characteristic :DisassemblyStatus.
+:healthStatus a bamm:Property;
+    bamm:name "healthStatus";
+    bamm:preferredName "healthStatus"@en;
+    bamm:description "The health condition of the vehicle or spare part."@en;
+    bamm:characteristic :HealthStatus.
+:recyclingStatus a bamm:Property;
+    bamm:name "recyclingStatus";
+    bamm:preferredName "recycling Status"@en;
+    bamm:description "The recycling status of a vehicle or part."@en;
+    bamm:characteristic :RecyclingStatus.
+:DisassemblyStatus a bamm-c:Enumeration;
+    bamm:name "DisassemblyStatus";
+    bamm:description "Possible status of disassembly"@en;
+    bamm-c:values ("assembled" "disassembled");
+    bamm:dataType xsd:string.
+:HealthStatus a bamm-c:Enumeration;
+    bamm:name "HealthStatus";
+    bamm:description "Possible status of condition of a vehicle or part."@en;
+    bamm-c:values ("in running condition" "repair required" "broken" "not tested" "incomplete");
+    bamm:dataType xsd:string.
+:RecyclingStatus a bamm-c:Enumeration;
+    bamm:name "RecyclingStatus";
+    bamm:preferredName "RecyclingStatus"@en;
+    bamm:description "Possible status auf a vehicle or part"@en;
+    bamm-c:values ("recycled" "not recycled");
+    bamm:dataType xsd:string.
+:dateOfReceptionGMT a bamm:Property;
+    bamm:name "dateOfReceptionGMT";
+    bamm:preferredName "date of reception"@en;
+    bamm:description "Gives the date of reception of the vehicle in GMT time zone"@en;
+    bamm:exampleValue "2021-09-30"^^xsd:dateTime;
+    bamm:characteristic bamm-c:Timestamp.
+:dateOfDissamblyGMT a bamm:Property;
+    bamm:name "dateOfDissamblyGMT";
+    bamm:preferredName "date of dissambly"@en;
+    bamm:description "Gives the date of dissambly of the part in GMT time zone"@en;
+    bamm:exampleValue "2021-09-30"^^xsd:dateTime;
+    bamm:characteristic bamm-c:Timestamp.
+:dateOfScrappingGMT a bamm:Property;
+    bamm:name "dateOfScrappingGMT";
+    bamm:preferredName "date of scrapping"@en;
+    bamm:description "Gives the date of scrapping of the vehicle or part in GMT time zone"@en;
+    bamm:exampleValue "2021-09-30"^^xsd:dateTime;
+    bamm:characteristic bamm-c:Timestamp.
+:sparePartQuality a bamm:Property;
+    bamm:name "sparePartQuality";
+    bamm:preferredName "spare part quality"@en;
+    bamm:description "Indicates the quality of a spare part"@en;
+    bamm:characteristic :SparePartQuality.
+:SparePartQuality a bamm-c:Enumeration;
+    bamm:name "SparePartQuality";
+    bamm:description "Possible status of condition: A=quality very good; B=quality normal used; C=quality defective or with defects; N=new"@en;
+    bamm-c:values ("A" "B" "C" "N");
+    bamm:dataType xsd:string.
+:lastMileage a bamm:Property;
+    bamm:name "lastMileage";
+    bamm:preferredName "last mileage"@en;
+    bamm:description "Gives the last mileage, which can be read on the vehicle"@en;
+    bamm:characteristic :LastMileage.
+:LastMileage a bamm-c:Quantifiable;
+    bamm:name "Mileage";
+    bamm:dataType xsd:double;
+    bamm-c:unit unit:kilometre.
+:certificateOfDestruction a bamm:Property;
+    bamm:name "certificateOfDestruction";
+    bamm:preferredName "certificate of destruction"@en;
+    bamm:description "Indicates if an certificate of destruction is present"@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.
