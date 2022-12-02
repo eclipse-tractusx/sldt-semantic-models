@@ -1,0 +1,254 @@
+#######################################################################
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2022 Robert Bosch GmbH
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Circular Economy Solutions GmbH (C-ECO)
+# Copyright (c) 2022 T-Systems International GmbH
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the 
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license, 
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <urn:bamm:io.catenax.return_request:1.1.1#>.
+
+:ReturnRequest a bamm:Aspect;
+    bamm:name "ReturnRequest";
+    bamm:properties (:needsReturn :returnConditions :requestDate :latestReturnDate :productConditions :title :marketplaceProduct :quantity :unitOfMeasure :validityPeriod :priceRange :isRecall);
+    bamm:operations ();
+    bamm:preferredName "return request"@en;
+    bamm:description "Aspect to indicate if there is a return request for a product."@en.
+:needsReturn a bamm:Property;
+    bamm:name "needsReturn";
+    bamm:preferredName "needs return"@en;
+    bamm:description "Describes the fact whether a vehicle, assembly or part needs to be returned to requestor."@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.
+:returnConditions a bamm:Property;
+    bamm:name "returnConditions";
+    bamm:preferredName "return conditions"@en;
+    bamm:description "Describes WHY a vehicle, assembly or part needs to be returned to the requestor and under which conditions."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Wishes to buy".
+:requestDate a bamm:Property;
+    bamm:name "requestDate";
+    bamm:preferredName "request date"@en;
+    bamm:description "Describes date when the return request was placed in GMT timezone."@en;
+    bamm:characteristic :DateTimestamp;
+    bamm:exampleValue "2022-01-01"^^xsd:date.
+:latestReturnDate a bamm:Property;
+    bamm:name "latestReturnDate";
+    bamm:preferredName "latest return date"@en;
+    bamm:description "Describes until when the return request is valid in GMT timezone."@en;
+    bamm:characteristic :DateTimestamp;
+    bamm:exampleValue "2025-01-01"^^xsd:date.
+:productConditions a bamm:Property;
+    bamm:name "productConditions";
+    bamm:preferredName "product conditions"@en;
+    bamm:description "textual description of the product conditions"@en;
+    bamm:characteristic :ProductConditionsCharacteristic.
+:title a bamm:Property;
+    bamm:name "title";
+    bamm:preferredName "title"@en;
+    bamm:description "The request name to be used by the buyer to navigate through the list of demand requests."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BMW 318i Brake caliper".
+:marketplaceProduct a bamm:Property;
+    bamm:name "marketplaceProduct";
+    bamm:preferredName "marketplace product"@en;
+    bamm:description "The description of the product within the marketplace that might differ from the digital twin."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BMW 318i E46 Coupe Bj.2000 Bremssattel hinten links".
+:quantity a bamm:Property;
+    bamm:name "quantity";
+    bamm:preferredName "quantity"@en;
+    bamm:description "The desired quantity of the on the marketplace offered product in SKU."@en;
+    bamm:characteristic :QuantityCharacteristic;
+    bamm:exampleValue "50.00"^^xsd:float.
+:QuantityCharacteristic a bamm:Characteristic;
+    bamm:name "QuantityCharacteristic";
+    bamm:preferredName "quantity characteristic"@en;
+    bamm:description "Characteristic describing the quantity"@en;
+    bamm:dataType xsd:float.
+:unitOfMeasure a bamm:Property;
+    bamm:name "unitOfMeasure";
+    bamm:preferredName "unit of measure"@en;
+    bamm:description "The unit of measure (related to quantity)."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "kg";
+    bamm:see <https://resources.gs1us.org/GS1-US-Data-Hub-Help-Center/ArtMID/3451/ArticleID/116/Unit-of-Measure-Codes>.
+:validityPeriod a bamm:Property;
+    bamm:name "validityPeriod";
+    bamm:preferredName "validity period"@en;
+    bamm:description "Specifies the time period when the need exists"@en;
+    bamm:characteristic :TimePeriod.
+:priceRange a bamm:Property;
+    bamm:name "priceRange";
+    bamm:preferredName "price range"@en;
+    bamm:description "Range of monetary values."@en;
+    bamm:characteristic :PriceRangeCharacteristic.
+:isRecall a bamm:Property;
+    bamm:name "isRecall";
+    bamm:preferredName "is recall"@en;
+    bamm:description "Depicts if the manufacturer issued a recall (e.g. for security reasons). In concjunction with property needsReturn it can be expressed if the item has to be returned or can directly be destroyed."@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "false"^^xsd:boolean.
+:DateTimestamp a bamm:Characteristic;
+    bamm:name "DateTimestamp";
+    bamm:preferredName "date timestamp"@en;
+    bamm:description "Timestamp for dates"@en;
+    bamm:dataType xsd:date.
+:ProductConditionsCharacteristic a bamm:Characteristic;
+    bamm:name "ProductConditionsCharacteristic";
+    bamm:preferredName "product conditions characteristic"@en;
+    bamm:description "Criteria describing the state of a product on the marketplace."@en;
+    bamm:dataType :ProductConditionsEntity.
+:TimePeriod a bamm-c:SortedSet;
+    bamm:name "TimePeriod";
+    bamm:preferredName "time period"@en;
+    bamm:description "Depicts a time period by specifying start and end date"@en;
+    bamm:dataType :TimePeriodEntity.
+:PriceRangeCharacteristic a bamm:Characteristic;
+    bamm:name "PriceRangeCharacteristic";
+    bamm:preferredName "price range characteristic"@en;
+    bamm:description "Characteristic to define range of monetary values."@en;
+    bamm:dataType :PriceRangeEntity.
+:TimePeriodEntity a bamm:Entity;
+    bamm:name "TimePeriodEntity";
+    bamm:properties (:startDate :endDate);
+    bamm:preferredName "time period"@en;
+    bamm:description "Entity defining a range of dates to define a time period."@en.
+:PriceRangeEntity a bamm:Entity;
+    bamm:name "PriceRangeEntity";
+    bamm:description "Entity encapsulating the min and max value of the range of monetary values."@en;
+    bamm:properties ([
+  bamm:property :minPrice;
+  bamm:optional "true"^^xsd:boolean
+] :maxPrice);
+    bamm:preferredName "price range entity"@en.
+:startDate a bamm:Property;
+    bamm:name "startDate";
+    bamm:preferredName "start date"@en;
+    bamm:description "The first day of the period"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2019-01-01"^^xsd:dateTime.
+:endDate a bamm:Property;
+    bamm:name "endDate";
+    bamm:preferredName "end date"@en;
+    bamm:description "The last day of the period."@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2030-09-30"^^xsd:dateTime.
+:minPrice a bamm:Property;
+    bamm:name "minPrice";
+    bamm:preferredName "minimum price"@en;
+    bamm:description "The minimum price that a buyer is ready to pay to get an item (motivating sellers to sell)."@en;
+    bamm:characteristic :PriceCharacteristic.
+:maxPrice a bamm:Property;
+    bamm:name "maxPrice";
+    bamm:preferredName "maximum price"@en;
+    bamm:description "The maximum price until which a demand request is relevant."@en;
+    bamm:characteristic :PriceCharacteristic.
+:PriceCharacteristic a bamm:Characteristic;
+    bamm:name "PriceCharacteristic";
+    bamm:preferredName "Price Characteristic"@en;
+    bamm:description "Characteristic to describe the price. Different currencies are possible"@en;
+    bamm:dataType :Price.
+:Price a bamm:Entity;
+    bamm:name "Price";
+    bamm:properties (:value :currency);
+    bamm:preferredName "Price"@en;
+    bamm:description "price of the returned article"@en.
+:value a bamm:Property;
+    bamm:name "value";
+    bamm:preferredName "value"@en;
+    bamm:description "The nominal value."@en;
+    bamm:characteristic :ValueCharacteristic.
+:currency a bamm:Property;
+    bamm:name "currency";
+    bamm:preferredName "currency"@en;
+    bamm:description "Currency of the price of the return request conform to the ISO4217 in numerical codes."@en;
+    bamm:characteristic :CurrencyTrait;
+    bamm:exampleValue "EUR".
+:ValueCharacteristic a bamm:Characteristic;
+    bamm:name "ValueCharacteristic";
+    bamm:preferredName "Value Characteristic"@en;
+    bamm:description "Characteristic to describe the value in a float type."@en;
+    bamm:dataType xsd:float.
+:CurrencyTrait a bamm-c:Trait;
+    bamm:name "CurrencyTrait";
+    bamm-c:baseCharacteristic :CurrencyCharacteristic;
+    bamm-c:constraint :CurrencyConstraint.
+:CurrencyCharacteristic a bamm:Characteristic;
+    bamm:name "CurrencyCharacteristic";
+    bamm:preferredName "CurrencyCharacteristic"@en;
+    bamm:description "Characteristic to represent the iso-code conform curreny entries as defined in the ISO4217 for numerical codes."@en;
+    bamm:dataType xsd:string.
+:CurrencyConstraint a bamm-c:RegularExpressionConstraint;
+    bamm:name "CurrencyConstraint";
+    bamm:description "reduces the possible entry to three entries from A-Z"@en;
+    bamm:value "^[A-Z]{3}$".
+:ProductConditionsEntity a bamm:Entity;
+    bamm:name "ProductConditionsEntity";
+    bamm:properties ([
+  bamm:property :missingParts;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :dismantled;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :mechanicalDamage;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :corroded;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :discolored;
+  bamm:optional "true"^^xsd:boolean
+]);
+    bamm:preferredName "product conditions entity"@en;
+    bamm:description "Entity encapsulating the conditions the product is in."@en.
+:missingParts a bamm:Property;
+    bamm:name "missingParts";
+    bamm:preferredName "missing parts"@en;
+    bamm:description "Completeness of the product, e.g. missing parts are not acceptable."@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.
+:dismantled a bamm:Property;
+    bamm:name "dismantled";
+    bamm:preferredName "dismantled"@en;
+    bamm:description "Information on whether the product has been dismantled."@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.
+:mechanicalDamage a bamm:Property;
+    bamm:name "mechanicalDamage";
+    bamm:preferredName "mechanical damage"@en;
+    bamm:description "Information on mechanical damage to the part, e.g. two broken ribs or part deformation indicate mechanical damage."@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.
+:corroded a bamm:Property;
+    bamm:name "corroded";
+    bamm:preferredName "corroded"@en;
+    bamm:description "Information on whether the product has corrosion."@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.
+:discolored a bamm:Property;
+    bamm:name "discolored";
+    bamm:preferredName "discolored"@en;
+    bamm:description "Information on whether the product has been discoloured."@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.

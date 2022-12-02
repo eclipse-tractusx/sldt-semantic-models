@@ -1,0 +1,212 @@
+#######################################################################
+# Copyright (c) 2022 BASF SE
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix : <urn:bamm:io.catenax.batch:1.0.1#>.
+
+:ProductionCountryCodeTrait a bamm-c:Trait;
+    bamm:name "ProductionCountryCodeTrait";
+    bamm:preferredName "Production Country Code Trait"@en;
+    bamm:description "Trait to ensure standard data format for country code"@en;
+    bamm-c:constraint :CountryCodeRegularExpression;
+    bamm-c:baseCharacteristic :CountryCodeCharacteristic.
+:CountryCodeRegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:name "CountryCodeRegularExpression";
+    bamm:preferredName "Country Code Regular Expression"@en;
+    bamm:description "Regular Expression that ensures a three-letter code "@en;
+    bamm:value "^[A-Z][A-Z][A-Z]$".
+:CountryCodeCharacteristic a bamm:Characteristic;
+    bamm:name "CountryCodeCharacteristic";
+    bamm:preferredName "Country Code Characteristic"@en;
+    bamm:description "ISO 3166-1 alpha-3 – three-letter country codes "@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://www.iso.org/iso-3166-country-codes.html>.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:name "UUIDv4RegularExpression";
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."@en;
+    bamm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".
+:UUIDv4 a bamm:Characteristic;
+    bamm:name "UUIDv4";
+    bamm:preferredName "UUIDv4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string.
+:KeyValueList a bamm:Entity;
+    bamm:name "KeyValueList";
+    bamm:preferredName "Key Value List"@en;
+    bamm:description "A list of key value pairs for local identifiers, which are composed of a key and a corresponding value."@en;
+    bamm:properties (:key :value).
+:key a bamm:Property;
+    bamm:name "key";
+    bamm:preferredName "Identifier Key"@en;
+    bamm:description "The key of a local identifier. "@en;
+    bamm:characteristic :KeyCharacteristic;
+    bamm:exampleValue "BatchID".
+:value a bamm:Property;
+    bamm:name "value";
+    bamm:preferredName "Identifier Value"@en;
+    bamm:description "The value of an identifier."@en;
+    bamm:characteristic :ValueCharacteristic;
+    bamm:exampleValue "BID12345678".
+:KeyCharacteristic a bamm:Characteristic;
+    bamm:name "KeyCharacteristic";
+    bamm:preferredName "Key Characteristic"@en;
+    bamm:description "The key characteristic of a local identifier. A specific subset of keys is predefined, but additionally any other custom key is allowed. Predefined keys (to be used when applicable):\n- \"manufacturerId\" - The Business Partner Number (BPN) of the manufacturer. Value: BPN-Nummer\n- \"batchId\" - The identifier of the batch, to which the serialzed part belongs"@en;
+    bamm:dataType xsd:string.
+:ValueCharacteristic a bamm:Characteristic;
+    bamm:name "ValueCharacteristic";
+    bamm:preferredName "Value Characteristic"@en;
+    bamm:description "The value of an identifier."@en;
+    bamm:dataType xsd:string.
+:catenaXId a bamm:Property;
+    bamm:name "catenaXId";
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:description "The fully anonymous Catena-X ID of the batch, valid for the Catena-X dataspace."@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:exampleValue "580d3adf-1981-44a0-a214-13d6ceed9379".
+:CatenaXIdTrait a bamm-c:Trait;
+    bamm:name "CatenaXIdTrait";
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm:description "Trait to ensure data format for Catena-X ID"@en;
+    bamm-c:constraint :UUIDv4RegularExpression;
+    bamm-c:baseCharacteristic :UUIDv4.
+:localIdentifiers a bamm:Property;
+    bamm:name "localIdentifiers";
+    bamm:preferredName "Local Identifiers"@en;
+    bamm:description "A local identifier enables identification of a part in a specific dataspace, but is not unique in Catena-X dataspace. Multiple local identifiers may exist."@en;
+    bamm:characteristic :LocalIdentifierCharacteristic.
+:LocalIdentifierCharacteristic a bamm-c:Set;
+    bamm:name "LocalIdentifierCharacteristic";
+    bamm:preferredName "Local Identifier Characteristic"@en;
+    bamm:description "A batch may have multiple attributes, which uniquely identify that batch in a specific dataspace (e.g. the manufacturer`s dataspace)"@en;
+    bamm:dataType :KeyValueList.
+:manufacturingInformation a bamm:Property;
+    bamm:name "manufacturingInformation";
+    bamm:preferredName "Manufacturing Information"@en;
+    bamm:description "Information from manufacturing process, such as manufacturing date and manufacturing country"@en;
+    bamm:characteristic :ManufacturingCharacteristic.
+:ManufacturingCharacteristic a bamm:Characteristic;
+    bamm:name "ManufacturingCharacteristic";
+    bamm:preferredName "Manufacturing Characteristic"@en;
+    bamm:description "Characteristic to describe manufacturing related data"@en;
+    bamm:dataType :ManufacturingEntity.
+:ManufacturingEntity a bamm:Entity;
+    bamm:name "ManufacturingEntity";
+    bamm:preferredName "Manufacturing Entity"@en;
+    bamm:description "Encapsulates the manufacturing relevant attributes"@en;
+    bamm:properties (:date [
+  bamm:property :country;
+  bamm:optional "true"^^xsd:boolean
+]).
+:date a bamm:Property;
+    bamm:name "date";
+    bamm:preferredName "Production Date"@en;
+    bamm:description "Timestamp of the manufacturing date as the final step in production process (e.g. final quality check, ready-for-shipment event)"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2022-02-04T14:48:54"^^xsd:dateTime.
+:country a bamm:Property;
+    bamm:name "country";
+    bamm:preferredName "Country code"@en;
+    bamm:description "Country code where the part was manufactured"@en;
+    bamm:characteristic :ProductionCountryCodeTrait;
+    bamm:exampleValue "HUR".
+:partTypeInformation a bamm:Property;
+    bamm:name "partTypeInformation";
+    bamm:preferredName "Part Type Information"@en;
+    bamm:description "The part type of which the batch has been instantiated of."@en;
+    bamm:characteristic :PartTypeInformationCharacteristic.
+:PartTypeInformationCharacteristic a bamm:Characteristic;
+    bamm:name "PartTypeInformationCharacteristic";
+    bamm:preferredName "Part Type Information Characteristic"@en;
+    bamm:description "The characteristics of the part type"@en;
+    bamm:dataType :PartTypeInformationEntity.
+:PartTypeInformationEntity a bamm:Entity;
+    bamm:name "PartTypeInformationEntity";
+    bamm:preferredName "Part Type Information Entity"@en;
+    bamm:description "Encapsulation for data related to the part type"@en;
+    bamm:properties (:manufacturerPartId [
+  bamm:property :customerPartId;
+  bamm:optional "true"^^xsd:boolean
+] :nameAtManufacturer [
+  bamm:property :nameAtCustomer;
+  bamm:optional "true"^^xsd:boolean
+] :classification).
+:manufacturerPartId a bamm:Property;
+    bamm:name "manufacturerPartId";
+    bamm:preferredName "Manufacturer Part ID"@en;
+    bamm:description "Part ID as assigned by the manufacturer of the part. The Part ID identifies the part (as designed) in the manufacturer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number or batch number."@en;
+    bamm:characteristic :PartIdCharacteristic;
+    bamm:exampleValue "123-0.740-3434-A".
+:customerPartId a bamm:Property;
+    bamm:name "customerPartId";
+    bamm:preferredName "Customer Part ID"@en;
+    bamm:description "Part ID as assigned by the manufacturer of the part. The Part ID identifies the part (as designed) in the customer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number or batch number. Note: This property may only be populated in case there is a single customer for the batch."@en;
+    bamm:characteristic :PartIdCharacteristic;
+    bamm:exampleValue "PRT-12345".
+:nameAtManufacturer a bamm:Property;
+    bamm:name "nameAtManufacturer";
+    bamm:preferredName "Name at Manufacturer"@en;
+    bamm:description "Name of the part as assigned by the manufacturer"@en;
+    bamm:characteristic :PartNameCharacteristic;
+    bamm:exampleValue "Mirror left".
+:nameAtCustomer a bamm:Property;
+    bamm:name "nameAtCustomer";
+    bamm:preferredName "Name at Customer"@en;
+    bamm:description "Name of the part as assigned by the customer"@en;
+    bamm:characteristic :PartNameCharacteristic;
+    bamm:exampleValue "side element A".
+:classification a bamm:Property;
+    bamm:name "classification";
+    bamm:preferredName "Classifcation"@en;
+    bamm:description "The classification of the part type according to STEP standard definition"@en;
+    bamm:characteristic :ClassificationCharacteristic;
+    bamm:exampleValue "raw material".
+:PartIdCharacteristic a bamm:Characteristic;
+    bamm:name "PartIdCharacteristic";
+    bamm:preferredName "Part ID Characteristic"@en;
+    bamm:description "The part ID is a multi-character string, ususally assigned by an ERP system"@en;
+    bamm:dataType xsd:string.
+:PartNameCharacteristic a bamm:Characteristic;
+    bamm:name "PartNameCharacteristic";
+    bamm:preferredName "Part Name Characteristic"@en;
+    bamm:description "Part Name in string format from the respective system in the value chain"@en;
+    bamm:dataType xsd:string.
+:ClassificationCharacteristic a bamm-c:Enumeration;
+    bamm:name "ClassificationCharacteristic";
+    bamm:preferredName "Classification Characteristic"@en;
+    bamm:description "A part type must be placed into one of the following classes: 'component', 'product', 'software', ‘assembly’, 'tool', or 'raw material'."@en;
+    bamm:dataType xsd:string;
+    bamm:see <http://private.pdm-if.org/pdm-if/Frecommended-practices1>;
+    bamm-c:values ("product" "raw material" "software" "assembly" "tool" "component").
+:Batch a bamm:Aspect;
+    bamm:name "Batch";
+    bamm:preferredName "Batch"@en;
+    bamm:description "A batch is a quantity of (semi-) finished products or (raw) material product that have been produced under the same circumstances (e.g. same production location), as specified groups or amounts, within a certain time frame. Every batch can differ in the number or amount of products. Different batches can have varied specifications, e.g., different colors. A batch is identified via a Batch ID."@en;
+    bamm:properties (:catenaXId :localIdentifiers :manufacturingInformation :partTypeInformation);
+    bamm:operations ().
