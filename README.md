@@ -1,12 +1,13 @@
 # Aspect Models for Eclipse Tractus-X Semantic Layer (SLDT)
 The repository contains the aspect models based on [BAMM](https://openmanufacturingplatform.github.io/sds-documentation/bamm-specification/snapshot/index.html) for the Tractus-X project for Catena-X.
 
+**Currently, we assume the usage of the version 2.0.6 of the BAMM-CLI**.
+
+
 
 # Using the models
 The models can locally be processed with the [BAMM CLI](https://openmanufacturingplatform.github.io/sds-documentation/sds-documentation/index.html).
 It allows you to generate different artifacts (diagrams, example payload, java class files) out of it.
-
-Currently, we assume the usage of the version 2.0.6 of the BAMM-CLI.
 
 # Status of model
 Each model has its life cycle and can thus have a different status. This information always corresponds to a specific version of the model. To indicate the state of the model version in Git, one creates a file with the name `metadata.json` and places it in the same directory as the corresponding model file. It is also possible to load the models into the [Semantic Hub](https://github.com/eclipse-tractusx/sldt-semantic-hub) which has a corresponding state management. An example `metadata.json` looks like this:
