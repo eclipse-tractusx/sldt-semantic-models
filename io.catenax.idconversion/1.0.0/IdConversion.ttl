@@ -1,0 +1,142 @@
+#######################################################################
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <urn:bamm:io.catenax.idconversion:1.0.0#>.
+
+:IdConversion a bamm:Aspect;
+bamm:name "IdConversion";
+bamm:properties ();
+bamm:operations ( :ConvertOperation :ReidentificationOperation);
+bamm:description "The IdConversion aspect deals with the Conversion of (vehicle, global) Identifiers like VINs into Pseudonyms which are located in an OEM domain (VANs, UUIDs and other concepts) and vice versa. As there are multiple options for representing Identifiers and performing Pseudonymization, this model uses a combination of unqualified values for identifiers paired with namespaces (domains, keys)."@en;
+bamm:preferredName "Id Conversion"@en.
+
+:ConvertOperation a bamm:Operation;
+bamm:name "ConvertOperation";
+bamm:preferredName "Convert"@en;
+bamm:description "The Convert operation converts from Identifiers into Pseudonyms of the respective domains. It is transactional in a sense that either all given identifiers could be converted or none (in which case the output will be empty). In all other cases, the converted identifier at index i of the output corresponds to the original identifier at index i of the input."@en;
+bamm:input (:targetDomain :conversionInput);
+bamm:output :conversionOutput .
+
+:ReidentificationOperation a bamm:Operation;
+bamm:name "ReidentificationOperation";
+bamm:preferredName "Reidentification"@en;
+bamm:description "The Reidentification operation converts from Pseudonyms back into Identifiers of the respective domains. It is transactional in a sense that either all given identifiers could be converted or none (in which case the output will be empty). In all other cases, the converted identifier at index i of the output corresponds to the original identifier at index i of the input."@en;
+bamm:input (:sourceDomain :conversionInput);
+bamm:output :conversionOutput .
+
+:targetDomain a bamm:Property;
+bamm:name "targetDomain";
+bamm:preferredName "Target Domain"@en;
+bamm:description "The Target Domain of a Conversion is an input parameter which qualifies the desired target pseudonyms/identifiers. In cases where the Conversion has only a single target domain and this is crystal-clear from the context, it may be ommited."@en;
+bamm:exampleValue "urn:VAN:com.bmw:1.0.0#"^^xsd:anyURI;
+bamm:characteristic :UrnCharacteristic .
+
+:sourceDomain a bamm:Property;
+bamm:name "sourceDomain";
+bamm:preferredName "Source Domain"@en;
+bamm:description "The Source Domain of a Reidentification is an input parameter which qualifies the desired target identifiers. In cases where the Reidentification has only a single source domain and this is crystal-clear from the context, it may be ommited."@en;
+bamm:exampleValue "urn:standard:org.iso:9721#"^^xsd:anyURI;
+bamm:characteristic :UrnCharacteristic .
+
+:conversionInput a bamm:Property;
+bamm:name "conversionInput";
+bamm:preferredName "Conversion Input"@en;
+bamm:description "The Conversion Input lists the (qualified) source identifiers or pseudonyms which should be covered by the Convert operation."@en;
+bamm:exampleValue "[{'key':'urn:standard:org.iso:9721#','value':'2HNYD28297H520948'},{'key':'urn:standard:org.iso:9721#','value':'1GCGG25V631131538'},{'key':'urn:standard:org.iso:9721#','value':'5FNRL38778B035407'}]";
+bamm:characteristic :QualifiedBatchOfIdentifiersEither .
+
+:conversionOutput a bamm:Property;
+bamm:name "conversionOutput";
+bamm:preferredName "Conversion Output"@en;
+bamm:description "The Conversion Output lists the (qualified) target identifiers or pseudonyms which have been computed by the Convert operation."@en;
+bamm:exampleValue "[{'key':'urn:VAN:com.bmw:1.0.0#','value':'670efca0-892c-4626-b870-d6d49799cdb0'},{'key':'urn:VAN:com.bmw:1.0.0#','value':'618bc46b-9f85-4de8-96ad-6da79390d766'},{'key':'urn:VAN:com.bmw:1.0.0#','value':'d42311ea-e461-48e5-bf85-31b1d8f45c03'}]";
+bamm:characteristic :QualifiedBatchOfIdentifiersEither .
+
+:QualifiedBatchOfIdentifiersEither a bamm-c:Either;
+bamm:name "QualifiedBatchOfIdentifiersEither" ;
+bamm:preferredName "A Qualified Batch of Identifiers"@en;
+bamm:description "A Qualified Batch of Identifiers (and Pseudonyms) has two representations. Either it lists a set of unqualified Identifiers under a common domain/key. Or it lists a set of individually qualified Identifiers."@en;
+bamm-c:left :QualifiedListOfIdentifiersSingleEntity;
+bamm-c:right :QualifiedIdentifiersList .
+
+:QualifiedIdentifiersList a bamm-c:List ;
+bamm:name "QualifiedIdentifiersList" ;
+bamm:preferredName "A List of Qualified Identifiers"@en;
+bamm:description "In a List of Qualified Identifiers, any Identifier can belong to its own domain."@en ;
+bamm:dataType :QualifiedIdentifierEntity .
+
+:QualifiedListOfIdentifiersSingleEntity a bamm-c:SingleEntity ;
+bamm:name "QualifiedListOfIdentifiersSingleEntity" ;
+bamm:preferredName "A Qualified List of Identifiers"@en ;
+bamm:description "In a Qualified List of (unqualified) Identifiers, any Identifier belongs to the same domain."@en ;
+bamm:dataType :QualifiedListOfIdentifiersEntity .
+
+:QualifiedListOfIdentifiersEntity a bamm:Entity ;
+bamm:name "QualifiedListOfIdentifiersEntity" ;
+bamm:preferredName "Qualified List of Identifiers"@en ;
+bamm:description "Combines a domain with a list of unqualified Identifiers"@en ;
+bamm:properties (:key :values).
+
+:key a bamm:Property;
+bamm:name "key";
+bamm:preferredName "Key"@en ;
+bamm:description "The key hints to the type (identifier of a specific origin, pseudonym of a given domain)."@en;
+bamm:exampleValue "urn:standard:org.iso:9721#"^^xsd:anyURI;
+bamm:characteristic :UrnCharacteristic .
+
+:UrnCharacteristic a bamm:Characteristic;
+bamm:name "UrnCharacteristic";
+bamm:preferredName "A Urn"@en;
+bamm:description "A Unique Resource Name (URN) preferrably in IRI syntax (with a trailing #)"@en;
+bamm:dataType xsd:anyURI .
+
+:QualifiedIdentifierEntity a bamm:Entity;
+bamm:name "QualifiedIdentifierEntity";
+bamm:preferredName "Qualified Identifier"@en;
+bamm:description "Qualified Identifier is an entity which combines a namespace (key) and a local name (value) component."@en;
+bamm:properties (:key :value) .
+
+:IdCharacteristic a bamm:Characteristic;
+bamm:name "IdCharacteristic";
+bamm:preferredName "An Id"@en;
+bamm:description "An (unqualified) Identifier. This characteristic should be constrained in concrete implementations and in correspondence with associated domains of the Convert operation."@en;
+bamm:dataType xsd:string.
+
+:value a bamm:Property;
+bamm:name "value";
+bamm:preferredName "Value"@en;
+bamm:description "The value property is either a local identifier or pseudonym. The format and type of the value depends on the key property."@en;
+bamm:exampleValue "2HNYD28297H520948";
+bamm:characteristic :IdCharacteristic .
+
+:IdList a bamm-c:List ;
+bamm:name "IdList" ;
+bamm:preferredName "A List of Ids"@en ;
+bamm:description "A list of (unqualified) identifiers. This characteristic should be constrained in concrete implementations and in correspondence with associated domains of the Convert operation."@en ;
+bamm:dataType xsd:string .
+
+:values a bamm:Property;
+bamm:name "values";
+bamm:preferredName "Values"@en ;
+bamm:description "The Values property hosts a list of (unqualified) identifiers or pseudonyms. The format and type of the value depends on the key property."@en;
+bamm:exampleValue "['2HNYD28297H520948','1GCGG25V631131538', '5FNRL38778B035407']'";
+bamm:characteristic :IdList .

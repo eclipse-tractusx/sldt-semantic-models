@@ -1,0 +1,100 @@
+#######################################################################
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Volkswagen AG
+# Copyright (c) 2022 Robert Bosch GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.part_as_specified:1.0.0#>.
+
+:PartAsSpecified a bamm:Aspect;
+    bamm:name "PartAsSpecified";
+    bamm:preferredName "Part as specified"@en;
+    bamm:description "The aspect model PartAsSpecified belongs to the Part Catalogue. A PartAsSpecified represents a certain OEM catalog part on part number level. Providing a digital representation of the part as specified by the OEM. The link to the serialized part is done via the partId, this can only be done if the respective digital twins was provided by the supplier within the value chain."@en;
+    bamm:properties (:partTypeInformation [
+  bamm:property :validityPeriod;
+  bamm:optional "true"^^xsd:boolean
+]);
+    bamm:operations ().
+:partTypeInformation a bamm:Property;
+    bamm:name "partTypeInformation";
+    bamm:characteristic :PartTypeInformationCharacteristic;
+    bamm:preferredName "Part type information"@en;
+    bamm:description "Encapsulation for data related to the part type."@en.
+:validityPeriod a bamm:Property;
+    bamm:name "validityPeriod";
+    bamm:characteristic :ValidityPeriodCharacteristic;
+    bamm:preferredName "Validity period"@en.
+:PartTypeInformationCharacteristic a bamm:Characteristic;
+    bamm:name "PartTypeInformationCharacteristic";
+    bamm:preferredName "Part type information characteristic"@en;
+    bamm:description "The characteristic of the part type."@en;
+    bamm:dataType :PartTypeInformationEntity.
+:ValidityPeriodCharacteristic a bamm:Characteristic;
+    bamm:name "ValidityPeriodCharacteristic";
+    bamm:preferredName "Validity period characteristic"@en;
+    bamm:description "The characteristic of the validity period."@en;
+    bamm:dataType :ValidityPeriodEntity.
+:PartTypeInformationEntity a bamm:Entity;
+    bamm:name "PartTypeInformationEntity";
+    bamm:preferredName "Part type information entity"@en;
+    bamm:description "Encapsulation for data related to the part type"@en;
+    bamm:properties (:classification :nameAtOwner :ownerPartId :partVersion).
+:classification a bamm:Property;
+    bamm:name "classification";
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Classification"@en;
+    bamm:description "The classification of the part type according to STEP standard definition."@en;
+    bamm:exampleValue "product".
+:nameAtOwner a bamm:Property;
+    bamm:name "nameAtOwner";
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Name at owner"@en;
+    bamm:description "Name of the part as assigned by the part owner."@en;
+    bamm:exampleValue "Mirror left".
+:partVersion a bamm:Property;
+    bamm:name "partVersion";
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Part version"@en;
+    bamm:description "This is the version of the part. The engineering will at times supercede an older part version by a newer one, which might have different material aspects, physical dimensions etc., still maintaining compatibility."@en;
+    bamm:exampleValue "0.3".
+:ValidityPeriodEntity a bamm:Entity;
+    bamm:name "ValidityPeriodEntity";
+    bamm:preferredName "Validity period entity"@en;
+    bamm:description "Encapsulation for data related to the validity period."@en;
+    bamm:properties (:validFrom :validTo).
+:validFrom a bamm:Property;
+    bamm:name "validFrom";
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:preferredName "Valid from"@en;
+    bamm:description "Start date of the validity period."@en.
+:validTo a bamm:Property;
+    bamm:name "validTo";
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:preferredName "Valid to"@en;
+    bamm:description "End date of the validity period."@en.
+:ownerPartId a bamm:Property;
+    bamm:name "ownerPartId";
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Owner part id"@en;
+    bamm:description "PartID as assigned by the part owner. The partID identifies the part in the part owner's data space. The partId does not reference a specific instance of a part and thus should not be confused with the serial number."@en;
+    bamm:exampleValue "94A2032".

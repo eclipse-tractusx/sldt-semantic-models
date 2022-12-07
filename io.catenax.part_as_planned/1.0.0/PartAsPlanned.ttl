@@ -1,0 +1,147 @@
+#######################################################################
+# Copyright (c) 2022 BASF SE
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix : <urn:bamm:io.catenax.part_as_planned:1.0.0#>.
+
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:name "UUIDv4RegularExpression";
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."@en;
+    bamm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".
+:UUIDv4 a bamm:Characteristic;
+    bamm:name "UUIDv4";
+    bamm:preferredName "UUIDv4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string.
+:catenaXId a bamm:Property;
+    bamm:name "catenaXId";
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:description "The fully anonymous Catena-X ID of the serialized part, valid for the Catena-X dataspace."@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:exampleValue "580d3adf-1981-44a0-a214-13d6ceed9379".
+:CatenaXIdTrait a bamm-c:Trait;
+    bamm:name "CatenaXIdTrait";
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm:description "Trait to ensure data format for Catena-X ID"@en;
+    bamm-c:constraint :UUIDv4RegularExpression;
+    bamm-c:baseCharacteristic :UUIDv4.
+:partTypeInformation a bamm:Property;
+    bamm:name "partTypeInformation";
+    bamm:preferredName "Part Type Information"@en;
+    bamm:description "The part type from which the serialized part has been instantiated"@en;
+    bamm:characteristic :PartTypeInformationCharacteristic.
+:PartTypeInformationCharacteristic a bamm:Characteristic;
+    bamm:name "PartTypeInformationCharacteristic";
+    bamm:preferredName "Part Type Information Characteristic"@en;
+    bamm:description "The characteristics of the part type"@en;
+    bamm:dataType :PartTypeInformationEntity.
+:PartTypeInformationEntity a bamm:Entity;
+    bamm:name "PartTypeInformationEntity";
+    bamm:preferredName "Part Type Information Entity"@en;
+    bamm:description "Encapsulation for data related to the part type"@en;
+    bamm:properties (:manufacturerPartId :nameAtManufacturer :classification).
+:manufacturerPartId a bamm:Property;
+    bamm:name "manufacturerPartId";
+    bamm:preferredName "Manufacturer Part ID"@en;
+    bamm:description "Part ID as assigned by the manufacturer of the part. The Part ID identifies the part (as designed) in the manufacturer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number."@en;
+    bamm:characteristic :PartIdCharacteristic;
+    bamm:exampleValue "123-0.740-3434-A".
+:nameAtManufacturer a bamm:Property;
+    bamm:name "nameAtManufacturer";
+    bamm:preferredName "Name at Manufacturer"@en;
+    bamm:description "Name of the part as assigned by the manufacturer"@en;
+    bamm:characteristic :PartNameCharacteristic;
+    bamm:exampleValue "Mirror left".
+:classification a bamm:Property;
+    bamm:name "classification";
+    bamm:preferredName "Classifcation"@en;
+    bamm:description "The classification of the part type according to STEP standard definition"@en;
+    bamm:characteristic :ClassificationCharacteristic;
+    bamm:exampleValue "software".
+:PartIdCharacteristic a bamm:Characteristic;
+    bamm:name "PartIdCharacteristic";
+    bamm:preferredName "Part ID Characteristic"@en;
+    bamm:description "The part ID is a multi-character string, ususally assigned by an ERP system"@en;
+    bamm:dataType xsd:string.
+:PartNameCharacteristic a bamm:Characteristic;
+    bamm:name "PartNameCharacteristic";
+    bamm:preferredName "Part Name Characteristic"@en;
+    bamm:description "Part Name in string format from the respective system in the value chain"@en;
+    bamm:dataType xsd:string.
+:ClassificationCharacteristic a bamm-c:Enumeration;
+    bamm:name "ClassificationCharacteristic";
+    bamm:preferredName "Classification Characteristic"@en;
+    bamm:description "A part type must be placed into one of the following classes: 'component', 'product', 'software', ‘assembly’, 'tool', or 'raw material'."@en;
+    bamm:dataType xsd:string;
+    bamm:see <http://private.pdm-if.org/web/pdm-if/recommended-practices1>;
+    bamm-c:values ("product" "raw material" "software" "assembly" "tool" "component").
+:PartAsPlanned a bamm:Aspect;
+    bamm:name "PartAsPlanned";
+    bamm:preferredName "Part AsPlanned"@en;
+    bamm:description "A Part AsPlanned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status. "@en;
+    bamm:properties (:catenaXId :partTypeInformation [
+  bamm:property :validityPeriod;
+  bamm:optional "true"^^xsd:boolean
+]);
+    bamm:operations ().
+:validityPeriod a bamm:Property;
+    bamm:name "validityPeriod";
+    bamm:preferredName "Validity Period"@en;
+    bamm:description "The period of time during which the Part is offered by the manufacturer and can be purchased by customers."@en;
+    bamm:characteristic :ValidityPeriodCharacteristic.
+:ValidityPeriodCharacteristic a bamm:Characteristic;
+    bamm:name "ValidityPeriodCharacteristic";
+    bamm:preferredName "Validity Period Characteristic"@en;
+    bamm:description "ValidityPeriodCharacteristic"@en;
+    bamm:dataType :ValidityPeriodEntity.
+:ValidityPeriodEntity a bamm:Entity;
+    bamm:name "ValidityPeriodEntity";
+    bamm:preferredName "ValidityPeriodEntity"@en;
+    bamm:properties ([
+  bamm:property :validFrom;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :validTo;
+  bamm:optional "true"^^xsd:boolean
+]).
+:validFrom a bamm:Property;
+    bamm:name "validFrom";
+    bamm:preferredName "Valid From"@en;
+    bamm:description "Start date of validity period"@en;
+    bamm:characteristic :Timestamp.
+:validTo a bamm:Property;
+    bamm:name "validTo";
+    bamm:preferredName "Valid To"@en;
+    bamm:description "End date of validity period"@en;
+    bamm:characteristic :Timestamp.
+:Timestamp a bamm:Characteristic;
+    bamm:name "Timestamp";
+    bamm:description "Describes a Property which contains the date and time with an optional timezone."@en;
+    bamm:dataType xsd:dateTime.

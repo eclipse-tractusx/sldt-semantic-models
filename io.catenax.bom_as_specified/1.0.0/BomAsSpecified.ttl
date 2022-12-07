@@ -1,0 +1,197 @@
+#######################################################################
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Volkswagen AG
+# Copyright (c) 2022 Robert Bosch GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.bom_as_specified:1.0.0#>.
+
+:BomAsSpecified a bamm:Aspect;
+    bamm:name "BomAsSpecified";
+    bamm:properties (:identifier :item);
+    bamm:operations ();
+    bamm:preferredName "BOM as specified"@en;
+    bamm:description "The BomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place."@en.
+:identifier a bamm:Property;
+    bamm:name "identifier";
+    bamm:characteristic :IdentifierCharacteristic;
+    bamm:preferredName "Identifier"@en;
+    bamm:description "A unique reference for the product owner of this set of items, and used by the product owner only for internal referencing. "@en;
+    bamm:exampleValue "abcA76".
+:IdentifierCharacteristic a bamm:Characteristic;
+    bamm:name "IdentifierCharacteristic";
+    bamm:dataType xsd:string;
+    bamm:preferredName "IdentifierCharacteristic"@en.
+:item a bamm:Property;
+    bamm:name "item";
+    bamm:characteristic :ItemCharacteristic;
+    bamm:preferredName "Item"@en;
+    bamm:description "Top-level separation of parts which represent a set and shall indicate that the individual items are within each other completely assembled and treated as a unit, but are separable units, e.g. the \"vehicle\", \"electricCharger\" and the \"winter wheels\" are separated and could over lifetime be sold as individual items by the end customer.\n \nFor other end-customer products a set might be like \"cordless screwdriver\" and 2 times \"supplemental battery\"."@en.
+:ItemCharacteristic a bamm-c:Set;
+    bamm:name "ItemCharacteristic";
+    bamm:dataType :ItemEntity;
+    bamm:preferredName "Item characteristic"@en;
+    bamm:description "The characteristic of the items."@en.
+:ItemEntity a bamm:Entity;
+    bamm:name "ItemEntity";
+    bamm:properties (:itemCategory [
+  bamm:property :index;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :quantity;
+  bamm:optional "true"^^xsd:boolean
+] :part);
+    bamm:preferredName "Item entity"@en;
+    bamm:description "Entity encapsulating the properties that describe an item."@en.
+:itemCategory a bamm:Property;
+    bamm:name "itemCategory";
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Item category"@en;
+    bamm:description "The BomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place."@en;
+    bamm:exampleValue "\"vehicle\" \"winter wheels\" \"bicycle carrier\"".
+:index a bamm:Property;
+    bamm:name "index";
+    bamm:characteristic :IndexCharacteristic;
+    bamm:preferredName "Index"@en;
+    bamm:description "Additional differentiation if multiple items share the same the item descriptor."@en;
+    bamm:exampleValue "0"^^xsd:integer.
+:IndexCharacteristic a bamm:Characteristic;
+    bamm:name "IndexCharacteristic";
+    bamm:dataType xsd:integer;
+    bamm:preferredName "Index characteristic"@en;
+    bamm:description "Characteristic of the index."@en.
+:quantity a bamm:Property;
+    bamm:name "quantity";
+    bamm:characteristic :QuantityCharacteristic;
+    bamm:preferredName "Quantity"@en;
+    bamm:description "If the item is provided several times alike, the quantity on this level can specify how often. At this level pieces is assumed as the only unit. For further differentiation."@en;
+    bamm:exampleValue "1"^^xsd:integer.
+:QuantityCharacteristic a bamm-c:Quantifiable;
+    bamm:name "QuantityCharacteristic";
+    bamm:dataType xsd:integer;
+    bamm:preferredName "Quantity characteristic"@en;
+    bamm:description "Characteristic of the quantity."@en;
+    bamm-c:unit unit:piece.
+:part a bamm:Property;
+    bamm:name "part";
+    bamm:characteristic :PartCharacteristic;
+    bamm:preferredName "Part"@en;
+    bamm:description "TBD"@en.
+:PartCharacteristic a bamm-c:Set;
+    bamm:name "PartCharacteristic";
+    bamm:dataType :PartEntity;
+    bamm:preferredName "Part characteristic"@en;
+    bamm:description "Characteristic of the part."@en.
+:PartEntity a bamm:Entity;
+    bamm:name "PartEntity";
+    bamm:properties (:ownerPartId [
+  bamm:property :partVersion;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :partQuantity;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :partDescription;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :partClassification;
+  bamm:optional "true"^^xsd:boolean
+]);
+    bamm:preferredName "Part entity"@en;
+    bamm:description "Entity encapsulating the properies describing a part"@en.
+:ownerPartId a bamm:Property;
+    bamm:name "ownerPartId";
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Owner part ID"@en;
+    bamm:description "This is the key field of the component which usually keeps the part numbers used in after-sales, e.g. when repairing broken parts and searching for a replacement. This ownerPartId itself isn't usually bound to one part version, with the assumption that all part versions with the same ownerPartId are mutually interchangeable."@en;
+    bamm:exampleValue "5A1BA91".
+:partVersion a bamm:Property;
+    bamm:name "partVersion";
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Part version"@en;
+    bamm:description "This is the version of the part. The engineering will at times supercede an older part version by a newer one, which might have different material aspects, physical dimensions etc., still maintaining compatibility."@en;
+    bamm:exampleValue "05".
+:partQuantity a bamm:Property;
+    bamm:name "partQuantity";
+    bamm:characteristic :PartQuantityCharacteristic;
+    bamm:preferredName "Part quantity"@en;
+    bamm:description "This is the quantity how often this part is in the item."@en.
+:PartQuantityCharacteristic a bamm:Characteristic;
+    bamm:name "PartQuantityCharacteristic";
+    bamm:dataType :PartQuantityEntity;
+    bamm:preferredName "Part quantity characteristic"@en;
+    bamm:description "The characteristic of the part quantity."@en.
+:partDescription a bamm:Property;
+    bamm:name "partDescription";
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Part description"@en;
+    bamm:description "The description of the part in the primary language of the production facility of the product owner."@en.
+:partClassification a bamm:Property;
+    bamm:name "partClassification";
+    bamm:characteristic :PartClassificationCharacteristic;
+    bamm:preferredName "Part classification"@en;
+    bamm:description "The part classification."@en.
+:PartClassificationCharacteristic a bamm-c:Set;
+    bamm:name "PartClassificationCharacteristic";
+    bamm:dataType :PartClassificationEntity;
+    bamm:preferredName "Part classification characteristic"@en;
+    bamm:description "The characteristic of the part classification."@en.
+:PartClassificationEntity a bamm:Entity;
+    bamm:name "PartClassificationEntity";
+    bamm:properties (:key :value);
+    bamm:preferredName "Part classification entity"@en;
+    bamm:description "The entity encapsulating the properties of the part classification."@en.
+:key a bamm:Property;
+    bamm:name "key";
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Key"@en;
+    bamm:description "Key within the classification."@en;
+    bamm:exampleValue "\"eclass\", \"BMW:PartFamily\"".
+:value a bamm:Property;
+    bamm:name "value";
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Value"@en;
+    bamm:description "Value within the classification."@en;
+    bamm:exampleValue "steering wheel".
+:PartQuantityEntity a bamm:Entity;
+    bamm:name "PartQuantityEntity";
+    bamm:properties (:measurementUnit :quantityNumber);
+    bamm:preferredName "Part quantity entity"@en;
+    bamm:description "The entity encapsulating the properties describing the quantity of a part."@en.
+:measurementUnit a bamm:Property;
+    bamm:name "measurementUnit";
+    bamm:characteristic bamm-c:UnitReference;
+    bamm:preferredName "Measurement unit"@en;
+    bamm:description "Unit of measurement for the quantity of serialized objects."@en;
+    bamm:exampleValue "litre"^^bamm:curie.
+:quantityNumber a bamm:Property;
+    bamm:name "quantityNumber";
+    bamm:characteristic :NumberOfObjects;
+    bamm:preferredName "Quantity number"@en;
+    bamm:description "The number of objects related to the measurement unit."@en;
+    bamm:exampleValue "2.5e0"^^xsd:double.
+:NumberOfObjects a bamm:Characteristic;
+    bamm:name "NumberOfObjects";
+    bamm:dataType xsd:double;
+    bamm:preferredName "Number of objects"@en;
+    bamm:description "Quantifiable number of objects in reference to the measurementUnit."@en.
