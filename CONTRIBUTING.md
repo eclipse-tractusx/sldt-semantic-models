@@ -61,9 +61,9 @@ Contact the project developers via the project's "dev" list.
 
 * https://accounts.eclipse.org/mailing-list/tractusx-dev
 
-## How to Contribute
+## License Header
 
-We are happy receiving contributions to this rpository. Please not that the repository's content is
+We are happy receiving contributions to this repository. Please note that the content of the is
 licensed under the Creative Commons Attribution 4.0 International license. Thus, it is required that
 you add a license header like the following into your model file
 
