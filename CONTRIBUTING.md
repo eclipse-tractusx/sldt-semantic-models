@@ -63,7 +63,7 @@ Contact the project developers via the project's "dev" list.
 
 ## License Header
 
-We are happy receiving contributions to this repository. Please note that the content of the is
+We are happy receiving contributions to this repository. Please note that the content of the repository is
 licensed under the Creative Commons Attribution 4.0 International license. Thus, it is required that
 you add a license header like the following into your model file
 
