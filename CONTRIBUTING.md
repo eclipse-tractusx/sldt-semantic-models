@@ -60,3 +60,25 @@ https://www.eclipse.org/projects/handbook/#resources-commit
 Contact the project developers via the project's "dev" list.
 
 * https://accounts.eclipse.org/mailing-list/tractusx-dev
+
+## License Header
+
+We are happy receiving contributions to this repository. Please note that the content of the repository is
+licensed under the Creative Commons Attribution 4.0 International license. Thus, it is required that
+you add a license header like the following into your model file
+
+```
+#######################################################################
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+```
