@@ -1,0 +1,467 @@
+#######################################################################
+# Copyright (c) 2022 Robert Bosch GmbH
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Volkswagen AG
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.fleet.diagnostic_data:1.0.0#>.
+
+:DiagnosticData a bamm:Aspect;
+    bamm:description "data model for vehicle diagnostic data suitable for mass data transfer"@en;
+    bamm:properties (:diagnosticSessions);
+    bamm:operations ();
+    bamm:events ().
+:diagnosticSessions a bamm:Property;
+    bamm:description "list of diagnostic sessions, e.g. from a list of vehicles/fleet"@en;
+    bamm:characteristic :DiagnosticSessions;
+    bamm:preferredName "Diagnostic sessions"@en.
+:DiagnosticSessions a bamm-c:List;
+    bamm:description "A list of diagnostic sessions coming from several vehicles"@en;
+    bamm:preferredName "Diagnostic sessions"@en;
+    bamm:dataType :DiagnosticSession.
+:DiagnosticSession a bamm:Entity;
+    bamm:description "One diagnostic session of one vehicle: Depending on the diagnostic software used in either workshops or over-the-air diagnostics one session can be defined differently:\n- Workshop diagnostic: Normally for each command to the diagnostic tester is a session diagnostic file created that is later send to the OEM backend system. Examples for one command: Read-out all ECUs with its DTCs or do a Software upgrade of one ECU\n- Over-the-air: E.g. one diagnostic snapshot is taken after ignition-on\n\nIn addition a list of environment conditions can be placed as well as a list of AdditionalInfos.\n\nBoth lists are on DiagnosticDataSession level because they can be valid for the whole vehicle(e.g. environment temperature) or only for a specific ECU (e.g. wheel speed sensor at ABS ECU)"@en;
+    bamm:properties (:creationDate :sessionId [
+  bamm:property :qualityTaskId;
+  bamm:optional "true"^^xsd:boolean
+] :countryCode :mileage :vehicle [
+  bamm:property :workshop;
+  bamm:optional "true"^^xsd:boolean
+] :ecuList [
+  bamm:property :dtcList;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :envConditionList;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :eventList;
+  bamm:optional "true"^^xsd:boolean
+]).
+:creationDate a bamm:Property;
+    bamm:description "date-timestamp for this session according ISO 8601 when this session was created. Depending on OEM this attribute reflects the start or end date of one diag session"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:preferredName "Creationdate"@en;
+    bamm:exampleValue "2022-02-04T14:48:54"^^xsd:dateTime.
+:sessionId a bamm:Property;
+    bamm:description "Format OEM-specific: A unique session identifier within one OEM."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Session identifier"@en;
+    bamm:exampleValue "3747429FGH382923974682".
+:qualityTaskId a bamm:Property;
+    bamm:description "A unique quality task identifier where these list of session data belongs to. Optional to ensure that also Diagnostic Data without assigned qTask can be exchanged."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Quality Task ID"@en;
+    bamm:exampleValue "BPN-811_2022_000001".
+:countryCode a bamm:Property;
+    bamm:description "country code in  ISO 3166-1 alpha-3 codes where this session took place"@en;
+    bamm:characteristic :CountryCodeTrait;
+    bamm:preferredName "Country Code"@en;
+    bamm:exampleValue "DEU".
+:mileage a bamm:Property;
+    bamm:description "current mileage counter of the car during the diagnostic session"@en;
+    bamm:characteristic :Mileage;
+    bamm:preferredName "Session mileage"@en;
+    bamm:exampleValue "23500"^^xsd:positiveInteger.
+:vehicle a bamm:Property;
+    bamm:description "vehicle that was present in the diagnostic session"@en;
+    bamm:characteristic :VehicleCharacteristic.
+:workshop a bamm:Property;
+    bamm:description "due to the fact that diagnostic over the air is also possible a Workshop Entity is optional "@en;
+    bamm:characteristic :WorkshopCharacteristic.
+:ecuList a bamm:Property;
+    bamm:description "list of ECUs that had an entry in its internal failure memory during the diagnostic session"@en;
+    bamm:characteristic :Ecus;
+    bamm:preferredName "ECU list"@en.
+:dtcList a bamm:Property;
+    bamm:description "list of diagnostic trouble codes"@en;
+    bamm:characteristic :DTCList.
+:envConditionList a bamm:Property;
+    bamm:description "A list of environment conditions: E.g. outside temperature measured by the vehicle, a specific value measured by on ECU, ...."@en;
+    bamm:characteristic :EnvironmentConditions;
+    bamm:preferredName "Environment Conditions"@en.
+:eventList a bamm:Property;
+    bamm:description "A list of additional events that were performed during one diagnostic session: Calibration event, SW update event"@en;
+    bamm:characteristic :Events;
+    bamm:preferredName "Events"@en.
+:CountryCodeTrait a bamm-c:Trait;
+    bamm-c:baseCharacteristic :CountryCodeCharacteristic;
+    bamm-c:constraint :CountryCodeRegularExpression.
+:Mileage a bamm-c:Measurement;
+    bamm:description "mileage counter of the car"@en;
+    bamm:dataType xsd:positiveInteger;
+    bamm-c:unit unit:kilometre.
+:VehicleCharacteristic a bamm:Characteristic;
+    bamm:description "describes the vehicle during the diagnostic session"@en;
+    bamm:dataType :Vehicle.
+:WorkshopCharacteristic a bamm:Characteristic;
+    bamm:description "describes the workshop in which this diagnostic session took place"@en;
+    bamm:dataType :Workshop.
+:Ecus a bamm-c:List;
+    bamm:description "A list of ECUs that have a DTC set in this diagnostic session"@en;
+    bamm:dataType :ECU.
+:DTCList a bamm-c:List;
+    bamm:description "list of DTCs"@en;
+    bamm:dataType :DiagnosticTroubleCode.
+:EnvironmentConditions a bamm-c:List;
+    bamm:description "A list of environment conditions, like surrounding temperature, rpm, ..."@en;
+    bamm:preferredName "Environment Conditions"@en;
+    bamm:dataType :EnvironmentCondition.
+:Events a bamm-c:List;
+    bamm:description "A list of additional events that were performed during one diagnostic session: Calibration event, SW update event. Here you can store all kind of events that does not belong to environment conditions or dtcs"@en;
+    bamm:dataType :Event.
+:CountryCodeCharacteristic a bamm:Characteristic;
+    bamm:description "ISO 3166-1 alpha-3 – three-letter country codes "@en;
+    bamm:preferredName "Country Code Characteristic"@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://www.iso.org/iso-3166-country-codes.html>.
+:CountryCodeRegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:description "Regular Expression that ensures a three-letter code "@en;
+    bamm:preferredName "Country Code Regular Expression"@en;
+    bamm:value "^[A-Z][A-Z][A-Z]$".
+:Vehicle a bamm:Entity;
+    bamm:description "all attributes to clearly identify the vehicle during this diagnostic session"@en;
+    bamm:properties (:anonymizedVIN [
+  bamm:property :catenaXId;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :softwareCategory;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :softwareVersion;
+  bamm:optional "true"^^xsd:boolean
+]);
+    bamm:preferredName "Vehicle"@en.
+:Workshop a bamm:Entity;
+    bamm:description "all attributes to clearly identify this workshop"@en;
+    bamm:properties (:workShopId [
+  bamm:property :catenaXId;
+  bamm:optional "true"^^xsd:boolean
+] :latitude :longitude);
+    bamm:preferredName "Workshop"@en.
+:ECU a bamm:Entity;
+    bamm:description "A single ECU that is present/has a DTC set in the diagnostic session"@en;
+    bamm:properties ([
+  bamm:property :catenaXId;
+  bamm:optional "true"^^xsd:boolean
+] :ecuSerialPartNumber :name :description :hwPartNumber :hwVersion :swPartNumber :swVersion [
+  bamm:property :assemblyPartNumber;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :assemblyPartNumberVersion;
+  bamm:optional "true"^^xsd:boolean
+] :readOutDate);
+    bamm:preferredName "ECU"@en.
+:DiagnosticTroubleCode a bamm:Entity;
+    bamm:description "diagnostic trouble codes or short DTCs are used inside ECUs to monitor failures. They were introduced for measuring vehicle emissions. Major DTCs for emissions are standardized by ISO standard ISO 15031-6:2015 - so called OBD2 standard. Over time DTCs were also introduced in other ECUs also besides engine and emission control. Many DTCs are vehicle manufacturer specific.\n"@en;
+    bamm:properties (:ecuSerialPartNumber [
+  bamm:property :dtcHexValue;
+  bamm:optional "true"^^xsd:boolean
+] :fullName :fullDescription :occurenceDateTime :state [
+  bamm:property :isMilOn;
+  bamm:optional "true"^^xsd:boolean
+] :occurenceMileage :faultPath :faultPathDescription [
+  bamm:property :type;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :occurenceCounterTotal;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :freezeFrame;
+  bamm:optional "true"^^xsd:boolean
+]);
+    bamm:preferredName "DTC"@en;
+    bamm:see <https://www.iso.org/standard/66369.html>.
+:EnvironmentCondition a bamm:Entity;
+    bamm:description "One environment condition like temperature, rpm,...\nIf the environment condition was measured on vehicle level -> ecuSerialPartNumber is empty"@en;
+    bamm:properties (:conditionId :conditionCreationDate :conditionDescription :conditionValue :measurementUnit [
+  bamm:property :ecuSerialPartNumber;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :dtcHexValue;
+  bamm:optional "true"^^xsd:boolean
+]);
+    bamm:preferredName "Environment Condition"@en.
+:Event a bamm:Entity;
+    bamm:description "If additional information/events are available during this session: This object can be used for calibration information, software updates, ...\nIf this event was measured on vehicle level -> ecuSerialPartNumber is empty"@en;
+    bamm:properties (:eventId :eventCreationDate :eventDescription :eventValue [
+  bamm:property :ecuSerialPartNumber;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :dtcHexValue;
+  bamm:optional "true"^^xsd:boolean
+]);
+    bamm:preferredName "Event"@en.
+:anonymizedVIN a bamm:Property;
+    bamm:description "OEM-specific hashed VIN; link to car data over pseydomized/hashed VIN or Catena-X unique digital twin identifier"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Anonymized VIN"@en;
+    bamm:exampleValue "3747429FGH382923974682".
+:catenaXId a bamm:Property;
+    bamm:description "A fully anonymous Catena-X identifier that is registered in C-X Digital twin registry. This proprty be used for vehicles, parts, workshops, .....\nOptional: Not always available "@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9379".
+:softwareCategory a bamm:Property;
+    bamm:description "Software category of this car during the session - only available for OEMs that have a software category on vehicle level."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Vehicle software category"@en;
+    bamm:exampleValue "TZGH64738".
+:softwareVersion a bamm:Property;
+    bamm:description "Software version of this car during the session - only available for OEMs that have a software category on vehicle level."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Vehicle software version"@en;
+    bamm:exampleValue "3.5.0001.001".
+:workShopId a bamm:Property;
+    bamm:description "OEM internal workshop ID"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "OEM Workshop ID"@en;
+    bamm:exampleValue "4563328".
+:latitude a bamm:Property;
+    bamm:description "Latitude of this workshop"@en;
+    bamm:characteristic :LatitudeTrait;
+    bamm:preferredName "Latitude"@en;
+    bamm:exampleValue "9.19968"^^xsd:float.
+:longitude a bamm:Property;
+    bamm:description "Longitude of this workshop"@en;
+    bamm:characteristic :LongitudeTrait;
+    bamm:preferredName "Longitude"@en;
+    bamm:exampleValue "48.77765"^^xsd:float.
+:ecuSerialPartNumber a bamm:Property;
+    bamm:description "serial number of ECU"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "ECU serial  part number"@en;
+    bamm:exampleValue "74343070GHKER73727".
+:name a bamm:Property;
+    bamm:description "name of ecu"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "ECU name"@en;
+    bamm:exampleValue "ABS".
+:description a bamm:Property;
+    bamm:description "long name of ecu"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "ECU description"@en;
+    bamm:exampleValue "Anti blocking control unit".
+:hwPartNumber a bamm:Property;
+    bamm:description "hardware part number of ECU"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "ECU HW part number"@en;
+    bamm:exampleValue "04C907309AE".
+:hwVersion a bamm:Property;
+    bamm:description "hardware version of ECU"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "ECU HW version"@en;
+    bamm:exampleValue "0556A".
+:swPartNumber a bamm:Property;
+    bamm:description "SW part number of this ecu"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "ECU SW part number"@en;
+    bamm:exampleValue "04C906026BH".
+:swVersion a bamm:Property;
+    bamm:description "current version of the software on this ecu"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "ECU SW version"@en;
+    bamm:exampleValue "0001".
+:assemblyPartNumber a bamm:Property;
+    bamm:description "OEM-sepcific ecu assembly from hardware and software"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "ECU assembly part number"@en;
+    bamm:exampleValue "V03935278E".
+:assemblyPartNumberVersion a bamm:Property;
+    bamm:description "OEM-sepcific ecu assembly version"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "ECU assembly part number version"@en;
+    bamm:exampleValue "0001".
+:readOutDate a bamm:Property;
+    bamm:description "Date when this ECU information was read out from the diagnostic session"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:preferredName "Read out date"@en;
+    bamm:exampleValue "2022-01-30T14:45:54"^^xsd:dateTime.
+:dtcHexValue a bamm:Property;
+    bamm:description "Hex value of this DTC"@en;
+    bamm:characteristic :FreezeFrameTrait;
+    bamm:preferredName "Hex"@en;
+    bamm:exampleValue "4337499FF".
+:fullName a bamm:Property;
+    bamm:description "combined string of DTC name  plus the so called DTC sub type or DTC failure byte. Both string values are concatenated using a \"-\" as separator.\nDTC name is: B|C|P|U + 4 hex chars\nDTC failure byte: 2 hex chars\n\nIn some rare cases this could be just a hex string"@en;
+    bamm:characteristic :FullNameTrait;
+    bamm:preferredName "DTC full name:"@en;
+    bamm:exampleValue "P0573-00".
+:fullDescription a bamm:Property;
+    bamm:description "description of DTC and failure byte. Both description strings are concatenated using a \"-\" as separator"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "DTC description"@en;
+    bamm:exampleValue "Brake Switch \"A\" Circuit High-no sub type information".
+:occurenceDateTime a bamm:Property;
+    bamm:description "date and time when the DTC occured the first time/was recorded the first time in the ECU"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:preferredName "DTC first occurence"@en;
+    bamm:exampleValue "2022-01-30T14:48:54"^^xsd:dateTime.
+:state a bamm:Property;
+    bamm:description "OEM-specific state of DTC: 0;1 (permanent/temporary/intermediate), could also be a string with permanent, temporary, intermediate, ...."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "DTC state"@en;
+    bamm:exampleValue "permanent".
+:isMilOn a bamm:Property;
+    bamm:description "describes whether this DTC set the MIL (malfunction indicator light)  in the dashboard"@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:preferredName "Is MIL On"@en;
+    bamm:exampleValue "true"^^xsd:boolean.
+:occurenceMileage a bamm:Property;
+    bamm:description "mileage in km when the DTC occurred the first time "@en;
+    bamm:characteristic :Mileage;
+    bamm:preferredName "DTC first occurence mileage"@en;
+    bamm:exampleValue "15000"^^xsd:positiveInteger.
+:faultPath a bamm:Property;
+    bamm:description "OEM-specific: Fault path for this DTC. Allows further analysis"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "DTC fault path"@en;
+    bamm:exampleValue "1000761".
+:faultPathDescription a bamm:Property;
+    bamm:description "OEM-specific description of DTC fault path"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "DTC fault path description"@en;
+    bamm:exampleValue "shortage to plus".
+:type a bamm:Property;
+    bamm:description "Indicator whether this DTC was stored as Error or Info"@en;
+    bamm:characteristic :TypeEnum;
+    bamm:preferredName "Type"@en;
+    bamm:exampleValue "Error".
+:occurenceCounterTotal a bamm:Property;
+    bamm:description "Counter how often this DTC was set in total"@en;
+    bamm:characteristic :Long;
+    bamm:preferredName "Occurence counter"@en;
+    bamm:exampleValue "10"^^xsd:long.
+:freezeFrame a bamm:Property;
+    bamm:description "freeze frame from ecu. The freeze frame records many parameters of the DTC and surrounding parameters like outside temperature when the DTC was set. It is a very long HEX string with many OEM-specific and ECU-specific content in"@en;
+    bamm:characteristic :FreezeFrameTrait;
+    bamm:preferredName "DTC freeze frame"@en;
+    bamm:exampleValue "100148340349340".
+:conditionId a bamm:Property;
+    bamm:description "OEM-specific: Primary key for this condition consists of unique identifier of env. condition and DTC"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Id"@en;
+    bamm:exampleValue "DTC1_EnvCond1".
+:conditionCreationDate a bamm:Property;
+    bamm:description "Date and time when this condition/information was created."@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:preferredName "Creation Date"@en;
+    bamm:exampleValue "2022-01-28T14:48:54"^^xsd:dateTime.
+:conditionDescription a bamm:Property;
+    bamm:description "The description of the environment condition/information"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Description"@en;
+    bamm:exampleValue "RPM".
+:conditionValue a bamm:Property;
+    bamm:description "The numeric value (if applicable) of the stored environment condition at the time of the DTC."@en;
+    bamm:characteristic :Double;
+    bamm:preferredName "Value"@en;
+    bamm:exampleValue "2000.0"^^xsd:double.
+:measurementUnit a bamm:Property;
+    bamm:description "The unit of measurement for the environment condition value."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "DTC fault path"@en;
+    bamm:exampleValue "rpm".
+:eventId a bamm:Property;
+    bamm:description "OEM-specific: Primary key for this event"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Id"@en;
+    bamm:exampleValue "ABS_CAL1234".
+:eventCreationDate a bamm:Property;
+    bamm:description "Date and time when this event was created."@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:preferredName "Creation Date"@en;
+    bamm:exampleValue "2022-01-30T14:00:00"^^xsd:dateTime.
+:eventDescription a bamm:Property;
+    bamm:description "The description of the event"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Description"@en;
+    bamm:exampleValue "Calibration of ABS ecu with calib file - see value".
+:eventValue a bamm:Property;
+    bamm:description "The value of this event."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:preferredName "Value"@en;
+    bamm:exampleValue "CAL366474-4848".
+:CatenaXIdTrait a bamm-c:Trait;
+    bamm:description "Trait to ensure data format for Catena-X ID"@en;
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm-c:baseCharacteristic :UUIDv4;
+    bamm-c:constraint :UUIDv4RegularExpression.
+:UUIDv4 a bamm:Characteristic;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:preferredName "UUIDv4"@en;
+    bamm:dataType xsd:string.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".
+:LatitudeTrait a bamm-c:Trait;
+    bamm-c:baseCharacteristic :Latitude;
+    bamm-c:constraint :ConstraintLatitude.
+:LongitudeTrait a bamm-c:Trait;
+    bamm-c:baseCharacteristic :Longitude;
+    bamm-c:constraint :ConstraintLongitude.
+:Latitude a bamm:Characteristic;
+    bamm:description "Latitude of this workshop"@en;
+    bamm:dataType xsd:float.
+:ConstraintLatitude a bamm-c:RangeConstraint;
+    bamm-c:minValue "-90.0"^^xsd:float;
+    bamm-c:maxValue "90.0"^^xsd:float;
+    bamm-c:lowerBoundDefinition bamm-c:AT_LEAST;
+    bamm-c:upperBoundDefinition bamm-c:AT_MOST.
+:Longitude a bamm:Characteristic;
+    bamm:dataType xsd:float.
+:ConstraintLongitude a bamm-c:RangeConstraint;
+    bamm-c:minValue "-180.0"^^xsd:float;
+    bamm-c:maxValue "180.0"^^xsd:float;
+    bamm-c:lowerBoundDefinition bamm-c:AT_LEAST;
+    bamm-c:upperBoundDefinition bamm-c:AT_MOST.
+:Double a bamm:Characteristic;
+    bamm:description "Double"@en;
+    bamm:preferredName "Double"@en;
+    bamm:dataType xsd:double.
+:FreezeFrameTrait a bamm-c:Trait;
+    bamm-c:baseCharacteristic :HEXString;
+    bamm-c:constraint :HexRegex.
+:HEXString a bamm:Characteristic;
+    bamm:description "allows characters \"A\"-\"F\", \"a\"-\"f\" and \"0\"-\"9\" in this string"@en;
+    bamm:dataType xsd:string.
+:HexRegex a bamm-c:RegularExpressionConstraint;
+    bamm:description "a freeze frame contains only hex chars 0-9, A-F, a-f. Restricted to 8000 chars\n"@en;
+    bamm:value "^[0-9,A-F,a-f]$".
+:FullNameTrait a bamm-c:Trait;
+    bamm-c:baseCharacteristic :FullDTCCharacteristic;
+    bamm-c:constraint :FullDTCRegEx.
+:TypeEnum a bamm-c:Enumeration;
+    bamm:dataType xsd:string;
+    bamm-c:values ("Error" "Info").
+:Long a bamm:Characteristic;
+    bamm:dataType xsd:long.
+:FullDTCCharacteristic a bamm:Characteristic;
+    bamm:description "DTC-FaultByte like P0573-00"@en;
+    bamm:dataType xsd:string.
+:FullDTCRegEx a bamm-c:RegularExpressionConstraint;
+    bamm:description "DTC regular expression to ensure B|C|U|P followed by 4 hex chars followed by \"-\" followed by 2 hex chars"@en;
+    bamm:value "^[B|C|P|U]{1}[0-9,A-F,a-f]{4}[-]{1}[0-9,A-F,a-f]{2}$".
