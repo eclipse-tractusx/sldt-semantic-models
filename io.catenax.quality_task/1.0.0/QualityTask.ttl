@@ -1,0 +1,117 @@
+#######################################################################
+# Copyright (c) 2022 Robert Bosch GmbH
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Volkswagen AG
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.quality_task:1.0.0#>.
+
+:QualityTask a bamm:Aspect;
+    bamm:preferredName "QualityTask"@en;
+    bamm:description "A quality task (qTask) defines why data is exchanged between 2 or more companies and what insights should be generated out of the transferred data. In addition there is a flag, what happens with the transferred data when this qTask is closed"@en;
+    bamm:properties (:qualityTaskId :status :creationDate :title :description :component :dataDeletion :listOfCompanies);
+    bamm:operations ();
+    bamm:events ().
+:qualityTaskId a bamm:Property;
+    bamm:preferredName "q-Task ID"@en;
+    bamm:description "A unique quality task identifier where these list of parts analysis belong to."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BPN-811_2022_000001".
+:status a bamm:Property;
+    bamm:preferredName "Status"@en;
+    bamm:description "Status of this quality task"@en;
+    bamm:characteristic :StatusCharacteristic;
+    bamm:exampleValue "new".
+:creationDate a bamm:Property;
+    bamm:preferredName "Creation Date"@en;
+    bamm:description "Timestamp when this qTask was created"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2022-11-11"^^xsd:dateTime.
+:title a bamm:Property;
+    bamm:preferredName "Title"@en;
+    bamm:description "Working title for this qTask"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Evaluation of ComponentA in CarmodelB in country DE".
+:description a bamm:Property;
+    bamm:preferredName "Description"@en;
+    bamm:description "Description what should be done in this qTask"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Please evaluate why there is a high number of customer complaints with ComponentA if the vehicle is between 10000-30000km.".
+:component a bamm:Property;
+    bamm:preferredName "Component"@en;
+    bamm:description "The component that should be investigated in this qTask."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "ComponentA".
+:dataDeletion a bamm:Property;
+    bamm:preferredName "Deletion policy"@en;
+    bamm:description "What should be done with the data after this qTask is closed"@en;
+    bamm:characteristic :DataDeletionEnumeration;
+    bamm:exampleValue "delete-data-after-closing".
+:listOfCompanies a bamm:Property;
+    bamm:preferredName "List of companies"@en;
+    bamm:description "A list of companies involved in this quality task"@en;
+    bamm:characteristic :ListOfCompanies.
+:DataDeletionEnumeration a bamm-c:Enumeration;
+    bamm:preferredName "Data deletion"@en;
+    bamm:description "Enumeration of possible data deletions entries."@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("delete-data-after-closing" "no-deletion-after-closing").
+:ListOfCompanies a bamm-c:List;
+    bamm:preferredName "Companies"@en;
+    bamm:description "A list of all companies involved in this qTask"@en;
+    bamm:dataType :Company.
+:Company a bamm:Entity;
+    bamm:preferredName "Company"@en;
+    bamm:description "One company involved in this qTask"@en;
+    bamm:properties (:cxBPN :name :email).
+:cxBPN a bamm:Property;
+    bamm:preferredName "CX Business partner number"@en;
+    bamm:description "Catena-X business partner number of this company"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BPN-811".
+:name a bamm:Property;
+    bamm:preferredName "Company name"@en;
+    bamm:description "Name of the comapny"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Company A".
+:StatusCharacteristic a bamm-c:Enumeration;
+    bamm:preferredName "Status Characteristic"@en;
+    bamm:description "Enumeration of the different status values"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("new" "in progress" "completed" "closed").
+:email a bamm:Property;
+    bamm:name "email";
+    bamm:preferredName "email"@en;
+    bamm:description "An email address"@en;
+    bamm:characteristic :EMailTrait;
+    bamm:exampleValue "test.mail@example.com".
+:EMailTrait a bamm-c:Trait;
+     bamm:name "SupplierMailTrait";
+     bamm-c:baseCharacteristic bamm-c:Text;
+     bamm-c:constraint :EMailConstraint.
+:EMailConstraint a bamm-c:RegularExpressionConstraint;
+     bamm:name "EMailConstraint";
+     bamm:value "^[a-zA-Z0-9.!#$%&’*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+     bamm:description "Regular expression for mail address as defined in W3C (see https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address)"@en.
