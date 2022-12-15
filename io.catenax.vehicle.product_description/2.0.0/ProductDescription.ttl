@@ -1,0 +1,462 @@
+#######################################################################
+# Copyright (c) 2022 Allgemeine Deutsche Automobil-Club (ADAC) e.V
+# Copyright (c) 2022 Badische Anilin und Sodafabrik societates Europaea
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. für ihre Institute IPK und IPK
+# Copyright (c) 2022 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Robert Bosch GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 Volkswagen AG
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the 
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license, 
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.vehicle.product_description:2.0.0#>.
+
+:ProductDescription a bamm:Aspect;
+    bamm:preferredName "Vehicle master data"@en;
+    bamm:description "Master data of one vehicle - from an end customer view. So this model represents the vehicle as it was sold to the customer. All entities and properties are immutable over the lifetime of the vehicle."@en;
+    bamm:properties (:oem :vehicle :body :equipments :production :sale :engines :fuel);
+    bamm:operations ();
+    bamm:events ().
+:oem a bamm:Property;
+    bamm:preferredName "OEM"@en;
+    bamm:description "original equipment manufacturer"@en;
+    bamm:characteristic :OEMCharacteristic.
+:vehicle a bamm:Property;
+    bamm:preferredName "vehicle"@en;
+    bamm:description "vehicle: can be a car, bus, truck..."@en;
+    bamm:characteristic :VehicleCharacteristic.
+:body a bamm:Property;
+    bamm:preferredName "vehicle body"@en;
+    bamm:description "vehicle body"@en;
+    bamm:characteristic :BodyCharacteristic.
+:equipments a bamm:Property;
+    bamm:preferredName "Equipments"@en;
+    bamm:description "Equipments"@en;
+    bamm:characteristic :Equipments.
+:production a bamm:Property;
+    bamm:preferredName "Production"@en;
+    bamm:description "bundles production-related information"@en;
+    bamm:characteristic :ProductionCharacteristic.
+:sale a bamm:Property;
+    bamm:preferredName "Sale"@en;
+    bamm:description "bundles all sales related information"@en;
+    bamm:characteristic :SaleCharacteristic.
+:engines a bamm:Property;
+    bamm:preferredName "Engines"@en;
+    bamm:description "List of installed engines in the vehicle"@en;
+    bamm:characteristic :Engines.
+:fuel a bamm:Property;
+    bamm:preferredName "Fuel"@en;
+    bamm:description "the fuel type of the vehicle"@en;
+    bamm:characteristic :FuelCharacteristic.
+:OEMCharacteristic a bamm:Characteristic;
+    bamm:preferredName "OEM Characteristic"@en;
+    bamm:description "OEMCharacteristic"@en;
+    bamm:dataType :OriginalEquipmentManufacturer.
+:VehicleCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Vehicle Characteristic"@en;
+    bamm:description "bundles all general vehicle data"@en;
+    bamm:dataType :Vehicle.
+:BodyCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Body Characteristic"@en;
+    bamm:description "bundles all body-related information"@en;
+    bamm:dataType :Body.
+:Equipments a bamm-c:List;
+    bamm:preferredName "Equipment List"@en;
+    bamm:description "list of equipments installed in the vehicle"@en;
+    bamm:dataType :Equipment.
+:ProductionCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Production Characteristic"@en;
+    bamm:description "Production Characteristic"@en;
+    bamm:dataType :Production.
+:SaleCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Sale Characteristic"@en;
+    bamm:description "Sale Characteristic"@en;
+    bamm:dataType :Sale.
+:Engines a bamm-c:List;
+    bamm:preferredName "Engines"@en;
+    bamm:description "A list of all installed engines in the vehicle"@en;
+    bamm:dataType :Engine.
+:FuelCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Fuel Characteristic"@en;
+    bamm:description "FuelCharacteristic"@en;
+    bamm:dataType :Fuel.
+:OriginalEquipmentManufacturer a bamm:Entity;
+    bamm:preferredName "OEM"@en;
+    bamm:description "describes one OEM to which this vehicle belongs to"@en;
+    bamm:properties (:wmiCode :wmiDescription :cxBPN).
+:Vehicle a bamm:Entity;
+    bamm:preferredName "Vehicle"@en;
+    bamm:description "Vehicle data"@en;
+    bamm:properties (:anonymizedVin [
+  bamm:property :catenaXId;
+  bamm:optional "true"^^xsd:boolean
+] :vehicleSeries :modelDescription :modelIdentifier :class :steeringPos :emptyWeight :driveType :systemPower [
+  bamm:property :hybridizationType;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :softwareCategory;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :softwareVersion;
+  bamm:optional "true"^^xsd:boolean
+]).
+:Body a bamm:Entity;
+    bamm:preferredName "Body"@en;
+    bamm:description "body related data"@en;
+    bamm:properties (:numberOfDoors :colorId :colorDescription [
+  bamm:property :kbaBody;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :nhtsaBody;
+  bamm:optional "true"^^xsd:boolean
+]).
+:Equipment a bamm:Entity;
+    bamm:preferredName "Equipment"@en;
+    bamm:description "one optional equipment in car"@en;
+    bamm:properties (:equipmentIdentifier :equipmentDescription :group).
+:Production a bamm:Entity;
+    bamm:preferredName "Production"@en;
+    bamm:description "production-related data"@en;
+    bamm:properties (:productionDate :plantIdentifier :plantDescription).
+:Sale a bamm:Entity;
+    bamm:preferredName "Sale"@en;
+    bamm:description "all sale-related data"@en;
+    bamm:properties (:soldDate :countryCode :countryGroup).
+:Fuel a bamm:Entity;
+    bamm:preferredName "Fuel"@en;
+    bamm:description "fuel-related data"@en;
+    bamm:properties ([
+  bamm:property :kbaFuelType;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :nhtsaFuelType;
+  bamm:optional "true"^^xsd:boolean
+]).
+:wmiCode a bamm:Property;
+    bamm:preferredName "WMI Code"@en;
+    bamm:description "short name/code of vehicle manufacturer according  to world manufacturer information(wmi). The wmiCode are the first 3 chars of the vehicle identification number.\nA list of in NHTSA registered wmiCodes can be found in attribute Wmi in table [vPICList_lite].[dbo].[Wmi] "@en;
+    bamm:characteristic :OemShortNameTrait;
+    bamm:exampleValue "WBA";
+    bamm:see <https://vpic.nhtsa.dot.gov/>.
+:wmiDescription a bamm:Property;
+    bamm:preferredName "OEM name"@en;
+    bamm:description "name of OEM according NHTSA or other authorities. Has to be compliant with/linked wmiCode attribute.\nFor NHTSA: name of table [vPICList_lite].[dbo].[Manufacturer]"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BMW AG";
+    bamm:see <https://vpic.nhtsa.dot.gov/>.
+:cxBPN a bamm:Property;
+    bamm:preferredName "CX Business partner number"@en;
+    bamm:description "Catena-X business partner number of this company"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BPN-811".
+:anonymizedVin a bamm:Property;
+    bamm:preferredName "Anonymized VIN"@en;
+    bamm:description "OEM-specific hashed VIN; link to car data over pseydomized/hashed VIN or Catena-X unique digital twin identifier"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "3747429FGH382923974682".
+:catenaXId a bamm:Property;
+    bamm:preferredName "Vehicle Catena-X Identifier"@en;
+    bamm:description "A fully anonymous Catena-X identifier that is registered in C-X Digital twin registry. Can be used for vehicles, parts, workshops, ....."@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9379".
+:vehicleSeries a bamm:Property;
+    bamm:preferredName "Vehicle series"@en;
+    bamm:description "vehicle series, normally one level above model. E.g. vehicle series =\"Golf\", vehicle model=\"Golf VIII\""@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Golf".
+:modelDescription a bamm:Property;
+    bamm:preferredName "Vehicle model"@en;
+    bamm:description "Detail vehicle model like \"Golf VIII\""@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Golf VIII".
+:modelIdentifier a bamm:Property;
+    bamm:preferredName "Model identifier"@en;
+    bamm:description "OEM-specific model identifier or OEM-specific project name"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "689-G8".
+:class a bamm:Property;
+    bamm:preferredName "Vehicle class"@en;
+    bamm:description "class of the vehicle"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "A".
+:steeringPos a bamm:Property;
+    bamm:preferredName "Vehicle steering pos"@en;
+    bamm:description "position of vehicle steering wheel, Left or right"@en;
+    bamm:characteristic :VehicleSteeringPos;
+    bamm:exampleValue "Left-Hand Drive(LHD)".
+:emptyWeight a bamm:Property;
+    bamm:preferredName "vehicle empty weight"@en;
+    bamm:description "The empty weight of the vehicle in kg as specified"@en;
+    bamm:characteristic :Weight;
+    bamm:exampleValue "2000"^^xsd:double.
+:driveType a bamm:Property;
+    bamm:preferredName "Drive type"@en;
+    bamm:description "drive type of a vehicle according enumeration"@en;
+    bamm:characteristic :DriveTypeNHTSA;
+    bamm:exampleValue "Front-Wheel Drive(FWD)".
+:systemPower a bamm:Property;
+    bamm:preferredName "Complete system power"@en;
+    bamm:description "Complete power of this vehicle in KW"@en;
+    bamm:characteristic :EnginePower;
+    bamm:exampleValue "110"^^xsd:integer.
+:hybridizationType a bamm:Property;
+    bamm:preferredName "Hybridization"@en;
+    bamm:description "Kind of the hybridization in this vehicle"@en;
+    bamm:characteristic :Hybridization;
+    bamm:exampleValue "no hybrid".
+:softwareCategory a bamm:Property;
+    bamm:preferredName "Software category"@en;
+    bamm:description "Some OEMs brings in the software as complete package for all systems:\nTo identify this software: software category and software version is needed.\nSoftware category when this car was built"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "TZGH64738".
+:softwareVersion a bamm:Property;
+    bamm:preferredName "Software version"@en;
+    bamm:description "Some OEMs brings in the software as complete package for all systems:\nTo identify this software: software category and software version is needed.\nSoftware version when this car was built\n"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "3.4.9837.567".
+:numberOfDoors a bamm:Property;
+    bamm:preferredName "Number of doors"@en;
+    bamm:description "describes the number of doors of a vehicle"@en;
+    bamm:characteristic :PositiveNumber;
+    bamm:exampleValue "5"^^xsd:positiveInteger.
+:colorId a bamm:Property;
+    bamm:preferredName "Color identifier"@en;
+    bamm:description "Colour code describes the code of a specific colour of one vehicle."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "LY7W ".
+:colorDescription a bamm:Property;
+    bamm:preferredName "Color description"@en;
+    bamm:description "Colour name describes the colour of the colour code as a written word."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Light grey".
+:kbaBody a bamm:Property;
+    bamm:preferredName "Body variant(KBA)"@en;
+    bamm:description "vehicle variant - Body shapes according German KBA"@en;
+    bamm:characteristic :KbaVariant;
+    bamm:exampleValue "SUV".
+:nhtsaBody a bamm:Property;
+    bamm:preferredName "Body variant(NHTSA)"@en;
+    bamm:description "vehicle variant - Body shapes according US NHTSA"@en;
+    bamm:characteristic :NhtsaVariant;
+    bamm:exampleValue "Sedan".
+:equipmentIdentifier a bamm:Property;
+    bamm:preferredName "Equipment Id"@en;
+    bamm:description "The identifier of a specific equipment"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "S248A".
+:equipmentDescription a bamm:Property;
+    bamm:preferredName "Equipment description"@en;
+    bamm:description "The equipment variants description"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Seat heating front".
+:group a bamm:Property;
+    bamm:preferredName "Equipment group"@en;
+    bamm:description "grouping the special equipments into categories like Interior"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Interior".
+:productionDate a bamm:Property;
+    bamm:preferredName "Vehicle production Date"@en;
+    bamm:description "production date of the vehicle"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2018-01-15"^^xsd:dateTime.
+:plantIdentifier a bamm:Property;
+    bamm:preferredName "Production plant id"@en;
+    bamm:description "plant id of the final assembly of the vehicle"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "4711".
+:plantDescription a bamm:Property;
+    bamm:preferredName "Vehicle production plant name"@en;
+    bamm:description "long name of the production plant of the vehicle"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Wolfsburg".
+:soldDate a bamm:Property;
+    bamm:preferredName "Vehicle sold date:"@en;
+    bamm:description "Sold date of the vehicle = warranty start date for this vehicle"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2018-02-03"^^xsd:dateTime.
+:countryCode a bamm:Property;
+    bamm:preferredName "Vehicle sold country"@en;
+    bamm:description "vehicle sold country in ISO 8601 alpha 3"@en;
+    bamm:characteristic :CountryCodeTrait;
+    bamm:exampleValue "DEU".
+:countryGroup a bamm:Property;
+    bamm:preferredName "Vehicle sold region"@en;
+    bamm:description "region where this car was sold"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Europe".
+:kbaFuelType a bamm:Property;
+    bamm:preferredName "Fuel type(KBA)"@en;
+    bamm:description "description of the fuel according german KBA"@en;
+    bamm:characteristic :FuelKBA;
+    bamm:exampleValue "Diesel".
+:nhtsaFuelType a bamm:Property;
+    bamm:preferredName "Fuel type(NHTSA)"@en;
+    bamm:description "description of the fuel according US NHTSA"@en;
+    bamm:characteristic :FuelNHTSA;
+    bamm:exampleValue "Diesel".
+:OemShortNameTrait a bamm-c:Trait;
+    bamm-c:baseCharacteristic :WorldManufacturerInformation;
+    bamm-c:constraint :WorldManufacturerInformationCodeLength.
+:CatenaXIdTrait a bamm-c:Trait;
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm:description "Trait to ensure data format for Catena-X ID"@en;
+    bamm-c:baseCharacteristic :UUIDv4;
+    bamm-c:constraint :UUIDv4RegularExpression.
+:VehicleSteeringPos a bamm-c:Enumeration;
+    bamm:preferredName "Vehicle steering position(NHTSA)"@en;
+    bamm:description "vehicle steering position enumeration from NHTSA, see table [vPICList_lite].[dbo].[Steering]"@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://vpic.nhtsa.dot.gov/api/>;
+    bamm-c:values ("Left-Hand Drive (LHD)" "Right-Hand Drive (RHD)").
+:Weight a bamm-c:Measurement;
+    bamm:preferredName "Weight"@en;
+    bamm:description "weight of an object"@en;
+    bamm:dataType xsd:double;
+    bamm-c:unit unit:kilogram.
+:DriveTypeNHTSA a bamm-c:Enumeration;
+    bamm:preferredName "Drive type(NHTSA)"@en;
+    bamm:description "enumeration of drive type according NHTSA, table [vPICList_lite].[dbo].[DriveType]"@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://vpic.nhtsa.dot.gov/api/>;
+    bamm-c:values ("All-Wheel Drive(AWD)" "Front-Wheel Drive(FWD)" "Rear-Wheel Drive(RWD)").
+:EnginePower a bamm-c:Measurement;
+    bamm:preferredName "Engine Power"@en;
+    bamm:description "engine power expressed in kilowatt"@en;
+    bamm:dataType xsd:integer;
+    bamm-c:unit unit:kilowatt.
+:Hybridization a bamm-c:Enumeration;
+    bamm:preferredName "Hybridization"@en;
+    bamm:description "Enum of possible hybridization values"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("battery electric vehicle" "hybrid electric vehicle" "no hybrid" "plugin hybrid electric vehicle" "range extender").
+:PositiveNumber a bamm:Characteristic;
+    bamm:dataType xsd:positiveInteger.
+:KbaVariant a bamm-c:Enumeration;
+    bamm:preferredName "KBA Variant"@en;
+    bamm:description "Current version of the Enumeration is sub-set of list defined from the German Federal Office for motor vehicles. "@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("Limousine" "Schräghecklimousine" "Kombilimousine" "Coupé" "Kabrio-Limousine" "Cabrio-Limousine" "Mehrzweckfahrzeug" "Pkw-Pick-up" "Van" "Pick-up").
+:NhtsaVariant a bamm-c:Enumeration;
+    bamm:preferredName "NHTSA Variant"@en;
+    bamm:description "Enumeration comming from NHTSA offline database vpic, table [vPICList_lite].[dbo].[BodyStyle]"@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://vpic.nhtsa.dot.gov/api/>;
+    bamm-c:values ("Cargo Van" "Convertible" "Cabriolet" "Coupe" "Crossover Utility Vehicle(CUV)" "Hatchback" "Liftback" "Notchback" "Limousine" "Low Speed Vehicle(LSV)" "Neighborhood Electric Vehicle(NEV)" "Minivan" "Pickup" "Roadster" "Sedan" "Saloon" "Sport Utility Truck(SUT)" "Sport Utility Vehicle(SUV)" "Multi-Purpose Vehicle(MPV)" "Van" "Wagon").
+:CountryCodeTrait a bamm-c:Trait;
+    bamm-c:baseCharacteristic :CountryCodeCharacteristic;
+    bamm-c:constraint :CountryCodeRegularExpression.
+:Engine a bamm:Entity;
+    bamm:preferredName "Engine Entity"@en;
+    bamm:description "Describing one installed engine"@en;
+    bamm:properties (:engineId :engineDescription :engineSeries :serialNumber [
+  bamm:property :size;
+  bamm:optional "true"^^xsd:boolean
+] :power :engineProductionDate :installDate).
+:engineId a bamm:Property;
+    bamm:preferredName "Engine ID:"@en;
+    bamm:description "OEM-specific identifier/type of the installed engine"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "CKBY".
+:engineDescription a bamm:Property;
+    bamm:preferredName "Engine Description"@en;
+    bamm:description "description of the engine"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "2.0 TDI".
+:engineSeries a bamm:Property;
+    bamm:preferredName "Vehicle engine series"@en;
+    bamm:description "engine series"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "EA189".
+:serialNumber a bamm:Property;
+    bamm:preferredName "Engine serial number"@en;
+    bamm:description "serial number of the installed engine"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "3434937GJJG3738".
+:size a bamm:Property;
+    bamm:preferredName "Engine size"@en;
+    bamm:description "Cubic capacity in a combustion engine  - not available in battery-electric vehicles"@en;
+    bamm:characteristic :CubicCapacity;
+    bamm:exampleValue "1968"^^xsd:integer.
+:power a bamm:Property;
+    bamm:preferredName "Engine power"@en;
+    bamm:description "engine power is the power that an engine can put out"@en;
+    bamm:characteristic :EnginePower;
+    bamm:exampleValue "110"^^xsd:integer.
+:engineProductionDate a bamm:Property;
+    bamm:preferredName "Engine production date"@en;
+    bamm:description "date when the engine was produced"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2017-10-20"^^xsd:dateTime.
+:installDate a bamm:Property;
+    bamm:preferredName "Engine install date"@en;
+    bamm:description "date when the engine was installed"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2018-01-10"^^xsd:dateTime.
+:CubicCapacity a bamm-c:Measurement;
+    bamm:preferredName "Cubic Capacity"@en;
+    bamm:description "cubic capacity of the engine"@en;
+    bamm:dataType xsd:integer;
+    bamm-c:unit unit:cubicCentimetre.
+:FuelKBA a bamm-c:Enumeration;
+    bamm:preferredName "Fuel type (KBA)"@en;
+    bamm:description "enumeration of possible fuel types of a vehicle according german KBA"@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://www.kba.de/SharedDocs/Downloads/DE/SV/sv221_m1_schad_pdf.pdf>;
+    bamm-c:values ("Unbekannt" "Diesel" "Benzin" "Vielstoff" "Elektro" "Flüssiggas" "Benzin/Flüssiggas" "Benzin/komp.Erdgas" "Hybr.Benzin/E" "Erdgas NG" "Hybr.Diesel/E" "Wasserstoff" "Hybr.Wasserst./E" "Wasserstoff/Benzin" "Wasserst./Benzin/E" "BZ/Wasserstoff" "BZ/Benzin" "BZ/Methanol" "BZ/Ethanol" "Hybr.Vielstoff/E" "Methan" "Benzin/Methan" "Hybr.Erdgas/E" "Benzin/Ethanol" "Hybr.Flüssiggas/E" "Hybr.B/E ext.aufl." "Hybr.D/E ext.aufl." "Hybr.LPG/E ext.aufl." "Hybr.W/E ext.aufl." "Hybr.V/E ext.aufl." "Hybr.NG/E ext.aufl." "Hybr.Wod.B/Eext.aufl" "Wasserstoff/NG" "Hybr.W/NG/E ext.aufl" "Ethanol" "Hybr.BZ/W/E" "Hybr.BZ/W/E ext. aufl." "Zweistoff LNG/Diesel" "Verflüssigtes Erdgas (LNG)" "Andere").
+:FuelNHTSA a bamm-c:Enumeration;
+    bamm:preferredName "Fuel type (NHTSA)"@en;
+    bamm:description "enumeration from NHTSA vpic database, table [vPICList_lite].[dbo].[FuelType]"@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://vpic.nhtsa.dot.gov/api/>;
+    bamm-c:values ("Compressed Hydrogen/Hydrogen" "Compressed Natural Gas(CNG)" "Diesel" "Electric" "Ethanol(E85)" "Flexible Fuel Vehicle(FFV)" "Fuel Cell" "Gasoline" "Liquefied Natural Gas(LNG)" "Liquefied Petroleum Gas(propane or LPG)" "Methanol(M85)" "Natural Gas" "Neat Ethanol(E100)" "Neat Methanol(M100)" "Unknown").
+:WorldManufacturerInformation a bamm:Characteristic;
+    bamm:description "The wmiCode are the first 2 or 3 chars of a vehicle identification number (VIN)"@en;
+    bamm:dataType xsd:string.
+:WorldManufacturerInformationCodeLength a bamm-c:LengthConstraint;
+    bamm:description "Restricts the length of wmiCode to exactly 3 chars"@en;
+    bamm:see <https://vpic.nhtsa.dot.gov/>;
+    bamm-c:minValue "3"^^xsd:nonNegativeInteger;
+    bamm-c:maxValue "3"^^xsd:nonNegativeInteger.
+:CountryCodeCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Country Code Characteristic"@en;
+    bamm:description "ISO 3166-1 alpha-3 – three-letter country codes "@en;
+    bamm:dataType xsd:string.
+:CountryCodeRegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Country Code Regular Expression"@en;
+    bamm:description "Regular Expression that ensures a three-letter code "@en;
+    bamm:see <https://www.iso.org/iso-3166-country-codes.html>;
+    bamm:value "^[A-Z][A-Z][A-Z]$".
+:UUIDv4 a bamm:Characteristic;
+    bamm:preferredName "UUIDv4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".
