@@ -1,0 +1,232 @@
+#######################################################################
+# Copyright (c) 2022 BASF SE
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.fleet.claim_data:1.0.0#>.
+
+:ClaimData a bamm:Aspect;
+    bamm:preferredName "ClaimData"@en;
+    bamm:description "Claim data from a fleet"@en;
+    bamm:properties (:listOfClaims);
+    bamm:operations ();
+    bamm:events ().
+:listOfClaims a bamm:Property;
+    bamm:preferredName "listOfClaims"@en;
+    bamm:description "List of Claims"@en;
+    bamm:characteristic :ListOfClaims.
+:ListOfClaims a bamm-c:List;
+    bamm:preferredName "ListOfClaims"@en;
+    bamm:description "List of Claims"@en;
+    bamm:dataType :Claim.
+:Claim a bamm:Entity;
+    bamm:preferredName "Text"@en;
+    bamm:description "everything to describe a claim"@en;
+    bamm:properties ([
+  bamm:property :listOfDiagnosticSessionId;
+  bamm:optional "true"^^xsd:boolean
+] :repairMileage :repairDate :technicianComment [
+  bamm:property :customerComment;
+  bamm:optional "true"^^xsd:boolean
+] :claimId :vehicleIdentifiers :listOfParts :qualityTaskId [
+  bamm:property :damageCode;
+  bamm:optional "true"^^xsd:boolean
+]).
+:listOfDiagnosticSessionId a bamm:Property;
+    bamm:preferredName "ListOfDiagnosticSessionId"@en;
+    bamm:description "references to a list of diagnostic session IDs"@en;
+    bamm:characteristic :ListOfDiagnosticSessions;
+    bamm:exampleValue "20221205-04".
+:repairMileage a bamm:Property;
+    bamm:preferredName "Repair mileage"@en;
+    bamm:description "mileage of the car when the claim was reported"@en;
+    bamm:characteristic :Mileage;
+    bamm:exampleValue "10251"^^xsd:positiveInteger.
+:repairDate a bamm:Property;
+    bamm:preferredName "RepairDate"@en;
+    bamm:description "references the date when claim was initially reported"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2022-02-04T14:48:54"^^xsd:dateTime.
+:technicianComment a bamm:Property;
+    bamm:preferredName "TechnicianComment"@en;
+    bamm:description "short description of the claim from the technicians"@en;
+    bamm:characteristic bamm-c:MultiLanguageText;
+    bamm:exampleValue "Lenkung ist defekt"^^rdf:langString.
+:customerComment a bamm:Property;
+    bamm:preferredName "CustomerComment"@en;
+    bamm:description "short description of the claim from customer view"@en;
+    bamm:characteristic bamm-c:MultiLanguageText;
+    bamm:exampleValue "Lenkung ist defekt"^^rdf:langString.
+:claimId a bamm:Property;
+    bamm:preferredName "ClaimID"@en;
+    bamm:description "Claim ID: Unique for each OEM"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "a214-13d6".
+:vehicleIdentifiers a bamm:Property;
+    bamm:preferredName "vehicle identifiers"@en;
+    bamm:description "one single vehicle"@en;
+    bamm:characteristic :VehicleIdentifiersCharacteristic.
+:listOfParts a bamm:Property;
+    bamm:preferredName "ListOfParts"@en;
+    bamm:description "a list of parts which will be replaced or repaired"@en;
+    bamm:characteristic :ListOfPartsCharacteristic.
+:damageCode a bamm:Property;
+    bamm:preferredName "DamageCode"@en;
+    bamm:description "OEM-specific damage code"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Lenkmuffe".
+:ListOfDiagnosticSessions a bamm-c:List;
+    bamm:preferredName "List of diagnostic Sessions"@en;
+    bamm:description "references to a list of diagnostic session IDs - only present if matching between diag session and claim is possible"@en;
+    bamm-c:elementCharacteristic bamm-c:Text.
+:Mileage a bamm-c:Measurement;
+    bamm:preferredName "Mileage"@en;
+    bamm:dataType xsd:positiveInteger;
+    bamm-c:unit unit:kilometre.
+:VehicleIdentifiersCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Vehicle"@en;
+    bamm:description "one single vehicle"@en;
+    bamm:dataType :VehicleIdentifiers.
+:ListOfPartsCharacteristic a bamm-c:SingleEntity;
+    bamm:preferredName "ListOfPartsCharacteristic"@en;
+    bamm:description "a list of parts"@en;
+    bamm:dataType :ClaimedPart.
+:VehicleIdentifiers a bamm:Entity;
+    bamm:preferredName "Vehicle identifiers"@en;
+    bamm:description "one single vehicle"@en;
+    bamm:properties ([
+  bamm:property :vehicleCatenaXId;
+  bamm:optional "true"^^xsd:boolean
+] :anonymizedVIN).
+:ClaimedPart a bamm:Entity;
+    bamm:preferredName "Part"@en;
+    bamm:description "one specific part"@en;
+    bamm:properties (:isPartReplaced :isPartCausal [
+  bamm:property :amountOfReplacedParts;
+  bamm:optional "true"^^xsd:boolean
+] :replacedPart :sparePart).
+:vehicleCatenaXId a bamm:Property;
+    bamm:preferredName "vehicleCatenaXId"@en;
+    bamm:description "Catena-X car ID /digital twin of car"@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:exampleValue "580d3adf-1981-44a0-a214".
+:anonymizedVIN a bamm:Property;
+    bamm:preferredName "Anonymized Vin"@en;
+    bamm:description "OEM-specific hashed VIN; link to car data over pseydomized/hashed VIN or Catena-X unique digital twin identifier"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "ABC20654378784512".
+:isPartReplaced a bamm:Property;
+    bamm:preferredName "IsPartReplaced"@en;
+    bamm:description "flag is set if part was replaced\nTrue: replaced\nFalse: not replaced"@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "True"^^xsd:boolean.
+:isPartCausal a bamm:Property;
+    bamm:preferredName "IsPartCausal"@en;
+    bamm:description "flag set to True if part was causing the problem\nTrue: part caused the problem\nFalse: part didn't cause the problem\n"@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "True"^^xsd:boolean.
+:amountOfReplacedParts a bamm:Property;
+    bamm:preferredName "AmountOfReplacedParts"@en;
+    bamm:description "counter for non-serial parts which have been replaced"@en;
+    bamm:characteristic :AmountOfReplacedPartsCharacteristic;
+    bamm:exampleValue "2"^^xsd:nonNegativeInteger.
+:replacedPart a bamm:Property;
+    bamm:preferredName "ReplacedPart"@en;
+    bamm:description "the part which was affected and replaced"@en;
+    bamm:characteristic :PartCharacteristic.
+:sparePart a bamm:Property;
+    bamm:preferredName "Spare Part"@en;
+    bamm:description "the part which has been built in"@en;
+    bamm:characteristic :PartCharacteristic.
+:CatenaXIdTrait a bamm-c:Trait;
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm:description "Trait to ensure data format for Catena-X ID"@en;
+    bamm-c:baseCharacteristic :UUIDv4;
+    bamm-c:constraint :UUIDv4RegularExpression.
+:AmountOfReplacedPartsCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Amount of replaced Parts"@en;
+    bamm:description "counter for non-serial parts"@en;
+    bamm:dataType xsd:nonNegativeInteger.
+:PartCharacteristic a bamm-c:SingleEntity;
+    bamm:preferredName "Part Characteristic"@en;
+    bamm:description "the characteristics of a part"@en;
+    bamm:dataType :Part.
+:Part a bamm:Entity;
+    bamm:preferredName "Part"@en;
+    bamm:description "a generic description of part of the car"@en;
+    bamm:properties (:number :name [
+  bamm:property :serialNumber;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :catenaXId;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :supplierId;
+  bamm:optional "true"^^xsd:boolean
+]).
+:number a bamm:Property;
+    bamm:preferredName "Number"@en;
+    bamm:description "OEM specific partnumber"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "FZ206460050202212".
+:name a bamm:Property;
+    bamm:preferredName "Name"@en;
+    bamm:description "OEM specific name of the part"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Getriebe".
+:serialNumber a bamm:Property;
+    bamm:preferredName "SerialNumber"@en;
+    bamm:description "OEM serial part number of the part - only available for serial parts"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "ECU20646005020221".
+:catenaXId a bamm:Property;
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:description "The fully anonymous Catena-X ID of the part, valid for the Catena-X dataspace."@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:exampleValue "580d3adf-1981-44a0-a214-13d6ceed9379".
+:supplierId a bamm:Property;
+    bamm:preferredName "SupplierID"@en;
+    bamm:description "OEM-specific ID of the supplier that manufactured the part that was put out - available if known"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "ZF2064600502".
+:UUIDv4 a bamm:Characteristic;
+    bamm:preferredName "UUIDv4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \\\"urn:uuid:\\\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
+:qualityTaskId a bamm:Property;
+    bamm:preferredName "QualityTaskID"@en;
+    bamm:description "Reference to  Quality Task: A unique identifier. The company creating this quality task sets this identifer. The identifier should contain the BPN to make it unique inside CX network"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BPN-811_2022_000001".

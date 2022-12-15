@@ -1,0 +1,197 @@
+#######################################################################
+# Copyright (c) 2022 Robert Bosch GmbH
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Volkswagen AG
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.manufactured_parts_quality_information:1.0.0#>.
+
+:ProductionCountryCodeTrait a bamm-c:Trait;
+    bamm:preferredName "Production Country Code Trait"@en;
+    bamm:description "Trait to ensure standard data format for country code"@en;
+    bamm-c:constraint :CountryCodeRegularExpression;
+    bamm-c:baseCharacteristic :CountryCodeCharacteristic.
+:CountryCodeRegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Country Code Regular Expression"@en;
+    bamm:description "Regular Expression that ensures a three-letter code "@en;
+    bamm:value "^[A-Z][A-Z][A-Z]$".
+:CountryCodeCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Country Code Characteristic"@en;
+    bamm:description "ISO 3166-1 alpha-3 – three-letter country codes "@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://www.iso.org/iso-3166-country-codes.html>.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)";
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>.
+:UUIDv4 a bamm:Characteristic;
+    bamm:preferredName "UUIDv4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string.
+:CatenaXIdTrait a bamm-c:Trait;
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm:description "Trait to ensure data format for Catena-X ID"@en;
+    bamm-c:constraint :UUIDv4RegularExpression;
+    bamm-c:baseCharacteristic :UUIDv4.
+:manufacturerSerialPartNumber a bamm:Property;
+    bamm:preferredName "Manufacturer serial part number"@en;
+    bamm:description "Serial part number given by  the manufacturer. Not available for common parts."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "436347347.4343884384.FTG.538348".
+:nameAtManufacturer a bamm:Property;
+    bamm:preferredName "Manufacturer part name"@en;
+    bamm:description "Name of the manufactured part as given by the manufacturer."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Steering assembly".
+:ManufacturedPartsQualityInformation a bamm:Aspect;
+    bamm:preferredName "Quality information for parts"@en;
+    bamm:description "This aspect model is used to exchange manufacturing-oriented information of several parts, e.g. for quality tasks"@en;
+    bamm:properties (:listOfManufacturedParts);
+    bamm:operations ();
+    bamm:events ().
+:listOfManufacturedParts a bamm:Property;
+    bamm:preferredName "Manufactured parts"@en;
+    bamm:description "A list of manufactured parts and their porperties"@en;
+    bamm:characteristic :ListOfManufacturedParts.
+:ListOfManufacturedParts a bamm-c:List;
+    bamm:preferredName "Manufactured  Parts"@en;
+    bamm:description "A list of manufactured parts"@en;
+    bamm:dataType :ManufacturedPart.
+:catenaXId a bamm:Property;
+    bamm:preferredName "Catena-X ID"@en;
+    bamm:description "The fully anonymous Catena-X ID of the manufactured part - only available after digital twin registry is fully operational"@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9001".
+:qualityTaskId a bamm:Property;
+    bamm:preferredName "Quality Task ID"@en;
+    bamm:description "A unique quality task identifier where this manufacturing information belongs to. Optional to ensure that also data exchange without having a quality task."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BPN-811_2022_000001".
+:manufacturingInformation a bamm:Property;
+    bamm:preferredName "Manufacturing information"@en;
+    bamm:description "Collection of defined manufacturing-related properties for this part"@en;
+    bamm:characteristic :ManufacturingCharacteristic.
+:ManufacturingCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Manufacturing Characteristic"@en;
+    bamm:description "Collection of defined manufacturing-related properties for this part"@en;
+    bamm:dataType :Manufacturing.
+:Manufacturing a bamm:Entity;
+    bamm:preferredName "Manufacturing"@en;
+    bamm:description "Collection of defined manufacturing-related properties for this part"@en;
+    bamm:properties (:date :country :plantId :plantDescription :batchId [
+  bamm:property :productionLine;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :hasBeenReworked;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :numberOfConductedEOLTests;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :addtionalInformation;
+  bamm:optional "true"^^xsd:boolean
+]).
+:date a bamm:Property;
+    bamm:preferredName "Production Date"@en;
+    bamm:description "Date of manufacturing"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2022-02-04T14:48:54"^^xsd:dateTime.
+:country a bamm:Property;
+    bamm:preferredName "Country code"@en;
+    bamm:description "Country code where the part was manufactured"@en;
+    bamm:characteristic :ProductionCountryCodeTrait;
+    bamm:exampleValue "DEU".
+:plantId a bamm:Property;
+    bamm:preferredName "Plant id"@en;
+    bamm:description "Manufacturer-specific identifier of a the production plant of this part"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "00001".
+:plantDescription a bamm:Property;
+    bamm:preferredName "Plant description"@en;
+    bamm:description "Manufacturer-specific description of the production plant of this part"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Feuerbach Plant".
+:batchId a bamm:Property;
+    bamm:preferredName "Batch number"@en;
+    bamm:description "Manufacturer-specific batch identifier: In which batch was this part manufactured"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "20220204_466".
+:productionLine a bamm:Property;
+    bamm:preferredName "Production line"@en;
+    bamm:description "On which production line was this part produced"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Line_1".
+:hasBeenReworked a bamm:Property;
+    bamm:preferredName "Reworked"@en;
+    bamm:description "Indicator whether this part was reworked during manufacturing"@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "false"^^xsd:boolean.
+:numberOfConductedEOLTests a bamm:Property;
+    bamm:preferredName "Conducted EOL test"@en;
+    bamm:description "Number how often this part went through the EOL test"@en;
+    bamm:characteristic :PositiveNumber;
+    bamm:exampleValue "1"^^xsd:positiveInteger.
+:addtionalInformation a bamm:Property;
+    bamm:preferredName "Additional information"@en;
+    bamm:description "You can use this key:value list for additional properties that were not defined in this aspect model."@en;
+    bamm:characteristic :ListOfAdditionalInformation.
+:PositiveNumber a bamm:Characteristic;
+    bamm:dataType xsd:positiveInteger.
+:ListOfAdditionalInformation a bamm-c:List;
+    bamm:preferredName "Additional information list"@en;
+    bamm:dataType :AdditionalInformation.
+:AdditionalInformation a bamm:Entity;
+    bamm:preferredName "Additional information"@en;
+    bamm:description "One key:value information pair"@en;
+    bamm:properties (:key :value).
+:key a bamm:Property;
+    bamm:preferredName "Key id"@en;
+    bamm:description "Key identifier for this additional information"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Steel quality".
+:value a bamm:Property;
+    bamm:preferredName "Value"@en;
+    bamm:description "Value for this additional information"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Stainless steel".
+:ManufacturedPart a bamm:Entity;
+    bamm:preferredName "Manufactured part"@en;
+    bamm:description "Manufacturing information for one part. Important properties are standardized. Besides that there is a key:value list to exchange further non-standardized properties for this part"@en;
+    bamm:properties ([
+  bamm:property :catenaXId;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :qualityTaskId;
+  bamm:optional "true"^^xsd:boolean
+] :manufacturerId [
+  bamm:property :manufacturerSerialPartNumber;
+  bamm:optional "true"^^xsd:boolean
+] :nameAtManufacturer :manufacturingInformation).
+:manufacturerId a bamm:Property;
+    bamm:preferredName "Manufacturer ID"@en;
+    bamm:description "Identifier assigned by the manufacturer for this specific part. In case of common parts: This identifier is not unique."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "123-0.740-3434-A".
