@@ -27,7 +27,7 @@ deprecate | DEPRECATED | The version of the model has reached its end-of-life an
 The `metadata.json` is only relevant for model files on the branch `main`. All other branches are development branches, and the models from these branches or forks are therefore implicitly in status "DRAFT". 
 
 # How to contribute
-We have a governance process for the joint development of new and updated models which we describe [in more details under this link](GOVERNANCE.md). 
+We have a governance process for the joint development of new and updated models which we describe [in more details under this link](CONTRIBUTING.md). 
 
 ## Summary of Governance Process
 The governance process is **triggered by a domain expert** requesting a new model or model update. A **modeling team then reviews** the request to identify whether it is of interest for Catena-X and Tractus-X and whether there is not already another model which can solve the raised issue (indicating label **MS1-Approved**). 
