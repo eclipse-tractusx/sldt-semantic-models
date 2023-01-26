@@ -1,0 +1,65 @@
+#######################################################################
+# Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+name: 0 Governance
+
+
+on: 
+  push:
+    branches:
+      - 'main'
+  pull_request:
+
+
+jobs:
+  synchronize-models:
+    name: 00 Determine Target Environment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+     
+      - name: Check Changes
+        id: changes
+        uses: Ana06/get-changed-files@v2.2.0
+        with:
+          # Format of the steps output context.
+          # Can be 'space-delimited', 'csv', or 'json'.
+          # Default: 'space-delimited'
+          format: 'json'
+          
+      - name: validate changes from push
+        if: github.event.pusher
+        uses: ./.github/actions/validate
+        with:
+          ADDED: ${{ steps.changes.outputs.added }}
+          MODIFIED: ${{ steps.changes.outputs.modified }}
+          REMOVED:  ${{ steps.changes.outputs.removed }}
+          IS_MAIN: true
+
+      - name: validate changes from PR
+        if: github.event.pull_request
+        uses: ./.github/actions/validate
+        with:
+          ADDED: ${{ steps.changes.outputs.added }}
+          MODIFIED: ${{ steps.changes.outputs.modified }}
+      
+      - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: toArchive
