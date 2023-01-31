@@ -1,17 +1,13 @@
-#######################################################################
+#
 # Copyright (c) 2021 T-Systems International GmbH (Catena-X Consortium)
 # Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
 #
-# See the NOTICE file(s) distributed with this work for additional
-# information regarding copyright ownership.
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
 #
-# This work is made available under the terms of the
-# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
-# which is available at
-# https://creativecommons.org/licenses/by/4.0/legalcode.
+# See the LICENSE file(s) distributed with this work for
+# additional information regarding license terms.
 #
-# SPDX-License-Identifier: CC-BY-4.0
-#######################################################################
 
 name: 1 Upload
 
@@ -30,15 +26,14 @@ jobs:
     - name: set environment variables
       run: |
         echo "WORKSPACE_UPPERCASE=INT" >> $GITHUB_ENV
-
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Download artifact
       uses: actions/github-script@v6.3.3
       with:
         script: |
-          var artifacts = await github.actions.listWorkflowRunArtifacts({
+          var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
               owner: context.repo.owner,
               repo: context.repo.repo,
               run_id: ${{github.event.workflow_run.id }},
@@ -46,7 +41,7 @@ jobs:
           var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
             return artifact.name == "output"
           })[0];
-          var download = await github.actions.downloadArtifact({
+          var download = await github.rest.actions.downloadArtifact({
               owner: context.repo.owner,
               repo: context.repo.repo,
               artifact_id: matchArtifact.id,
@@ -57,7 +52,6 @@ jobs:
     - run: |
         unzip output.zip
         cat output.json
-
     - name: Fetch Access Token
       id: token_request
       env:
@@ -72,13 +66,11 @@ jobs:
         --data-urlencode client_id=$CLIENT_ID \
         --data-urlencode client_secret=$CLIENT_SECRET )
         access_token=$( echo $response | jq -r '.access_token' )
-
         if [ $access_token == null ]
         then
           echo "Error: Got empty token"
           exit 1
         fi
-
         echo "ACCESS_TOKEN=$access_token" >> $GITHUB_ENV
         
     - name: Upload
