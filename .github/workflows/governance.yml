@@ -26,6 +26,10 @@ jobs:
   synchronize-models:
     name: 00 Determine Target Environment
     runs-on: ubuntu-latest
+    outputs:
+      ADDED: ${{ steps.changes.outputs.added }}
+      MODIFIED: ${{ steps.changes.outputs.modified }}
+      REMOVED:  ${{ steps.changes.outputs.removed }}
 
     steps:
       - name: Checkout
@@ -61,3 +65,33 @@ jobs:
         with:
           name: output
           path: toArchive
+  validate-model-proposal:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request
+    name: 01 Validate new semantic model
+    needs: synchronize-models
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Install Node dependencies
+        working-directory: ./.github/actions/model-validation
+        run: npm install
+      - name: Validate semantic models
+        id: model_validation
+        uses: ./.github/actions/model-validation
+        with:
+          pr_number: ${{ github.event.number }}
+          bamm_version: 2.1.1
+          added: ${{needs.synchronize-models.outputs.ADDED}}
+          modified: ${{needs.synchronize-models.outputs.MODIFIED}}
+      - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: validation-output
+          path: output
