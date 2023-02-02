@@ -4,47 +4,93 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path')
 const { exec } = require("child_process");
+const { TIMEOUT } = require('dns');
 
 
-try {
-    var added = JSON.parse(core.getInput('added'))
-    var modified = JSON.parse(core.getInput('modified'))
-    var bammVersion = core.getInput('bamm_version')
-    var prNumber = core.getInput('pr_number')
+var bulk = JSON.parse(core.getInput('bulk'))
+var bammVersion = core.getInput('bamm_version')
+var bammSdkPath = `${__dirname}/bamm-cli-${bammVersion}.jar`;
 
-    var bammSdkPath = `${__dirname}/bamm-cli-${bammVersion}.jar`;
-    var validationOutput = []
+var added = JSON.parse(core.getInput('added'))
+var modified = JSON.parse(core.getInput('modified'))
+var prNumber = core.getInput('pr_number')
 
-    main()
-} catch (error) {
-    core.setFailed(error.message)
-}
+main()
 
 async function main() {
-    await asyncBammSdkDownload(`https://github.com/eclipse-esmf/esmf-sdk/releases/download/v${bammVersion}/bamm-cli-${bammVersion}.jar`)
+    try {
+        await asyncBammSdkDownload(`https://github.com/eclipse-esmf/esmf-sdk/releases/download/v${bammVersion}/bamm-cli-${bammVersion}.jar`)
 
-    await validateAllInputs()
+        if(bulk === false){
+            validateChanges(added, modified, prNumber)
+        } else {
+            validateAllModels()
+        }
+    } catch (error) {
+        core.setFailed(error.message)
+    }
+}
+
+async function validateAllModels() {
+    var validationResultPromises = []
+
+    gatherValidationResults('./', '.ttl', validationResultPromises)
+
+    var validationResults = await Promise.all(validationResultPromises)
+
+    var formattedOutput = await produceValidationMarkdown(validationResults)
+
+    var fullReport = `# Validation report for all models
+
+    `
+
+    formattedOutput.forEach((report) => {
+        fullReport += '\n\n' + report + '\n'
+    })
+
+    writeOutputToFilesystem(fullReport, 'full-validation-report.md')
+}
+
+async function gatherValidationResults(startPath, fileEnding, returnValue) {
+    var allFiles = fs.readdirSync(startPath)
+
+    for (file of allFiles) {
+        var fileName = path.join(startPath, file)
+
+        if(fs.lstatSync(fileName).isDirectory()) {
+            gatherValidationResults(fileName, fileEnding, returnValue)
+        } else if(fileName.endsWith(fileEnding)) {
+            returnValue.push(validateModel(fileName))
+        }
+    }
+}
+
+
+async function validateChanges(added, modified, prNumber) {
+    var validationOutput = []
+
+    await validateAllInputs(added, modified, validationOutput)
 
     console.log(validationOutput)
     
-    var output = await produceValidationMarkdown()
+    var output = await produceValidationMarkdown(validationOutput)
 
-    writeOutputToFilesystem({
+    writeOutputToFilesystem(JSON.stringify({
         comments: output,
         prNumber: prNumber
-    })
+    }), 'validation-output.json')
 }
 
-function writeOutputToFilesystem(output) {
+function writeOutputToFilesystem(output, filename) {
     const archiveDir = "output"
     if (!fs.existsSync(archiveDir)){
         fs.mkdirSync(archiveDir);
     }
 
-    fs.writeFileSync(`${archiveDir}/validation-output.json`, JSON.stringify(output))
+    fs.writeFileSync(`${archiveDir}/${filename}`, output)
 }
 
-function produceValidationMarkdown() {
+function produceValidationMarkdown(validationOutput) {
     return Promise.all(validationOutput.map(async (model) => {
         var lines = model.response.split('\n')
 
@@ -67,15 +113,12 @@ function produceValidationMarkdown() {
     }))
 }
 
-async function validateAllInputs() {
+async function validateAllInputs(added, modified, validationOutput) {
     return Promise.all(
         added.concat(modified).map((file) => {
             return validateModel(file)
                 .then(result => {
-                    validationOutput.push({
-                        file: file,
-                        response: result
-                    })
+                    validationOutput.push(result)
                 })
         })
     )
@@ -84,14 +127,17 @@ async function validateAllInputs() {
 async function validateModel(file) {
     return new Promise((resolve, reject) => {
         if (path.extname(file) === ".ttl") {
-            console.log(`Validating TTL file ${path.basename(file)}`)
+            console.log(`Validating TTL file ${file}`)
 
             exec(`java -jar ${bammSdkPath} aspect ${file} validate`, (error, stdout, stderr) => {
                 if (stderr) {
                     reject(stderr)
                 }
 
-                resolve(stdout)
+                resolve({
+                    file: file,
+                    response: stdout
+                })
             })
         }
     })
