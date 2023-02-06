@@ -1,0 +1,37 @@
+#
+# Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# See the LICENSE file(s) distributed with this work for
+# additional information regarding license terms.
+#
+
+name: Bulk Validation
+on:
+  workflow_dispatch:
+    
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Install Node dependencies
+        working-directory: ./.github/actions/model-validation
+        run: npm install
+      - name: validate models
+        uses: ./.github/actions/model-validation
+        with:
+          bamm_version: 2.1.1
+          bulk: true
+      - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: full-validation-report
+          path: output
