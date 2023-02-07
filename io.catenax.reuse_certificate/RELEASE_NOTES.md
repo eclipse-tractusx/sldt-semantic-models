@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [1.0.0] - 2022-03-30
+## [1.0.0] - 2023-02-08
 ### Added
 - initial model
 
