@@ -1,0 +1,80 @@
+#######################################################################
+# Copyright (c) 2023 T-Systems International GmbH
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2023 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. für ihre Institute IPK und IPK
+# Copyright (c) 2023 tec4U-Solutions GmbH
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.shared.recycling_strategy_certificate:1.0.0#>.
+
+:UUIDCharacteristic a bamm:Characteristic;
+    bamm:dataType xsd:string;
+    bamm:preferredName "UUIDv4Characteristic"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:see <https://tools.ietf.org/html/rfc4122>.
+:catenaXId a bamm:Property;
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:description "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace."@en;
+    bamm:characteristic :CatenaXIdTraitCharacteristic;
+    bamm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d".
+:CatenaXIdTraitCharacteristic a bamm-c:Trait;
+    bamm:description "Trait to ensure UUID v4 data format"@en;
+    bamm-c:baseCharacteristic :UUIDCharacteristic;
+    bamm-c:constraint :UUIDv4RegularExpression.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
+:issuer a bamm:Property;
+    bamm:preferredName "Issuer"@en;
+    bamm:description "BPMN of the business partner who creates this certificate"@en;
+    bamm:characteristic :IssuerCharacteristic;
+    bamm:exampleValue "BPNLBMW000000001".
+:IssuerCharacteristic a bamm:Characteristic;
+    bamm:dataType xsd:string;
+    bamm:preferredName "Issuer characteristic"@en.
+:issueDate a bamm:Property;
+    bamm:preferredName "Issue date"@en;
+    bamm:description "This is the date when the certificate was issued."@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+:catenaXIdPreviousLife a bamm:Property;
+    bamm:preferredName "Catena X ID previous life"@en;
+    bamm:description "Twin identification previous life"@en;
+    bamm:characteristic :CatenaXIdTraitCharacteristic;
+    bamm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d".
+:RecyclingStrategyCertificate a bamm:Aspect;
+    bamm:preferredName "Recycling strategy certificate"@en;
+    bamm:description "The certificate marks the point in time at which an asset irrevocably enters a new life. The eol (end of life) phase is completed and a new product life cycle is started."@en;
+    bamm:properties (:recyclingStrategyCertificateProperty);
+    bamm:operations ();
+    bamm:events ().
+:recyclingStrategyCertificateProperty a bamm:Property;
+    bamm:preferredName "Recycling strategy certificate property"@en;
+    bamm:characteristic :RecyclingStrategyCertificateCharacteristic.
+:RecyclingStrategyCertificateCharacteristic a bamm:Characteristic;
+    bamm:dataType :RecyclingStrategyCertificateEntity;
+    bamm:preferredName "Recycling strategy certificate characteristic"@en.
+:RecyclingStrategyCertificateEntity a bamm:Entity;
+    bamm:preferredName "Recycling Strategy Certificate"@en;
+    bamm:properties (:issuer :issueDate :catenaXIdPreviousLife :catenaXId).
