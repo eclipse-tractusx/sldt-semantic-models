@@ -1,5 +1,5 @@
 # Aspect Model Governance Process
-This repository hosts the Turtle files for the Tractus-X Aspect models. The models are based on the BAMM Aspect Meta Model to semantically describe the data that gets exchanged by solutions using Eclipse Tractus-X. These models need to be aligned and agreed upon within and preferably across the use cases targeted by Tractus-X. To achieve this agreement and visibility across the whole project, there is a dedicated governance process enabled for the models in this repository.
+This repository hosts the Turtle files for the Tractus-X Aspect models. The models are based on the SAMM Aspect Meta Model to semantically describe the data that gets exchanged by solutions using Eclipse Tractus-X. These models need to be aligned and agreed upon within and preferably across the use cases targeted by Tractus-X. To achieve this agreement and visibility across the whole project, there is a dedicated governance process enabled for the models in this repository.
 The following page introduces this process, the involved roles, and the states in which a model can be. 
 
 ## Process
@@ -8,7 +8,7 @@ The following page introduces this process, the involved roles, and the states i
 | Role | Description |
 | ---- | ------ |
 | Domain Expert |  Domain experts know their specific use case and bring in practical input and requirements regarding data that needs to be consumed and provided as part of solutions in that application. |
-| Modeling Expert | Modeling experts are knowledgeable about the modeling approach based on BAMM and have an overview of other already existing models. |
+| Modeling Expert | Modeling experts are knowledgeable about the modeling approach based on SAMM and have an overview of other already existing models. |
 | Model Developers | Group of Domain and Modeling experts who jointly perform a modeling activity (create, update or delete model) |
 | Modeling Team | Regular meeting round to discuss and moderate the modeling activities. |
 | Use Case | Application or scenario were the need for the model creation or update arises. In general, it is assumed that a use case consists of at least one data provider and one data consumer |

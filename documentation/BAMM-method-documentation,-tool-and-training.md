@@ -1,26 +1,26 @@
-**BAMM method documentation, tool and training**
+**SAMM method documentation, tool and training**
 
-For general introduction to BAMM refer the official website of [Open Manufacturing Platform] (https://openmanufacturingplatform.github.io/sds-documentation/bamm-specification/snapshot/index.html)
+For general introduction to SAMM refer the official website of [Eclipse ESMF] (https://openmanufacturingplatform.github.io/sds-documentation/bamm-specification/snapshot/index.html)
 
 
-**BAMM Modeling methodology Digital Twins**
+**SAMM Modeling methodology Digital Twins**
 
 **Introduction**
 
 A Digital Twin System forms the basis for comprehensive digitization of production and logistics by gradually creating consistent data homogeneity and interoperability.
 
 
-![image](https://user-images.githubusercontent.com/105782625/188820652-cdeacad3-8a63-41ce-888d-0041c87f1a39.png)
+![image](images/aspect-model.png)
 
  
 Any asset — it can be an actual physical asset like a drilling machine but also something virtual like a web service — has a digital representation with consistent semantics, called a Digital Twin. Digital Twins represent those assets and services and provide a shell for their Aspects which define the functionality the Digital Twin supports. Aspects provide the actual data of the Digital Twin that clients can use. Think of an Aspect as a live thing, i.e., a service that can be queried to retrieve current or aggregated data. The data can be anything from a single numeric value — e.g., a temperature sensor — to a complex block of data.
 Each Aspect references a concrete Aspect Model. This model describes in a formal, i.e., machine readable, format, how an Aspect is structured and what the data actually means. The model describes for example the used physical unit and possible value range of the temperature sensor. Note that even in this simple example, a conventional approach could not satisfyingly answer the question of where this kind of information would otherwise live — in the sensor’s data sheet that is only a human-readable document? In the Aspect’s API documentation that is also only human-readable? Should the information about the sensor’s physical range be hard-coded in the Aspect and included in each service reply, even though it never changes? By expressing it in the Aspect model, the Aspect’s semantics can be made available to consumers of the data in a way that opens up new possibilities.
 
 Therefore, an Aspect model contains both information about runtime data structure (e.g., that there is a property in the data called "temperature", and that it has a numeric value) and information that is not part of the runtime data (e.g., the unit or range). It does not, however, contain actual runtime data (e.g., a numeric value representing the current temperature), as this will be delivered by an Aspect conforming to this Aspect model. The combination of raw runtime data and its corresponding Aspect model yields information.
-To specify an Aspect Model, the BAMM Aspect Meta Model (BAMM) [[bamm](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/index.html)] is used.
+To specify an Aspect Model, the Semantic Aspect Meta Model (SAMM) [[samm](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/index.html)] is used.
 
 
-**Illustration of using BAMM for Digital Twin Modeling**
+**Illustration of using SAMM for Digital Twin Modeling**
 
 The models describe so called aspects of a digital twin. A digital twin is a digital representation of a physical asset, which might expose different data and operations. Depending on what a business application is interested in, different values and operations might be relevant, which often can be grouped. Such groupings can be modeled with Aspect models.
 
@@ -28,7 +28,7 @@ An Aspect model describes what data and operations can be accessed. An aspect mo
 
 An example: As a physical asset you have a concrete gearbox. For the gearbox a digital twin is defined which in our case consists of the two aspects Material and ProductDescription. 
 
-The actual implementation of these Aspects is done via – for example – a web-service which provides the actual data for the aspect of the specific gearbox. So with the Aspect model we express the structure and semantics of the data coming from that data source. The APIs of the two web services for both aspects could look like the following (generated with the OMP BAMM SDK)
+The actual implementation of these Aspects is done via – for example – a web-service which provides the actual data for the aspect of the specific gearbox. So with the Aspect model we express the structure and semantics of the data coming from that data source. The APIs of the two web services for both aspects could look like the following (generated with the Eclipse SAMM SDK)
 
 
 
@@ -44,30 +44,19 @@ The web services that implement the aspects can then be used by a business appli
 
 In this example the digital twin would provide the business application with the references (URI, etc.) to this specific data source for the Aspects.
 
-
-
-
-
-![image](https://user-images.githubusercontent.com/105782625/189339059-06162b64-4828-4cd6-82fc-8d72855f34d2.png)
-
-
-
-
+![image](images/digital-twin-registry.png)
 
 The interaction with the digital twin looks like in the following UML sequence diagram.
 
-
-![image](https://user-images.githubusercontent.com/105782625/188822403-bfdcde5d-7dba-4a66-ba2a-3f62d92979f8.png)
-
-
+![image](images/dtr-sequence-diagram.png)
 
 Conversely – but not illustrated in the picture above –  an aspect can also describe operations of a digital twin. In that case a business application would not request data from an Aspect-implementing web service but rather call an operation to trigger some behavior of the digital twin. An example, but not related to the example from the actual CE use case above,  an aspect could provide an operation to move a robot arm to a certain position in space.
 
-**_General Remarks to BAMM_**
+**_General Remarks to SAMM_**
 
-BAMM is specified by the Open Manufacturing Platform. the BAMM Specification can be found [here](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/index.html). The specification contains also an introduction to the modeling elements of BAMM. For an introduction of the model elements and its use, please have a look [here](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/modeling-guidelines.html). The general structure of a BAMM model is, that it defines one Aspect of a digital twin, which exposes one or more properties, whose data type and semantics are specified with a Characteristic. A Characteristic can be reused among properties. For details please have a look into the specification and the modeling guide for an in depth explanation of the modeling elements.
+SAMM is specified within the Eclipse ESMF project. the SAMM Specification can be found [here](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/index.html). The specification contains also an introduction to the modeling elements of SAMM. For an introduction of the model elements and its use, please have a look [here](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/modeling-guidelines.html). The general structure of a SAMM model is, that it defines one Aspect of a digital twin, which exposes one or more properties, whose data type and semantics are specified with a Characteristic. A Characteristic can be reused among properties. For details please have a look into the specification and the modeling guide for an in depth explanation of the modeling elements.
 
-The Meta Model is specified using the Resource Description Format (RDF, [[rdf11]](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/appendix/appendix.html#rdf11)) and the Terse RDF Triple Language syntax (TTL, [[turtle]](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/appendix/appendix.html#turtle)), together with validation rules in the Shapes Constraint Language (SHACL, [[shacl]](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/appendix/appendix.html#shacl)). Aspect models are likewise specified in RDF/Turtle, following BAMM semantics [[bamm](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/index.html)]. 
+The Meta Model is specified using the Resource Description Format (RDF, [[rdf11]](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/appendix/appendix.html#rdf11)) and the Terse RDF Triple Language syntax (TTL, [[turtle]](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/appendix/appendix.html#turtle)), together with validation rules in the Shapes Constraint Language (SHACL, [[shacl]](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/appendix/appendix.html#shacl)). Aspect models are likewise specified in RDF/Turtle, following SAMM semantics [[bamm](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/snapshot/index.html)]. 
 
 Based on the Meta Model an SDK is provided by the Open Manufacturing Platform, which can be used to realize digital twins and their aspect implementations. The SDK can be found [here](https://github.com/OpenManufacturingPlatform/sds-sdk). 
 
@@ -127,5 +116,5 @@ The existing data structure replaces the model draft as compared to the top-down
 
 Note: When building an Aspect model to match an existing data structure, there may be mismatches in the defined value spaces of the Characteristics used in the model and the runtime data provided by the Aspect. For example, you might want to define a Property timestamp and use the existing [Timestamp](https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/v1.0.0/characteristics.html#timestamp-characteristic) Characteristic, but the existing data model expects numeric values (i.e. [numbers of seconds](https://en.wikipedia.org/wiki/Unix_time)), while the Timestamp Characteristic has a dataType of xsd:dateTime which in turn expects values such as "2000-01-01T14:23:00". Mismatches like this can either be resolved in the model (i.e. do not use the Timestamp Characteristic) or in the Aspect implementation (e.g. by on-the-fly conversion of values). Either way, the provided runtime value must match the Characteristic of the Property in the model.
 
-Using BAMM for Aspect Modelling
-Example models can be found here [Getting Started with Aspect Modeling based on BAMM](https://github.com/Sujit-Kumar-ZF/sldt-semantic-models/wiki/Getting-Started-with-Aspect-Modeling-based-on-BAMM).
+Using SAMM for Aspect Modelling
+Example models can be found here [Getting Started with Aspect Modeling based on BAMM](https://github.com/eclipse-tractusx/sldt-semantic-models/blob/main/documentation/Getting-Started-with-Aspect-Modeling-based-on-BAMM.md).
