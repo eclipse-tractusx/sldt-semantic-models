@@ -41,14 +41,23 @@ To fascilitate the governance and keep track of ongoing PRs and issue in GitHub 
 
 | label | description |
 ----- | -------
-Model Update | A request for updating an existing model
-New Model | A request for a new model
+Model_Update | A request for updating an existing model
+New_Model | A request for a new model
 Deprecate | A request for deprecating an existing model
 MS1-Approved | Checklist "MS1 Request for Model Developement" is approved.
 MS2-Approved | Checklist "MS2 Valid Model" is approved.
 MS3-Approved | Checklist "MS3 Release Model" is approved. The associated pull request can be merged to the "main-branch".
-Review Required | For this PR or issue a review by a modeling expert is requested.
-Modeling Team | This issue or PR should be discussed in the modeling team.
+Review_Required | For this PR or issue a review by a modeling expert is requested.
+Modeling_Team | This issue or PR should be discussed in the modeling team.
 
+Only project committer of the Eclipse Tractus-X project are allowed to assign labels to issues and PRs.
+To nevertheless allow the structured marking of issues and PRs for committers to the Eclipse Tractus-X project, we use structured comments. 
+
+Thus, if you want to mark an issue or a PR, please add the aforementioned labels as a comment to the issue or PR. E.g., if you want to indicate that a PR should be discussed by the modeling team, add a comment
+
+```
+Modeling_Team
+```
+to the PR. We have filters, which check for such comments. 
 ## Retiring a model
 Once a model gets the status "DEPRECATED" it should not be used anymore by new use cases. Existing applications should look for a way to migrate to an alternative version or model. In alignment with the overall release cycles of Tractus-X, the modeling team tags the current main branch with the corresponding Tractus-X release and publishes modeling release notes. These release notes contain a hint about all model versions that changed the status to "DEPRECATED" since the previous Tractus-X release. The modeling team will delete these models two Tractus-X releases cycles later. So use cases are advised to react to the deprecation of models within the next release cycle.
