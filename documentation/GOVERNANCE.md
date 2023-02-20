@@ -44,9 +44,9 @@ To fascilitate the governance and keep track of ongoing PRs and issue in GitHub 
 Model_Update | A request for updating an existing model
 New_Model | A request for a new model
 Deprecate | A request for deprecating an existing model
-MS1-Approved | Checklist "MS1 Request for Model Developement" is approved.
-MS2-Approved | Checklist "MS2 Valid Model" is approved.
-MS3-Approved | Checklist "MS3 Release Model" is approved. The associated pull request can be merged to the "main-branch".
+MS1_Approved | Checklist "MS1 Request for Model Developement" is approved.
+MS2_Approved | Checklist "MS2 Valid Model" is approved.
+MS3_Approved | Checklist "MS3 Release Model" is approved. The associated pull request can be merged to the "main-branch".
 Review_Required | For this PR or issue a review by a modeling expert is requested.
 Modeling_Team | This issue or PR should be discussed in the modeling team.
 
