@@ -1,0 +1,156 @@
+---
+openapi: 3.0.3
+info:
+  title: part as specified
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/part-as-specified:
+    get:
+      tags:
+      - PartAsSpecified
+      operationId: getPartAsSpecified
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/PartAsSpecified'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_bamm_io.catenax.part_as_specified_1.0.1_PartTypeInformationCharacteristic:
+      description: The characteristic of the part type.
+      type: object
+      properties:
+        classification:
+          description: The classification of the part type.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        nameAtOwner:
+          description: Name of the part as assigned by the part owner.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        ownerPartId:
+          description: " \tpartID as assigned by the part owner. The partID identifies\
+            \ the part in the part owner's data space. The partId does not reference\
+            \ a specific instance of a part and thus should not be confused with the\
+            \ serial number."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        partVersion:
+          description: "This is the version of the part. The engineering will at times\
+            \ supercede an older part version by a newer one, which might have different\
+            \ material aspects, physical dimensions etc., still maintaining compatibility."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - classification
+      - nameAtOwner
+      - ownerPartId
+      - partVersion
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_bamm_io.catenax.part_as_specified_1.0.1_ValidityPeriodCharacteristic:
+      description: The characteristic of the validity period.
+      type: object
+      properties:
+        validFrom:
+          description: Start date of the validity period.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+        validTo:
+          description: End date of the validity period.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+      required:
+      - validFrom
+      - validTo
+    PartAsSpecified:
+      description: "The aspect model PartAsSpecified belongs to the Part Catalogue.\
+        \ A PartAsSpecified represents a certain OEM catalog part on part number level.\
+        \ Providing a digital representation of the part as specified by the OEM.\
+        \ The link to the serialized part is done via the partId, this can only be\
+        \ done if the respective DT was provided by the supplier within the value\
+        \ chain."
+      type: object
+      properties:
+        partTypeInformation:
+          description: Encapsulation for data related to the part type.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.part_as_specified_1.0.1_PartTypeInformationCharacteristic'
+        validityPeriod:
+          $ref: '#/components/schemas/urn_bamm_io.catenax.part_as_specified_1.0.1_ValidityPeriodCharacteristic'
+      required:
+      - partTypeInformation
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    PartAsSpecified:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PartAsSpecified'
+      description: The request was successful.
+  requestBodies:
+    PartAsSpecified:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PartAsSpecified'

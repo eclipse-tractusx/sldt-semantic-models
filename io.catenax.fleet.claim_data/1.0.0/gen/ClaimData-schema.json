@@ -1,0 +1,183 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Claim data from a fleet",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_bamm_io.catenax.fleet.claim_data_1.0.0_ListOfDiagnosticSessions" : {
+        "description" : "references to a list of diagnostic session IDs - only present if matching between diag session and claim is possible",
+        "type" : "array",
+        "items" : {
+          "type" : "string",
+          "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+        }
+      },
+      "urn_bamm_io.catenax.fleet.claim_data_1.0.0_Mileage" : {
+        "type" : "number",
+        "minimum" : 1
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_MultiLanguageText" : {
+        "type" : "object",
+        "patternProperties" : {
+          "^.*$" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Describes a Property which contains plain text in multiple languages. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_bamm_io.catenax.fleet.claim_data_1.0.0_CatenaXIdTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \\\"urn:uuid:\\\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_bamm_io.catenax.fleet.claim_data_1.0.0_VehicleIdentifiersCharacteristic" : {
+        "description" : "one single vehicle",
+        "type" : "object",
+        "properties" : {
+          "vehicleCatenaXId" : {
+            "description" : "Catena-X car ID /digital twin of car",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_CatenaXIdTrait"
+          },
+          "anonymizedVIN" : {
+            "description" : "OEM-specific hashed VIN; link to car data over pseydomized/hashed VIN or Catena-X unique digital twin identifier",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "anonymizedVIN" ]
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean" : {
+        "type" : "boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "urn_bamm_io.catenax.fleet.claim_data_1.0.0_AmountOfReplacedPartsCharacteristic" : {
+        "type" : "number",
+        "minimum" : 0,
+        "description" : "counter for non-serial parts"
+      },
+      "urn_bamm_io.catenax.fleet.claim_data_1.0.0_Part" : {
+        "description" : "the characteristics of a part",
+        "type" : "object",
+        "properties" : {
+          "number" : {
+            "description" : "OEM specific partnumber",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "name" : {
+            "description" : "OEM specific name of the part",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "serialNumber" : {
+            "description" : "OEM serial part number of the part - only available for serial parts",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "catenaXId" : {
+            "description" : "The fully anonymous Catena-X ID of the part, valid for the Catena-X dataspace.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_CatenaXIdTrait"
+          },
+          "supplierId" : {
+            "description" : "OEM-specific ID of the supplier that manufactured the part that was put out - available if known",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "number", "name" ]
+      },
+      "urn_bamm_io.catenax.fleet.claim_data_1.0.0_ClaimedPart" : {
+        "description" : "a list of parts",
+        "type" : "object",
+        "properties" : {
+          "isPartReplaced" : {
+            "description" : "flag is set if part was replaced\nTrue: replaced\nFalse: not replaced",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean"
+          },
+          "isPartCausal" : {
+            "description" : "flag set to True if part was causing the problem\nTrue: part caused the problem\nFalse: part didn't cause the problem\n",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean"
+          },
+          "amountOfReplacedParts" : {
+            "description" : "counter for non-serial parts which have been replaced",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_AmountOfReplacedPartsCharacteristic"
+          },
+          "replacedPart" : {
+            "description" : "the part which was affected and replaced",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_Part"
+          },
+          "sparePart" : {
+            "description" : "the part which has been built in",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_Part"
+          }
+        },
+        "required" : [ "isPartReplaced", "isPartCausal", "replacedPart", "sparePart" ]
+      },
+      "urn_bamm_io.catenax.fleet.claim_data_1.0.0_Claim" : {
+        "description" : "everything to describe a claim",
+        "type" : "object",
+        "properties" : {
+          "listOfDiagnosticSessionId" : {
+            "description" : "references to a list of diagnostic session IDs",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_ListOfDiagnosticSessions"
+          },
+          "repairMileage" : {
+            "description" : "mileage of the car when the claim was reported",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_Mileage"
+          },
+          "repairDate" : {
+            "description" : "references the date when claim was initially reported",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+          },
+          "technicianComment" : {
+            "description" : "short description of the claim from the technicians",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_MultiLanguageText"
+          },
+          "customerComment" : {
+            "description" : "short description of the claim from customer view",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_MultiLanguageText"
+          },
+          "claimId" : {
+            "description" : "Claim ID: Unique for each OEM",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "vehicleIdentifiers" : {
+            "description" : "one single vehicle",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_VehicleIdentifiersCharacteristic"
+          },
+          "listOfParts" : {
+            "description" : "a list of parts which will be replaced or repaired",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_ClaimedPart"
+          },
+          "qualityTaskId" : {
+            "description" : "Reference to  Quality Task: A unique identifier. The company creating this quality task sets this identifer. The identifier should contain the BPN to make it unique inside CX network",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "damageCode" : {
+            "description" : "OEM-specific damage code",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "repairMileage", "repairDate", "technicianComment", "claimId", "vehicleIdentifiers", "listOfParts", "qualityTaskId" ]
+      },
+      "urn_bamm_io.catenax.fleet.claim_data_1.0.0_ListOfClaims" : {
+        "description" : "List of Claims",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_Claim"
+        }
+      }
+    }
+  },
+  "properties" : {
+    "listOfClaims" : {
+      "description" : "List of Claims",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.fleet.claim_data_1.0.0_ListOfClaims"
+    }
+  },
+  "required" : [ "listOfClaims" ]
+}

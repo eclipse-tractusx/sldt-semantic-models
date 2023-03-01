@@ -1,0 +1,278 @@
+---
+openapi: 3.0.3
+info:
+  title: return request
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/return-request:
+    get:
+      tags:
+      - ReturnRequest
+      operationId: getReturnRequest
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/ReturnRequest'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnRequest'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean:
+      type: boolean
+      description: Represents a boolean value (i.e. a "flag").
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_bamm_io.catenax.return_request_1.1.1_DateTimestamp:
+      type: string
+      format: date
+      description: Timestamp for dates
+    urn_bamm_io.catenax.return_request_1.1.1_ProductConditionsCharacteristic:
+      description: Criteria describing the state of a product on the marketplace.
+      type: object
+      properties:
+        missingParts:
+          description: "Completeness of the product, e.g. missing parts are not acceptable."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean'
+        dismantled:
+          description: Information on whether the product has been dismantled.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean'
+        mechanicalDamage:
+          description: "Information on mechanical damage to the part, e.g. two broken\
+            \ ribs or part deformation indicate mechanical damage."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean'
+        corroded:
+          description: Information on whether the product has corrosion.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean'
+        discolored:
+          description: Information on whether the product has been discoloured.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean'
+    urn_bamm_io.catenax.return_request_1.1.1_QuantityCharacteristic:
+      type: number
+      description: Characteristic describing the quantity
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_bamm_io.catenax.return_request_1.1.1_TimePeriodEntity:
+      description: Entity defining a range of dates to define a time period.
+      type: object
+      properties:
+        startDate:
+          description: The first day of the period
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+        endDate:
+          description: The last day of the period.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+      required:
+      - startDate
+      - endDate
+    urn_bamm_io.catenax.return_request_1.1.1_TimePeriod:
+      description: Depicts a time period by specifying start and end date
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_TimePeriodEntity'
+      uniqueItems: true
+    urn_bamm_io.catenax.return_request_1.1.1_ValueCharacteristic:
+      type: number
+      description: Characteristic to describe the value in a float type.
+    urn_bamm_io.catenax.return_request_1.1.1_CurrencyTrait:
+      type: string
+      description: reduces the possible entry to three entries from A-Z
+      pattern: "^[A-Z]{3}$"
+    urn_bamm_io.catenax.return_request_1.1.1_PriceCharacteristic:
+      description: Characteristic to describe the price. Different currencies are
+        possible
+      type: object
+      properties:
+        value:
+          description: The nominal value.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_ValueCharacteristic'
+        currency:
+          description: Currency of the price of the return request conform to the
+            ISO4217 in numerical codes.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_CurrencyTrait'
+      required:
+      - value
+      - currency
+    urn_bamm_io.catenax.return_request_1.1.1_PriceRangeCharacteristic:
+      description: Characteristic to define range of monetary values.
+      type: object
+      properties:
+        minPrice:
+          description: The minimum price that a buyer is ready to pay to get an item
+            (motivating sellers to sell).
+          $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_PriceCharacteristic'
+        maxPrice:
+          description: The maximum price until which a demand request is relevant.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_PriceCharacteristic'
+      required:
+      - maxPrice
+    ReturnRequest:
+      description: Aspect to indicate if there is a return request for a product.
+      type: object
+      properties:
+        needsReturn:
+          description: "Describes the fact whether a vehicle, assembly or part needs\
+            \ to be returned to requestor."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean'
+        returnConditions:
+          description: "Describes WHY a vehicle, assembly or part needs to be returned\
+            \ to the requestor and under which conditions."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        requestDate:
+          description: Describes date when the return request was placed in GMT timezone.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_DateTimestamp'
+        latestReturnDate:
+          description: Describes until when the return request is valid in GMT timezone.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_DateTimestamp'
+        productConditions:
+          description: textual description of the product conditions
+          $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_ProductConditionsCharacteristic'
+        title:
+          description: The request name to be used by the buyer to navigate through
+            the list of demand requests.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        marketplaceProduct:
+          description: The description of the product within the marketplace that
+            might differ from the digital twin.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        quantity:
+          description: The desired quantity of the on the marketplace offered product
+            in SKU.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_QuantityCharacteristic'
+        unitOfMeasure:
+          description: The unit of measure (related to quantity).
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        validityPeriod:
+          description: Specifies the time period when the need exists
+          $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_TimePeriod'
+        priceRange:
+          description: Range of monetary values.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.return_request_1.1.1_PriceRangeCharacteristic'
+        isRecall:
+          description: Depicts if the manufacturer issued a recall (e.g. for security
+            reasons). In concjunction with property needsReturn it can be expressed
+            if the item has to be returned or can directly be destroyed.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean'
+      required:
+      - needsReturn
+      - returnConditions
+      - requestDate
+      - latestReturnDate
+      - productConditions
+      - title
+      - marketplaceProduct
+      - quantity
+      - unitOfMeasure
+      - validityPeriod
+      - priceRange
+      - isRecall
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ReturnRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    ReturnRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnRequest'

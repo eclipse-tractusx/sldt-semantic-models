@@ -1,0 +1,169 @@
+---
+openapi: 3.0.3
+info:
+  title: End of life
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/end-of-life:
+    get:
+      tags:
+      - EndOfLife
+      operationId: getEndOfLife
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/EndOfLife'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_bamm_io.catenax.eol_story_1.0.0_DisassemblyStatus:
+      type: string
+      description: Possible status of disassembly
+      enum:
+      - assembled
+      - disassembled
+    urn_bamm_io.catenax.eol_story_1.0.0_HealthStatus:
+      type: string
+      description: Possible status of condition of a vehicle or part.
+      enum:
+      - in running condition
+      - repair required
+      - broken
+      - not tested
+      - incomplete
+    urn_bamm_io.catenax.eol_story_1.0.0_RecyclingStatus:
+      type: string
+      description: Possible status auf a vehicle or part
+      enum:
+      - recycled
+      - not recycled
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean:
+      type: boolean
+      description: Represents a boolean value (i.e. a "flag").
+    urn_bamm_io.catenax.eol_story_1.0.0_LastMileage:
+      type: number
+    urn_bamm_io.catenax.eol_story_1.0.0_SparePartQuality:
+      type: string
+      description: "Possible status of condition: A=quality very good; B=quality normal\
+        \ used; C=quality defective or with defects; N=new"
+      enum:
+      - A
+      - B
+      - C
+      - "N"
+    EndOfLife:
+      description: Aspect for End of Life Story for the Dismantler
+      type: object
+      properties:
+        disassemblyStatus:
+          description: Indicates the status of disassembly
+          $ref: '#/components/schemas/urn_bamm_io.catenax.eol_story_1.0.0_DisassemblyStatus'
+        healthStatus:
+          description: The health condition of the vehicle or spare part.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.eol_story_1.0.0_HealthStatus'
+        recyclingStatus:
+          description: The recycling status of a vehicle or part.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.eol_story_1.0.0_RecyclingStatus'
+        dateOfReceptionGMT:
+          description: Gives the date of reception of the vehicle in GMT time zone
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+        certificateOfDestruction:
+          description: Indicates if an certificate of destruction is present
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean'
+        lastMileage:
+          description: "Gives the last mileage, which can be read on the vehicle"
+          $ref: '#/components/schemas/urn_bamm_io.catenax.eol_story_1.0.0_LastMileage'
+        dateOfScrappingGMT:
+          description: Gives the date of scrapping of the vehicle or part in GMT time
+            zone
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+        sparePartQuality:
+          description: Indicates the quality of a spare part
+          $ref: '#/components/schemas/urn_bamm_io.catenax.eol_story_1.0.0_SparePartQuality'
+        dateOfDissamblyGMT:
+          description: Gives the date of dissambly of the part in GMT time zone
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+      required:
+      - disassemblyStatus
+      - healthStatus
+      - recyclingStatus
+      - dateOfReceptionGMT
+      - certificateOfDestruction
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    EndOfLife:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EndOfLife'
+      description: The request was successful.
+  requestBodies:
+    EndOfLife:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EndOfLife'
