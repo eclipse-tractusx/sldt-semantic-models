@@ -8,7 +8,10 @@ All notable changes to this model will be documented in this file.
 n/a
 
 ### Changed
-- several element descriptions, more explicitly mentioning version information of a part as planned
+- PartAsPlanned aspect element and manufacturerPartID property elements have improved descriptions , more explicitly mentioning versioning information of a part as planned
+- all characteristics, entities, and constraints now have proper names, preferred names and descriptions
+- validFrom and validTo properties now have more meaningful example values.
+- fixed some typos in preferred names and descriptions.
 
 ### Removed
 n/a
