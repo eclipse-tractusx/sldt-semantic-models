@@ -1,0 +1,114 @@
+#######################################################################
+# Copyright (c) 2022 BASF SE
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix : <urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#>.
+
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:name "UUIDv4RegularExpression";
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."@en;
+    bamm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".
+:UUIDv4 a bamm:Characteristic;
+    bamm:name "UUIDv4";
+    bamm:preferredName "UUIDv4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string.
+:catenaXId a bamm:Property;
+    bamm:name "catenaXId";
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:description "The Catena-X ID of the given item (i.e. a part type or part instance), valid for the Catena-X dataspace."@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:exampleValue "580d3adf-1981-44a0-a214-13d6ceed9379".
+:CatenaXIdTrait a bamm-c:Trait;
+    bamm:name "CatenaXIdTrait";
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm:description "Trait to ensure data format for Catena-X ID"@en;
+    bamm-c:constraint :UUIDv4RegularExpression;
+    bamm-c:baseCharacteristic :UUIDv4.
+:sites a bamm:Property;
+    bamm:name "sites";
+    bamm:preferredName "Sites"@en;
+    bamm:description "A site is a delimited geographical area where a legal entity does business (geographical address with geo coordinates).A site always has a primary physical address. It is possible that further physical addresses are specified for the site. P.O. box details are only possible in addition to the physical address. A site has a 1:n relation to addresses, means at least 1 address is necessary and multiple addresses are possible."@en;
+    bamm:characteristic :SitesCharacteristic;
+    bamm:see <https://confluence.catena-x.net/x/QkBHAw>.
+:SitesCharacteristic a bamm-c:Set;
+    bamm:name "SitesCharacteristic";
+    bamm:description "Sites Characteristic"@en;
+    bamm:dataType :SiteEntity.
+:SiteEntity a bamm:Entity;
+    bamm:name "SiteEntity";
+    bamm:preferredName "Site Entity"@en;
+    bamm:description "Site Entity"@en;
+    bamm:properties (:catenaXsiteId :function [
+  bamm:property :functionValidFrom;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :functionValidUntil;
+  bamm:optional "true"^^xsd:boolean
+]).
+:catenaXsiteId a bamm:Property;
+    bamm:name "catenaXSiteId";
+    bamm:preferredName "Catena-X site identifier"@en;
+    bamm:description "The identifier of the site according to Catena-X BPDM. The catenaXsiteId must be a valid Catena-X BPN. The BPN is a unique, unchangeable identifier for Business Partners / company locations from foundation to closure, regardless of the different business relationships / structures between or within the Business Partners or company locations."@en;
+    bamm:characteristic :BpnCharacteristic;
+    bamm:exampleValue "BPNS1234567890ZZ".
+:function a bamm:Property;
+    bamm:name "function";
+    bamm:preferredName "Function"@en;
+    bamm:description "The function of the site in relation to the part (i.e. the activity within the value chain of the part that is performed at the site)"@en;
+    bamm:characteristic :FunctionCharacteristic;
+    bamm:exampleValue "production".
+:functionValidFrom a bamm:Property;
+    bamm:name "functionValidFrom";
+    bamm:preferredName "Function valid from"@en;
+    bamm:description "Timestamp, from when the site has the specified function for the given part"@en;
+    bamm:characteristic bamm-c:Timestamp.
+:functionValidUntil a bamm:Property;
+    bamm:name "functionValidUntil";
+    bamm:preferredName "functionValidUntil"@en;
+    bamm:description "Timestamp, until when the site has the specified function for the given part"@en;
+    bamm:characteristic bamm-c:Timestamp.
+:BpnCharacteristic a bamm:Characteristic;
+    bamm:name "BpnCharacteristic";
+    bamm:preferredName "BPN Characteristic"@en;
+    bamm:description "A string of 16 characters:\nPrefix: 3 digits\t\t\t\t\nClassification: 1 digit\nIdentifier: 10 digits"@en;
+    bamm:dataType xsd:string.
+:FunctionCharacteristic a bamm-c:Enumeration;
+    bamm:name "FunctionCharacteristic";
+    bamm:preferredName "Function Characteristic"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("production").
+:PartSiteInformationAsPlanned a bamm:Aspect;
+    bamm:name "PartSiteInformationAsPlanned";
+    bamm:preferredName "Part Site Information as Planned"@en;
+    bamm:description "The aspect provides site related information for a given as planned item (i.e. a part type or part instance that is uniquely identifiable within Catena-X via its Catena-X ID). A site is a delimited geographical area where a legal entity does business. In the \"as planned\" lifecycle context all potentially related sites are listed including all sites where e.g. production of this part (type) is planned."@en;
+    bamm:properties (:catenaXId :sites);
+    bamm:operations ();
+    bamm:events ().
