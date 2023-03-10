@@ -1,0 +1,323 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Normative: Each Product (Carbon) Footprint represents the carbon footprint of a product with values in accordance with the WBCSD (World Business Council for Sustainable Development)/ Pathfinder framework. Non-normative: Each Product Footprint relates to a specific product, identified by one or more product identifiers. The Product Footprint is modeled as a multi purpose container for product-specific factors.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_bamm_io.catenax.pcf_2.0.0_IdTrait" : {
+        "type" : "string",
+        "description" : "Constraint for defining a product footprint identifier as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "pattern" : "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_SpecVersionTrait" : {
+        "type" : "string",
+        "description" : "Constraint for defining a version of an artefact (e.g. a specification version) belonging to a product footprint as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "pattern" : "\\d+\\.\\d+\\.\\d+"
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_ProductFootprintVersionCharacteristic" : {
+        "type" : "number",
+        "minimum" : 1,
+        "description" : "Characteristic for defining a product footprint version as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative."
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_NonEmptyString" : {
+        "type" : "string",
+        "description" : "String that contains at least one character."
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_CompanyIdsCharacteristic" : {
+        "description" : "Characteristic for defining a list of company ids in context of a product footprint.",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        },
+        "uniqueItems" : true
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_ProductIdsCharacteristic" : {
+        "description" : "Characteristic for defining a lost of product ids in context of a product footprint.",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        },
+        "uniqueItems" : true
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_DeclaredUnit" : {
+        "type" : "string",
+        "description" : "Unit of analysis of the product with accepted values as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "enum" : [ "liter", "kilogram", "cubic meter", "kilowatt hour", "megajoule", "ton kilometer", "square meter" ]
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_StrictlyPositiveDecimal" : {
+        "type" : "number",
+        "description" : "A positive, non-zero decimal."
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_EmissionsTrait" : {
+        "type" : "number",
+        "description" : "Only positive emission values (>0) are valid ",
+        "minimum" : 0,
+        "exclusiveMinimum" : false
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_BiogenicEmissionEntity" : {
+        "description" : "Characteristic for defining the biogenic emissions of a PCF (Product Carbon Footprint) as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "object",
+        "properties" : {
+          "landUseEmissions" : {
+            "description" : "Land use emissions (e.g. cultural practice).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_EmissionsTrait"
+          },
+          "otherEmissions" : {
+            "description" : "Other emissions (e.g. biogenic waste treatment).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_EmissionsTrait"
+          },
+          "landUseChangeEmissions" : {
+            "description" : "Land use change emissions. As specified by WBCSD (World Business Council for Sustainable Development) this value must include direct land use change (dLUC) where available, otherwise statistical land use change (sLUC) can be used. If available, including indirect land use change (iLUC) to remain optional. ",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_EmissionsTrait"
+          }
+        }
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_PrimaryDataShareTrait" : {
+        "type" : "number",
+        "description" : "Constraint for a primary data share of a product footprint which limit values between 0.0 and 100.0 as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "maximum" : 1E+2,
+        "exclusiveMaximum" : false,
+        "minimum" : 0,
+        "exclusiveMinimum" : false
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_EmissionFactorSourcesEntity" : {
+        "description" : "Entity for defining a list of emission factor databases for a product footprint incl. their names and versions as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "description" : "Secondary data sources used (mandatory if applicable) and information on which life cycle stages the sources were used for.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_NonEmptyString"
+          },
+          "version" : {
+            "description" : "Secondary data sources version (mandatory  if applicable).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_NonEmptyString"
+          }
+        },
+        "required" : [ "name", "version" ]
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_EmissionFactorSourcesCharacteristic" : {
+        "description" : "Characteristic for defining a list of emission factor databases for a product footprint as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_EmissionFactorSourcesEntity"
+        },
+        "uniqueItems" : true
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_GeographyCountrySubdivisionTrait" : {
+        "type" : "string",
+        "description" : "Constraint for defining a geography country subdivision in compliance to ISO 3166-2 as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "pattern" : "([A-Z]{2}-[A-Z0-9]{1,3}|)"
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_GeographyCountryTrait" : {
+        "type" : "string",
+        "description" : "Constraint for defining a geography country conform to ISO 3166CC as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "pattern" : "([A-Z]{2})"
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_GeographyRegionOrSubregionCharacteristic" : {
+        "type" : "string",
+        "description" : "Characteristic for defining a list of valid regions as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "enum" : [ "Africa", "Americas", "Asia", "Europe", "Oceania", "Australia and New Zealand", "Central Asia", "Eastern Asia", "Eastern Europe", "Latin America and the Caribbean", "Melanesia", "Micronesia", "Northern Africa", "Northern America", "Northern Europe", "Polynesia", "South-eastern Asia", "Southern Asia", "Southern Europe", "Sub-Saharan Africa", "Western Asia", "Western Europe" ]
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_CrossSectoralStandardsUsedEnumerationCharacteristic" : {
+        "type" : "string",
+        "description" : "Characteristic for defining the enumeration of valid accounting standards used for product carbon footprint calculation as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "enum" : [ "GHG Protocol Product standard", "ISO Standard 14067", "ISO Standard 14044" ]
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_CrossSectoralStandardEntity" : {
+        "description" : "Entity for defining an accounting standard used for product carbon footprint calculation as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "object",
+        "properties" : {
+          "crossSectoralStandard" : {
+            "description" : "Discloses a cross-sectoral standard applied for calculating or allocating GHG (Greenhouse Gas) emissions as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_CrossSectoralStandardsUsedEnumerationCharacteristic"
+          }
+        },
+        "required" : [ "crossSectoralStandard" ]
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_CrossSectoralStandardsUsedListCharacteristic" : {
+        "description" : "Characteristic for defining the list of valid accounting standards used for product carbon footprint calculation as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_CrossSectoralStandardEntity"
+        }
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_ProductOrSectorSpecificRuleOperator" : {
+        "type" : "string",
+        "description" : "Enumeration of PCR (Product Category Rule) operators as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "enum" : [ "PEF", "EPD International", "Other" ]
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_RuleNamesTrait" : {
+        "description" : "Constraint for defining a non-empty set of non-empty rule names as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "array",
+        "items" : {
+          "type" : "string",
+          "description" : "String that contains at least one character."
+        },
+        "uniqueItems" : true,
+        "minItems" : 1
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_ProductOrSectorSpecificRulesEntity" : {
+        "description" : "Entity for defining the set of values for the product or sector specific rules of a product carbon footprint as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "object",
+        "properties" : {
+          "operator" : {
+            "description" : "Operator of PCR (Product Category Rule)/ PSR (Product Specific Rule) as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_ProductOrSectorSpecificRuleOperator"
+          },
+          "ruleNames" : {
+            "description" : "Product-specific or sector-specific set of rules used for calculating or allocating GHG (Greenhouse Gas) emissions applied from the specified operator. Property defined by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_RuleNamesTrait"
+          },
+          "otherOperatorName" : {
+            "description" : "Other operator of PCR (Product Category Rule)/ PSR (Product Specific Rule) as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "operator", "ruleNames" ]
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_ProductOrSectorSpecificRuleSet" : {
+        "description" : "Characteristic for defining the set of product or sector specific rules of a product carbon footprint as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_ProductOrSectorSpecificRulesEntity"
+        },
+        "uniqueItems" : true
+      },
+      "urn_bamm_io.catenax.pcf_2.0.0_PcfEntity" : {
+        "description" : "Characteristic for defining a PCF (Product Carbon Footprint) as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "object",
+        "properties" : {
+          "declaredUnit" : {
+            "description" : "unit of analysis of the product.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_DeclaredUnit"
+          },
+          "unitaryProductAmount" : {
+            "description" : "Amount of units contained within the product the PCF (Product Carbon Footprint) is referring to.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_StrictlyPositiveDecimal"
+          },
+          "fossilGhgEmissions" : {
+            "description" : "Emissions from the combustion of fossil sources. ",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_EmissionsTrait"
+          },
+          "biogenicEmissions" : {
+            "description" : "Biogenic emission factors.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_BiogenicEmissionEntity"
+          },
+          "biogenicCarbonContent" : {
+            "description" : "Mass of biogenic carbon per given unit of exchange.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_EmissionsTrait"
+          },
+          "reportingPeriodStart" : {
+            "description" : "Starting timestamp for the time scope of a PCF (Product Carbon Footprint).",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+          },
+          "reportingPeriodEnd" : {
+            "description" : "Ending timestamp for the time scope of a product footprint as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+          },
+          "primaryDataShare" : {
+            "description" : "Share of primary data.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_PrimaryDataShareTrait"
+          },
+          "emissionFactorSources" : {
+            "description" : "Emission factor databases accepted under Version 1 of the Pathfinder Framework (see the Pathfinder Framework Section 6.2).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_EmissionFactorSourcesCharacteristic"
+          },
+          "geographyCountrySubdivision" : {
+            "description" : "Subdivision of a country. Value must be an ISO 3166-2 subdivision code as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_GeographyCountrySubdivisionTrait"
+          },
+          "geographyCountry" : {
+            "description" : "Two letter country code. Value must conform to data type ISO 3166CC as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_GeographyCountryTrait"
+          },
+          "geographyRegionOrSubregion" : {
+            "description" : "Region according to list as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_GeographyRegionOrSubregionCharacteristic"
+          },
+          "boundaryProcessesDescription" : {
+            "description" : "Processes attributable to each lifecycle stage as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "crossSectoralStandardsUsed" : {
+            "description" : "Discloses the cross-sectoral standards applied for calculating or allocating GHG (Greenhouse Gas) emissions as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_CrossSectoralStandardsUsedListCharacteristic"
+          },
+          "productOrSectorSpecificRules" : {
+            "description" : "Product or sector specific rules applied for calculating or allocating GHG (Greenhouse Gas) emissions, e.g. PCRs (Product Category Rules), including operators or pubishers and according rule names. Specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_ProductOrSectorSpecificRuleSet"
+          },
+          "allocationRulesDescription" : {
+            "description" : "Allocation rules used and underlying reasoning as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "declaredUnit", "unitaryProductAmount", "fossilGhgEmissions", "biogenicCarbonContent", "reportingPeriodStart", "reportingPeriodEnd", "primaryDataShare", "crossSectoralStandardsUsed", "productOrSectorSpecificRules" ]
+      }
+    }
+  },
+  "properties" : {
+    "id" : {
+      "description" : "The product footprint identifier as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_IdTrait"
+    },
+    "specVersion" : {
+      "description" : "Version of the product footprint data specification. The value MUST be \"1.0.0\". Note: subsequent revisions of the product footprint data specification will update this value according to the rules of Semantic Versioning 2.0.0.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_SpecVersionTrait"
+    },
+    "version" : {
+      "description" : "Whenever a data owner or a host system updates a product footprint it must set the version to be by strictly greater than the value of all preceding footprints.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_ProductFootprintVersionCharacteristic"
+    },
+    "updated" : {
+      "description" : "Timestamp of the product footprint update. A product footprint must not include this property if an update has never been performed. The timestamp must be in UTC (Universal Time Code).",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+    },
+    "companyName" : {
+      "description" : "Name of the company that is the ProductFootprint Data Owner.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_NonEmptyString"
+    },
+    "companyIds" : {
+      "description" : "CompanyIds with value the non-empty set of Uniform Resource Names (URN)2. Each value of this set is supposed to uniquely identify the ProductFootprint Data Owner.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_CompanyIdsCharacteristic"
+    },
+    "productDescription" : {
+      "description" : "Free-form description of the product plus other information related to it such as production technology or packaging.",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+    },
+    "productIds" : {
+      "description" : "Each of the values in the set is supposed to uniquely identify the product. ",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_ProductIdsCharacteristic"
+    },
+    "productCategoryCpc" : {
+      "description" : "UN (United Nations) Product Classification Code (CPC - Central Classification Code) 3 that the given product belongs to.",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+    },
+    "productNameCompany" : {
+      "description" : "Trade name of the product.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_NonEmptyString"
+    },
+    "comment" : {
+      "description" : "Additional information and instructions related to the calculation of the footprint, or other information which informs the ability to interpret, to audit or to verify the Product Footprint.",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+    },
+    "pcf" : {
+      "description" : "A PCF (Product Carbon Footprint) represents the carbon footprint of a product and related data in accordance with the Pathfinder Framework.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_2.0.0_PcfEntity"
+    },
+    "created" : {
+      "description" : "Timestamp of the creation of the Product Footprint.",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+    }
+  },
+  "required" : [ "id", "specVersion", "version", "companyName", "companyIds", "productDescription", "productIds", "productCategoryCpc", "productNameCompany", "comment", "pcf", "created" ]
+}

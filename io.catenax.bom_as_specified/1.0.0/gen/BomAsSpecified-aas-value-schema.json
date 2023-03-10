@@ -1,0 +1,148 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The BomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_IdentifierCharacteristic" : {
+        "type" : "string"
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_IndexCharacteristic" : {
+        "type" : "number",
+        "description" : "Characteristic of the index."
+      },
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_QuantityCharacteristic" : {
+        "type" : "number",
+        "description" : "Characteristic of the quantity."
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_UnitReference" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "description" : "Describes a Property containing a reference to one of the units in the Unit Catalog."
+      },
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_NumberOfObjects" : {
+        "type" : "number",
+        "description" : "Quantifiable number of objects in reference to the measurementUnit."
+      },
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_PartQuantityCharacteristic" : {
+        "description" : "The characteristic of the part quantity.",
+        "type" : "object",
+        "properties" : {
+          "measurementUnit" : {
+            "description" : "Unit of measurement for the quantity of serialized objects.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_UnitReference"
+          },
+          "quantityNumber" : {
+            "description" : "The number of objects related to the measurement unit.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_NumberOfObjects"
+          }
+        },
+        "required" : [ "measurementUnit", "quantityNumber" ]
+      },
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_PartClassificationEntity" : {
+        "description" : "The entity encapsulating the properties of the part classification.",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "description" : "Key within the classification.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "value" : {
+            "description" : "Value within the classification.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "key", "value" ]
+      },
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_PartClassificationCharacteristic" : {
+        "description" : "The characteristic of the part classification.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_PartClassificationEntity"
+        },
+        "uniqueItems" : true
+      },
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_PartEntity" : {
+        "description" : "Entity encapsulating the properies describing a part",
+        "type" : "object",
+        "properties" : {
+          "ownerPartId" : {
+            "description" : "This is the key field of the component which usually keeps the part numbers used in after-sales, e.g. when repairing broken parts and searching for a replacement. This ownerPartId itself isn't usually bound to one part version, with the assumption that all part versions with the same ownerPartId are mutually interchangeable.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "partVersion" : {
+            "description" : "This is the version of the part. The engineering will at times supercede an older part version by a newer one, which might have different material aspects, physical dimensions etc., still maintaining compatibility.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "partQuantity" : {
+            "description" : "This is the quantity how often this part is in the item.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_PartQuantityCharacteristic"
+          },
+          "partDescription" : {
+            "description" : "The description of the part in the primary language of the production facility of the product owner.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "partClassification" : {
+            "description" : "The part classification.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_PartClassificationCharacteristic"
+          }
+        },
+        "required" : [ "ownerPartId" ]
+      },
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_PartCharacteristic" : {
+        "description" : "Characteristic of the part.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_PartEntity"
+        },
+        "uniqueItems" : true
+      },
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_ItemEntity" : {
+        "description" : "Entity encapsulating the properties that describe an item.",
+        "type" : "object",
+        "properties" : {
+          "itemCategory" : {
+            "description" : "The BomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "index" : {
+            "description" : "Additional differentiation if multiple items share the same the item descriptor.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_IndexCharacteristic"
+          },
+          "quantity" : {
+            "description" : "If the item is provided several times alike, the quantity on this level can specify how often. At this level pieces is assumed as the only unit. For further differentiation.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_QuantityCharacteristic"
+          },
+          "part" : {
+            "description" : "TBD",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_PartCharacteristic"
+          }
+        },
+        "required" : [ "itemCategory", "part" ]
+      },
+      "urn_bamm_io.catenax.bom_as_specified_1.0.0_ItemCharacteristic" : {
+        "description" : "The characteristic of the items.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_ItemEntity"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "identifier" : {
+      "description" : "A unique reference for the product owner of this set of items, and used by the product owner only for internal referencing. ",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_IdentifierCharacteristic"
+    },
+    "item" : {
+      "description" : "Top-level separation of parts which represent a set and shall indicate that the individual items are within each other completely assembled and treated as a unit, but are separable units, e.g. the \"vehicle\", \"electricCharger\" and the \"winter wheels\" are separated and could over lifetime be sold as individual items by the end customer.\n \nFor other end-customer products a set might be like \"cordless screwdriver\" and 2 times \"supplemental battery\".",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.bom_as_specified_1.0.0_ItemCharacteristic"
+    }
+  },
+  "required" : [ "identifier", "item" ]
+}
