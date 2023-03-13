@@ -9,6 +9,9 @@ All notable changes to this model will be documented in this file.
 
 ### Changed
 - descriptions to more explicitly describe handling of versions of child parts
+- updated reference for SAMM Unit Catalog to a more stable one
+- all characteristics, entities, and constraints now have proper names, preferred names and descriptions
+- fixed some typos in preferred names and descriptions
 
 ### Removed
 
