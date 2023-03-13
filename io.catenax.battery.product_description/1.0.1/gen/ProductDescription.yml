@@ -1,0 +1,234 @@
+---
+openapi: 3.0.3
+info:
+  title: Product Description
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/product-description:
+    get:
+      tags:
+      - ProductDescription
+      operationId: getProductDescription
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/ProductDescription'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDescription'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_bamm_io.catenax.battery.product_description_1.0.1_Capacity:
+      type: number
+      description: Capacity in farad
+    urn_bamm_io.catenax.battery.product_description_1.0.1_PerformanceIndicatorEntity:
+      description: indicates the performance of the battery
+      type: object
+      properties:
+        electrictiyCapacityMin:
+          description: The minimal electric capacity
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_Capacity'
+        electrictiyCapacityMax:
+          description: The maximal electric capacity
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_Capacity'
+      required:
+      - electrictiyCapacityMin
+      - electrictiyCapacityMax
+    urn_bamm_io.catenax.battery.product_description_1.0.1_BatteryType:
+      type: string
+      description: Differentation between High Voltage Battery = HVB and Low Voltage
+        Battery = LVB
+      enum:
+      - HVB
+      - LVB
+    urn_bamm_io.catenax.battery.product_description_1.0.1_Percentage:
+      type: number
+      description: Percentage
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_bamm_io.catenax.battery.product_description_1.0.1_LifecyclePhases:
+      type: string
+      description: "temporary definition of lifecycle phases as following in enumeration\
+        \ for: as specified by OEM, as specified by other, as recieved by dismantling,\
+        \ as maintained by workshop"
+      enum:
+      - as specified by OEM
+      - as specified by other
+      - as recieved by dismantling
+    urn_bamm_io.catenax.battery.product_description_1.0.1_MinStateOfHealthCharacteristic:
+      description: Characteristic to describe a set of attributes which state the
+        minimal state of healt of a battery
+      type: object
+      properties:
+        minimalStateOfHealthValue:
+          description: Value of the minimal state of health as percentage
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_Percentage'
+        specificatorId:
+          description: specificator of the minimal state of health defined by an identifier
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        minimalStateOfHealthPhase:
+          description: minimal State Of Health Phase for the battery
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_LifecyclePhases'
+      required:
+      - minimalStateOfHealthValue
+      - specificatorId
+      - minimalStateOfHealthPhase
+    urn_bamm_io.catenax.battery.product_description_1.0.1_DateTimestamp:
+      type: string
+      format: date
+      description: Date Timestamp for current state of health
+    urn_bamm_io.catenax.battery.product_description_1.0.1_CurrentStateOfHealthEntity:
+      description: entity to describe further attributes of the current state of health
+        of the specified battery
+      type: object
+      properties:
+        currentStateOfHealthValue:
+          description: current value as percentage of the state of health attribute
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_Percentage'
+        currentStateOfHealthTimestamp:
+          description: timestamp of the input for the current state of health
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_DateTimestamp'
+        currentStateOfHealthPhase:
+          description: current state of health phase of the battery as enumeration
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_LifecyclePhases'
+      required:
+      - currentStateOfHealthValue
+      - currentStateOfHealthTimestamp
+      - currentStateOfHealthPhase
+    urn_bamm_io.catenax.battery.product_description_1.0.1_CurrentState:
+      description: Current State of the battery
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_CurrentStateOfHealthEntity'
+      uniqueItems: true
+    ProductDescription:
+      description: Aspect to describe battery specific information such as the state
+        of health and the capacity
+      type: object
+      properties:
+        performanceIndicator:
+          description: The performance indicator
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_PerformanceIndicatorEntity'
+        type:
+          description: type of the battery
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_BatteryType'
+        minimalStateOfHealth:
+          description: describes the minimal state of health (SOH) of the manufacturer
+            for the battery to be rated as reusable. The state of health is defined
+            as the ratio of the maximum battery charge to its rated capacity.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_MinStateOfHealthCharacteristic'
+        currentStateOfHealth:
+          description: the current state of health of the battery. The state of health
+            is defined as the ratio of the maximum battery charge to its rated capacity
+          $ref: '#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_CurrentState'
+      required:
+      - performanceIndicator
+      - type
+      - minimalStateOfHealth
+      - currentStateOfHealth
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ProductDescription:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    ProductDescription:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductDescription'

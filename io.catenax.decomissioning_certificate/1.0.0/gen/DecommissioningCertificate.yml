@@ -1,0 +1,131 @@
+---
+openapi: 3.0.3
+info:
+  title: Decommissioning Certificate
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/decommissioning-certificate:
+    get:
+      tags:
+      - DecommissioningCertificate
+      operationId: getDecommissioningCertificate
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/DecommissioningCertificate'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_bamm_io.catenax.decomissioning_certificate_1.0.0_Text:
+      type: string
+      description: "Describes a Property, which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_bamm_io.catenax.decomissioning_certificate_1.0.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    DecommissioningCertificate:
+      type: object
+      properties:
+        catenaXId:
+          description: Twin identification
+          $ref: '#/components/schemas/urn_bamm_io.catenax.decomissioning_certificate_1.0.0_Text'
+        serialNumber:
+          description: "This is the \"real-world\" identification of an object, which\
+            \ is bound to be destructed. In case of a complete vehicle, which was\
+            \ in circulation before, it has to be the VAN. "
+          $ref: '#/components/schemas/urn_bamm_io.catenax.decomissioning_certificate_1.0.0_Text'
+        issuer:
+          description: "BPMN of the business partner who creates this certificate,\
+            \ usually a dismantler."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.decomissioning_certificate_1.0.0_Text'
+        issueDate:
+          description: This is the date when the item has been decommissioned by the
+            issuer.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.decomissioning_certificate_1.0.0_Timestamp'
+        revocationDate:
+          description: This is the date when the  decommission certificate is revoked
+            by the issuer. This only happens in exceptional cases when a vehicle has
+            been marked as decommissioned by error or any other error is made in the
+            issuance of the certificate
+          $ref: '#/components/schemas/urn_bamm_io.catenax.decomissioning_certificate_1.0.0_Timestamp'
+      required:
+      - catenaXId
+      - serialNumber
+      - issuer
+      - issueDate
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    DecommissioningCertificate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DecommissioningCertificate'
+      description: The request was successful.
+  requestBodies:
+    DecommissioningCertificate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DecommissioningCertificate'

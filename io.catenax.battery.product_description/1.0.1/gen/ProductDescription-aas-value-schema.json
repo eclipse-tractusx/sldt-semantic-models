@@ -1,0 +1,116 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Aspect to describe battery specific information such as the state of health and the capacity",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_bamm_io.catenax.battery.product_description_1.0.1_Capacity" : {
+        "type" : "number",
+        "description" : "Capacity in farad"
+      },
+      "urn_bamm_io.catenax.battery.product_description_1.0.1_PerformanceIndicatorEntity" : {
+        "description" : "indicates the performance of the battery",
+        "type" : "object",
+        "properties" : {
+          "electrictiyCapacityMin" : {
+            "description" : "The minimal electric capacity",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_Capacity"
+          },
+          "electrictiyCapacityMax" : {
+            "description" : "The maximal electric capacity",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_Capacity"
+          }
+        },
+        "required" : [ "electrictiyCapacityMin", "electrictiyCapacityMax" ]
+      },
+      "urn_bamm_io.catenax.battery.product_description_1.0.1_BatteryType" : {
+        "type" : "string",
+        "description" : "Differentation between High Voltage Battery = HVB and Low Voltage Battery = LVB",
+        "enum" : [ "HVB", "LVB" ]
+      },
+      "urn_bamm_io.catenax.battery.product_description_1.0.1_Percentage" : {
+        "type" : "number",
+        "description" : "Percentage"
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_bamm_io.catenax.battery.product_description_1.0.1_LifecyclePhases" : {
+        "type" : "string",
+        "description" : "temporary definition of lifecycle phases as following in enumeration for: as specified by OEM, as specified by other, as recieved by dismantling, as maintained by workshop",
+        "enum" : [ "as specified by OEM", "as specified by other", "as recieved by dismantling" ]
+      },
+      "urn_bamm_io.catenax.battery.product_description_1.0.1_MinStateOfHealthCharacteristic" : {
+        "description" : "Characteristic to describe a set of attributes which state the minimal state of healt of a battery",
+        "type" : "object",
+        "properties" : {
+          "minimalStateOfHealthValue" : {
+            "description" : "Value of the minimal state of health as percentage",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_Percentage"
+          },
+          "specificatorId" : {
+            "description" : "specificator of the minimal state of health defined by an identifier",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "minimalStateOfHealthPhase" : {
+            "description" : "minimal State Of Health Phase for the battery",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_LifecyclePhases"
+          }
+        },
+        "required" : [ "minimalStateOfHealthValue", "specificatorId", "minimalStateOfHealthPhase" ]
+      },
+      "urn_bamm_io.catenax.battery.product_description_1.0.1_DateTimestamp" : {
+        "type" : "string",
+        "format" : "date",
+        "description" : "Date Timestamp for current state of health"
+      },
+      "urn_bamm_io.catenax.battery.product_description_1.0.1_CurrentStateOfHealthEntity" : {
+        "description" : "entity to describe further attributes of the current state of health of the specified battery",
+        "type" : "object",
+        "properties" : {
+          "currentStateOfHealthValue" : {
+            "description" : "current value as percentage of the state of health attribute",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_Percentage"
+          },
+          "currentStateOfHealthTimestamp" : {
+            "description" : "timestamp of the input for the current state of health",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_DateTimestamp"
+          },
+          "currentStateOfHealthPhase" : {
+            "description" : "current state of health phase of the battery as enumeration",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_LifecyclePhases"
+          }
+        },
+        "required" : [ "currentStateOfHealthValue", "currentStateOfHealthTimestamp", "currentStateOfHealthPhase" ]
+      },
+      "urn_bamm_io.catenax.battery.product_description_1.0.1_CurrentState" : {
+        "description" : "Current State of the battery",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_CurrentStateOfHealthEntity"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "performanceIndicator" : {
+      "description" : "The performance indicator",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_PerformanceIndicatorEntity"
+    },
+    "type" : {
+      "description" : "type of the battery",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_BatteryType"
+    },
+    "minimalStateOfHealth" : {
+      "description" : "describes the minimal state of health (SOH) of the manufacturer for the battery to be rated as reusable. The state of health is defined as the ratio of the maximum battery charge to its rated capacity.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_MinStateOfHealthCharacteristic"
+    },
+    "currentStateOfHealth" : {
+      "description" : "the current state of health of the battery. The state of health is defined as the ratio of the maximum battery charge to its rated capacity",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.battery.product_description_1.0.1_CurrentState"
+    }
+  },
+  "required" : [ "performanceIndicator", "type", "minimalStateOfHealth", "currentStateOfHealth" ]
+}

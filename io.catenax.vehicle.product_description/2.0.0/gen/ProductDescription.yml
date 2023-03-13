@@ -1,0 +1,545 @@
+---
+openapi: 3.0.3
+info:
+  title: Vehicle master data
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/product-description:
+    get:
+      tags:
+      - ProductDescription
+      operationId: getProductDescription
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/ProductDescription'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDescription'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_OemShortNameTrait:
+      type: string
+      description: Restricts the length of wmiCode to exactly 3 chars
+      maxLength: 3
+      minLength: 3
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_OEMCharacteristic:
+      description: OEMCharacteristic
+      type: object
+      properties:
+        wmiCode:
+          description: "short name/code of vehicle manufacturer according  to world\
+            \ manufacturer information(wmi). The wmiCode are the first 3 chars of\
+            \ the vehicle identification number.\nA list of in NHTSA registered wmiCodes\
+            \ can be found in attribute Wmi in table [vPICList_lite].[dbo].[Wmi] "
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_OemShortNameTrait'
+        wmiDescription:
+          description: |-
+            name of OEM according NHTSA or other authorities. Has to be compliant with/linked wmiCode attribute.
+            For NHTSA: name of table [vPICList_lite].[dbo].[Manufacturer]
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        cxBPN:
+          description: Catena-X business partner number of this company
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - wmiCode
+      - wmiDescription
+      - cxBPN
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_CatenaXIdTrait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_VehicleSteeringPos:
+      type: string
+      description: "vehicle steering position enumeration from NHTSA, see table [vPICList_lite].[dbo].[Steering]"
+      enum:
+      - Left-Hand Drive (LHD)
+      - Right-Hand Drive (RHD)
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_Weight:
+      type: number
+      description: weight of an object
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_DriveTypeNHTSA:
+      type: string
+      description: "enumeration of drive type according NHTSA, table [vPICList_lite].[dbo].[DriveType]"
+      enum:
+      - All-Wheel Drive(AWD)
+      - Front-Wheel Drive(FWD)
+      - Rear-Wheel Drive(RWD)
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_EnginePower:
+      type: number
+      description: engine power expressed in kilowatt
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_Hybridization:
+      type: string
+      description: Enum of possible hybridization values
+      enum:
+      - battery electric vehicle
+      - hybrid electric vehicle
+      - no hybrid
+      - plugin hybrid electric vehicle
+      - range extender
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_VehicleCharacteristic:
+      description: bundles all general vehicle data
+      type: object
+      properties:
+        anonymizedVin:
+          description: OEM-specific hashed VIN; link to car data over pseydomized/hashed
+            VIN or Catena-X unique digital twin identifier
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        catenaXId:
+          description: "A fully anonymous Catena-X identifier that is registered in\
+            \ C-X Digital twin registry. Can be used for vehicles, parts, workshops,\
+            \ ....."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_CatenaXIdTrait'
+        vehicleSeries:
+          description: "vehicle series, normally one level above model. E.g. vehicle\
+            \ series =\"Golf\", vehicle model=\"Golf VIII\""
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        modelDescription:
+          description: Detail vehicle model like "Golf VIII"
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        modelIdentifier:
+          description: OEM-specific model identifier or OEM-specific project name
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        class:
+          description: class of the vehicle
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        steeringPos:
+          description: "position of vehicle steering wheel, Left or right"
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_VehicleSteeringPos'
+        emptyWeight:
+          description: The empty weight of the vehicle in kg as specified
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_Weight'
+        driveType:
+          description: drive type of a vehicle according enumeration
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_DriveTypeNHTSA'
+        systemPower:
+          description: Complete power of this vehicle in KW
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_EnginePower'
+        hybridizationType:
+          description: Kind of the hybridization in this vehicle
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_Hybridization'
+        softwareCategory:
+          description: |-
+            Some OEMs brings in the software as complete package for all systems:
+            To identify this software: software category and software version is needed.
+            Software category when this car was built
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        softwareVersion:
+          description: |
+            Some OEMs brings in the software as complete package for all systems:
+            To identify this software: software category and software version is needed.
+            Software version when this car was built
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - anonymizedVin
+      - vehicleSeries
+      - modelDescription
+      - modelIdentifier
+      - class
+      - steeringPos
+      - emptyWeight
+      - driveType
+      - systemPower
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_PositiveNumber:
+      type: number
+      minimum: 1
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_KbaVariant:
+      type: string
+      description: 'Current version of the Enumeration is sub-set of list defined
+        from the German Federal Office for motor vehicles. '
+      enum:
+      - Limousine
+      - Schräghecklimousine
+      - Kombilimousine
+      - Coupé
+      - Kabrio-Limousine
+      - Cabrio-Limousine
+      - Mehrzweckfahrzeug
+      - Pkw-Pick-up
+      - Van
+      - Pick-up
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_NhtsaVariant:
+      type: string
+      description: "Enumeration comming from NHTSA offline database vpic, table [vPICList_lite].[dbo].[BodyStyle]"
+      enum:
+      - Cargo Van
+      - Convertible
+      - Cabriolet
+      - Coupe
+      - Crossover Utility Vehicle(CUV)
+      - Hatchback
+      - Liftback
+      - Notchback
+      - Limousine
+      - Low Speed Vehicle(LSV)
+      - Neighborhood Electric Vehicle(NEV)
+      - Minivan
+      - Pickup
+      - Roadster
+      - Sedan
+      - Saloon
+      - Sport Utility Truck(SUT)
+      - Sport Utility Vehicle(SUV)
+      - Multi-Purpose Vehicle(MPV)
+      - Van
+      - Wagon
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_BodyCharacteristic:
+      description: bundles all body-related information
+      type: object
+      properties:
+        numberOfDoors:
+          description: describes the number of doors of a vehicle
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_PositiveNumber'
+        colorId:
+          description: Colour code describes the code of a specific colour of one
+            vehicle.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        colorDescription:
+          description: Colour name describes the colour of the colour code as a written
+            word.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        kbaBody:
+          description: vehicle variant - Body shapes according German KBA
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_KbaVariant'
+        nhtsaBody:
+          description: vehicle variant - Body shapes according US NHTSA
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_NhtsaVariant'
+      required:
+      - numberOfDoors
+      - colorId
+      - colorDescription
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_Equipment:
+      description: one optional equipment in car
+      type: object
+      properties:
+        equipmentIdentifier:
+          description: The identifier of a specific equipment
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        equipmentDescription:
+          description: The equipment variants description
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        group:
+          description: grouping the special equipments into categories like Interior
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - equipmentIdentifier
+      - equipmentDescription
+      - group
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_Equipments:
+      description: list of equipments installed in the vehicle
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_Equipment'
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_ProductionCharacteristic:
+      description: Production Characteristic
+      type: object
+      properties:
+        productionDate:
+          description: production date of the vehicle
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+        plantIdentifier:
+          description: plant id of the final assembly of the vehicle
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        plantDescription:
+          description: long name of the production plant of the vehicle
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - productionDate
+      - plantIdentifier
+      - plantDescription
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_CountryCodeTrait:
+      type: string
+      description: 'Regular Expression that ensures a three-letter code '
+      pattern: "^[A-Z][A-Z][A-Z]$"
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_SaleCharacteristic:
+      description: Sale Characteristic
+      type: object
+      properties:
+        soldDate:
+          description: Sold date of the vehicle = warranty start date for this vehicle
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+        countryCode:
+          description: vehicle sold country in ISO 8601 alpha 3
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_CountryCodeTrait'
+        countryGroup:
+          description: region where this car was sold
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - soldDate
+      - countryCode
+      - countryGroup
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_CubicCapacity:
+      type: number
+      description: cubic capacity of the engine
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_Engine:
+      description: Describing one installed engine
+      type: object
+      properties:
+        engineId:
+          description: OEM-specific identifier/type of the installed engine
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        engineDescription:
+          description: description of the engine
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        engineSeries:
+          description: engine series
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        serialNumber:
+          description: serial number of the installed engine
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        size:
+          description: Cubic capacity in a combustion engine  - not available in battery-electric
+            vehicles
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_CubicCapacity'
+        power:
+          description: engine power is the power that an engine can put out
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_EnginePower'
+        engineProductionDate:
+          description: date when the engine was produced
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+        installDate:
+          description: date when the engine was installed
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+      required:
+      - engineId
+      - engineDescription
+      - engineSeries
+      - serialNumber
+      - power
+      - engineProductionDate
+      - installDate
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_Engines:
+      description: A list of all installed engines in the vehicle
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_Engine'
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_FuelKBA:
+      type: string
+      description: enumeration of possible fuel types of a vehicle according german
+        KBA
+      enum:
+      - Unbekannt
+      - Diesel
+      - Benzin
+      - Vielstoff
+      - Elektro
+      - Flüssiggas
+      - Benzin/Flüssiggas
+      - Benzin/komp.Erdgas
+      - Hybr.Benzin/E
+      - Erdgas NG
+      - Hybr.Diesel/E
+      - Wasserstoff
+      - Hybr.Wasserst./E
+      - Wasserstoff/Benzin
+      - Wasserst./Benzin/E
+      - BZ/Wasserstoff
+      - BZ/Benzin
+      - BZ/Methanol
+      - BZ/Ethanol
+      - Hybr.Vielstoff/E
+      - Methan
+      - Benzin/Methan
+      - Hybr.Erdgas/E
+      - Benzin/Ethanol
+      - Hybr.Flüssiggas/E
+      - Hybr.B/E ext.aufl.
+      - Hybr.D/E ext.aufl.
+      - Hybr.LPG/E ext.aufl.
+      - Hybr.W/E ext.aufl.
+      - Hybr.V/E ext.aufl.
+      - Hybr.NG/E ext.aufl.
+      - Hybr.Wod.B/Eext.aufl
+      - Wasserstoff/NG
+      - Hybr.W/NG/E ext.aufl
+      - Ethanol
+      - Hybr.BZ/W/E
+      - Hybr.BZ/W/E ext. aufl.
+      - Zweistoff LNG/Diesel
+      - Verflüssigtes Erdgas (LNG)
+      - Andere
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_FuelNHTSA:
+      type: string
+      description: "enumeration from NHTSA vpic database, table [vPICList_lite].[dbo].[FuelType]"
+      enum:
+      - Compressed Hydrogen/Hydrogen
+      - Compressed Natural Gas(CNG)
+      - Diesel
+      - Electric
+      - Ethanol(E85)
+      - Flexible Fuel Vehicle(FFV)
+      - Fuel Cell
+      - Gasoline
+      - Liquefied Natural Gas(LNG)
+      - Liquefied Petroleum Gas(propane or LPG)
+      - Methanol(M85)
+      - Natural Gas
+      - Neat Ethanol(E100)
+      - Neat Methanol(M100)
+      - Unknown
+    urn_bamm_io.catenax.vehicle.product_description_2.0.0_FuelCharacteristic:
+      description: FuelCharacteristic
+      type: object
+      properties:
+        kbaFuelType:
+          description: description of the fuel according german KBA
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_FuelKBA'
+        nhtsaFuelType:
+          description: description of the fuel according US NHTSA
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_FuelNHTSA'
+    ProductDescription:
+      description: Master data of one vehicle - from an end customer view. So this
+        model represents the vehicle as it was sold to the customer. All entities
+        and properties are immutable over the lifetime of the vehicle.
+      type: object
+      properties:
+        oem:
+          description: original equipment manufacturer
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_OEMCharacteristic'
+        vehicle:
+          description: "vehicle: can be a car, bus, truck..."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_VehicleCharacteristic'
+        body:
+          description: vehicle body
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_BodyCharacteristic'
+        equipments:
+          description: Equipments
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_Equipments'
+        production:
+          description: bundles production-related information
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_ProductionCharacteristic'
+        sale:
+          description: bundles all sales related information
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_SaleCharacteristic'
+        engines:
+          description: List of installed engines in the vehicle
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_Engines'
+        fuel:
+          description: the fuel type of the vehicle
+          $ref: '#/components/schemas/urn_bamm_io.catenax.vehicle.product_description_2.0.0_FuelCharacteristic'
+      required:
+      - oem
+      - vehicle
+      - body
+      - equipments
+      - production
+      - sale
+      - engines
+      - fuel
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ProductDescription:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    ProductDescription:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductDescription'

@@ -1,0 +1,170 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Aspect to indicate if there is a return request for a product.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean" : {
+        "type" : "boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_bamm_io.catenax.return_request_1.1.2_DateTimestamp" : {
+        "type" : "string",
+        "format" : "date",
+        "description" : "Timestamp for dates"
+      },
+      "urn_bamm_io.catenax.return_request_1.1.2_ProductConditionsCharacteristic" : {
+        "description" : "Criteria describing the state of a product on the marketplace.",
+        "type" : "object",
+        "properties" : {
+          "missingParts" : {
+            "description" : "Completeness of the product, e.g. missing parts are not acceptable.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean"
+          },
+          "dismantled" : {
+            "description" : "Information on whether the product has been dismantled.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean"
+          },
+          "mechanicalDamage" : {
+            "description" : "Information on mechanical damage to the part, e.g. two broken ribs or part deformation indicate mechanical damage.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean"
+          },
+          "corroded" : {
+            "description" : "Information on whether the product has corrosion.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean"
+          },
+          "discolored" : {
+            "description" : "Information on whether the product has been discoloured.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean"
+          }
+        }
+      },
+      "urn_bamm_io.catenax.return_request_1.1.2_QuantityCharacteristic" : {
+        "type" : "number",
+        "description" : "Characteristic describing the quantity"
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_bamm_io.catenax.return_request_1.1.2_TimePeriodEntity" : {
+        "description" : "Entity defining a range of dates to define a time period.",
+        "type" : "object",
+        "properties" : {
+          "startDate" : {
+            "description" : "The first day of the period",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+          },
+          "endDate" : {
+            "description" : "The last day of the period.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+          }
+        },
+        "required" : [ "startDate", "endDate" ]
+      },
+      "urn_bamm_io.catenax.return_request_1.1.2_TimePeriod" : {
+        "description" : "Depicts a time period by specifying start and end date",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_TimePeriodEntity"
+        },
+        "uniqueItems" : true
+      },
+      "urn_bamm_io.catenax.return_request_1.1.2_ValueCharacteristic" : {
+        "type" : "number",
+        "description" : "Characteristic to describe the value in a float type."
+      },
+      "urn_bamm_io.catenax.return_request_1.1.2_CurrencyTrait" : {
+        "type" : "string",
+        "description" : "reduces the possible entry to three entries from A-Z",
+        "pattern" : "^[A-Z]{3}$"
+      },
+      "urn_bamm_io.catenax.return_request_1.1.2_PriceCharacteristic" : {
+        "description" : "Characteristic to describe the price. Different currencies are possible",
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "description" : "The nominal value.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_ValueCharacteristic"
+          },
+          "currency" : {
+            "description" : "Currency of the price of the return request conform to the ISO4217 in numerical codes.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_CurrencyTrait"
+          }
+        },
+        "required" : [ "value", "currency" ]
+      },
+      "urn_bamm_io.catenax.return_request_1.1.2_PriceRangeCharacteristic" : {
+        "description" : "Characteristic to define range of monetary values.",
+        "type" : "object",
+        "properties" : {
+          "minPrice" : {
+            "description" : "The minimum price that a buyer is ready to pay to get an item (motivating sellers to sell).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_PriceCharacteristic"
+          },
+          "maxPrice" : {
+            "description" : "The maximum price until which a demand request is relevant.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_PriceCharacteristic"
+          }
+        },
+        "required" : [ "maxPrice" ]
+      }
+    }
+  },
+  "properties" : {
+    "needsReturn" : {
+      "description" : "Describes the fact whether a vehicle, assembly or part needs to be returned to requestor.",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean"
+    },
+    "returnConditions" : {
+      "description" : "Describes WHY a vehicle, assembly or part needs to be returned to the requestor and under which conditions.",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+    },
+    "requestDate" : {
+      "description" : "Describes date when the return request was placed.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_DateTimestamp"
+    },
+    "latestReturnDate" : {
+      "description" : "Describes until when the return request is valid.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_DateTimestamp"
+    },
+    "productConditions" : {
+      "description" : "textual description of the product conditions",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_ProductConditionsCharacteristic"
+    },
+    "title" : {
+      "description" : "The request name to be used by the buyer to navigate through the list of demand requests.",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+    },
+    "marketplaceProduct" : {
+      "description" : "The description of the product within the marketplace that might differ from the digital twin.",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+    },
+    "quantity" : {
+      "description" : "The desired quantity of the on the marketplace offered product in SKU.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_QuantityCharacteristic"
+    },
+    "unitOfMeasure" : {
+      "description" : "The unit of measure (related to quantity).",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+    },
+    "validityPeriod" : {
+      "description" : "Specifies the time period when the need exists",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_TimePeriod"
+    },
+    "priceRange" : {
+      "description" : "Range of monetary values.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.return_request_1.1.2_PriceRangeCharacteristic"
+    },
+    "isRecall" : {
+      "description" : "Depicts if the manufacturer issued a recall (e.g. for security reasons). In concjunction with property needsReturn it can be expressed if the item has to be returned or can directly be destroyed.",
+      "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean"
+    }
+  },
+  "required" : [ "needsReturn", "returnConditions", "requestDate", "latestReturnDate", "productConditions", "title", "marketplaceProduct", "quantity", "unitOfMeasure", "validityPeriod", "priceRange", "isRecall" ]
+}
