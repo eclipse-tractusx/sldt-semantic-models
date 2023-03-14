@@ -60,7 +60,7 @@ DIR="$(dirname "$1")"
 PATHTEMPLATE=$DIR"/gen/"$MODELNAME
 
 commands=(aas schema json openapi html)
-endings=(-aas.json -aas-value-schema.json -aas-value.json .yml -aspectmodel.html)
+endings=(-aas.json -schema.json .json .yml .html)
 toggles=("-f json" "" "" " -b=catenax.io" "-c $CATENAXCSS")
 
 for i in ${!commands[@]}; do
