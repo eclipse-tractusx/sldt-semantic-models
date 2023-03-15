@@ -1,0 +1,304 @@
+---
+openapi: 3.0.3
+info:
+  title: Id Conversion
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/id-conversion:
+    get:
+      tags:
+      - IdConversion
+      operationId: getIdConversion
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/IdConversion'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+  /{tenant-id}/id-conversion/operations:
+    post:
+      servers:
+      - url: catenax.io/rpc-api/v1
+        variables:
+          api-version:
+            default: v1
+      tags:
+      - IdConversion
+      operationId: postOperationIdConversion
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        $ref: '#/components/requestBodies/Operation'
+      responses:
+        "200":
+          $ref: '#/components/responses/OperationResponse'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    JsonRpc:
+      type: object
+      required:
+      - id
+      - jsonrpc
+      properties:
+        id:
+          type: number
+          default: 1
+          description: Request ID
+        jsonrpc:
+          type: string
+          default: 2.0
+          description: JSON-RPC Version (2.0)
+    IdConversion:
+      description: "The IdConversion aspect deals with the Conversion of (vehicle,\
+        \ global) Identifiers like VINs into Pseudonyms which are located in an OEM\
+        \ domain (VANs, UUIDs and other concepts) and vice versa. As there are multiple\
+        \ options for representing Identifiers and performing Pseudonymization, this\
+        \ model uses a combination of unqualified values for identifiers paired with\
+        \ namespaces (domains, keys)."
+      type: object
+      properties: {}
+    Operation:
+      oneOf:
+      - $ref: '#/components/schemas/ConvertOperation'
+      - $ref: '#/components/schemas/ReidentificationOperation'
+    ConvertOperation:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpc'
+      - properties:
+          params:
+            type: object
+            required:
+            - targetDomain
+            - conversionInput
+            properties:
+              targetDomain:
+                description: "The Target Domain of a Conversion is an input parameter\
+                  \ which qualifies the desired target pseudonyms/identifiers. In\
+                  \ cases where the Conversion has only a single target domain and\
+                  \ this is crystal-clear from the context, it may be ommited."
+                $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_UrnCharacteristic'
+              conversionInput:
+                description: The Conversion Input lists the (qualified) source identifiers
+                  or pseudonyms which should be covered by the Convert operation.
+                $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_QualifiedBatchOfIdentifiersEither'
+          method:
+            type: string
+            description: The method name
+            example: ConvertOperation
+    ReidentificationOperation:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpc'
+      - properties:
+          params:
+            type: object
+            required:
+            - sourceDomain
+            - conversionInput
+            properties:
+              sourceDomain:
+                description: "The Source Domain of a Reidentification is an input\
+                  \ parameter which qualifies the desired target identifiers. In cases\
+                  \ where the Reidentification has only a single source domain and\
+                  \ this is crystal-clear from the context, it may be ommited."
+                $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_UrnCharacteristic'
+              conversionInput:
+                description: The Conversion Input lists the (qualified) source identifiers
+                  or pseudonyms which should be covered by the Convert operation.
+                $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_QualifiedBatchOfIdentifiersEither'
+          method:
+            type: string
+            description: The method name
+            example: ReidentificationOperation
+    OperationResponse:
+      oneOf:
+      - $ref: '#/components/schemas/ConvertOperationResponse'
+      - $ref: '#/components/schemas/ReidentificationOperationResponse'
+    ConvertOperationResponse:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpc'
+      - properties:
+          result:
+            type: object
+            required:
+            - conversionOutput
+            properties:
+              conversionOutput:
+                description: The Conversion Output lists the (qualified) target identifiers
+                  or pseudonyms which have been computed by the Convert operation.
+                $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_QualifiedBatchOfIdentifiersEither'
+    ReidentificationOperationResponse:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpc'
+      - properties:
+          result:
+            type: object
+            required:
+            - conversionOutput
+            properties:
+              conversionOutput:
+                description: The Conversion Output lists the (qualified) target identifiers
+                  or pseudonyms which have been computed by the Convert operation.
+                $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_QualifiedBatchOfIdentifiersEither'
+    urn_bamm_io.catenax.idconversion_1.0.0_UrnCharacteristic:
+      type: string
+      format: uri
+      description: "A Unique Resource Name (URN) preferrably in IRI syntax (with a\
+        \ trailing #)"
+    urn_bamm_io.catenax.idconversion_1.0.0_IdList:
+      description: A list of (unqualified) identifiers. This characteristic should
+        be constrained in concrete implementations and in correspondence with associated
+        domains of the Convert operation.
+      type: array
+      items:
+        type: string
+    urn_bamm_io.catenax.idconversion_1.0.0_IdCharacteristic:
+      type: string
+      description: An (unqualified) Identifier. This characteristic should be constrained
+        in concrete implementations and in correspondence with associated domains
+        of the Convert operation.
+    urn_bamm_io.catenax.idconversion_1.0.0_QualifiedIdentifierEntity:
+      description: Qualified Identifier is an entity which combines a namespace (key)
+        and a local name (value) component.
+      type: object
+      properties:
+        key:
+          description: "The key hints to the type (identifier of a specific origin,\
+            \ pseudonym of a given domain)."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_UrnCharacteristic'
+        value:
+          description: The value property is either a local identifier or pseudonym.
+            The format and type of the value depends on the key property.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_IdCharacteristic'
+      required:
+      - key
+      - value
+    urn_bamm_io.catenax.idconversion_1.0.0_QualifiedBatchOfIdentifiersEither:
+      description: A Qualified Batch of Identifiers (and Pseudonyms) has two representations.
+        Either it lists a set of unqualified Identifiers under a common domain/key.
+        Or it lists a set of individually qualified Identifiers.
+      additionalProperties: false
+      properties:
+        left:
+          description: "In a Qualified List of (unqualified) Identifiers, any Identifier\
+            \ belongs to the same domain."
+          type: object
+          properties:
+            key:
+              description: "The key hints to the type (identifier of a specific origin,\
+                \ pseudonym of a given domain)."
+              $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_UrnCharacteristic'
+            values:
+              description: The Values property hosts a list of (unqualified) identifiers
+                or pseudonyms. The format and type of the value depends on the key
+                property.
+              $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_IdList'
+          required:
+          - key
+          - values
+        right:
+          description: "In a List of Qualified Identifiers, any Identifier can belong\
+            \ to its own domain."
+          type: array
+          items:
+            $ref: '#/components/schemas/urn_bamm_io.catenax.idconversion_1.0.0_QualifiedIdentifierEntity'
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    IdConversion:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IdConversion'
+      description: The request was successful.
+    OperationResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OperationResponse'
+      description: The request was successful.
+  requestBodies:
+    IdConversion:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IdConversion'
+    Operation:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Operation'

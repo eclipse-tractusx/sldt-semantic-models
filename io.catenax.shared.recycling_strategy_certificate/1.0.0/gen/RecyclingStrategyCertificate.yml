@@ -1,0 +1,136 @@
+---
+openapi: 3.0.3
+info:
+  title: Recycling strategy certificate
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/recycling-strategy-certificate:
+    get:
+      tags:
+      - RecyclingStrategyCertificate
+      operationId: getRecyclingStrategyCertificate
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/RecyclingStrategyCertificate'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_bamm_io.catenax.shared.recycling_strategy_certificate_1.0.0_IssuerCharacteristic:
+      type: string
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_bamm_io.catenax.shared.recycling_strategy_certificate_1.0.0_CatenaXIdTraitCharacteristic:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_bamm_io.catenax.shared.recycling_strategy_certificate_1.0.0_RecyclingStrategyCertificateCharacteristic:
+      type: object
+      properties:
+        issuer:
+          description: BPMN of the business partner who creates this certificate
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.recycling_strategy_certificate_1.0.0_IssuerCharacteristic'
+        issueDate:
+          description: This is the date when the certificate was issued.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+        catenaXIdPreviousLife:
+          description: Twin identification previous life
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.recycling_strategy_certificate_1.0.0_CatenaXIdTraitCharacteristic'
+        catenaXId:
+          description: "The Catena-X ID of the given part (e.g. the assembly), valid\
+            \ for the Catena-X dataspace."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.recycling_strategy_certificate_1.0.0_CatenaXIdTraitCharacteristic'
+      required:
+      - issuer
+      - issueDate
+      - catenaXIdPreviousLife
+      - catenaXId
+    RecyclingStrategyCertificate:
+      description: The certificate marks the point in time at which an asset irrevocably
+        enters a new life. The eol (end of life) phase is completed and a new product
+        life cycle is started.
+      type: object
+      properties:
+        recyclingStrategyCertificateProperty:
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.recycling_strategy_certificate_1.0.0_RecyclingStrategyCertificateCharacteristic'
+      required:
+      - recyclingStrategyCertificateProperty
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RecyclingStrategyCertificate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RecyclingStrategyCertificate'
+      description: The request was successful.
+  requestBodies:
+    RecyclingStrategyCertificate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RecyclingStrategyCertificate'
