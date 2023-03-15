@@ -1,0 +1,145 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "This aspect model is used to exchange manufacturing-oriented information of several parts, e.g. for quality tasks",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_CatenaXIdTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_ProductionCountryCodeTrait" : {
+        "type" : "string",
+        "description" : "Regular Expression that ensures a three-letter code ",
+        "pattern" : "^[A-Z][A-Z][A-Z]$"
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean" : {
+        "type" : "boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_PositiveNumber" : {
+        "type" : "number",
+        "minimum" : 1
+      },
+      "urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_AdditionalInformation" : {
+        "description" : "One key:value information pair",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "description" : "Key identifier for this additional information",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "value" : {
+            "description" : "Value for this additional information",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "key", "value" ]
+      },
+      "urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_ListOfAdditionalInformation" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_AdditionalInformation"
+        }
+      },
+      "urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_ManufacturingCharacteristic" : {
+        "description" : "Collection of defined manufacturing-related properties for this part",
+        "type" : "object",
+        "properties" : {
+          "date" : {
+            "description" : "Date of manufacturing",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+          },
+          "country" : {
+            "description" : "Country code where the part was manufactured",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_ProductionCountryCodeTrait"
+          },
+          "plantId" : {
+            "description" : "Manufacturer-specific identifier of a the production plant of this part",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "plantDescription" : {
+            "description" : "Manufacturer-specific description of the production plant of this part",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "batchId" : {
+            "description" : "Manufacturer-specific batch identifier: In which batch was this part manufactured",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "productionLine" : {
+            "description" : "On which production line was this part produced",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "hasBeenReworked" : {
+            "description" : "Indicator whether this part was reworked during manufacturing",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Boolean"
+          },
+          "numberOfConductedEOLTests" : {
+            "description" : "Number how often this part went through the EOL test",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_PositiveNumber"
+          },
+          "addtionalInformation" : {
+            "description" : "You can use this key:value list for additional properties that were not defined in this aspect model.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_ListOfAdditionalInformation"
+          }
+        },
+        "required" : [ "date", "country", "plantId", "plantDescription", "batchId" ]
+      },
+      "urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_ManufacturedPart" : {
+        "description" : "Manufacturing information for one part. Important properties are standardized. Besides that there is a key:value list to exchange further non-standardized properties for this part",
+        "type" : "object",
+        "properties" : {
+          "catenaXId" : {
+            "description" : "The fully anonymous Catena-X ID of the manufactured part - only available after digital twin registry is fully operational",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_CatenaXIdTrait"
+          },
+          "qualityTaskId" : {
+            "description" : "A unique quality task identifier where this manufacturing information belongs to. Optional to ensure that also data exchange without having a quality task.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "manufacturerId" : {
+            "description" : "Identifier assigned by the manufacturer for this specific part. In case of common parts: This identifier is not unique.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "manufacturerSerialPartNumber" : {
+            "description" : "Serial part number given by  the manufacturer. Not available for common parts.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "nameAtManufacturer" : {
+            "description" : "Name of the manufactured part as given by the manufacturer.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "manufacturingInformation" : {
+            "description" : "Collection of defined manufacturing-related properties for this part",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_ManufacturingCharacteristic"
+          }
+        },
+        "required" : [ "manufacturerId", "nameAtManufacturer", "manufacturingInformation" ]
+      },
+      "urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_ListOfManufacturedParts" : {
+        "description" : "A list of manufactured parts",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_ManufacturedPart"
+        }
+      }
+    }
+  },
+  "properties" : {
+    "listOfManufacturedParts" : {
+      "description" : "A list of manufactured parts and their porperties",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.manufactured_parts_quality_information_1.0.0_ListOfManufacturedParts"
+    }
+  },
+  "required" : [ "listOfManufacturedParts" ]
+}
