@@ -1,0 +1,357 @@
+---
+openapi: 3.0.3
+info:
+  title: Certificate of Dismantler
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/certificate-of-dismantler:
+    get:
+      tags:
+      - CertificateOfDismantler
+      operationId: getCertificateOfDismantler
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/CertificateOfDismantler'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_ThoroughfareTechnicalKeyCharacteristic:
+      type: string
+      description: Characteristic of the technical key of a thoroughfare
+      enum:
+      - STREET
+      - INDUSTRIAL_ZONE
+      - OTHER
+      - RIVER
+      - SQUARE
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_ThoroughfareEntity:
+      description: "Characteristic for defining a thoroughfare which can consist of\
+        \ a type (e.g. \"STREET\"), value (e.g. \"Bernstraße\") and number (e.g. \"\
+        45\"). Model follows the specification of BPDM."
+      type: object
+      properties:
+        technicalKey:
+          description: "Technical key of a thoroughfare. As specified by BPDM, this\
+            \ can be a \"STREET\" or a different type."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_ThoroughfareTechnicalKeyCharacteristic'
+        value:
+          description: "Value of a thoroughfare, e.g. name of a street."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_Text'
+        number:
+          description: "Number of a thoroughfare. As used differently in international\
+            \ context, this number can contain both numerical and alphanumerical values"
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_Text'
+      required:
+      - technicalKey
+      - value
+      - number
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_LocalityTechnicalKeyCharacteristic:
+      type: string
+      description: Characteristic of the technical key of a locality
+      enum:
+      - BLOCK
+      - CITY
+      - DISTRICT
+      - OTHER
+      - POST_OFFICE_CITY
+      - QUARTER
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_LocalityEntity:
+      description: Characteristic for defining a locality which belongs to an address
+        and which consists of a type (e.g. "CITY") and value (e.g. "Mannheim"). Model
+        follows the specification of BPDM.
+      type: object
+      properties:
+        technicalKey:
+          description: Technical key of a locality
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_LocalityTechnicalKeyCharacteristic'
+        value:
+          description: "Value of a locality, e.g. name of a city (\"Mannheim\")."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_Text'
+      required:
+      - technicalKey
+      - value
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PremiseTechnicalKeyCharacteristic:
+      type: string
+      description: Characteristic of the technical key of a premise
+      enum:
+      - BUILDING
+      - HARBOUR
+      - LEVEL
+      - OTHER
+      - ROOM
+      - SUITE
+      - UNIT
+      - WAREHOUSE
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PremiseEntity:
+      description: Characteristic for defining a premise which consists of a technical
+        key (e.g. "BUILDING" or "OTHER") and a value (e.g. "Werk 1").
+      type: object
+      properties:
+        technicalKey:
+          description: Technical key of a premise
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PremiseTechnicalKeyCharacteristic'
+        value:
+          description: "Value of a premise, e.g. name or designation of a particular\
+            \ site"
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_Text'
+      required:
+      - technicalKey
+      - value
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostalDeliveryPointTechnicalKeyCharacteristic:
+      type: string
+      description: Characteristic of the technical key of a postal delivery point
+      enum:
+      - INTERURBAN_DELIVERY_POINT
+      - MAIL_STATION
+      - MAILBOX
+      - OTHER
+      - POST_OFFICE_BOX
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostalDeliveryPointEntity:
+      description: Characteristic for defining a postal delivery point which consists
+        of a technical key (e.g. "MAILBOX" or "OTHER") and a value. Model follows
+        the specification of BPDM.
+      type: object
+      properties:
+        technicalKey:
+          description: Technical key of a postal delivery point
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostalDeliveryPointTechnicalKeyCharacteristic'
+        value:
+          description: "Value of a postal delivery point, e.g. designation of a gate"
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_Text'
+      required:
+      - technicalKey
+      - value
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_CountryTrait:
+      type: string
+      description: Regular expression for designation of a short name of a country
+        as defined in ISO 3166-2
+      pattern: "([A-Z]{2}-[A-Z0-9]{1,3}|)"
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_CountryEntity:
+      description: Characteristic of a country belonging to an address
+      type: object
+      properties:
+        shortName:
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_CountryTrait'
+      required:
+      - shortName
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostCodeTrait:
+      type: string
+      description: Regular expression for post codes
+      pattern: "^[a-z0-9][a-z0-9\\- ]{0,10}$"
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostCodeTechnicalKeyCharacteristic:
+      type: string
+      description: Characteristic for the technical key of a post code
+      enum:
+      - CEDEX
+      - LARGE_MAIL_USER
+      - OTHER
+      - POST_BOX
+      - REGULAR
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostCodeEntity:
+      description: Characteristic for defining a postcode which can consist of a type
+        (e.g. "REGULAR" for zip codes) and a value (e.g. "68161\12"). Model follows
+        the specification of BPDM.
+      type: object
+      properties:
+        value:
+          description: The value of a post code
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostCodeTrait'
+        technicalKey:
+          description: The technical key of a post code
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostCodeTechnicalKeyCharacteristic'
+      required:
+      - value
+      - technicalKey
+    urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostalAddress:
+      description: A characteristic to express the postal adress and which is intended
+        to be referenced by other aspects
+      type: object
+      properties:
+        thoroughfare:
+          description: Street or thorough road name
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_ThoroughfareEntity'
+        locality:
+          description: Locality belonging to an address
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_LocalityEntity'
+        premise:
+          description: "Premise of an address, e.g. a specific \"BUILDING\" but can\
+            \ also be used for naming a particular site"
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PremiseEntity'
+        postalDeliveryPoint:
+          description: "Delivery point, e.g. designation of a gate"
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostalDeliveryPointEntity'
+        country:
+          description: Country of an address
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_CountryEntity'
+        postCode:
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostCodeEntity'
+      required:
+      - thoroughfare
+      - locality
+      - country
+      - postCode
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_bamm_io.catenax.certificate_of_dismantler_1.0.1_DateCharacteristic:
+      type: string
+      format: date
+      description: characteristic to describe a date
+    urn_bamm_io.catenax.shared.contact_information_1.0.0_WebsiteCharacteristic:
+      type: string
+      format: uri
+      description: Address of the website
+    urn_bamm_io.catenax.shared.contact_information_1.0.0_PhoneNumberTrait:
+      type: string
+      description: "Constraint to allow only numbers, whitespaces and an optional\
+        \ leading + sign."
+      pattern: "^[+]?[0-9 ]+$"
+    urn_bamm_io.catenax.shared.contact_information_1.0.0_EMailTrait:
+      type: string
+      description: Regular expression for mail address as defined in W3C (see https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address)
+      pattern: "^[a-zA-Z0-9.!#$%&’*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+    urn_bamm_io.catenax.shared.contact_information_1.0.0_ContactCharacteristic:
+      description: Characteristic describing information on how to contact an organization
+      type: object
+      properties:
+        website:
+          description: Website of the contact.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_1.0.0_WebsiteCharacteristic'
+        phoneNumber:
+          description: Phone number with country and area code
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_1.0.0_PhoneNumberTrait'
+        email:
+          description: An email address
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_1.0.0_EMailTrait'
+        faxNumber:
+          description: Fax number with country and area code
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_1.0.0_PhoneNumberTrait'
+    CertificateOfDismantler:
+      description: Represents the certificate of dismanter (Bescheinigung gemäß §
+        5 Abs. 3 Altfahrzeug-Verordnung) which is required in Germany to legally dismantle
+        vehicles
+      type: object
+      properties:
+        dismantlerAddress:
+          description: address data for the dismantling company
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostalAddress'
+        certificateNumber:
+          description: license number of the license
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        issueDate:
+          description: issue date of the license
+          $ref: '#/components/schemas/urn_bamm_io.catenax.certificate_of_dismantler_1.0.1_DateCharacteristic'
+        expiryDate:
+          description: expiration date of the license
+          $ref: '#/components/schemas/urn_bamm_io.catenax.certificate_of_dismantler_1.0.1_DateCharacteristic'
+        producerNumber:
+          description: describes the identification of the producing company
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        carrierIdentification:
+          description: describes the identification of the transporting company
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        disposerNumber:
+          description: describes the identification of the disposal company
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        dismantlerContact:
+          description: dismantling company contact information
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_1.0.0_ContactCharacteristic'
+        auditorAddress:
+          description: the address of the auditor
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostalAddress'
+        governmentAddress:
+          description: the address of the responsible government agency
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.address_characteristic_1.0.1_PostalAddress'
+        auditorContact:
+          description: the address of the auditor
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_1.0.0_ContactCharacteristic'
+      required:
+      - dismantlerAddress
+      - certificateNumber
+      - issueDate
+      - expiryDate
+      - disposerNumber
+      - dismantlerContact
+      - auditorAddress
+      - governmentAddress
+      - auditorContact
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    CertificateOfDismantler:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CertificateOfDismantler'
+      description: The request was successful.
+  requestBodies:
+    CertificateOfDismantler:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CertificateOfDismantler'
