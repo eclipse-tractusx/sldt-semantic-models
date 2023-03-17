@@ -3,10 +3,15 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2022-09-07
+## [3.0.1] - 2023-01-15
 ### Added
-- attributes describing battery or its condition in more detail
-- set namespace to io.catenax
+n/a
+
+### Changed
+- several smaller fixes according to technical commitee feedback
+
+### Removed
+n/a
 
 ## [3.0.0] - 2022-12-05
 ### Added
@@ -17,4 +22,11 @@ All notable changes to this model will be documented in this file.
 n/a
 
 ### Removed
+
+## [2.0.0] - 2022-09-07
+### Added
+- attributes describing battery or its condition in more detail
+- set namespace to io.catenax
+
+
 

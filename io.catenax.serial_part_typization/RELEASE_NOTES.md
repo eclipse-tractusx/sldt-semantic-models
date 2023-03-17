@@ -5,7 +5,6 @@ All notable changes to this model will be documented in this file.
 
 ## [1.1.1] - 2022-08-26
 ### Added
-- initial model
 - incremental additions of properties
 - small bugfixes
 
@@ -14,3 +13,11 @@ n/a
 
 ### Removed
 
+## [1.1.0] - 2022-08-19
+### Added
+- initial model
+
+### Changed
+n/a
+
+### Removed
