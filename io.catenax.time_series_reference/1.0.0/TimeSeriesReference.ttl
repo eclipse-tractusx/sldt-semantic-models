@@ -1,0 +1,93 @@
+#######################################################################
+# Copyright (c) 2022 Allgemeine Deutsche Automobil-Club (ADAC) e.V
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2022 Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the 
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license, 
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.time_series_reference:1.0.0#>.
+
+:TimeSeries a bamm:Aspect;
+    bamm:name "TimeSeries";
+    bamm:properties (:decimalSeperator :sourceFile :fileExtension :delimiter :payload);
+    bamm:operations ();
+    bamm:events ().
+:units a bamm:Property;
+    bamm:name "units";
+    bamm:characteristic :UnitsListCharacteristic.
+:sourceFile a bamm:Property;
+    bamm:name "sourceFile";
+    bamm:characteristic bamm-c:ResourcePath.
+:fileExtension a bamm:Property;
+    bamm:name "fileExtension";
+    bamm:characteristic :FileExtensionChoice.
+:decimalSeperator a bamm:Property;
+    bamm:name "decimalSeperator";
+    bamm:characteristic :DecimalSeperatorChoice.
+:delimiter a bamm:Property;
+    bamm:name "delimiter";
+    bamm:characteristic :DelimiterChoice.
+:DelimiterChoice a bamm-c:Enumeration;
+    bamm:name "DelimiterChoice";
+    bamm:dataType xsd:string;
+    bamm-c:values ("semicolon" "comma" "tab").
+:FileExtensionChoice a bamm-c:Enumeration;
+    bamm:name "FileExtensionChoice";
+    bamm:dataType xsd:string;
+    bamm-c:values ("csv" "none" "txt").
+:DecimalSeperatorChoice a bamm-c:Enumeration;
+    bamm:name "DecimalSeperatorChoice";
+    bamm:dataType xsd:string;
+    bamm-c:values ("dot" "comma" "semicolon").
+:payload a bamm:Property;
+    bamm:name "payload";
+    bamm:characteristic :PayloadCharacteristic.
+:PayloadCharacteristic a bamm-c:TimeSeries;
+    bamm:name "PayloadCharacteristic";
+    bamm:dataType :Payload.
+:Payload a bamm:Entity;
+    bamm:name "Payload";
+    bamm:properties (:units :variableNames).
+:variableNames a bamm:Property;
+    bamm:name "variableNames";
+    bamm:characteristic :VariableListCharacteristic.
+:UnitsListCharacteristic a bamm-c:List;
+    bamm:name "UnitsListCharacteristic";
+    bamm:dataType :Unit.
+:VariableListCharacteristic a bamm-c:List;
+    bamm:name "VariableListCharacteristic";
+    bamm:dataType :VariableName.
+:Unit a bamm:Entity;
+    bamm:name "Unit";
+    bamm:properties (:unit).
+:VariableName a bamm:Entity;
+    bamm:name "VariableName";
+    bamm:properties (:variableName).
+:unit a bamm:Property;
+    bamm:name "unit";
+    bamm:characteristic bamm-c:UnitReference.
+:variableName a bamm:Property;
+    bamm:name "variableName";
+    bamm:characteristic :VariableNameCharacteristic.
+:VariableNameCharacteristic a bamm:Characteristic;
+    bamm:name "VariableNameCharacteristic";
+    bamm:dataType rdf:langString.
