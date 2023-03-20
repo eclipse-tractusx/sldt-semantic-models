@@ -30,68 +30,78 @@
     bamm:name "units";
     bamm:characteristic :UnitsListCharacteristic;
     bamm:description "lists the unit for each datapoint"@en.
+:UnitsListCharacteristic a bamm-c:List;
+    bamm:name "UnitsListCharacteristic";
+    bamm:description "lists the unit for each datapoint"@en;
+    bamm:dataType :Unit.
 :sourceFile a bamm:Property;
     bamm:name "sourceFile";
     bamm:characteristic :ResourcePath;
-    bamm:preferredName "source file"@en;
-    bamm:description "contains the URI to the referenced time series file"@en.
+    bamm:description "contains the URI to the referenced time series file"@en;
+    bamm:preferredName "source file"@en.
+:ResourcePath a bamm:Characteristic;
+    bamm:name "ResourcePath";
+    bamm:description "The path of a resource."@en;
+    bamm:preferredName "Resource Path"@en;
+    bamm:dataType xsd:anyURI.
 :fileExtension a bamm:Property;
     bamm:name "fileExtension";
     bamm:characteristic :FileExtensionChoice;
-    bamm:exampleValue "csv";
-    bamm:description "indicates whether csv, none or txt is used as file extension"@en.
+    bamm:description "indicates whether csv, none or txt is used as file extension"@en;
+    bamm:exampleValue "csv".
+:FileExtensionChoice a bamm-c:Enumeration;
+    bamm:name "FileExtensionChoice";
+    bamm:dataType xsd:string;
+    bamm-c:values ("csv" "none" "txt" "dat" "data").
 :decimalSeperator a bamm:Property;
     bamm:name "decimalSeperator";
     bamm:characteristic :DecimalSeperatorChoice;
+    bamm:description "indicates whether a dot, comma or semicolon is used to separate the decimal place in the source file"@en;
     bamm:preferredName "decimal seperator"@en;
-    bamm:exampleValue "dot";
-    bamm:description "indicates whether a dot, comma or semicolon is used to separate the decimal place in the source file"@en.
+    bamm:exampleValue "dot".
+:DecimalSeperatorChoice a bamm-c:Enumeration;
+    bamm:name "DecimalSeperatorChoice";
+    bamm:dataType xsd:string;
+    bamm-c:values ("dot" "comma").
 :delimiter a bamm:Property;
     bamm:name "delimiter";
     bamm:characteristic :DelimiterChoice;
-    bamm:exampleValue "semicolon";
-    bamm:description "indicates whether a semicolon, comma or tab is used as a deliniter between datapoints"@en.
+    bamm:description "indicates whether a semicolon, comma or tab is used as a deliniter between datapoints"@en;
+    bamm:exampleValue "semicolon".
 :DelimiterChoice a bamm-c:Enumeration;
     bamm:name "DelimiterChoice";
     bamm:dataType xsd:string;
     bamm-c:values ("semicolon" "comma" "tab").
-:FileExtensionChoice a bamm-c:Enumeration;
-    bamm:name "FileExtensionChoice";
-    bamm:dataType xsd:string;
-    bamm-c:values ("csv" "none" "txt").
-:DecimalSeperatorChoice a bamm-c:Enumeration;
-    bamm:name "DecimalSeperatorChoice";
-    bamm:dataType xsd:string;
-    bamm-c:values ("dot" "comma" "semicolon").
 :payload a bamm:Property;
     bamm:name "payload";
     bamm:characteristic :PayloadCharacteristic;
-    bamm:preferredName "payload"@en;
-    bamm:description "contains the information about units and variable names"@en.
+    bamm:description "contains the information about units and variable names"@en;
+    bamm:preferredName "payload"@en.
 :PayloadCharacteristic a bamm-c:TimeSeries;
     bamm:name "PayloadCharacteristic";
-    bamm:dataType :PayloadEntity;
-    bamm:preferredName "payload characteristic"@en.
+    bamm:preferredName "payload characteristic"@en;
+    bamm:dataType :PayloadEntity.
+:PayloadEntity a bamm:Entity;
+    bamm:name "PayloadEntity";
+    bamm:description "header payload"@en;
+    bamm:preferredName "payload entity"@en;
+    bamm:properties (:units :variableNames :timeColumnName).
 :variableNames a bamm:Property;
     bamm:name "variableNames";
     bamm:characteristic :VariableListCharacteristic;
     bamm:description "lists the name for each datapoint"@en.
-:UnitsListCharacteristic a bamm-c:List;
-    bamm:name "UnitsListCharacteristic";
-    bamm:dataType :Unit;
-    bamm:description "lists the unit for each datapoint"@en.
 :VariableListCharacteristic a bamm-c:List;
     bamm:name "VariableListCharacteristic";
-    bamm:dataType :VariableName;
-    bamm:description "lists the name for each datapoint"@en.
+    bamm:description "lists the name for each datapoint"@en;
+    bamm:dataType :VariableName.
 :Unit a bamm:Entity;
     bamm:name "Unit";
-    bamm:properties (:unit);
-    bamm:description "unit of a column"@en.
+    bamm:description "unit of a column"@en;
+    bamm:properties (:unit).
 :VariableName a bamm:Entity;
     bamm:name "VariableName";
-    bamm:properties (:variableName);
-    bamm:description "name of a column "@en.
+    bamm:description "name of a column "@en;
+    bamm:properties (:variableName).
 :unit a bamm:Property;
     bamm:name "unit";
     bamm:characteristic bamm-c:UnitReference;
@@ -99,23 +109,25 @@
 :variableName a bamm:Property;
     bamm:name "variableName";
     bamm:characteristic :VariableNameCharacteristic;
-    bamm:description "name of a column "@en.
+    bamm:description "name of a column "@en;
+    bamm:exampleValue "Torque"^^rdf:langString.
 :VariableNameCharacteristic a bamm:Characteristic;
     bamm:name "VariableNameCharacteristic";
     bamm:dataType rdf:langString.
 :TimeSeriesReference a bamm:Aspect;
     bamm:name "TimeSeriesReference";
+    bamm:preferredName "time series reference"@en;
     bamm:properties (:decimalSeperator :sourceFile :fileExtension :delimiter :payload);
     bamm:operations ();
-    bamm:events ();
-    bamm:preferredName "time series reference"@en.
-:PayloadEntity a bamm:Entity;
-    bamm:name "PayloadEntity";
-    bamm:properties (:units :variableNames);
-    bamm:preferredName "payload entity"@en;
-    bamm:description "header payload"@en.
-:ResourcePath a bamm:Characteristic;
-    bamm:name "ResourcePath";
-    bamm:dataType xsd:anyURI;
-    bamm:preferredName "Resource Path"@en;
-    bamm:description "The path of a resource."@en.
+    bamm:events ().
+:timeColumnName a bamm:Property;
+    bamm:name "timeColumnName";
+    bamm:characteristic :TimeColumnChoice;
+    bamm:description "specifies the name of the variableNames entry which contains the time column"@en;
+    bamm:preferredName "time column"@en.
+:TimeColumnChoice a bamm-c:Enumeration;
+    bamm:name "TimeColumnChoice";
+    bamm:description "specifies the name of the time colums variable"@en;
+    bamm:preferredName "time column name"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("Time" "TIME" "time" "t").
