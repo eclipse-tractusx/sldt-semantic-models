@@ -34,7 +34,7 @@
 :materialDemandId a bamm:Property;
     bamm:preferredName "Material Demand ID"@en;
     bamm:description "The Material Demand ID uniquely identifies the material demand within the business relationship between a customer and its supplier."@en;
-    bamm:characteristic :UUIDv4;
+    bamm:characteristic :UUIDv4IdTrait;
     bamm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110".
 :demandSeries a bamm:Property;
     bamm:preferredName "Demand Series"@en;
@@ -43,12 +43,12 @@
 :customer a bamm:Property;
     bamm:preferredName "Customer"@en;
     bamm:description "The Business Partner Number (BPNL) of the party requesting materials from a supplier."@en;
-    bamm:characteristic :BPNL;
+    bamm:characteristic :BPNLTrait;
     bamm:exampleValue "BPNL8888888888XX".
 :supplier a bamm:Property;
     bamm:preferredName "Supplier"@en;
     bamm:description "The Business Partner Number (BPNL) of the party providing materials to a customer."@en;
-    bamm:characteristic :BPNL;
+    bamm:characteristic :BPNLTrait;
     bamm:exampleValue "BPNL6666666666YY".
 :unitOfMeasure a bamm:Property;
     bamm:preferredName "Unit of Measure"@en;
@@ -88,15 +88,6 @@
     bamm:preferredName "Business Partner Number Legal Entity"@en;
     bamm:description "BPNL represents the legal entity of an organization participating in Catena-X."@en;
     bamm:dataType xsd:string.
-:expectedSupplierLocation a bamm:Property;
-    bamm:preferredName "Expected Supplier Location"@en;
-    bamm:description "The BPNS number of the site from where the customer expects the supplier to fulfill the demands of the demand series. The value is used for informational purposes only and is therefore not binding for the supplier."@en;
-    bamm:characteristic :BPNS;
-    bamm:exampleValue "BPNS8888888888XX".
-:BPNS a bamm:Characteristic;
-    bamm:preferredName "Business Partner Number Site"@en;
-    bamm:description "BPNS represents a site which can be a production plant inside one location."@en;
-    bamm:dataType xsd:string.
 :UnitOfMeasure a bamm-c:Enumeration;
     bamm:preferredName "Unit of Measure"@en;
     bamm:description "The Enumeration lists a selection of allowed units of measure referenced by their official code according to Codes for Units of Measure Used in International Trade"@en;
@@ -122,19 +113,19 @@
   bamm:property :expectedSupplierLocation;
   bamm:optional "true"^^xsd:boolean
 ]).
-:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
-    bamm:preferredName "UUIDv4 Regular Expression"@en;
-    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."@en;
-    bamm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".
-:UUIDv4IdTrait a bamm-c:Trait;
-    bamm:preferredName "UUIDv4 Trait"@en;
-    bamm:description "Trait to ensure data format for UUIDv4."@en;
-    bamm-c:baseCharacteristic :UUIDv4;
-    bamm-c:constraint :UUIDv4RegularExpression.
+:expectedSupplierLocation a bamm:Property;
+    bamm:preferredName "Expected Supplier Location"@en;
+    bamm:description "The BPNS number of the site from where the customer expects the supplier to fulfill the demands of the demand series. The value is used for informational purposes only and is therefore not binding for the supplier."@en;
+    bamm:characteristic :BPNSTrait;
+    bamm:exampleValue "BPNS8888888888XX".
+:BPNS a bamm:Characteristic;
+    bamm:preferredName "Business Partner Number Site"@en;
+    bamm:description "BPNS represents a site which can be a production plant inside one location."@en;
+    bamm:dataType xsd:string.
 :customerLocation a bamm:Property;
     bamm:preferredName "Customer Location"@en;
     bamm:description "The BPNS number of the site at which the customer needs the specified material for this demand series."@en;
-    bamm:characteristic :BPNS;
+    bamm:characteristic :BPNSTrait;
     bamm:exampleValue "BPNS8888888888XX".
 :demandCategory a bamm:Property;
     bamm:preferredName "Demand Category"@en;
@@ -144,6 +135,15 @@
     bamm:preferredName "Demands"@en;
     bamm:description "A time series with week-based granularity along a given time period to describe the demand values for this demand series."@en;
     bamm:characteristic :DemandTimeSeries.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "UUIDv4 Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."@en;
+    bamm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".
+:UUIDv4IdTrait a bamm-c:Trait;
+    bamm:preferredName "UUIDv4 Trait"@en;
+    bamm:description "Trait to ensure data format for UUIDv4."@en;
+    bamm-c:baseCharacteristic :UUIDv4;
+    bamm-c:constraint :UUIDv4RegularExpression.
 :DemandCategory a bamm-c:Enumeration;
     bamm:preferredName "Demand Category"@en;
     bamm:description "The classification of demands used to prioritize or allocate capacities."@en;
@@ -202,7 +202,7 @@
 :demand a bamm:Property;
     bamm:preferredName "Demand"@en;
     bamm:description "Quantity of materials required in the specified calendar week."@en;
-    bamm:characteristic :Quantity;
+    bamm:characteristic :QuantityTrait;
     bamm:exampleValue "1"^^xsd:decimal.
 :DemandCategoryCode a bamm-c:Code;
     bamm:preferredName "Demand Category Code"@en;
