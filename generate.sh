@@ -59,9 +59,9 @@ MODELNAME="$(basename $1 .ttl)"
 DIR="$(dirname "$1")"
 PATHTEMPLATE=$DIR"/gen/"$MODELNAME
 
-commands=(aas schema json openapi html)
-endings=(-aas.json -aas-value-schema.json -aas-value.json .yml -aspectmodel.html)
-toggles=("-f json" "" "" " -b=catenax.io" "-c $CATENAXCSS")
+commands=(aas aas schema json openapi html)
+endings=(-aas.xml .aasx -schema.json .json .yml .html)
+toggles=("-f xml" "-f aasx" "" "" "-b=catenax.io" "-c $CATENAXCSS")
 
 for i in ${!commands[@]}; do
     echo "generate ${commands[$i]} into $PATHTEMPLATE${endings[$i]}"
