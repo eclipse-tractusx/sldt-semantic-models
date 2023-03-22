@@ -29,7 +29,6 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:bamm:io.catenax.transmission.transmission_pass:1.0.0#>.
-@prefix address-c: <urn:bamm:io.catenax.shared.address_characteristic:1.0.1#>.
 @prefix contact-c: <urn:bamm:io.catenax.shared.contact_information:1.0.0#>.
 @prefix physical-c: <urn:bamm:io.catenax.shared.physical_dimension:1.0.0#>.
 
@@ -44,6 +43,11 @@
     bamm:description "Transmission ID of the transmission i.e. serial number allowing for unequivocal identification of the transmission."@en;
     bamm:characteristic bamm-c:Text;
     bamm:exampleValue "X123456789012X12345678901234567".
+:manufacturerId a bamm:Property;
+    bamm:preferredName "manufacturer ID"@en;
+    bamm:description "The ID of the transmission manufacturer in form of the unique BPN number."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BPNL1234567890ZZ".
 :sustainability a bamm:Property;
     bamm:preferredName "sustainability"@en;
     bamm:description "Sustainability details about the transmission."@en;
@@ -56,6 +60,10 @@
     bamm:preferredName "state of health"@en;
     bamm:description "State of health property describing several properties."@en;
     bamm:characteristic :StateOfHealth.
+:sparePartSupplier a bamm:Property;
+    bamm:preferredName "spare part supplier"@en;
+    bamm:description "Details of the  spare parts and suppliers of replacement parts / spare parts."@en;
+    bamm:characteristic :SparePartSupplier.
 :productSpecificParameters a bamm:Property;
     bamm:preferredName "product specific parameters"@en;
     bamm:description "Product specific parameters of the transmission."@en;
@@ -74,6 +82,11 @@
     bamm:preferredName "additional information"@en;
     bamm:description "Open field for additional information such as a link."@en;
     bamm:characteristic bamm-c:Text.
+:dataMatrixCode a bamm:Property;
+    bamm:preferredName "data matrix code"@en;
+    bamm:description "Data Matrix Code (DMC) link to the public of the transmission as specified in section 31 / page 26"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:see <https://eur-lex.europa.eu/resource.html?uri=cellar:bb8539b7-b1b5-11ec-9d96-01aa75ed71a1.0001.02/DOC_1&format=PDF>.
 :Sustainability a bamm:Characteristic;
     bamm:preferredName "Sustainability"@en;
     bamm:description "Sustainability Characterisitic to describe sustainability factors."@en;
@@ -114,6 +127,29 @@
     bamm:preferredName "State of health entity"@en;
     bamm:description "State of health entity describing several logically connected properties."@en;
     bamm:properties (:remanufacturing :serviceHistory :expectedLifetime).
+:ProductSpecificParametersEntity a bamm:Entity;
+    bamm:preferredName "ProductSpecificParametersEntity"@en;
+    bamm:description "The entity describing various product specific parameters of the transmission."@en;
+    bamm:properties (:driveType :torque :power [
+  bamm:property :torqueConverter;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :speedResistance;
+  bamm:optional "true"^^xsd:boolean
+] :standardGearRatio :spreading :oilCapacity :oilType [
+  bamm:property :electricPerformance;
+  bamm:optional "true"^^xsd:boolean
+]).
+:InstructionEntity a bamm:Entity;
+    bamm:preferredName "InstructionEntity"@en;
+    bamm:description "Instruction douments concerning the transmission."@en;
+    bamm:properties (:dismantlingProcedure :vehicleDismantlingProcedure [
+  bamm:property :packagingInstructions;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :transportationInstructions;
+  bamm:optional "true"^^xsd:boolean
+] :safetyMeasures).
 :responsibleSourcingDocument a bamm:Property;
     bamm:preferredName "responsible sourcing document"@en;
     bamm:description "Document/Certificates on organizations compliance to ethical business practices."@en;
@@ -150,7 +186,7 @@
 :physicalDimensions a bamm:Property;
     bamm:preferredName "physical dimensions"@en;
     bamm:description "Describing the physical dimensions without packaging"@en;
-    bamm:characteristic physical-c:PhysicalDimensionsCharacteristic.
+    bamm:characteristic pysical-c:PhysicalDimensionsCharacteristic.
 :remanufacturing a bamm:Property;
     bamm:preferredName "remanufacturing"@en;
     bamm:description "Status of the transmission (first life or second life) and Remanufacturing- History."@en;
@@ -165,14 +201,6 @@
     bamm:characteristic :ExpectedLifetime;
     bamm:exampleValue "500000"^^xsd:decimal;
     bamm:see <https://eclass.eu/eclass-standard/content-suche/show?tx_eclasssearch_ecsearch%5Bcc2prdat%5D=0173-1%2302-AAF779%23003&tx_eclasssearch_ecsearch%5Bdischarge%5D=0&tx_eclasssearch_ecsearch%5Bid%5D=-1&tx_eclasssearch_ecsearch%5Blanguage%5D=1&tx_eclasssearch_ecsearch%5Boption%5D=pr&tx_eclasssearch_ecsearch%5Bsearchtxt%5D=0173-1%2302-AAF779%23003&tx_eclasssearch_ecsearch%5Bversion%5D=12.0&cHash=c3d9bc495a76d479c4f0123af3681c80>.
-:supplierContact a bamm:Property;
-    bamm:preferredName "supplier contact"@en;
-    bamm:description "Contact information of the supplier"@en;
-    bamm:characteristic contact-c:ContactCharacteristic.
-:supplierAddress a bamm:Property;
-    bamm:preferredName "supplier address"@en;
-    bamm:description "Address of the supplier."@en;
-    bamm:characteristic address-c:PostalAddress.
 :DocumentsCharacteristic a bamm-c:List;
     bamm:preferredName "Documents Characteristic"@en;
     bamm:description "Documents Characteristic with title and link."@en;
@@ -195,6 +223,10 @@
     bamm:description "The detailed description about the product type as enumeration"@en;
     bamm:dataType xsd:string;
     bamm-c:values ("manual transmission" "automated manual transmission" "automatic transmission" "continuously variable automatic transmissions (CVT transmission)").
+:DeleteLater a bamm:Characteristic;
+    bamm:preferredName "deleteLater"@en;
+    bamm:description "deleteLater"@en;
+    bamm:dataType xsd:date.
 :Remanufacturing a bamm:Characteristic;
     bamm:preferredName "Remanufacturing"@en;
     bamm:description "Status of the transmission (first life or second life) and Remanufacturing- History."@en;
@@ -208,6 +240,10 @@
     bamm:description "Expected transmission lifetime (lifespan) in km."@en;
     bamm:dataType xsd:decimal;
     bamm-c:unit unit:kilometre.
+:supplierContact a bamm:Property;
+    bamm:preferredName "supplier contact"@en;
+    bamm:description "Contact information of the supplier"@en;
+    bamm:characteristic contact-c:ContactCharacteristic.
 :Documents a bamm:Entity;
     bamm:preferredName "Documents"@en;
     bamm:description "Entity describing a document."@en;
@@ -215,6 +251,17 @@
   bamm:property :documentTitle;
   bamm:optional "true"^^xsd:boolean
 ] :documentLink).
+:RecyclateContentEntity a bamm:Entity;
+    bamm:preferredName "Recyclate Content Entity"@en;
+    bamm:description "Recyclate content in the transmission with mandatory input values for cobalt, nickel and lithium."@en;
+    bamm:properties (:cobalt :lithium :nickel [
+  bamm:property :otherSubstances;
+  bamm:optional "true"^^xsd:boolean
+]).
+:RemanufacturingStatus a bamm:Entity;
+    bamm:preferredName "Remanufacturing Status"@en;
+    bamm:description "Status and Date of the (re-)manufacturing"@en;
+    bamm:properties (:productStatusValue :remanufacturingDate).
 :documentTitle a bamm:Property;
     bamm:preferredName "document title"@en;
     bamm:description "The header or title of the document"@en;
@@ -228,10 +275,10 @@
 :DocumentTitleTrait a bamm-c:Trait;
     bamm-c:baseCharacteristic bamm-c:Text;
     bamm-c:constraint :MaxTitleCharacters.
-:RemanufacturingStatus a bamm:Entity;
-    bamm:preferredName "Remanufacturing Status"@en;
-    bamm:description "Status and Date of the (re-)manufacturing"@en;
-    bamm:properties (:productStatusValue :remanufacturingDate).
+:MaxTitleCharacters a bamm-c:LengthConstraint;
+    bamm:preferredName "Max title characters"@en;
+    bamm:description "Maximum title characters set to 60."@en;
+    bamm-c:maxValue "60"^^xsd:nonNegativeInteger.
 :productStatusValue a bamm:Property;
     bamm:preferredName "product status value"@en;
     bamm:description "Status of the transmission as first life or second life."@en;
@@ -246,23 +293,6 @@
     bamm:description "Enumeration to describe the status of the transmission as first life or second life."@en;
     bamm:dataType xsd:string;
     bamm-c:values ("first life" "second life").
-:MaxTitleCharacters a bamm-c:LengthConstraint;
-    bamm:preferredName "Max title characters"@en;
-    bamm:description "Maximum title characters set to 60."@en;
-    bamm-c:maxValue "60"^^xsd:nonNegativeInteger.
-:ProductSpecificParametersEntity a bamm:Entity;
-    bamm:preferredName "ProductSpecificParametersEntity"@en;
-    bamm:description "The entity describing various product specific parameters of the transmission."@en;
-    bamm:properties (:driveType :torque :power [
-  bamm:property :torqueConverter;
-  bamm:optional "true"^^xsd:boolean
-] [
-  bamm:property :speedResistance;
-  bamm:optional "true"^^xsd:boolean
-] :standardGearRatio :spreading :oilCapacity :oilType [
-  bamm:property :electricPerformance;
-  bamm:optional "true"^^xsd:boolean
-]).
 :driveType a bamm:Property;
     bamm:preferredName "drive type"@en;
     bamm:description "The type of transmission drive (combustion engine, hybrid drive or purely electric drive)."@en;
@@ -340,16 +370,6 @@
     bamm:description "The oil capacity in dm³."@en;
     bamm:dataType xsd:decimal;
     bamm-c:unit unit:cubicDecimetre.
-:InstructionEntity a bamm:Entity;
-    bamm:preferredName "InstructionEntity"@en;
-    bamm:description "Instruction douments concerning the transmission."@en;
-    bamm:properties (:dismantlingProcedure :vehicleDismantlingProcedure [
-  bamm:property :packagingInstructions;
-  bamm:optional "true"^^xsd:boolean
-] [
-  bamm:property :transportationInstructions;
-  bamm:optional "true"^^xsd:boolean
-] :safetyMeasures).
 :dismantlingProcedure a bamm:Property;
     bamm:preferredName "dismantling procedure"@en;
     bamm:description "Document containing the transmission dismantling procedure."@en;
@@ -371,20 +391,6 @@
     bamm:description "Includes all safety relevant documents for e.g. Dismantling."@en;
     bamm:characteristic :DocumentsCharacteristic;
     bamm:see <https://eclass.eu/eclass-standard/content-suche/show?tx_eclasssearch_ecsearch%5Bcc2prdat%5D=0173-1%2302-AAO190%23001&tx_eclasssearch_ecsearch%5Bdischarge%5D=0&tx_eclasssearch_ecsearch%5Bid%5D=-1&tx_eclasssearch_ecsearch%5Blanguage%5D=1&tx_eclasssearch_ecsearch%5Boption%5D=pr&tx_eclasssearch_ecsearch%5Bsearchtxt%5D=0173-1%2302-AAO190%23001&tx_eclasssearch_ecsearch%5Bversion%5D=12.0&cHash=ecd65dc92a134cdb1453556e4a1557ca>.
-:manufacturerId a bamm:Property;
-    bamm:preferredName "manufacturer ID"@en;
-    bamm:description "The ID of the transmission manufacturer in form of the unique BPN number."@en;
-    bamm:characteristic bamm-c:Text;
-    bamm:exampleValue "BPNL1234567890ZZ".
-:dataMatrixCode a bamm:Property;
-    bamm:preferredName "data matrix code"@en;
-    bamm:description "Data Matrix Code (DMC) link to the public of the transmission as specified in section 31 / page 26"@en;
-    bamm:characteristic bamm-c:Text;
-    bamm:see <https://eur-lex.europa.eu/resource.html?uri=cellar:bb8539b7-b1b5-11ec-9d96-01aa75ed71a1.0001.02/DOC_1&format=PDF>.
-:sparePartSupplier a bamm:Property;
-    bamm:preferredName "spare part supplier"@en;
-    bamm:description "Details of the  spare parts and suppliers of replacement parts / spare parts."@en;
-    bamm:characteristic :SparePartSupplier.
 :SparePartSupplier a bamm-c:List;
     bamm:preferredName "SparePartSupplier"@en;
     bamm:description "Characteristic for details of the  spare parts and suppliers of replacement parts / spare parts."@en;
@@ -392,11 +398,7 @@
 :SparePartEntity a bamm:Entity;
     bamm:preferredName "Spare Part Entity"@en;
     bamm:description "Entity for details of the  spare parts and suppliers of replacement parts / spare parts."@en;
-    bamm:properties (:supplierContact :supplierAddress :spareParts).
-:spareParts a bamm:Property;
-    bamm:preferredName "spare parts"@en;
-    bamm:description "A list of possible spare parts."@en;
-    bamm:characteristic :StringList.
+    bamm:properties (:supplierContact :supplierId :sparePartName).
 :SubstancePercentage a bamm-c:Quantifiable;
     bamm:preferredName "Substance Percentage"@en;
     bamm:description "Substance percentage of the recycled content."@en;
@@ -429,20 +431,23 @@
     bamm:preferredName "Other Substances Entity"@en;
     bamm:description "Entity for other substances to report."@en;
     bamm:properties (:substancePercentage :substanceName).
-:substanceName a bamm:Property;
-    bamm:preferredName "substance name"@en;
-    bamm:description "The name of the substance such as lead or aluminium."@en;
-    bamm:characteristic bamm-c:Text;
-    bamm:exampleValue "Lead".
 :substancePercentage a bamm:Property;
     bamm:preferredName "substance percentage"@en;
     bamm:description "Substance percentage of the recycled content."@en;
     bamm:characteristic :SubstancePercentage;
     bamm:exampleValue "8"^^xsd:decimal.
-:RecyclateContentEntity a bamm:Entity;
-    bamm:preferredName "Recyclate Content Entity"@en;
-    bamm:description "Recyclate content in the transmission with mandatory input values for cobalt, nickel and lithium."@en;
-    bamm:properties (:cobalt :lithium :nickel [
-  bamm:property :otherSubstances;
-  bamm:optional "true"^^xsd:boolean
-]).
+:substanceName a bamm:Property;
+    bamm:preferredName "substance name"@en;
+    bamm:description "The name of the substance such as lead or aluminium."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Lead".
+:supplierId a bamm:Property;
+    bamm:preferredName "supplier ID"@en;
+    bamm:description "BPNL of the supplier."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BPNL1234567890ZZ".
+:sparePartName a bamm:Property;
+    bamm:preferredName "spare part name"@en;
+    bamm:description "Name or Identification of the spare part."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "torque converter".
