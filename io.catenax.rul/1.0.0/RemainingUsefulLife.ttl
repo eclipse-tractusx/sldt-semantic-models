@@ -1,0 +1,146 @@
+#######################################################################
+# Copyright (c) 2022 Allgemeine Deutsche Automobil-Club (ADAC) e.V
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2022 Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the 
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license, 
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.rul:1.0.0#>.
+
+:remainingRunningDistance a bamm:Property;
+    bamm:name "remainingRunningDistance";
+    bamm:preferredName "remainingRunningDistance"@en;
+    bamm:description "Expected additional mileage for the vehicle or part might without failure."@en;
+    bamm:characteristic :RemainingMileage;
+    bamm:exampleValue "120000"^^xsd:nonNegativeInteger.
+:RemainingMileage a bamm-c:Quantifiable;
+    bamm:name "RemainingMileage";
+    bamm:preferredName "remaining mileage"@en;
+    bamm:description "Expected addition mileage"@en;
+    bamm:dataType xsd:nonNegativeInteger;
+    bamm-c:unit unit:kilometre.
+:DeterminationStatus a bamm:Entity;
+    bamm:name "DeterminationStatus";
+    bamm:preferredName "DeterminationStatus"@en;
+    bamm:description "Status describes the date when this aspect is filled, the according mileage and according operating hours. "@en;
+    bamm:properties (:mileage :date :operatingHours).
+:mileage a bamm:Property;
+    bamm:name "mileage";
+    bamm:preferredName "mileage"@en;
+    bamm:description "Mileage of the vehicle respectively part at date of determination.\n"@en;
+    bamm:characteristic :Mileage;
+    bamm:exampleValue "204000"^^xsd:nonNegativeInteger.
+:date a bamm:Property;
+    bamm:name "date";
+    bamm:preferredName "date of determination"@en;
+    bamm:description "Date of determination."@en;
+    bamm:characteristic :Timestamp;
+    bamm:exampleValue "2022-06-15T14:23:56Z"^^xsd:dateTime.
+:operatingHours a bamm:Property;
+    bamm:name "operatingHours";
+    bamm:preferredName "Operating hours"@en;
+    bamm:description "Operating hours at determination."@en;
+    bamm:characteristic :OperatingHoursCharacteristic;
+    bamm:exampleValue "3456.7"^^xsd:float.
+:Mileage a bamm-c:Measurement;
+    bamm:name "Mileage";
+    bamm:preferredName "mileage"@en;
+    bamm:description "Mileage of vehicle respectively part."@en;
+    bamm:dataType xsd:nonNegativeInteger;
+    bamm-c:unit unit:kilometre.
+:Timestamp a bamm:Characteristic;
+    bamm:name "Timestamp";
+    bamm:description "Describes a Property which contains the date and time with an optional timezone."@en;
+    bamm:dataType xsd:dateTime.
+:OperatingHoursCharacteristic a bamm-c:Measurement;
+    bamm:name "OperatingHoursCharacteristic";
+    bamm:preferredName "Operating hours"@en;
+    bamm:description "Operating hours for the vehicle respectively part."@en;
+    bamm:dataType xsd:float;
+    bamm-c:unit unit:hour.
+:determinationStatus a bamm:Property;
+    bamm:name "determinationStatus";
+    bamm:preferredName "Determination status"@en;
+    bamm:description "Remaining useful life is determined at a specific  date with  acording mileage and operating hours. This status should be stored to interpretate the calculated values remaingRunningDistance and RemainingOperatingHours."@en;
+    bamm:characteristic :StatusCharacteristic.
+:StatusCharacteristic a bamm:Characteristic;
+    bamm:name "StatusCharacteristic";
+    bamm:preferredName "status"@en;
+    bamm:description "Status describes the date when this aspect is filled, the according mileage and according operating hours. "@en;
+    bamm:dataType :DeterminationStatus.
+:RemainingUsefulLife a bamm:Aspect;
+    bamm:name "RemainingUsefulLife";
+    bamm:preferredName "remaining useful life"@en;
+    bamm:description "Remaining useful Life (RuL) describes the approximated life of a part, a component, an assembly, a vehicle. \nThe approximation is based on the damage due to usage and extrapolation. \nremainingUsefulLife can be a procentual number, or expressed in remainingDistance or remaingOperationHours or remainingAge."@en;
+    bamm:properties (:remainingRunningDistance :remainingOperatingHours :determinationStatus :determinationLoaddataSource);
+    bamm:operations ();
+    bamm:events ().
+:remainingOperatingHours a bamm:Property;
+    bamm:name "remainingOperatingHours";
+    bamm:preferredName "remaining operating hours"@en;
+    bamm:description "Expected additional operation hours for the vehicle or part might without failure."@en;
+    bamm:characteristic :RemainingOperatingHoursCharacteristic.
+:determinationLoaddataSource a bamm:Property;
+    bamm:name "determinationLoaddataSource";
+    bamm:preferredName "loaddata source"@en;
+    bamm:description "The source of the load data used to determine the remaining useful life is stored for information/interpretation."@en;
+    bamm:characteristic :LoaddataSourceCharacteristic.
+:RemainingOperatingHoursCharacteristic a bamm-c:Quantifiable;
+    bamm:name "RemainingOperatingHoursCharacteristic";
+    bamm:preferredName "Remaining operating hours"@en;
+    bamm:description "Expected additional operating hours"@en;
+    bamm:dataType xsd:float;
+    bamm-c:unit unit:hour.
+:LoaddataSourceCharacteristic a bamm:Characteristic;
+    bamm:name "LoaddataSourceCharacteristic";
+    bamm:preferredName "loaddata source"@en;
+    bamm:description "Information on the origin of the used load spectrum. If available, the link to the load spectrum."@en;
+    bamm:dataType :LoaddataSource.
+:LoaddataSource a bamm:Entity;
+    bamm:name "LoaddataSource";
+    bamm:preferredName "Input information on loaddata"@en;
+    bamm:description "Information on the origin of the used load spectrum. If available, the link to the load spectrum."@en;
+    bamm:properties (:informationOriginLoadSpectrum [
+  bamm:property :sourceLoadSpectrum;
+  bamm:optional "true"^^xsd:boolean
+]).
+:informationOriginLoadSpectrum a bamm:Property;
+    bamm:name "informationOriginLoadSpectrum";
+    bamm:preferredName "information on origin of load spectrum"@en;
+    bamm:description "A load spectrum is used to calulated the damage and the expected remaining useful for similar further usage. Information on the source of the load spectrum is stored."@en;
+    bamm:characteristic :InformationOriginLoadSpectrumCharacteristic.
+:sourceLoadSpectrum a bamm:Property;
+    bamm:name "sourceLoadSpectrum";
+    bamm:preferredName "link to origin of load spectrum"@en;
+    bamm:description "The link to the load spectrum used to determine the remaining useful life, if available."@en;
+    bamm:characteristic :SourceLoadSpectrum.
+:InformationOriginLoadSpectrumCharacteristic a bamm-c:Enumeration;
+    bamm:name "InformationOriginLoadSpectrumCharacteristic";
+    bamm:preferredName "characteristic of origin of load spectrum"@en;
+    bamm:description "Origin of input load spectrum: measured, simulated, aggregated"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("loggedOEM" "measuredOEM" "simulatedOEM" "loggedSupplier" "measuredSupplier" "simulatedSupplier" "otherOrigin").
+:SourceLoadSpectrum a bamm:Characteristic;
+    bamm:name "SourceLoadSpectrum";
+    bamm:preferredName "link to load spectrum"@en;
+    bamm:description "Link to load spectrum"@en;
+    bamm:dataType xsd:anyURI.
