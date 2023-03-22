@@ -33,7 +33,7 @@
 @prefix : <urn:bamm:io.catenax.single_level_usage_as_planned:1.1.0#>.
 
 :SingleLevelUsageAsPlanned a bamm:Aspect;
-    bamm:preferredName "SingleLevelUsageAsPlanned"@en;
+    bamm:preferredName "Single Level Usage as Planned"@en;
     bamm:description "The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-planned lifecycle phase.\nIf multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list."@en;
     bamm:properties (:catenaXId :parentParts);
     bamm:operations ();
@@ -48,6 +48,7 @@
     bamm:description "Set of parent parts, in which the given child object is assembled in (one structural level up)."@en;
     bamm:characteristic :SetOfParentPartsCharacteristic.
 :CatenaXIdTraitCharacteristic a bamm-c:Trait;
+    bamm:preferredName "Catena-X ID Trait Characteristic"@en;
     bamm:description "Trait to ensure UUID v4 data format"@en;
     bamm-c:baseCharacteristic :Uuidv4Characteristic;
     bamm-c:constraint :Uuidv4RegularExpression.
@@ -55,10 +56,16 @@
     bamm:preferredName "Set of Parent Parts"@en;
     bamm:description "Set of parent parts the given child object is assembled in (one structural level up)."@en;
     bamm:dataType :ParentData.
-:parentCatenaXId a bamm:Property;
-    bamm:preferredName "Catena-X Parent ID"@en;
-    bamm:description "The Catena-X ID of the parent object, into which the given child object is assembled in."@en;
-    bamm:characteristic :CatenaXIdTraitCharacteristic.
+:Uuidv4Characteristic a bamm:Characteristic;
+    bamm:preferredName "UUID v4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>.
+:Uuidv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X ID Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
 :ParentData a bamm:Entity;
     bamm:preferredName "Parent Data"@en;
     bamm:description "Catena-X ID and meta data of the parent part."@en;
@@ -69,6 +76,11 @@
   bamm:property :validityPeriod;
   bamm:optional "true"^^xsd:boolean
 ]).
+:parentCatenaXId a bamm:Property;
+    bamm:preferredName "Catena-X Parent ID"@en;
+    bamm:description "The Catena-X ID of the parent object, into which the given child object is assembled in."@en;
+    bamm:characteristic :CatenaXIdTraitCharacteristic;
+    bamm:exampleValue "urn:uuid:43364d8c-cf38-423c-b907-6e68e0f0fe2f".
 :createdOn a bamm:Property;
     bamm:preferredName "Created on"@en;
     bamm:description "Timestamp when the relation between the parent part and the child part was created."@en;
@@ -88,27 +100,17 @@
     bamm:description "The period of time during which the parent-child relation is valid. This relates to whether a child part can be built into the parent part at a given time.\nIf no validity period is given the relation is considered valid at any point in time."@en;
     bamm:characteristic :ValidityPeriodCharacteristic.
 :QuantityCharacteristic a bamm-c:Quantifiable;
+    bamm:preferredName "Quantity Characteristic"@en;
     bamm:description "Describes the quantity in which the child part is assembled in the parent object by providing a quantity value and the measurement unit in which the quantity is measured."@en;
     bamm:dataType :Quantity.
 :ValidityPeriodCharacteristic a bamm:Characteristic;
     bamm:preferredName "Validity Period Characteristic"@en;
+    bamm:description "Characteristic  for a validity period defined by an (optional) start and an (optional) end timestamp."@en;
     bamm:dataType :ValidityPeriodEntity.
 :Quantity a bamm:Entity;
+    bamm:preferredName "Quantity"@en;
     bamm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en;
     bamm:properties (:quantityNumber :measurementUnit).
-:quantityNumber a bamm:Property;
-    bamm:preferredName "Quantity Number"@en;
-    bamm:description "The number of objects related to the measurement unit"@en;
-    bamm:characteristic :NumberOfObjects;
-    bamm:exampleValue "2.5"^^xsd:double.
-:measurementUnit a bamm:Property;
-    bamm:description "Unit of measurement for the quantity of objects.\nIf possible, use units from the aspect meta model unit catalog, which is based on the UNECE Recommendation No. 20 \"Codes for Units of Measure used in International Trade\""@en;
-    bamm:characteristic bamm-c:UnitReference;
-    bamm:exampleValue "unit:litre"^^bamm:curie;
-    bamm:see <https://github.com/eclipse-esmf/esmf-semantic-aspect-meta-model/blob/main/esmf-semantic-aspect-meta-model/src/main/resources/samm/unit/2.0.0/units.ttl>.
-:NumberOfObjects a bamm:Characteristic;
-    bamm:description "Quantifiable number of objects in reference to the measurementUnit"@en;
-    bamm:dataType xsd:double.
 :ValidityPeriodEntity a bamm:Entity;
     bamm:preferredName "Validity Period Entity"@en;
     bamm:description "If a validity period only has a start that means that the period is valid from the start date without a (yet) defined enddate and vice versa."@en;
@@ -119,22 +121,28 @@
   bamm:property :validTo;
   bamm:optional "true"^^xsd:boolean
 ]).
+:quantityNumber a bamm:Property;
+    bamm:preferredName "Quantity Number"@en;
+    bamm:description "The number of objects related to the measurement unit"@en;
+    bamm:characteristic :NumberOfObjects;
+    bamm:exampleValue "2.5"^^xsd:double.
+:measurementUnit a bamm:Property;
+    bamm:preferredName "Measurement Unit"@en;
+    bamm:description "Unit of measurement for the quantity of objects.\nIf possible, use units from the aspect meta model unit catalog, which is based on the UNECE Recommendation No. 20 \"Codes for Units of Measure used in International Trade\""@en;
+    bamm:characteristic bamm-c:UnitReference;
+    bamm:exampleValue "unit:litre"^^bamm:curie;
+    bamm:see <https://github.com/eclipse-esmf/esmf-semantic-aspect-meta-model/blob/main/esmf-semantic-aspect-meta-model/src/main/resources/samm/unit/2.0.0/units.ttl>.
+:NumberOfObjects a bamm:Characteristic;
+    bamm:preferredName "Number of Objects"@en;
+    bamm:description "Quantifiable number of objects in reference to the measurementUnit"@en;
+    bamm:dataType xsd:double.
 :validFrom a bamm:Property;
     bamm:preferredName "Valid from"@en;
     bamm:description "Start date of validity period"@en;
-    bamm:characteristic bamm-c:Timestamp.
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2023-03-21T08:47:14.438+01:00"^^xsd:dateTime.
 :validTo a bamm:Property;
     bamm:preferredName "Valid to"@en;
     bamm:description "End date of validity period"@en;
-    bamm:characteristic bamm-c:Timestamp.
-:Uuidv4Characteristic a bamm:Characteristic;
-    bamm:preferredName "UUID v4"@en;
-    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
-    bamm:dataType xsd:string;
-    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>.
-:Uuidv4RegularExpression a bamm-c:RegularExpressionConstraint;
-    bamm:preferredName "Catena-X ID Regular Expression"@en;
-    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
-    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
-    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
-
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2024-08-02T09:00:00.000+01:00"^^xsd:dateTime.
