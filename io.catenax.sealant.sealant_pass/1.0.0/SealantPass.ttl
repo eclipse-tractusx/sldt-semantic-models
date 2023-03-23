@@ -19,32 +19,76 @@
 #######################################################################
 
 
-@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
-@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
-@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
-@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:bamm:io.catenax.sealant.sealant_pass:1.0.0#>.
-@prefix address-c: <urn:bamm:io.catenax.shared.address_characteristic:1.0.1#>.
 
 
 :SealantPass a bamm:Aspect;
-    bamm:properties (:documents :performanceProperties :serialNumber :productIdentification :application :supplier :hazardsIdentification :productComposition :safetyMeasures :productProperties :productDisposal :transportInformation :regulatoryInformation :carbonFootprint);
+    bamm:properties (:documents :performanceProperties :serialNumber :productIdentification :application :supplier :hazardsIdentification :productComposition :safetyMeasure :productProperties :productDisposal :transportInformation :regulatoryInformation :carbonFootprint);
     bamm:operations ();
     bamm:events ();
     bamm:preferredName "sealant pass"@en;
-    bamm:description "The Sealant Passport represents the needs from manufacturers of chemical subtance and mixtures (e.g. BASF, Henkel). It describes data required by the safety data sheet - which is based on the REACH Regulation No 1907/2006 in the format of a DPP."@en;
-    bamm:see <https://shorturl.at/euCJ8>.
+    bamm:description "The Sealant Passport represents the needs from manufacturers of chemical subtance and mixtures. It describes data required by the safety data sheet (SDS) - which is based on the REACH Regulation No 1907/2006 in the format of a DPP."@en;
+    bamm:see <https://osha.europa.eu/en/legislation/directives/regulation-ec-no-1907-2006-of-the-european-parliament-and-of-the-council>.
 :documents a bamm:Property;
-    bamm:characteristic :DocumentCharacteristic;
-    bamm:preferredName "documents"@en;
-    bamm:description "Set of documents containing the description of battery components."@en.
-:DocumentCharacteristic a bamm:Characteristic;
-    bamm:dataType :DocumentEntity;
-    bamm:preferredName "document characteristic"@en;
-    bamm:description "Set of documents containing the description of chemical substancen and mixture components"@en.
+    bamm:preferredName "Documents"@en;
+    bamm:description "Set of documents containing the description of components."@en;
+    bamm:characteristic :Document.
+:performanceProperties a bamm:Property;
+    bamm:preferredName "Performance properties"@en;
+    bamm:description "Describes the performance and durability of a substance or mixture."@en;
+    bamm:characteristic :PerformanceCharacteristic.
+:serialNumber a bamm:Property;
+    bamm:preferredName "Serial number"@en;
+    bamm:description "Unique serial number to identify the material or batch."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "134X5643FC6557-23".
+:productIdentification a bamm:Property;
+    bamm:preferredName "product identification"@en;
+    bamm:description "Identification of the substance/mixture and of the company/undertaking."@en;
+    bamm:characteristic :ProductIdentificationCharacteristic.
+:application a bamm:Property;
+    bamm:preferredName "Application"@en;
+    bamm:description "Relevant identified uses of the substance or mixture and uses advised against."@en;
+    bamm:characteristic :ApplicationCharacteristic.
+:supplier a bamm:Property;
+    bamm:preferredName "supplier"@en;
+    bamm:description "Supplier of the mixture or substance."@en;
+    bamm:characteristic :SupplierCharacteristic.
+:hazardsIdentification a bamm:Property;
+    bamm:preferredName "hazards identification"@en;
+    bamm:description "Describes the hazards of the substance or mixture and the appropriate warning information associated with those hazards."@en;
+    bamm:characteristic :HazardsIdentification.
+:productComposition a bamm:Property;
+    bamm:preferredName "Product composition"@en;
+    bamm:description "Information on the ingredients."@en;
+    bamm:characteristic :ProductComposition.
+:productProperties a bamm:Property;
+    bamm:preferredName "Product properties "@en;
+    bamm:description "Describes the physical and chemical properties of the substance or mixture."@en;
+    bamm:characteristic :ProductProperties.
+:productDisposal a bamm:Property;
+    bamm:preferredName "Product disposal"@en;
+    bamm:description "Describes the proper disposal of the product."@en;
+    bamm:characteristic :ProductDisposal.
+:transportInformation a bamm:Property;
+    bamm:preferredName "Transport information"@en;
+    bamm:description "Describes transport relevant information."@en;
+    bamm:characteristic :TransportInformation.
+:regulatoryInformation a bamm:Property;
+    bamm:preferredName "regulatory information"@en;
+    bamm:description "Describes the regulatory data points."@en;
+    bamm:characteristic :RegulatoryInformationCharacteristic.
+:carbonFootprint a bamm:Property;
+    bamm:preferredName "Carbon footprint"@en;
+    bamm:description "Describes the carbon footorint of the substance or mixture. Based on the Ecodesign."@en;
+    bamm:characteristic :CarbonFootprint.
 :DocumentEntity a bamm:Entity;
     bamm:properties ([
   bamm:property :declarationOfConformity;
@@ -58,99 +102,117 @@
 ] [
   bamm:property :technicalDocumentation;
   bamm:optional "true"^^xsd:boolean
-] :fullSDS [
+] :safetyDataSheet [
   bamm:property :sustainabilityReport;
   bamm:optional "true"^^xsd:boolean
 ]);
-    bamm:preferredName "document entity"@en;
+    bamm:preferredName "Document entity"@en;
     bamm:description "Entity encapsulating the details of a attachment for the chemical substances and mixtures of the pass."@en.
 :declarationOfConformity a bamm:Property;
-    bamm:characteristic :LocateCharacteristic;
-    bamm:preferredName "declaration of conformity"@en;
-    bamm:description "Declaration of conformity (CE) is describing a regulatory requirement from the EU."@en.
+    bamm:preferredName "Declaration of Conformity"@en;
+    bamm:description "Declaration of conformity (CE) is describing a regulatory requirement from the EU."@en;
+    bamm:characteristic :LocateCharacteristic.
 :removalProcedure a bamm:Property;
-    bamm:characteristic :LocateCharacteristic;
-    bamm:preferredName "removal procedure"@en;
-    bamm:description "The documents explain the removal and possible recycling options of the product."@en.
+    bamm:preferredName "Removal procedure"@en;
+    bamm:description "The documents explain the removal and possible recycling options of the product."@en;
+    bamm:characteristic :LocateCharacteristic.
 :dueDiligence a bamm:Property;
-    bamm:characteristic :LocateCharacteristic;
-    bamm:preferredName "due diligence"@en;
-    bamm:description "Report on Supply Chain Due Diligence policies. Link to document or website on its supply chain due diligence policies."@en.
+    bamm:preferredName "Due diligence"@en;
+    bamm:description "Report on Supply Chain Due Diligence policies. Link to document or website on its supply chain due diligence policies."@en;
+    bamm:characteristic :LocateCharacteristic.
 :technicalDocumentation a bamm:Property;
-    bamm:characteristic :LocateCharacteristic;
-    bamm:preferredName "technical documentation"@en;
-    bamm:description "Technical documentation refers to documents that explain the use, functionality, creation, or architecture of the product."@en.
-:fullSDS a bamm:Property;
-    bamm:characteristic :SpecificsSDSCharacteristic;
-    bamm:preferredName "full SDS"@en;
-    bamm:description "A link to the full SDS of the material. A link to a SDS might be provided for several countries and possibly multiple languages for each country. The table includes: Version, Countryname, language of the document and the link to the document. The documents should preferably be provided as PDF or Word document."@en.
-:documentTitle a bamm:Property;
-    bamm:characteristic :DocumentTitleTrait;
-    bamm:preferredName "document title"@en;
-    bamm:description "The header or title of the document"@en;
-    bamm:exampleValue "Cobald Mine A".
-:documentLocation a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "document location"@en;
-    bamm:description "Location or link of and to the document. "@en;
-    bamm:exampleValue "ftp://www.company.com/MyCompliance/Compliant02.PDF".
+    bamm:preferredName "Technical documentation"@en;
+    bamm:description "Technical documentation refers to documents that explain the use, functionality, creation, or architecture of the product."@en;
+    bamm:characteristic :LocateCharacteristic.
+:safetyDataSheet a bamm:Property;
+    bamm:preferredName "Full safety data sheet (SDS)"@en;
+    bamm:description "A link to the full seafty data sheet of the material. A link to a SDS might be provided for several countries and possibly multiple languages for each country. The table includes: Version, Countryname, language of the document and the link to the document. The documents should preferably be provided as PDF or Word document."@en;
+    bamm:characteristic :SpecificsSDSCharacteristic.
 :sustainabilityReport a bamm:Property;
-    bamm:characteristic :LocateCharacteristic;
-    bamm:preferredName "sustainability report"@en;
-    bamm:description "Link to public website or Document. Reporting in accordance with the new European Sustainability Reporting Standards (ESRS) including the new ESG reporting standards."@en.
+    bamm:preferredName "Sustainability report"@en;
+    bamm:description "Link to public website or Document. Reporting in accordance with the new European Sustainability Reporting Standards (ESRS) including the new ESG reporting standards."@en;
+    bamm:characteristic :LocateCharacteristic.
+:LocateCharacteristic a bamm-c:Set;
+    bamm:preferredName "locate"@en;
+    bamm:description "Connects the title and location of the document."@en;
+    bamm:dataType :LocateEntity.
+:SpecificsSDSCharacteristic a bamm-c:Set;
+    bamm:preferredName "Specifics SDS"@en;
+    bamm:description "Connects the safety data sheet (SDS) version, language, and country."@en;
+    bamm:dataType :SpecificsSDSEntity.
+:documentTitle a bamm:Property;
+    bamm:preferredName "Document title"@en;
+    bamm:description "The header or title of the document."@en;
+    bamm:characteristic :DocumentTitleTrait;
+    bamm:exampleValue "Cobald Mine A".
 :DocumentTitleTrait a bamm-c:Trait;
     bamm-c:baseCharacteristic bamm-c:Text;
     bamm-c:constraint :MaxTitleCharacterConstraint.
+:documentLocation a bamm:Property;
+    bamm:preferredName "Document location"@en;
+    bamm:description "Location or link of and to the document."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "ftp://www.company.com/MyCompliance/Compliant02.PDF".
 :MaxTitleCharacterConstraint a bamm-c:LengthConstraint;
-    bamm:preferredName "max title character"@en;
+    bamm:preferredName "Max title character"@en;
     bamm:description "Maximum title characters set to 60."@en;
     bamm-c:maxValue "60"^^xsd:nonNegativeInteger;
     bamm-c:minValue "0"^^xsd:nonNegativeInteger.
-:SpecificsSDSCharacteristic a bamm-c:Set;
-    bamm:dataType :SpecificsSDSEntity;
-    bamm:preferredName "specifics SDS"@en;
-    bamm:description "Connects the SDS version, language, and country. "@en.
 :SpecificsSDSEntity a bamm:Entity;
-    bamm:properties (:documentLanguage :documentVersion :provisioningCountry :documentLocation :otherInformation :manufactureID);
-    bamm:preferredName "specifics SDS"@en;
-    bamm:description "Entity encapsulating the details from the SDS documentation."@en.
+    bamm:properties (:documentLanguage :documentVersion :provisioningCountry :documentLocation :otherInformation :manufactureId);
+    bamm:preferredName "Specifics SDS"@en;
+    bamm:description "Entity encapsulating the details from the safety data sheet (SDS) documentation."@en.
 :documentLanguage a bamm:Property;
-    bamm:characteristic bamm-c:Language;
-    bamm:preferredName "document language"@en;
-    bamm:description "Language of the SDS document."@en.
+    bamm:preferredName "Document language"@en;
+    bamm:description "Language of the safety data sheet (SDS) document."@en;
+    bamm:characteristic bamm-c:Language.
 :documentVersion a bamm:Property;
-    bamm:characteristic :DocumentVersionCharacteristic;
-    bamm:preferredName "document version"@en;
-    bamm:description "Version of the document. "@en.
-:DocumentVersionCharacteristic a bamm-c:Code;
-    bamm:dataType xsd:string;
-    bamm:preferredName "document version"@en;
-    bamm:description "Refers to the version of the SDS document."@en.
+    bamm:preferredName "Document version"@en;
+    bamm:description "Version of the document."@en;
+    bamm:characteristic :DocumentVersionCharacteristic.
 :provisioningCountry a bamm:Property;
+    bamm:preferredName "Provisioning country"@en;
+    bamm:description "The country from where the documentation is issued from."@en;
     bamm:characteristic :ProvisioningCountryTrait;
-    bamm:preferredName "provisioning country"@en;
-    bamm:description "The country from where the documentation is issued from. "@en;
     bamm:exampleValue "GER".
-:ProvisioningCountryCharacteristic a bamm-c:Code;
-    bamm:dataType xsd:string;
-    bamm:preferredName "Provisioning Country"@en;
-    bamm:description "Refers to the country of the SDS provisioner."@en.
+:otherInformation a bamm:Property;
+    bamm:preferredName "Other information"@en;
+    bamm:description "Additional information relevant to the safety data sheet (SDS) document."@en;
+    bamm:characteristic :OtherInformationCharacteristic.
+:manufactureId a bamm:Property;
+    bamm:preferredName "manufacture ID"@en;
+    bamm:description "Unique BPN number."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BPNL1234567890ZZ".
+:DocumentVersionCharacteristic a bamm-c:Code;
+    bamm:preferredName "Document version characteristic"@en;
+    bamm:description "Refers to the version of the safety data sheet (SDS) document."@en;
+    bamm:dataType xsd:string.
 :ProvisioningCountryTrait a bamm-c:Trait;
-    bamm-c:baseCharacteristic :ProvisioningCountryCharacteristic;
+    bamm-c:baseCharacteristic :ProvisioningCountry;
     bamm-c:constraint :ISOCodeConstraint.
+:ProvisioningCountry a bamm-c:Code;
+    bamm:preferredName "Provisioning Country"@en;
+    bamm:description "Refers to the country of the safety data sheet (SDS) provisioner."@en;
+    bamm:dataType xsd:string.
 :ISOCodeConstraint a bamm-c:LengthConstraint;
     bamm:preferredName "ISO code"@en;
-    bamm:description "Length of the text is capped to three letters based on the ISO 3166 standard. "@en;
+    bamm:description "Length of the text is capped to three letters based on the ISO 3166 standard."@en;
     bamm-c:maxValue "3"^^xsd:nonNegativeInteger;
     bamm-c:minValue "3"^^xsd:nonNegativeInteger.
 :curingTime a bamm:Property;
-    bamm:characteristic :CuringTime;
+    bamm:preferredName "Curing time"@en;
+    bamm:description "Cure time is the time that determines how long it will take for the material to fully cure. A number of chemical reactions occur during this time, for the material to harden. It can take a long time for a material to fully cure."@en;
+    bamm:characteristic :CuringTime.
+:CuringTime a bamm-c:Duration;
     bamm:preferredName "curing time"@en;
-    bamm:description "Cure time is the time that determines how long it will take for the material to fully cure. A number of chemical reactions occur during this time, for the material to harden. It can take a long time for a material to fully cure."@en.
+    bamm:description "Time in seconds needed for the curing of the substance or mixture."@en;
+    bamm:dataType xsd:float;
+    bamm-c:unit unit:secondUnitOfTime.
 :ProductIdentificationCharacteristic a bamm:Characteristic;
-    bamm:dataType :ProductIdentificationEntity;
-    bamm:preferredName "product identification"@en;
-    bamm:description "Set of information to identify the product. "@en.
+    bamm:preferredName "Product identification character"@en;
+    bamm:description "Set of information to identify the product."@en;
+    bamm:dataType :ProductIdentificationEntity.
 :ProductIdentificationEntity a bamm:Entity;
     bamm:properties (:tradeName :productCode :reachRegistration [
   bamm:property :substanceName;
@@ -163,252 +225,210 @@
   bamm:optional "true"^^xsd:boolean
 ]);
     bamm:preferredName "product identification entity "@en;
-    bamm:description "Entity encapsulating the product identification. "@en.
-:productIdentification a bamm:Property;
-    bamm:characteristic :ProductIdentificationCharacteristic;
-    bamm:preferredName "product identification"@en;
-    bamm:description "Identification of the substance/mixture and of the company/undertaking."@en.
+    bamm:description "Entity encapsulating the product identification."@en.
 :tradeName a bamm:Property;
+    bamm:preferredName "Trade name"@en;
+    bamm:description "Trade name given to the chemical substance or mixture as part of the product indentification."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "trade name"@en;
-    bamm:description "Trade name given to the chemical substance or mixture as part of the product indentification. "@en;
     bamm:exampleValue "METHYLENEDIPHENYL (4,4'-MDI)".
 :productCode a bamm:Property;
+    bamm:preferredName "Product code"@en;
+    bamm:description "Product Code given to the Substance/mixture as part of the product indentification."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "product code"@en;
-    bamm:description "Product Code given to the Substance/mixture as part of the product indentification. "@en;
     bamm:exampleValue "615-104-00-9-DE".
 :reachRegistration a bamm:Property;
-    bamm:characteristic :ReachRegistrationTrait;
-    bamm:preferredName "reach registration"@en;
+    bamm:preferredName "Reach registration"@en;
     bamm:description "A REACH registration number is an 18-digit number assigned by the European Chemicals Agency (ECHA)."@en;
-    bamm:exampleValue "01-2119457558-25-XXXX".
+    bamm:characteristic :ReachRegistrationTrait;
+    bamm:exampleValue "01-2119457558-25-1234".
 :substanceName a bamm:Property;
+    bamm:preferredName "Substance name"@en;
+    bamm:description "Name given to the substance."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "substance name"@en;
-    bamm:description "Name given to the substance. "@en;
     bamm:exampleValue "Sodium hypochlorite".
 :casNumber a bamm:Property;
-    bamm:characteristic :CasNumberTrait;
-    bamm:preferredName "cas number"@en;
+    bamm:preferredName "CAS number"@en;
     bamm:description "A CAS Registry Number is a unique identification number assigned by the Chemical Abstracts Service (CAS)."@en;
+    bamm:characteristic :CasNumberTrait;
     bamm:exampleValue "7681-52-9".
 :ecNumber a bamm:Property;
+    bamm:preferredName "EC number"@en;
+    bamm:description "The European Commission number (EC number), is the code assigned to chemical substances that are commercially available within the European Union."@en;
     bamm:characteristic :EcNumberTrait;
-    bamm:preferredName "ec number"@en;
-    bamm:description "The European Commission number (EC number), is the code assigned to chemical substances that are commercially available within the European Union. "@en;
     bamm:exampleValue "231-668-3".
 :indexNumber a bamm:Property;
+    bamm:preferredName "Index number"@en;
+    bamm:description "The index number is used as an identifier."@en;
     bamm:characteristic :IndexNumberTrait;
-    bamm:preferredName "index number"@en;
-    bamm:description "The index number is used as an identifier. "@en;
     bamm:exampleValue "011-002-00-6".
-:EcNumberTrait a bamm-c:Trait;
-    bamm:preferredName "ec number trait"@en;
-    bamm:description "Constraints the value."@en;
-    bamm-c:baseCharacteristic bamm-c:Text;
-    bamm-c:constraint :ECNumberRegex.
-:CuringTime a bamm-c:Duration;
-    bamm:dataType xsd:float;
-    bamm:preferredName "curing time"@en;
-    bamm:description "Time in seconds needed for the curing of the substance or mixture. "@en;
-    bamm-c:unit unit:secondUnitOfTime.
-:serialNumber a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "serial number"@en;
-    bamm:description "Unique serial number to identify the material or batch."@en;
-    bamm:exampleValue "134X5643FC6557-23".
-:LocateCharacteristic a bamm-c:Set;
-    bamm:dataType :LocateEntity;
-    bamm:preferredName "locate"@en;
-    bamm:description "Connects the title and location of the document. "@en.
-:LocateEntity a bamm:Entity;
-    bamm:properties (:documentTitle :documentLocation);
-    bamm:preferredName "locate entity"@en;
-    bamm:description "Entity encapsulating the details from the documents title and location. "@en.
-:IndexNumberTrait a bamm-c:Trait;
-    bamm:preferredName "index number trait"@en;
-    bamm:description "Constraints the value. "@en;
-    bamm-c:baseCharacteristic bamm-c:Text;
-    bamm-c:constraint :IndexNumberRegex.
-:IndexNumberRegex a bamm-c:RegularExpressionConstraint;
-    bamm:preferredName "index number regex"@en;
-    bamm:description "Describes the Regex expression for the Index number."@en;
-    bamm:value "^0\\d{2}-0\\d{3}-\\d{2}-\\d$".
 :ReachRegistrationTrait a bamm-c:Trait;
     bamm-c:baseCharacteristic bamm-c:Text;
+    bamm:description "Constraints the value to twi digits followed by an - followed by ten digits followed by an - followed by two digits followed by an - and four digits."@en;
     bamm-c:constraint :ReachRegistrationRegex.
-:ECNumberRegex a bamm-c:RegularExpressionConstraint;
-    bamm:preferredName "ec number regex"@en;
-    bamm:description "Describes the Regex expression for the EC number."@en;
-    bamm:value "^[\\d]{3}-[\\d]{3}-[\\d]$".
-:ReachRegistrationRegex a bamm-c:RegularExpressionConstraint;
-    bamm:preferredName "reach registration regex"@en;
-    bamm:description "Describes the Regex expression for the Reach Registration number."@en;
-    bamm:value "^\\d{2}-\\d{10}-\\d{2}-\\d{4}$".
 :CasNumberTrait a bamm-c:Trait;
     bamm-c:baseCharacteristic bamm-c:Text;
+    bamm:description "Constraints the value to four digits followed by an - followed by two digits followed by an - and one digit."@en;
     bamm-c:constraint :CASNumberConstraint.
+:EcNumberTrait a bamm-c:Trait;
+    bamm:preferredName "EC number trait"@en;
+    bamm:description "Constraints the value to three digits followed by an - followed by three digits followed by an - and one digit."@en;
+    bamm-c:baseCharacteristic bamm-c:Text;
+    bamm-c:constraint :ECNumberRegex.
+:IndexNumberTrait a bamm-c:Trait;
+    bamm:preferredName "Index number trait"@en;
+    bamm:description "Constraints the value to three digits followed by an - followed by three digits followed by an - followed by two digits followed by an - and one digit."@en;
+    bamm-c:baseCharacteristic bamm-c:Text;
+    bamm-c:constraint :IndexNumberRegex.
+:ECNumberRegex a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "EC number regex"@en;
+    bamm:description "Describes the Regex expression for the EC number. Constraints the value to three digits followed by an - followed by three digits followed by an - and one digit."@en;
+    bamm:value "^[\d]{3}-[\d]{3}-[\d]$".
+:LocateEntity a bamm:Entity;
+    bamm:properties (:documentTitle :documentLocation);
+    bamm:preferredName "Locate entity"@en;
+    bamm:description "Entity encapsulating the details from the documents title and location."@en.
+:IndexNumberRegex a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Index number regex"@en;
+    bamm:description "Describes the Regex expression for the Index number. Constraints the value to three digits followed by an - followed by three digits followed by an - followed by two digits followed by an - and one digit."@en;
+    bamm:value "^\d{3}-\d{3}-\d{2}-\d$".
+:ReachRegistrationRegex a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Reach registration regex"@en;
+    bamm:description "Describes the Regex expression for the Reach Registration number. Constraints the value to twi digits followed by an - followed by ten digits followed by an - followed by two digits followed by an - and four digits."@en;
+    bamm:value "^\d{2}-\d{10}-\d{2}-\d{4}$".
 :CASNumberConstraint a bamm-c:RegularExpressionConstraint;
     bamm:preferredName "CAS number constraint"@en;
-    bamm:description "Describes the Regex expression for the CAS number. "@en;
-    bamm:value "^\\d{4}-\\d{2}-\\d$".
-:application a bamm:Property;
-    bamm:characteristic :ApplicationCharacteristic;
-    bamm:preferredName "application"@en;
-    bamm:description "Relevant identified uses of the substance or mixture and uses advised against."@en.
+    bamm:description "Describes the Regex expression for the CAS number. Constraints the value to four digits followed by an - followed by two digits followed by an - and one digit."@en;
+    bamm:value "^\d{4}-\d{2}-\d$".
 :ApplicationCharacteristic a bamm:Characteristic;
-    bamm:dataType :ApplicationEntity;
-    bamm:preferredName "application"@en;
-    bamm:description "Set of information referring to the application of the substance and mixture. "@en.
-:performanceProperties a bamm:Property;
-    bamm:characteristic :PerformanceCharacteristic;
-    bamm:preferredName "performance properties"@en;
-    bamm:description "Describes the performance and durability of a substance or mixture. "@en.
+    bamm:preferredName "Application characteristic"@en;
+    bamm:description "Set of information referring to the application of the substance and mixture."@en;
+    bamm:dataType :ApplicationEntity.
+:ApplicationEntity a bamm:Entity;
+    bamm:properties (:usage :recommendedUse);
+    bamm:preferredName "application entity"@en;
+    bamm:description "Entity encapsulating the substance or mixtures application."@en.
 :PerformanceCharacteristic a bamm:Characteristic;
-    bamm:dataType :PerformanceEntity;
     bamm:preferredName "performance"@en;
-    bamm:description "Set of measures linked to the performance and durability of the mixtures and substances. "@en.
+    bamm:description "Set of measures linked to the performance and durability of the mixtures and substances."@en;
+    bamm:dataType :PerformanceEntity.
 :PerformanceEntity a bamm:Entity;
     bamm:properties (:curingTime);
     bamm:preferredName "performance entity"@en;
     bamm:description "Entity encapsulating the measures of the performance and durability."@en.
-:ApplicationEntity a bamm:Entity;
-    bamm:properties (:usage :recommendedUse);
-    bamm:preferredName "application entity"@en;
-    bamm:description "Entity encapsulating the substance or mixtures application. "@en.
 :usage a bamm:Property;
-    bamm:characteristic bamm-c:Text;
     bamm:preferredName "usage"@en;
     bamm:description "Brief description of the identified uses of the substance or mixture relevant for the recipient(s)."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "Industrial use in plymer production".
 :recommendedUse a bamm:Property;
-    bamm:characteristic bamm-c:Text;
     bamm:preferredName "recommended use"@en;
     bamm:description "Recommended restrictions on use"@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "Detergent".
-:supplier a bamm:Property;
-    bamm:characteristic :SupplierCharacteristic;
-    bamm:preferredName "supplier"@en;
-    bamm:description "Supplier of the mixture or substance. "@en.
 :SupplierCharacteristic a bamm:Characteristic;
-    bamm:dataType :SupplierEntity;
     bamm:preferredName "supplier"@en;
-    bamm:description "Set of information to identify the supplier. "@en.
+    bamm:description "Set of information to identify the supplier."@en;
+    bamm:dataType :SupplierEntity.
 :SupplierEntity a bamm:Entity;
-    bamm:properties (:address :emergencyNumber :supplierName);
+    bamm:properties (:emergencyNumber :supplierId);
     bamm:preferredName "supplier entity"@en;
-    bamm:description "Entity encapsulating the information from the supplier. "@en.
-:address a bamm:Property;
-    bamm:characteristic address-c:PostalAddress;
-    bamm:preferredName "adress"@en;
-    bamm:description "Contact information of the safety data sheet supplier must be defined here."@en.
+    bamm:description "Entity encapsulating the information from the supplier."@en.
 :emergencyNumber a bamm:Property;
-    bamm:characteristic :UsageTrait;
     bamm:preferredName "emergency number"@en;
     bamm:description "Suppliers emergency telephone number for information services."@en;
+    bamm:characteristic :UsageTrait;
     bamm:exampleValue "+49 696 43508409".
+:supplierId a bamm:Property;
+    bamm:preferredName "supplier ID"@en;
+    bamm:description "BPNL of the supplier."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BPNL1234567890ZZ".
 :UsageTrait a bamm-c:Trait;
     bamm-c:baseCharacteristic bamm-c:Text;
     bamm-c:constraint :TelephoneNumberRegex.
 :TelephoneNumberRegex a bamm-c:RegularExpressionConstraint;
     bamm:preferredName "telephone number regex"@en;
-    bamm:description "Describes the regex expression for a telephone number."@en;
-    bamm:value "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$".
-:hazardsIdentification a bamm:Property;
-    bamm:characteristic :HazardsIdentificationCharacteristic1;
-    bamm:preferredName "hazards identification"@en;
-    bamm:description "Describes the hazards of the substance or mixture and the appropriate warning information associated with those hazards. "@en.
-:HazardsIdentificationCharacteristic1 a bamm:Characteristic;
-    bamm:dataType :HazardsIdentificationEntity;
-    bamm:preferredName "hazards identification"@en;
-    bamm:description "Set of information to identify the hazards. "@en.
+    bamm:description "Constraint to allow only numbers, whitespaces and an optional leading + sign."@en;
+    bamm:value "^[+]?[0-9 ]+$".
 :HazardsIdentificationEntity a bamm:Entity;
     bamm:properties (:classificationGHS :possibleHazards :hazardousIngredients);
-    bamm:preferredName "hazards identifiaction entity"@en;
-    bamm:description "Entity encapsulating the hazards on a substance or mixture. "@en.
+    bamm:preferredName "Hazards identifiaction entity"@en;
+    bamm:description "Entity encapsulating the hazards on a substance or mixture."@en.
 :classificationGHS a bamm:Property;
-    bamm:characteristic bamm-c:Text;
     bamm:preferredName "classification GHS"@en;
     bamm:description "The classification of the substance or the mixture which results from the application of the classification criteria in Regulation (EC) No 1272/2008 shall be given."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "Flam. Liq. 2, H225".
-:productComposition a bamm:Property;
-    bamm:characteristic :ProductCompositionCharacteristic;
-    bamm:preferredName "productComposition"@en;
-    bamm:description "Information on the ingredients."@en.
-:ProductCompositionCharacteristic a bamm:Characteristic;
-    bamm:dataType :ProductCompositionEntity;
-    bamm:preferredName "product composition characteristic"@en;
-    bamm:description "Set of information displaying the product composition. "@en.
+:possibleHazards a bamm:Property;
+    bamm:preferredName "possible hazards"@en;
+    bamm:description "A description of the various toxicological (health) effects and the available data used to identify those effects (SDS Section 11.1)."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "biohazard Toxic to fish.".
+:hazardousIngredients a bamm:Property;
+    bamm:preferredName "hazardous ingredients"@en;
+    bamm:description "Ingredients classified as hazardous (SDS Section 12.1)."@en;
+    bamm:characteristic :ListOfIngredients.
 :ProductCompositionEntity a bamm:Entity;
     bamm:properties (:substance :mixture);
-    bamm:preferredName "product composition entity"@en;
-    bamm:description "Entity encapsulating the product composition informations. "@en.
+    bamm:preferredName "Product composition entity"@en;
+    bamm:description "Entity encapsulating the product composition informations."@en.
 :substance a bamm:Property;
-    bamm:characteristic :ChemicalCompositionCharacteristic;
-    bamm:preferredName "substance"@en;
-    bamm:description "Describes a substance. "@en.
+    bamm:preferredName "Substance"@en;
+    bamm:description "Property to describes a substance."@en;
+    bamm:characteristic :ChemicalComposition.
 :mixture a bamm:Property;
-    bamm:characteristic :ChemicalCompositionCharacteristic;
-    bamm:preferredName "mixture"@en;
-    bamm:description "describes the mixture. "@en.
+    bamm:preferredName "Mixture"@en;
+    bamm:description "Property to describes the mixture."@en;
+    bamm:characteristic :ChemicalComposition.
 :ChemicalCompositionEntity a bamm:Entity;
     bamm:properties (:composition :chemicalNature);
-    bamm:preferredName "chemical composition entity"@en;
-    bamm:description "Entity encapsulating the chemical composition and nature. "@en.
+    bamm:preferredName "Chemical composition entity"@en;
+    bamm:description "Entity encapsulating the chemical composition and nature."@en.
 :composition a bamm:Property;
-    bamm:characteristic :ListOfIngredients;
     bamm:preferredName "composition"@en;
-    bamm:description "Describes the chemical identity of the ingredient(s) of the substance or mixture. "@en.
+    bamm:description "Describes the chemical identity of the ingredient(s) of the substance or mixture."@en;
+    bamm:characteristic :ListOfIngredients.
 :chemicalNature a bamm:Property;
-    bamm:characteristic bamm-c:Text;
     bamm:preferredName "chemical nature"@en;
-    bamm:description "Chemical nature of the mixture or substance. "@en;
+    bamm:description "Chemical nature of the mixture or substance."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "Mono constituent".
 :ListOfIngredients a bamm-c:Set;
-    bamm:dataType :IngredientsEntity;
-    bamm:preferredName "list of ingredients"@en;
-    bamm:description "Describes the amount of each individual chemical. "@en.
-:safetyMeasures a bamm:Property;
-    bamm:characteristic :SafetyMeasuresCharacteristics;
-    bamm:preferredName "safety measures"@en;
-    bamm:description "Describes measures related to the safe handling of the mixtures and substances."@en.
-:SafetyMeasuresCharacteristics a bamm:Characteristic;
-    bamm:dataType :SafetyMeasureEntity;
-    bamm:preferredName "safety measure characteristics"@en;
-    bamm:description "Set of information referring to safety measures."@en.
+    bamm:preferredName "List of ingredients"@en;
+    bamm:description "Describes the amount of each individual chemical."@en;
+    bamm:dataType :IngredientsEntity.
+:IngredientsEntity a bamm:Entity;
+    bamm:properties (:chemicalName :chemicalPercentage);
+    bamm:preferredName "Ingredients entity"@en;
+    bamm:description "Entity encapsulating the ingredients."@en.
 :SafetyMeasureEntity a bamm:Entity;
     bamm:properties (:firstAid :fireExtinguisher :personalPrecaution :technicalMeasures :exposureLimit);
-    bamm:preferredName "safety measure entity"@en;
+    bamm:preferredName "Safety measure entity"@en;
     bamm:description "Entity encapsulating the safety measures."@en.
 :firstAid a bamm:Property;
+    bamm:preferredName "First aid"@en;
+    bamm:description "First aid instructions are provided by relevant routes of exposure (SDS Section 4.1)."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "first aid"@en;
-    bamm:description "First aid instructions are provided by relevant routes of exposure. (SDS Section 4.1)"@en;
-    bamm:exampleValue "(a) immediate medical attention is required and if delayed effects can be expected after exposure".
+    bamm:exampleValue "(a) immediate medical attention is required and if delayed effects can be expected after exposure.".
 :fireExtinguisher a bamm:Property;
+    bamm:preferredName "Fire extinguisher"@en;
+    bamm:description "Suitable extinguishing media,  for fighting a fire caused by the substance or mixture, or arising in its vicinity (SDS Section 5.1)."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "fire extinguisher"@en;
-    bamm:description "Suitable extinguishing media,  for fighting a fire caused by the substance or mixture, or arising in its vicinity. (SDS Section 5.1)"@en;
     bamm:exampleValue "High volume water jet".
 :personalPrecaution a bamm:Property;
+    bamm:preferredName "Personal precaution"@en;
+    bamm:description "Information about the appropriate response to spills, leaks, or releases, to prevent or minimise the adverse effects on persons, property and the environment (SDS Section 6.1)."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "personal precaution"@en;
-    bamm:description "Information about the appropriate response to spills, leaks, or releases, to prevent or minimise the adverse effects on persons, property and the environment. (SDS Section 6.1)"@en;
     bamm:exampleValue "Use personal protective equipment.  Ensure adequate ventilation.".
 :technicalMeasures a bamm:Property;
+    bamm:preferredName "Technical measures"@en;
+    bamm:description "Information is provided concerning protective measures for safe handling and recommended technical measures (SDS Section 7.1)."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "technical measures"@en;
-    bamm:description "Information is provided concerning protective measures for safe handling and recommended technical measures. (SDS Section 7.1)"@en;
     bamm:exampleValue "Never contact with water or moisture. Avoid formation of aerosol.".
-:productProperties a bamm:Property;
-    bamm:characteristic :ProductPropertyCharacteristic;
-    bamm:preferredName "product properties "@en;
-    bamm:description "Describes the physical and chemical properties of the substance or mixture. "@en.
-:ProductPropertyCharacteristic a bamm:Characteristic;
-    bamm:dataType :ProductPropertyEntity;
-    bamm:preferredName "product property characteristic"@en;
-    bamm:description "Set of information describing the physical and chemical properties. "@en.
+:exposureLimit a bamm:Property;
+    bamm:preferredName "Exposure limit"@en;
+    bamm:description "Information about the applicable exposure limits of the substances and mixtures (SDS Section 8.1)."@en;
+    bamm:characteristic :ListOfIngredients.
 :ProductPropertyEntity a bamm:Entity;
     bamm:properties (:physicalState :colour [
   bamm:property :odour;
@@ -418,231 +438,208 @@
   bamm:optional "true"^^xsd:boolean
 ] :density :reactivity);
     bamm:preferredName "product property entity"@en;
-    bamm:description "Entity encapsulating the product properties. "@en.
+    bamm:description "Entity encapsulating the product properties."@en.
 :physicalState a bamm:Property;
-    bamm:characteristic :PhysicalStateCharacteristic;
-    bamm:preferredName "physical state"@en;
+    bamm:preferredName "Physical state"@en;
     bamm:description "Describes the physical state (gas, liquid or solid) at standard conditions of temperature and pressure."@en;
+    bamm:characteristic :PhysicalState;
     bamm:exampleValue "liquid".
-:PhysicalStateCharacteristic a bamm-c:Enumeration;
-    bamm:dataType xsd:string;
-    bamm:preferredName "physical state characteristic"@en;
-    bamm:description "Provide three possbile physcial states"@en;
-    bamm-c:values ("gas" "liquid" "solid").
 :colour a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "colour"@en;
+    bamm:preferredName "Colour"@en;
     bamm:description "The colour of the substance or mixture as supplied is indicated."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "black".
 :odour a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "odour"@en;
+    bamm:preferredName "Odour"@en;
     bamm:description "A qualitative description of the odour is shown if it is well-known or described in the literature."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "none".
 :pH a bamm:Property;
-    bamm:characteristic :PHCharacteristic;
     bamm:preferredName "pH"@en;
     bamm:description "The pH of the substance or mixture as supplied, or where the product is a solid, the pH of an aqueous liquid or solution at a given concentration, shall be indicated."@en;
-    bamm:exampleValue "5"^^xsd:integer.
-:PHCharacteristic a bamm:Characteristic;
-    bamm:dataType xsd:integer;
-    bamm:preferredName "pH characteristic"@en;
-    bamm:description "Provides a range or a pH value."@en.
+    bamm:characteristic :PhCharacteristic;
+    bamm:exampleValue "5.0"^^xsd:integer.
 :phaseTransition a bamm:Property;
-    bamm:characteristic :PhaseTransitionCharacteristic;
-    bamm:preferredName "phase transition"@en;
-    bamm:description "Phase Transition temperature from Liquid to Gas."@en;
-    bamm:exampleValue "80"^^xsd:decimal.
-:PhaseTransitionCharacteristic a bamm-c:Measurement;
-    bamm:dataType xsd:decimal;
-    bamm:preferredName "phase transition characteristic"@en;
-    bamm:description "The temperature in which the product transitions its phase."@en;
-    bamm-c:unit unit:degreeCelsius.
+    bamm:preferredName "Phase transition"@en;
+    bamm:description "Phase Transition temperature from liquid to gas."@en;
+    bamm:characteristic :Degree;
+    bamm:exampleValue "80.0"^^xsd:decimal.
 :flashPoint a bamm:Property;
-    bamm:characteristic :PhaseTransitionCharacteristic;
     bamm:preferredName "flash point"@en;
-    bamm:description "For mixtures, a value for the mixture shall be indicated, if available. Otherwise, the flash point(s) of the substance(s) with the lowest flash point(s) shall be indicated."@en;
-    bamm:exampleValue "21"^^xsd:decimal.
+    bamm:description "For mixtures, a value for the mixture shall be indicated, if available. Otherwise, the flash point  of the substance with the lowest flash point shall be indicated."@en;
+    bamm:characteristic :Degree;
+    bamm:exampleValue "21.0"^^xsd:decimal.
 :density a bamm:Property;
-    bamm:characteristic :DensityCharacteristic;
-    bamm:preferredName "density"@en;
+    bamm:preferredName "Density"@en;
     bamm:description "Density and relative density shall generally be indicated at standard conditions of temperature and pressure."@en;
+    bamm:characteristic :Density;
     bamm:exampleValue "1.15"^^xsd:decimal.
-:DensityCharacteristic a bamm-c:Measurement;
-    bamm:dataType xsd:decimal;
-    bamm:preferredName "density characteristic"@en;
-    bamm:description "Describes the density of the product."@en;
-    bamm-c:unit unit:gramPerCubicCentimetre.
 :reactivity a bamm:Property;
+    bamm:preferredName "Reactivity"@en;
+    bamm:description "Reactivity hazards of the substance or mixtures."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "reactivity"@en;
-    bamm:description "Reactivity hazards of the substance or mixtures. "@en;
     bamm:exampleValue "Vapors may form explosive mixture with air.".
-:possibleHazards a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "possible hazards"@en;
-    bamm:description "A description of the various toxicological (health) effects and the available data used to identify those effects. (SDS Section 11.1)"@en;
-    bamm:exampleValue "biohazard Toxic to fish.".
-:hazardousIngredients a bamm:Property;
-    bamm:characteristic :ListOfIngredients;
-    bamm:preferredName "hazardous ingredients"@en;
-    bamm:description "Ingredients classified as hazardous. (SDS Section 12.1)"@en.
-:productDisposal a bamm:Property;
-    bamm:characteristic :ProductDisposalCharacteristic;
-    bamm:preferredName "product disposal"@en;
-    bamm:description "Describes the proper disposal of the product. "@en.
-:ProductDisposalCharacteristic a bamm:Characteristic;
-    bamm:dataType :ProductDisposalEntity;
-    bamm:preferredName "product disposal characteristic"@en;
-    bamm:description "Set of information describin the proper disposal of the product. "@en.
 :ProductDisposalEntity a bamm:Entity;
     bamm:properties (:wasteManagement :wasteInformation);
-    bamm:preferredName "product disposal entity"@en;
-    bamm:description "Entity encapsulating the information needed for the product disposal. "@en.
+    bamm:preferredName "Product disposal entity"@en;
+    bamm:description "Entity encapsulating the information needed for the product disposal."@en.
 :wasteManagement a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "waste management"@en;
+    bamm:preferredName "Waste management"@en;
     bamm:description "Waste management of the substance or mixture and/or its container to assist in the determination of safe and environmentally preferred waste management options."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "Contact waste disposal services.".
 :wasteInformation a bamm:Property;
+    bamm:preferredName "Waste information"@en;
+    bamm:description "Waste treatment-relevant information."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "waste information"@en;
-    bamm:description "Waste treatment-relevant information"@en;
     bamm:exampleValue "D003: Reactivity".
-:transportInformation a bamm:Property;
-    bamm:characteristic :TransportInformationCharacteristic;
-    bamm:preferredName "transport information"@en;
-    bamm:description "Describes transport relevant information. "@en.
-:TransportInformationCharacteristic a bamm:Characteristic;
-    bamm:dataType :TransportInformationEntity;
-    bamm:preferredName "transport information characteristic"@en;
-    bamm:description "Set of information describing the transport informations. "@en.
 :TransportInformationEntity a bamm:Entity;
     bamm:properties (:unNumber :shippingName :dgClass :dgPack);
-    bamm:preferredName "transport information entity"@en;
-    bamm:description "Entity encapsulating the transport information data. "@en.
+    bamm:preferredName "Transport information entity"@en;
+    bamm:description "Entity encapsulating the transport information data."@en.
 :unNumber a bamm:Property;
-    bamm:characteristic bamm-c:Text;
     bamm:preferredName "UN number"@en;
     bamm:description "The UN number or the ID number (i.e. the four-figure identification number of the substance, mixture or article preceded by the letters ‘UN’ or ‘ID’) from the UN Model Regulations, IMDG, ADR, RID, ADN or ICAO TI shall be provided."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "ADR - UN2320".
 :shippingName a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "shipping name"@en;
+    bamm:preferredName "Shipping name"@en;
     bamm:description "A proper shipping name."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "ADR - TETRAETHYLENEPENTAMINE".
 :dgClass a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "dg class"@en;
+    bamm:preferredName "DG class"@en;
     bamm:description "The transport hazard class (and subsidiary risks) assigned to the substances or mixtures on the basis of the predominant hazard that they present according to the UN Model Regulations shall be provided."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "ADR - 8".
 :dgPack a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "dg pack"@en;
+    bamm:preferredName "DG pack"@en;
     bamm:description "The packing group number from the UN Model Regulations shall be provided, if applicable, as required by the UN Model Regulations, ADR, RID and ADN."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "ADR - III".
-:regulatoryInformation a bamm:Property;
-    bamm:characteristic :RegulatoryInformationCharacteristic;
-    bamm:preferredName "regulatory information"@en;
-    bamm:description "Describes the regulatory data points. "@en.
 :RegulatoryInformationCharacteristic a bamm:Characteristic;
-    bamm:dataType :RegulatoryInformationEntity;
     bamm:preferredName "regulatory information characteristic"@en;
-    bamm:description "Set of information regarding the regulations. "@en.
+    bamm:description "Set of information regarding the regulations."@en;
+    bamm:dataType :RegulatoryInformationEntity.
 :RegulatoryInformationEntity a bamm:Entity;
     bamm:properties (:limitations);
     bamm:preferredName "regulatory information entity"@en;
-    bamm:description "Entity encapsulating the regulatory information. "@en.
+    bamm:description "Entity encapsulating the regulatory information."@en.
 :limitations a bamm:Property;
+    bamm:preferredName "Limitations"@en;
+    bamm:description "Information shall be provided regarding relevant Union safety, health and environmental provisions including the prohibitions and restrictions."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "limitations"@en;
-    bamm:description "Information shall be provided regarding relevant Union safety, health and environmental provisions including the prohibitions and restrictions"@en;
     bamm:exampleValue "Regulation (EC) No 1005/2009".
 :authorSDS a bamm:Property;
-    bamm:characteristic bamm-c:Text;
     bamm:preferredName "author SDS"@en;
-    bamm:description "SDS Author changing the document. "@en;
+    bamm:description "safety data sheet (SDS) author changing the document."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "Max Mustermann".
-:otherInformation a bamm:Property;
-    bamm:characteristic :OtherInformationCharacteristic;
-    bamm:preferredName "other information"@en;
-    bamm:description "Additional information relevant to the SDS document. "@en.
 :OtherInformationCharacteristic a bamm-c:Set;
-    bamm:dataType :OtherInformationEntity;
     bamm:preferredName "other information characteristic"@en;
-    bamm:description "Describes additional information, in a set of values. "@en.
+    bamm:description "Describes additional information, in a set of values."@en;
+    bamm:dataType :OtherInformationEntity.
 :OtherInformationEntity a bamm:Entity;
     bamm:properties (:indicationChanges :authorSDS);
     bamm:preferredName "other information entity"@en;
     bamm:description "Entity encapsulating the required information."@en.
 :indicationChanges a bamm:Property;
-    bamm:characteristic bamm-c:Text;
     bamm:preferredName "indication changes"@en;
-    bamm:description "in the case of a revised safety data sheet, a clear indication of where changes have been made to the previous version of the safety data sheet."@en;
+    bamm:description "in the case of a revised safety data sheet (SDS), a clear indication of where changes have been made to the previous version of the safety data sheet (SDS)."@en;
+    bamm:characteristic bamm-c:Text;
     bamm:exampleValue "Created 1.1.2000, Updated 24.3.2019".
-:exposureLimit a bamm:Property;
-    bamm:characteristic :ListOfIngredients;
-    bamm:preferredName "exposure limits"@en;
-    bamm:description "Information about the applicable exposure limits of the substances and mixtures. (SDS Section 8.1)"@en.
-:supplierName a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "supplier name"@en;
-    bamm:description "Name of the Supplier. "@en;
-    bamm:exampleValue "Henkel".
-:IngredientsEntity a bamm:Entity;
-    bamm:properties (:chemicalName :chemicalPercentage);
-    bamm:preferredName "ingredients entity"@en;
-    bamm:description "Entity encapsulating the ingredients. "@en.
 :chemicalName a bamm:Property;
+    bamm:preferredName "Chemical name"@en;
+    bamm:description "Name of the chemical."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:preferredName "chemical name"@en;
-    bamm:description "Name of the chemical. "@en;
     bamm:exampleValue "Chemical A1".
 :chemicalPercentage a bamm:Property;
+    bamm:preferredName "Chemical percentage"@en;
+    bamm:description "Describes chemical distribution in percentage. It can include a percentage range. Either 10% or 5,5%-6% . Allowed are decimal values with a \",\" seperator. Mandatory are no spaces inbetween the values and the percentage character."@en;
     bamm:characteristic :ChemicalPercentageTrait;
-    bamm:preferredName "chemical percentage"@en;
-    bamm:description "Describes chemical distribution in percentage. It can include a percentage range. Either 10% or 5,5%-6% . Allowed are decimal values with a \",\" seperator. Mandatory are no spaces inbetween the values and the percentage character. "@en;
-    bamm:exampleValue "32,3 %"^^xsd:decimal.
-:carbonFootprint a bamm:Property;
-    bamm:characteristic :CarbonFootprintCharacteristic;
-    bamm:preferredName "carbon footprint"@en;
-    bamm:description "Describes the carbon footorint of the substance or mixture. Based on the Ecodesign. "@en.
-:CarbonFootprintCharacteristic a bamm:Characteristic;
-    bamm:dataType :CarbonFootprintEntity;
-    bamm:preferredName "carbon footprint characteristic"@en;
-    bamm:description "Set of information needed for the carbon footrpinrt ecodesign regulations. "@en.
-:CarbonFootprintEntity a bamm:Entity;
-    bamm:properties (:totalCarbon :footprintStudy);
-    bamm:preferredName "carbon footprint entity"@en;
-    bamm:description "Entity encapsulating the carbon footrprint. "@en.
-:totalCarbon a bamm:Property;
-    bamm:characteristic :TotalCarbonCharacteristic;
-    bamm:preferredName "total carbon"@en;
-    bamm:description "The total carbon footprint, calculated as kg of carbon dioxide equivalent"@en;
-    bamm:exampleValue "2"^^xsd:decimal.
-:footprintStudy a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "footprint study"@en;
-    bamm:description "Web link to the public carbon footprint calculation footprint study used."@en;
-    bamm:exampleValue "ftp://www.company.com/CE/RawMat-CO2_134x12345A12".
-:TotalCarbonCharacteristic a bamm-c:Measurement;
-    bamm:dataType xsd:decimal;
-    bamm:preferredName "total carbon characteristic"@en;
-    bamm:description "Describes the amount of kg of the CO2 equivalent."@en;
-    bamm-c:unit unit:kilogram.
-:ChemicalCompositionCharacteristic a bamm-c:Set;
-    bamm:dataType :ChemicalCompositionEntity;
-    bamm:preferredName "chemical composition characteristic"@en;
-    bamm:description "Characetristic combining the chemical composition for a mixture and a subsance. "@en.
-:manufactureID a bamm:Property;
-    bamm:characteristic bamm-c:Text;
-    bamm:preferredName "manufacture ID"@en;
-    bamm:description "Unique BPN number."@en;
-    bamm:exampleValue "BPNL1234567890ZZ".
+    bamm:exampleValue "32.3%".
 :ChemicalPercentageTrait a bamm-c:Trait;
     bamm-c:baseCharacteristic bamm-c:Text;
-    bamm-c:constraint :ChemicalDistributionPercentage.
-:ChemicalDistributionPercentage a bamm-c:RegularExpressionConstraint;
-    bamm:preferredName "chemical distribution percentage "@en;
-    bamm:description "Describes chemical distribution in percentage. It can include a percentage range. Either 10% or 5,5%-6% . Allowed are decimal values with a \",\" seperator. Mandatory are no spaces inbetween the values and the percentage character. "@en;
-    bamm:value "^(100(\\,00?)?|\\d{1,2}(\\,\\d{1,2})?)(%-((100(\\,00?)?|\\d{1,2}(\\,\\d{1,2})?)))?%$".
+    bamm-c:constraint :ChemicalDistribution.
+:CarbonFootprintEntity a bamm:Entity;
+    bamm:properties (:co2FootprintTotal :footprintStudy);
+    bamm:preferredName "carbon footprint entity"@en;
+    bamm:description "Entity encapsulating the carbon footrprint."@en.
+:footprintStudy a bamm:Property;
+    bamm:preferredName "Footprint study"@en;
+    bamm:description "Web link to the public carbon footprint calculation footprint study used."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "www.company.com/CE/RawMat-CO2_134x12345A12".
+:HazardsIdentification a bamm:Characteristic;
+    bamm:preferredName "Hazards Identification"@en;
+    bamm:description "Set of information to identify the hazards."@en;
+    bamm:dataType :HazardsIdentificationEntity.
+:ChemicalDistribution a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Chemical distribution"@en;
+    bamm:description "Describes chemical distribution in percentage. It can include a percentage range. Either 10% or 5.5%-6% . Allowed are decimal values with a dot as seperator. Mandatory are no spaces inbetween the values and the percentage character."@en;
+    bamm:value "^\d{1,2}(\.\d{0,2})?%(-\d{1,2}(\.\d{0,2})?%)?$".
+:ChemicalComposition a bamm-c:Set;
+    bamm:preferredName "Chemical Composition"@en;
+    bamm:description "Characetristic combining the chemical composition for a mixture and a subsance."@en;
+    bamm:dataType :ChemicalCompositionEntity.
+:ProductComposition a bamm:Characteristic;
+    bamm:preferredName "Product Composition"@en;
+    bamm:description "Set of information displaying the product composition."@en;
+    bamm:dataType :ProductCompositionEntity.
+:safetyMeasure a bamm:Property;
+    bamm:preferredName "Safety measure"@en;
+    bamm:description "Describes measures related to the safe handling of the mixtures and substances."@en;
+    bamm:characteristic :SafetyMeasureCharacteristic.
+:SafetyMeasureCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Safety Measure"@en;
+    bamm:description "Set of information referring to safety measures."@en;
+    bamm:dataType :SafetyMeasureEntity.
+:PhysicalState a bamm-c:Enumeration;
+    bamm:preferredName "Physical State"@en;
+    bamm:description "Enumeration with three physcial states: gas, liquid and solid."@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("gas" "liquid" "solid").
+:PhCharacteristic a bamm:Characteristic;
+    bamm:preferredName "pH characteristic"@en;
+    bamm:description "Provides a range or a pH value."@en;
+    bamm:dataType xsd:integer.
+:Degree a bamm-c:Measurement;
+    bamm:preferredName "Degree"@en;
+    bamm:description "The temperature in its phase."@en;
+    bamm:dataType xsd:decimal;
+    bamm-c:unit unit:degreeCelsius.
+:Density a bamm-c:Measurement;
+    bamm:preferredName "Density characteristic"@en;
+    bamm:description "Describes the density of the product."@en;
+    bamm:dataType xsd:decimal;
+    bamm-c:unit unit:gramPerCubicCentimetre.
+:ProductProperties a bamm:Characteristic;
+    bamm:preferredName "Product Properties "@en;
+    bamm:description "Set of information describing the physical and chemical properties."@en;
+    bamm:dataType :ProductPropertyEntity.
+:ProductDisposal a bamm:Characteristic;
+    bamm:preferredName "Product Disposal"@en;
+    bamm:description "Set of information describin the proper disposal of the product."@en;
+    bamm:dataType :ProductDisposalEntity.
+:TransportInformation a bamm:Characteristic;
+    bamm:preferredName "Transport Information"@en;
+    bamm:description "Set of information describing the transport informations."@en;
+    bamm:dataType :TransportInformationEntity.
+:co2FootprintTotal a bamm:Property;
+    bamm:preferredName "CO2 Footprint total"@en;
+    bamm:description "The total carbon footprint, calculated as kg of carbon dioxide equivalent."@en;
+    bamm:characteristic :Co2Total;
+    bamm:exampleValue "2.2"^^xsd:decimal.
+:CarbonFootprint a bamm:Characteristic;
+    bamm:preferredName "Carbon Footprint"@en;
+    bamm:description "Set of information needed for the carbon footrpinrt ecodesign regulations."@en;
+    bamm:dataType :CarbonFootprintEntity.
+:Co2Total a bamm-c:Measurement;
+    bamm:preferredName "CO2 Total"@en;
+    bamm:description "Describes the amount of kg of the CO2 equivalent."@en;
+    bamm:dataType xsd:decimal;
+    bamm-c:unit unit:kilogram.
+:Document a bamm:Characteristic;
+    bamm:preferredName "Document"@en;
+    bamm:description "Set of documents containing the description of chemical substancen and mixture components."@en;
+    bamm:dataType :DocumentEntity.
