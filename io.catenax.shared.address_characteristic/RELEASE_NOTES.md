@@ -5,7 +5,7 @@ All notable changes to this model will be documented in this file.
 
 ## [2.0.0] - 2023-03-30
 ### Changed
-- bamm:io version changed to 2.0.0
+- URN schema change to urn:samm:<namespace>:<version>#<element-name>
 - LocalityEntity changed preferred name to fix error
 - LocalityEntity changed description to match properties below
 
