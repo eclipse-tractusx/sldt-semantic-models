@@ -1,0 +1,188 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2023 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 Mercedes Benz AG
+# Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 Siemens AG
+# Copyright (c) 2023 T-Systems International GmbH
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.just_in_sequence_part:1.0.0#>.
+
+:JustInSequencePart a bamm:Aspect;
+    bamm:preferredName "Just in Sequence Part"@en;
+    bamm:description "A just-in-sequence part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a combination of several IDs related to a just-in-sequence process."@en;
+    bamm:properties (:catenaXId :localIdentifiers :manufacturingInformation :partTypeInformation);
+    bamm:operations ();
+    bamm:events ().
+:catenaXId a bamm:Property;
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:description "The fully anonymous Catena-X ID of the just-in-sequence part, valid for the Catena-X dataspace."@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9379".
+:localIdentifiers a bamm:Property;
+    bamm:preferredName "Local Identifiers"@en;
+    bamm:description "A local identifier enables identification of a part in a specific dataspace, but is not unique in Catena-X dataspace. Multiple local identifiers may exist."@en;
+    bamm:characteristic :LocalIdentifierCharacteristic.
+:manufacturingInformation a bamm:Property;
+    bamm:preferredName "Manufacturing Information"@en;
+    bamm:description "Information from manufacturing process, such as manufacturing date and manufacturing country"@en;
+    bamm:characteristic :ManufacturingCharacteristic.
+:partTypeInformation a bamm:Property;
+    bamm:preferredName "Part Type Information"@en;
+    bamm:description "The part type or part family from which the just-in-sequence part has been instantiated."@en;
+    bamm:characteristic :PartTypeInformationCharacteristic.
+:CatenaXIdTrait a bamm-c:Trait;
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm:description "Trait to ensure data format for Catena-X ID"@en;
+    bamm-c:baseCharacteristic :Uuidv4;
+    bamm-c:constraint :Uuidv4RegularExpression.
+:LocalIdentifierCharacteristic a bamm-c:Set;
+    bamm:preferredName "Local Identifier Characteristic"@en;
+    bamm:description "A single just-in-sequence part may have multiple attributes, that uniquely identify a that part in a specific dataspace (e.g. the manufacturer`s dataspace)"@en;
+    bamm:dataType :KeyValueList.
+:KeyValueList a bamm:Entity;
+    bamm:preferredName "Key Value List"@en;
+    bamm:description "A list of key value pairs for local identifiers, which are composed of a key and a corresponding value."@en;
+    bamm:properties (:key :value).
+:key a bamm:Property;
+    bamm:preferredName "Identifier Key"@en;
+    bamm:description "The key of a local identifier. "@en;
+    bamm:characteristic :KeyCharacteristic;
+    bamm:exampleValue "jisNumber".
+:value a bamm:Property;
+    bamm:preferredName "Identifier Value"@en;
+    bamm:description "The value of an identifier."@en;
+    bamm:characteristic :ValueCharacteristic;
+    bamm:exampleValue "12345678ABC".
+:KeyCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Key Characteristic"@en;
+    bamm:description "The key characteristic of a local identifier. A specific subset of keys is predefined, but additionally any other custom key is allowed. Predefined keys (to be used when applicable):\n- \"manufacturerId\" - The Business Partner Number (BPN) of the manufacturer. Value: BPN-Nummer\n- \"jisNumber\" - a number that is used to identify the call-off that can be assumed unique within the specific just-in-sequence process. This is typically not the sequence number, but the call-off number.\n- \"jisCallDate\" the date of the just-in-sequence call-off as stated on the call-off document itself. Value: following the ISO 8601 format as follows: \"YYYY-MM-DD\" or \"YYYY-MM-DDThh:mm:ss\" or \"YYYY-MM-DDThh:mm:ss±hh:mm\"\n- \"parentOrderNumber\" - a number identifying the just-in-sequence- part's destination parent part. The parent part is typically known upfront to the supplier for just-in-sequence parts. This might be a temporary unique identifier.\nNot all keys might be relevant for all just-in-sequence parts. It must be ensured that a combination of these identifiers and the optional manufacturer part ID or customer part ID leads to a unique just-in-sequence part."@en;
+    bamm:dataType xsd:string.
+:ValueCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Value Characteristic"@en;
+    bamm:description "The value of an identifier."@en;
+    bamm:dataType xsd:string.
+:ManufacturingCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Manufacturing Characteristic"@en;
+    bamm:description "Characteristic to describe manufacturing related data"@en;
+    bamm:dataType :ManufacturingEntity.
+:ManufacturingEntity a bamm:Entity;
+    bamm:preferredName "Manufacturing Entity"@en;
+    bamm:description "Encapsulates the manufacturing relevant attributes"@en;
+    bamm:properties (:date [
+  bamm:property :country;
+  bamm:optional "true"^^xsd:boolean
+]).
+:date a bamm:Property;
+    bamm:preferredName "Production Date"@en;
+    bamm:description "Timestamp of the manufacturing date as the final step in production process (e.g. final quality check, ready-for-shipment event)"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2022-02-04T14:48:54"^^xsd:dateTime.
+:country a bamm:Property;
+    bamm:preferredName "Country code"@en;
+    bamm:description "Country code where the part was manufactured"@en;
+    bamm:characteristic :ProductionCountryCodeTrait;
+    bamm:exampleValue "HUR".
+:ProductionCountryCodeTrait a bamm-c:Trait;
+    bamm:preferredName "Production Country Code Trait"@en;
+    bamm:description "Trait to ensure standard data format for country code"@en;
+    bamm-c:baseCharacteristic :CountryCodeCharacteristic;
+    bamm-c:constraint :CountryCodeRegularExpression.
+:CountryCodeCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Country Code Characteristic"@en;
+    bamm:description "ISO 3166-1 alpha-3 - three-letter country codes "@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://www.iso.org/iso-3166-country-codes.html>.
+:CountryCodeRegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Country Code Regular Expression"@en;
+    bamm:description "Regular Expression that ensures a three-letter code "@en;
+    bamm:value "^[A-Z][A-Z][A-Z]$".
+:PartTypeInformationCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Part Type Information Characteristic"@en;
+    bamm:description "The characteristics of the part type"@en;
+    bamm:dataType :PartTypeInformationEntity.
+:PartTypeInformationEntity a bamm:Entity;
+    bamm:preferredName "Part Type Information Entity"@en;
+    bamm:description "Encapsulation for data related to the part type"@en;
+    bamm:properties ([
+  bamm:property :manufacturerPartId;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :customerPartId;
+  bamm:optional "true"^^xsd:boolean
+] :nameAtManufacturer [
+  bamm:property :nameAtCustomer;
+  bamm:optional "true"^^xsd:boolean
+] :classification).
+:nameAtManufacturer a bamm:Property;
+    bamm:preferredName "Name at Manufacturer"@en;
+    bamm:description "Name of the part as assigned by the manufacturer"@en;
+    bamm:characteristic :PartNameCharacteristic;
+    bamm:exampleValue "Mirror left".
+:classification a bamm:Property;
+    bamm:preferredName "Classifcation"@en;
+    bamm:description "The classification of the part type according to STEP standard definition"@en;
+    bamm:characteristic :ClassificationCharacteristic;
+    bamm:exampleValue "software".
+:manufacturerPartId a bamm:Property;
+    bamm:preferredName "Manufacturer Part ID"@en;
+    bamm:description "Part ID as assigned by the manufacturer of the part. The manufacturer Part ID identifies the part (as designed) in the manufacturer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number or any other instance IDs. \nIf no specific part ID exists a part family ID may be substituted for it."@en;
+    bamm:characteristic :PartIdCharacteristic;
+    bamm:exampleValue "123-0.740-3434-A".
+:customerPartId a bamm:Property;
+    bamm:preferredName "Customer Part ID"@en;
+    bamm:description "Part ID as assigned by the customer of the part. The customer Part ID identifies the part (as designed) in the customer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number or any other instance IDs. \nIf no specific part ID exists a part family ID may be substituted for it.\n"@en;
+    bamm:characteristic :PartIdCharacteristic;
+    bamm:exampleValue "PRT-12345".
+:nameAtCustomer a bamm:Property;
+    bamm:preferredName "Name at Customer"@en;
+    bamm:description "Name of the part as assigned by the customer"@en;
+    bamm:characteristic :PartNameCharacteristic;
+    bamm:exampleValue "side element A".
+:PartIdCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Part ID Characteristic"@en;
+    bamm:description "The part ID is a multi-character string, usually assigned by an ERP system. Alternatively the ID of the part family can be used if no specific part ID exists."@en;
+    bamm:dataType xsd:string.
+:PartNameCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Part Name Characteristic"@en;
+    bamm:description "Part Name in string format from the respective system in the value chain"@en;
+    bamm:dataType xsd:string.
+:ClassificationCharacteristic a bamm-c:Enumeration;
+    bamm:preferredName "Classification Characteristic"@en;
+    bamm:description "A part type must be placed into one of the following classes: 'component', 'product', 'software', 'assembly', 'tool', or 'raw material'."@en;
+    bamm:dataType xsd:string;
+    bamm:see <http://private.pdm-if.org/web/pdm-if/recommended-practices1>;
+    bamm-c:values ("product" "raw material" "software" "assembly" "tool" "component").
+:Uuidv4 a bamm:Characteristic;
+    bamm:preferredName "UUIDv4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string.
+:Uuidv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X ID Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
