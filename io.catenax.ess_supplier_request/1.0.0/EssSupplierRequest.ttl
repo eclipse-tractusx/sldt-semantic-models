@@ -1,0 +1,73 @@
+#######################################################################
+# Copyright (c) 2022 BASF SE
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.ess_supplier_request:1.0.0#>.
+@prefix ext-header: <urn:bamm:io.catenax.notification_header:1.0.0#>.
+
+:EssSupplierRequest a bamm:Aspect;
+    bamm:properties (:content ext-header:header);
+    bamm:operations ();
+    bamm:events ();
+    bamm:preferredName "EssSupplierRequest"@en;
+    bamm:description "With the ESS suplier request, an inquiring company requests a supply chain analysis for an ESS incident from the reciepient of the ESS supplier request. The supply chain analysis must be performed by the recipient for a given BPN and a list of parts."@en.
+:content a bamm:Property;
+    bamm:preferredName "Content"@en;
+    bamm:description "The payload of the ESS Supplier Request notification"@en;
+    bamm:characteristic :EssSupplierRequestContentCharacteristic.
+:EssSupplierRequestContentCharacteristic a bamm:Characteristic;
+    bamm:preferredName "EssSupplierRequestContentCharacteristic"@en;
+    bamm:dataType :EssSupplierRequestContentEntity.
+:incidentBpn a bamm:Property;
+    bamm:preferredName "incidentBpn"@en;
+    bamm:description "The BPNL or BPNS of the accused company of the ESS incident.\nThe receipient has to evaluate, if the incidentBPN is a (sub-) supplier of the given list of parts."@en;
+    bamm:characteristic :IncidentBpnCharacteristic.
+:IncidentBpnCharacteristic a bamm:Characteristic;
+    bamm:preferredName "IncidentBpnCharacteristic"@en;
+    bamm:dataType xsd:string.
+:concernedCatenaXIds a bamm:Property;
+    bamm:preferredName "concernedCatenaXIds"@en;
+    bamm:description "A list of Catena-X IDs. The Catena-X Ids refer to the parts/components which are supplied by the recipient of the ESS supplier request to the sender and for which the supply chain analysis shall be performed by the recipient."@en;
+    bamm:characteristic :ConcernedCatenaXIdsCharacteristic.
+:ConcernedCatenaXIdsCharacteristic a bamm-c:Set;
+    bamm:preferredName "ConcernedCatenaXIdsCharacteristic"@en;
+    bamm:dataType :ConcernedCatenaXIdsEntity.
+:ConcernedCatenaXIdsEntity a bamm:Entity;
+    bamm:properties (:concernedCatenaXId);
+    bamm:preferredName "ConcernedCatenaXIdsEntity"@en.
+:concernedCatenaXId a bamm:Property;
+    bamm:preferredName "concernedCatenaXId"@en;
+    bamm:description "The catenaX Id of of part/component, which is supplied by the recipient to the sender of the ESS supplier request."@en;
+    bamm:characteristic ext-header:UuidCharacteristic;
+    bamm:exampleValue "8a812a06-3f69-4bef-8c8c-d94592bd059b".
+:EssSupplierRequestContentEntity a bamm:Entity;
+    bamm:properties (:incidentBpn :concernedCatenaXIds);
+    bamm:preferredName "EssSupplierRequestContentEntity"@en.
