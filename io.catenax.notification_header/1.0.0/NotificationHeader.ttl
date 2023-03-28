@@ -1,0 +1,114 @@
+#######################################################################
+# Copyright (c) 2022 BASF SE
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:1.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:1.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:1.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:1.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.notification_header:1.0.0#>.
+
+:header a bamm:Property;
+    bamm:name "header";
+    bamm:preferredName "header"@en;
+    bamm:description "Contains information common to all messages"@en;
+    bamm:characteristic :HeaderCharacteristic.
+:HeaderCharacteristic a bamm:Characteristic;
+    bamm:name "HeaderCharacteristic";
+    bamm:dataType :HeaderEntity;
+    bamm:preferredName "Header Characteristic"@en.
+:HeaderEntity a bamm:Entity;
+    bamm:name "HeaderEntity";
+    bamm:properties (:notificationId :senderBpn :recipientBpn :senderEdc :replyAssetId :originalNotificationId :notificationType);
+    bamm:preferredName "Header Entity"@en.
+:notificationId a bamm:Property;
+    bamm:name "notificationId";
+    bamm:preferredName "Notification Id"@en;
+    bamm:description "A UUID v4 that uniquely identifies the message in the content property"@en;
+    bamm:characteristic :UuidCharacteristic;
+    bamm:exampleValue "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705".
+:senderBpn a bamm:Property;
+    bamm:name "senderBpn";
+    bamm:preferredName "senderBpn"@en;
+    bamm:characteristic :BpnCharacteristic;
+    bamm:exampleValue "BPNL00000003BW3S".
+:recipientBpn a bamm:Property;
+    bamm:name "recipientBpn";
+    bamm:preferredName "recipientBpn"@en;
+    bamm:description "the BPN of the participant that receives this message"@en;
+    bamm:characteristic :BpnCharacteristic;
+    bamm:exampleValue "BPNL00000003BV4H".
+:BpnCharacteristic a bamm:Characteristic;
+    bamm:name "BpnCharacteristic";
+    bamm:dataType xsd:string.
+:UuidCharacteristic a bamm:Characteristic;
+    bamm:name "UuidCharacteristic";
+    bamm:dataType xsd:string;
+    bamm:preferredName "UuidCharacteristic"@en.
+:senderEdc a bamm:Property;
+    bamm:name "senderEdc";
+    bamm:preferredName "Sender EDC"@en;
+    bamm:description "the public EDC base address of the sender identified in the header.senderBpn property"@en;
+    bamm:characteristic :UrlCharacteristic;
+    bamm:exampleValue "https://edc.company-xyz.io/BPNL00000003BW3S".
+:replyAssetId a bamm:Property;
+    bamm:name "replyAssetId";
+    bamm:preferredName "replyAssetId"@en;
+    bamm:description "ID of the asset in the sender's EDC that receives messages that relate to this one (e.g. response messages to a request message)"@en;
+    bamm:characteristic :ReplyAssetIdCharacteristic;
+    bamm:exampleValue "ess-response-asset".
+:UrlCharacteristic a bamm:Characteristic;
+    bamm:name "UrlCharacteristic";
+    bamm:dataType xsd:string;
+    bamm:preferredName "Url Characteristic"@en.
+:ReplyAssetIdCharacteristic a bamm:Characteristic;
+    bamm:name "ReplyAssetIdCharacteristic";
+    bamm:dataType xsd:string;
+    bamm:preferredName "ReplyAssetIdCharacteristic"@en.
+:originalNotificationId a bamm:Property;
+    bamm:name "originalNotificationId";
+    bamm:preferredName "originalNotificationId"@en;
+    bamm:description "a UUID v4 that identifies the message in relation to which this message is sent; MUST be omitted if no such relation exists"@en;
+    bamm:characteristic :UuidCharacteristic;
+    bamm:exampleValue "70143bcb-9d27-46d2-9180-3ad04f9e4638".
+:notificationType a bamm:Property;
+    bamm:name "notificationType";
+    bamm:preferredName "notificationType"@en;
+    bamm:description "the standardized schema identifier of the message document in the content property"@en;
+    bamm:characteristic :NotificationTypeCharacteristic.
+:NotificationTypeCharacteristic a bamm-c:Enumeration;
+    bamm:name "NotificationTypeCharacteristic";
+    bamm:dataType xsd:string;
+    bamm:preferredName "NotificationTypeCharacteristic"@en;
+    bamm-c:values ("supplier-request" "supplier-response").
+:NotificationHeader a bamm:Aspect;
+    bamm:name "NotificationHeader";
+    bamm:properties (:header);
+    bamm:operations ();
+    bamm:events ();
+    bamm:preferredName "Notification Header"@en;
+    bamm:description "The header that must be included in any notification"@en.
