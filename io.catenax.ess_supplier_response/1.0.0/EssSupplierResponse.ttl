@@ -1,0 +1,57 @@
+#######################################################################
+# Copyright (c) 2022 BASF SE
+# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022 Henkel AG & Co. KGaA
+# Copyright (c) 2022 Mercedes Benz AG
+# Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022 SAP SE
+# Copyright (c) 2022 Siemens AG
+# Copyright (c) 2022 T-Systems International GmbH
+# Copyright (c) 2022 ZF Friedrichshafen AG
+# Copyright (c) 2022 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.ess_supplier_response:1.0.0#>.
+@prefix ext-header: <urn:bamm:io.catenax.notification_header:1.0.0#>.
+
+:EssSupplierResponse a bamm:Aspect;
+    bamm:properties (:content ext-header:header);
+    bamm:operations ();
+    bamm:events ();
+    bamm:preferredName "EssSupplierResponse"@en;
+    bamm:description "With the ESS supplier response, the recipient of an ESS Supplier Request provides a response back to the inquiring company, if the inquiring company is impacted by the provided incident.\nNote: originalNotificationId MUST be provided in EssSupplierResponse."@en.
+:content a bamm:Property;
+    bamm:preferredName "Content"@en;
+    bamm:description "The payload of the ESS Supplier Response notification"@en;
+    bamm:characteristic :EssSupplierResponseContentCharacteristic.
+:supplyChainImpacted a bamm:Property;
+    bamm:description "result of the supply chain analysis, i.e. if the inquiring company is impacted by the given incident.\nyes: the inquiring company is impacted by the incident because the given BPN is a direct or indirect supplier of the recipient of the ESS supplier request (i.e. the given BPN was found in the supply chain)\nno: the the inquiring company is not impacted by the incident because the given BPN is not a direct or indirect supplier of the recipient of the ESS supplier request (i.e. the given BPN was not found in the supply chain)\nunknown: no result"@en;
+    bamm:characteristic :SupplyChainImpactedCharacteristic.
+:SupplyChainImpactedCharacteristic a bamm-c:Enumeration;
+    bamm:dataType xsd:string;
+    bamm-c:values ("yes" "no" "unknown").
+:EssSupplierResponseContentCharacteristic a bamm:Characteristic;
+    bamm:preferredName "EssSupplierResponseContentCharacteristic"@en;
+    bamm:dataType :EssSupplierResponseContentEntity.
+:EssSupplierResponseContentEntity a bamm:Entity;
+    bamm:properties (:supplyChainImpacted);
+    bamm:preferredName "EssSupplierResponseContentEntity"@en.
