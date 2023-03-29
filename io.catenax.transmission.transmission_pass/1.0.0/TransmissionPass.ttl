@@ -27,6 +27,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:bamm:io.catenax.transmission.transmission_pass:1.0.0#>.
+@prefix pcf-c: <urn:bamm:io.catenax.pcf:2.0.0#>.
 @prefix contact-c: <urn:bamm:io.catenax.shared.contact_information:2.0.0#>.
 @prefix physical-c: <urn:bamm:io.catenax.shared.physical_dimension:2.0.0#>.
 
@@ -120,7 +121,19 @@
     bamm:properties ([
   bamm:property :responsibleSourcingDocument;
   bamm:optional "true"^^xsd:boolean
-] :co2FootprintTotal :recyclateContent :criticalRawMaterials :substancesOfConcern).
+] :carbonFootprint :recyclateContent :criticalRawMaterials :substancesOfConcern).
+:carbonFootprint a bamm:Property;
+    bamm:preferredName "Carbon footprint"@en;
+    bamm:description "Describes the carbon footorint of the substance or mixture. Based on the Ecodesign."@en;
+    bamm:characteristic :CarbonFootprint.
+:CarbonFootprint a bamm:Characteristic;
+    bamm:preferredName "Carbon Footprint"@en;
+    bamm:description "Set of information needed for the carbon footrpinrt ecodesign regulations."@en;
+    bamm:dataType :CarbonFootprintEntity.
+:CarbonFootprintEntity a bamm:Entity;
+    bamm:properties (:co2FootprintTotal :co2Calculation :co2Standard);
+    bamm:preferredName "carbon footprint entity"@en;
+    bamm:description "Entity encapsulating the carbon footrprint."@en.
 :GeneralInformationEntity a bamm:Entity;
     bamm:preferredName "General Information Entity"@en;
     bamm:description "General Information Entity to describe several logical connected properties."@en;
@@ -497,3 +510,11 @@
     bamm:preferredName "Identification Entity"@en;
     bamm:description "Identification parameters of the transmission with data matrix code, manufacturerID and serial number."@en;
     bamm:properties (:dataMatrixCode :manufacturerId :serialNumber).
+:co2Calculation a bamm:Property;
+    bamm:preferredName "CO2 calculation"@en;
+    bamm:description "Product or sector specific rules applied for calculating or allocating GHG (Greenhouse Gas) emissions, e.g. PCRs (Product Category Rules), including operators or pubishers and according rule names."@en;
+    bamm:characteristic pcf-c:ProductOrSectorSpecificRuleSet.
+:co2Standard a bamm:Property;
+    bamm:preferredName "CO2 standard"@en;
+    bamm:description "Discloses a cross-sectoral standard applied for calculating or allocating GHG (Greenhouse Gas) emissions."@en;
+    bamm:characteristic pcf-c:CrossSectoralStandardsUsedEnumerationCharacteristic.
