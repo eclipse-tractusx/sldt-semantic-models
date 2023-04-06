@@ -76,10 +76,29 @@
 :ShipmentList a bamm-c:List;
     bamm:preferredName "Shipment List"@en;
     bamm:dataType :Shipment.
+:DataQuality a bamm-c:Enumeration;
+    bamm:preferredName "Data Quality"@en;
+    bamm:dataType xsd:positiveInteger;
+    bamm-c:values ("0"^^xsd:positiveInteger "1"^^xsd:positiveInteger "2"^^xsd:positiveInteger "3"^^xsd:positiveInteger "4"^^xsd:positiveInteger "5"^^xsd:positiveInteger).
+:SimulationStatus a bamm-c:Enumeration;
+    bamm:preferredName "Simulation Status"@en;
+    bamm:dataType xsd:positiveInteger;
+    bamm-c:values ("0"^^xsd:positiveInteger "1"^^xsd:positiveInteger "2"^^xsd:positiveInteger).
+:Text a bamm:Characteristic;
+    bamm:preferredName "Text"@en;
+    bamm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en;
+    bamm:dataType xsd:string.
+:Owner a bamm-c:SingleEntity;
+    bamm:preferredName "Owner"@en;
+    bamm:dataType :BPNS.
 :Shipment a bamm:Entity;
     bamm:preferredName "Shipment"@en;
     bamm:description "Delivery item from a sender to a recipient containing goods"@en;
     bamm:properties (:shipmentId :destination :destinationTimestamp :recipient :recipientTimestampPlanned :splittingAllowed :logistics :preceding :handlingUnits).
+:BPNS a bamm:Entity;
+    bamm:preferredName "BPNS"@en;
+    bamm:description "Business Partner Number for a Site"@en;
+    bamm:properties ().
 :shipmentId a bamm:Property;
     bamm:preferredName "Shipment Id"@en;
     bamm:description "ID to identify the shipment"@en;
@@ -124,10 +143,6 @@
     bamm:preferredName "Destination"@en;
     bamm:description "Address where the shipment is immediately delivered to (by logistician) or provided for pickup (by producer)"@en;
     bamm:dataType :BPNS.
-:BPNS a bamm:Entity;
-    bamm:preferredName "BPNS"@en;
-    bamm:description "Business Partner Number for a Site"@en;
-    bamm:properties ().
 :Recipient a bamm-c:SingleEntity;
     bamm:preferredName "Recipient"@en;
     bamm:dataType :BPNS.
@@ -136,9 +151,6 @@
     bamm:dataType :BPNS.
 :Preceding a bamm-c:SingleEntity;
     bamm:preferredName "Preceding"@en;
-    bamm:dataType :BPNS.
-:Owner a bamm-c:SingleEntity;
-    bamm:preferredName "Owner"@en;
     bamm:dataType :BPNS.
 :HandlingUnitList a bamm-c:List;
     bamm:preferredName "Handling Unit List"@en;
@@ -174,10 +186,25 @@
     bamm:preferredName "Batches"@en;
     bamm:description "List of material batches"@en;
     bamm:characteristic :BatchList.
-:Text a bamm:Characteristic;
-    bamm:preferredName "Text"@en;
-    bamm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en;
-    bamm:dataType xsd:string.
+:Volume a bamm-c:Measurement;
+    bamm:preferredName "Volume"@en;
+    bamm:dataType xsd:float;
+    bamm-c:unit unit:litre.
+:Weight a bamm-c:Measurement;
+    bamm:preferredName "Weight"@en;
+    bamm:dataType xsd:float;
+    bamm-c:unit unit:kilogram.
+:Amount a bamm-c:Quantifiable;
+    bamm:preferredName "Amount"@en;
+    bamm:dataType xsd:positiveInteger;
+    bamm-c:unit unit:piece.
+:BatchList a bamm-c:List;
+    bamm:preferredName "BatchList"@en;
+    bamm:dataType :MaterialBatch.
+:MaterialBatch a bamm:Entity;
+    bamm:preferredName "Material Batch"@en;
+    bamm:description "Material Batches are part of a handling unit"@en;
+    bamm:properties (:batchId :materialNumber :materialName :hazardousGoods :batchExpirationTimestamp :quantity :unitOfMeasurement :batchNumber :batchOrderId).
 :batchId a bamm:Property;
     bamm:preferredName "Batch Id"@en;
     bamm:description "ID for the material batch"@en;
@@ -203,25 +230,6 @@
     bamm:description "Order ID to which the batch belongs"@en;
     bamm:characteristic :Text;
     bamm:exampleValue "Order-0001".
-:Volume a bamm-c:Measurement;
-    bamm:preferredName "Volume"@en;
-    bamm:dataType xsd:float;
-    bamm-c:unit unit:litre.
-:Weight a bamm-c:Measurement;
-    bamm:preferredName "Weight"@en;
-    bamm:dataType xsd:float;
-    bamm-c:unit unit:kilogram.
-:Amount a bamm-c:Quantifiable;
-    bamm:preferredName "Amount"@en;
-    bamm:dataType xsd:positiveInteger;
-    bamm-c:unit unit:piece.
-:BatchList a bamm-c:List;
-    bamm:preferredName "BatchList"@en;
-    bamm:dataType :MaterialBatch.
-:MaterialBatch a bamm:Entity;
-    bamm:preferredName "Material Batch"@en;
-    bamm:description "Material Batches are part of a handling unit"@en;
-    bamm:properties (:batchId :materialNumber :materialName :hazardousGoods :batchExpirationTimestamp :quantity :unitOfMeasurement :batchNumber :batchOrderId).
 :hazardousGoods a bamm:Property;
     bamm:preferredName "Hazardous Goods"@en;
     bamm:description "Flags hazardous goods"@en;
@@ -248,11 +256,3 @@
     bamm:preferredName "Unit Of Measurement"@en;
     bamm:dataType xsd:string;
     bamm-c:values ("KG" "Liter" "Stück").
-:DataQuality a bamm-c:Enumeration;
-    bamm:preferredName "Data Quality"@en;
-    bamm:dataType xsd:positiveInteger;
-    bamm-c:values ("0"^^xsd:positiveInteger "1"^^xsd:positiveInteger "2"^^xsd:positiveInteger "3"^^xsd:positiveInteger "4"^^xsd:positiveInteger "5"^^xsd:positiveInteger).
-:SimulationStatus a bamm-c:Enumeration;
-    bamm:preferredName "Simulation Status"@en;
-    bamm:dataType xsd:positiveInteger;
-    bamm-c:values ("0"^^xsd:positiveInteger "1"^^xsd:positiveInteger "2"^^xsd:positiveInteger).
