@@ -1,0 +1,105 @@
+#######################################################################
+# Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2023 T-Systems International GmbH
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.shared.contact_information:2.0.0#>.
+
+:ContactCharacteristic a bamm:Characteristic;
+    bamm:name "ContactCharacteristic";
+    bamm:preferredName "Contact Characteristic"@en;
+    bamm:description "Characteristic describing information on how to contact an organization"@en;
+    bamm:dataType :ContactEntity .
+:ContactEntity a bamm:Entity;
+    bamm:name "ContactEntity";
+    bamm:preferredName "Contact Entity"@en;
+    bamm:description "Entity to bundle the properties for the information on how to contact an organization"@en;
+    bamm:properties ([
+  bamm:property :website;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :phoneNumber;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :email;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :faxNumber;
+  bamm:optional "true"^^xsd:boolean
+]) .
+:contactProperty a bamm:Property;
+    bamm:name "contactProperty";
+    bamm:preferredName "Contact Property"@en;
+    bamm:description "Property describing contact information for an organization"@en;
+    bamm:characteristic :ContactCharacteristic .
+:WebsiteCharacteristic a bamm:Characteristic;
+    bamm:name "WebsiteCharacteristic";
+    bamm:preferredName "website"@en;
+    bamm:description "Address of the website"@en;
+    bamm:dataType xsd:anyURI.
+:website a bamm:Property;
+    bamm:name "website";
+    bamm:preferredName "website"@en;
+    bamm:description "Website of the contact."@en;
+    bamm:characteristic :WebsiteCharacteristic;
+    bamm:exampleValue "https://www.samsung.com"^^xsd:anyURI.
+:phoneNumber a bamm:Property;
+    bamm:name "phoneNumber";
+    bamm:preferredName "phone number"@en;
+    bamm:description "Phone number with country and area code"@en;
+    bamm:characteristic :PhoneNumberTrait;
+    bamm:exampleValue "+49 89 1234567890".
+:email a bamm:Property;
+    bamm:name "email";
+    bamm:preferredName "email"@en;
+    bamm:description "An email address"@en;
+    bamm:characteristic :EMailTrait;
+    bamm:exampleValue "test.mail@example.com".
+:faxNumber a bamm:Property;
+    bamm:name "faxNumber";
+    bamm:preferredName "faxNumber"@en;
+    bamm:description "Fax number with country and area code"@en;
+    bamm:characteristic :PhoneNumberTrait;
+    bamm:exampleValue "+49 89 0987654321".
+:ContactInformation a bamm:Aspect;
+    bamm:name "ContactInformation";
+    bamm:properties (:contactProperty);
+    bamm:operations ();
+    bamm:preferredName "Contact information"@en;
+    bamm:description "Entity encapsulating the contact details"@en;
+    bamm:see <https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/Spezifikation_Submodel-Templates.html>.
+:PhoneNumberTrait a bamm-c:Trait;
+    bamm:name "PhoneNumberTrait";
+    bamm-c:baseCharacteristic bamm-c:Text;
+    bamm-c:constraint :PhoneNumberConstraint.
+:PhoneNumberConstraint a bamm-c:RegularExpressionConstraint;
+    bamm:name "PhoneNumberConstraint";
+    bamm:description "Constraint to allow only numbers, whitespaces and an optional leading + sign."@en;
+    bamm:preferredName "PhoneNumberConstraint"@en;
+    bamm:value "^[+]?[0-9 ]+$".
+:EMailTrait a bamm-c:Trait;
+     bamm:name "SupplierMailTrait";
+     bamm-c:baseCharacteristic bamm-c:Text;
+     bamm-c:constraint :EMailConstraint.
+ :EMailConstraint a bamm-c:RegularExpressionConstraint;
+     bamm:name "EMailConstraint";
+     bamm:value "^[a-zA-Z0-9.!#$%&’*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+     bamm:description "Regular expression for mail address as defined in W3C (see https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address)"@en.
