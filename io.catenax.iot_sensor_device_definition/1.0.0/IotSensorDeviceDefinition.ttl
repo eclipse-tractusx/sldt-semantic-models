@@ -1,0 +1,90 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.iot_sensor_device_definition:1.0.0#>.
+
+:catenaXId a bamm:Property;
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:description "The fully anonymous Catena-X ID of the serialized part, valid for the Catena-X dataspace."@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:exampleValue "urn:uuid:7a6a8376-1783-4926-9be0-5d946622b2e2".
+:CatenaXIdTrait a bamm-c:Trait;
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm:description "Trait to ensure data format for Catena-X ID"@en;
+    bamm-c:baseCharacteristic :UUIDv4;
+    bamm-c:constraint :UUIDv4RegularExpression.
+:UUIDv4 a bamm:Characteristic;
+    bamm:preferredName "UUIDv4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
+:IotSensorDeviceDefinition a bamm:Aspect;
+    bamm:preferredName "IoT Sensor Device Definition"@en;
+    bamm:description "Permanent characteristics of the individual IoT sensor device."@en;
+    bamm:properties (:catenaXId :manufacturer :type :serialNumber :ownerID);
+    bamm:operations ();
+    bamm:events ().
+:manufacturer a bamm:Property;
+    bamm:preferredName "Manufacturer"@en;
+    bamm:description "Manufacturer of the IoT sensor device."@en;
+    bamm:characteristic :ManufacturerCharacteristic;
+    bamm:exampleValue "Company X";
+    bamm:see <https://www.wikidata.org/wiki/Q13235160>.
+:type a bamm:Property;
+    bamm:preferredName "IoT Sensor  Device Type"@en;
+    bamm:description "The type of the IoT sensor device."@en;
+    bamm:characteristic :TypeCharacteristic;
+    bamm:exampleValue "TRACK02839".
+:serialNumber a bamm:Property;
+    bamm:preferredName "IoT Sensor Device Serial Number"@en;
+    bamm:description "The serial number of the IoT sensor device, as assigned by the manufacturer of the device."@en;
+    bamm:characteristic :SerialNumberCharacteristic;
+    bamm:exampleValue "123-0740-3434-A".
+:ownerID a bamm:Property;
+    bamm:preferredName "IoT Sensor Device Owner"@en;
+    bamm:description "The Catena-X BPNL of the device owner."@en;
+    bamm:characteristic :OwnerIDCharacteristic;
+    bamm:exampleValue "BPNL00000003ABCD".
+:ManufacturerCharacteristic a bamm:Characteristic;
+    bamm:preferredName "IoT Device Manufacturer Name"@en;
+    bamm:description "Characteristic describing the property manufacturer."@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://www.wikidata.org/wiki/Q184754>.
+:TypeCharacteristic a bamm:Characteristic;
+    bamm:preferredName "IoT Device Type"@en;
+    bamm:description "Describes the characteristics of the given type of device."@en;
+    bamm:dataType xsd:string.
+:SerialNumberCharacteristic a bamm:Characteristic;
+    bamm:preferredName "IoT Device Serial Number"@en;
+    bamm:description "Describes the characteristic of the property serial number."@en;
+    bamm:dataType xsd:string.
+:OwnerIDCharacteristic a bamm:Characteristic;
+    bamm:preferredName "IoT Device Owner Characteristic"@en;
+    bamm:description "Describes the Characteristic of the property ownerID."@en;
+    bamm:dataType xsd:string.
