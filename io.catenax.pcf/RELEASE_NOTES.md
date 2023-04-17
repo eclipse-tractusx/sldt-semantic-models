@@ -3,6 +3,9 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [3.0.0] 2023-04-24
+### Changed
+- new BAMM 2.0.0 version
 
 ## [2.0.0] 2022-08-24
 ### Added
