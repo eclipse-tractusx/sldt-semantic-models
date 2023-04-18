@@ -27,9 +27,10 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:bamm:io.catenax.transmission.transmission_pass:1.0.0#>.
-@prefix pcf-c: <urn:bamm:io.catenax.pcf:3.0.0#>.
 @prefix contact-c: <urn:bamm:io.catenax.shared.contact_information:2.0.0#>.
 @prefix physical-c: <urn:bamm:io.catenax.shared.physical_dimension:2.0.0#>.
+@prefix ext-typization: <urn:bamm:io.catenax.serial_part_typization:1.1.1#>.
+@prefix ext-pcf: <urn:bamm:io.catenax.pcf:2.0.0#>.
 
 :TransmissionPass a bamm:Aspect;
     bamm:preferredName "Transmission Pass"@en;
@@ -37,11 +38,6 @@
     bamm:properties (:sustainability :generalInformation :stateOfHealth :sparePartSupplier :productSpecificParameters :instructions :identification);
     bamm:operations ();
     bamm:events ().
-:manufacturerId a bamm:Property;
-    bamm:preferredName "Manufacturer ID"@en;
-    bamm:description "The ID of the transmission manufacturer in form of the unique BPN(L) number."@en;
-    bamm:characteristic bamm-c:Text;
-    bamm:exampleValue "BPNL1234567890ZZ".
 :sustainability a bamm:Property;
     bamm:preferredName "Sustainability"@en;
     bamm:description "Sustainability details about the transmission."@en;
@@ -62,25 +58,19 @@
     bamm:preferredName "Product Specific Parameters"@en;
     bamm:description "Product specific parameters of the transmission."@en;
     bamm:characteristic :ProductSpecificParameters.
-:warrantyPeriod a bamm:Property;
-    bamm:preferredName "Warranty Period"@en;
-    bamm:description "Commercial warranty period of the transmission (coupled to the Vehicle) in months."@en;
-    bamm:characteristic :WarrantyPeriod;
-    bamm:exampleValue "60.0"^^xsd:decimal;
-    bamm:see <https://eclass.eu/eclass-standard/content-suche/show?tx_eclasssearch_ecsearch%5Bdischarge%5D=0&tx_eclasssearch_ecsearch%5Bid%5D=25151705&tx_eclasssearch_ecsearch%5Blanguage%5D=1&tx_eclasssearch_ecsearch%5Bversion%5D=12.0&cHash=b331161d6c597f8648a931275fdc5c7f>.
 :instructions a bamm:Property;
     bamm:preferredName "Instructions"@en;
     bamm:description "Instructions concerning the transmission."@en;
     bamm:characteristic :Instructions.
-:additionalInformation a bamm:Property;
-    bamm:preferredName "Additional Information"@en;
-    bamm:description "Open field for additional information such as a link."@en;
-    bamm:characteristic bamm-c:Text.
-:dataMatrixCode a bamm:Property;
-    bamm:preferredName "Data Matrix Code"@en;
-    bamm:description "Data Matrix Code (DMC) link to the public of the transmission as specified in section 31 / page 26."@en;
+:identification a bamm:Property;
+    bamm:preferredName "Identification"@en;
+    bamm:description "Identification parameters of the transmission."@en;
+    bamm:characteristic :Identification.
+:manufacturerId a bamm:Property;
+    bamm:preferredName "Manufacturer ID"@en;
+    bamm:description "The ID of the transmission manufacturer in form of the unique BPN(L) number."@en;
     bamm:characteristic bamm-c:Text;
-    bamm:see <https://eur-lex.europa.eu/resource.html?uri=cellar:bb8539b7-b1b5-11ec-9d96-01aa75ed71a1.0001.02/DOC_1&format=PDF>.
+    bamm:exampleValue "BPNL1234567890ZZ".
 :Sustainability a bamm:Characteristic;
     bamm:preferredName "Sustainability Characteristic"@en;
     bamm:description "Sustainability Characterisitic to describe sustainability factors."@en;
@@ -101,6 +91,12 @@
     bamm:preferredName "Product Specific Parameters Characteristic"@en;
     bamm:description "The Characteristic to describe product specific parameters of the transmission."@en;
     bamm:dataType :ProductSpecificParametersEntity.
+:warrantyPeriod a bamm:Property;
+    bamm:preferredName "Warranty Period"@en;
+    bamm:description "Commercial warranty period of the transmission (coupled to the Vehicle) in months."@en;
+    bamm:characteristic :WarrantyPeriod;
+    bamm:exampleValue "60.0"^^xsd:decimal;
+    bamm:see <https://eclass.eu/eclass-standard/content-suche/show?tx_eclasssearch_ecsearch%5Bdischarge%5D=0&tx_eclasssearch_ecsearch%5Bid%5D=25151705&tx_eclasssearch_ecsearch%5Blanguage%5D=1&tx_eclasssearch_ecsearch%5Bversion%5D=12.0&cHash=b331161d6c597f8648a931275fdc5c7f>.
 :WarrantyPeriod a bamm-c:Measurement;
     bamm:preferredName "Warranty Period Measurement"@en;
     bamm:description "Commercial warranty period of the transmission (coupled to the Vehicle) in months as decimal."@en;
@@ -110,6 +106,15 @@
     bamm:preferredName "Instructions Characteristic"@en;
     bamm:description "Instructions characteristic concerning the transmission."@en;
     bamm:dataType :InstructionEntity.
+:additionalInformation a bamm:Property;
+    bamm:preferredName "Additional Information"@en;
+    bamm:description "Open field for additional information such as a link."@en;
+    bamm:characteristic bamm-c:Text.
+:dataMatrixCode a bamm:Property;
+    bamm:preferredName "Data Matrix Code"@en;
+    bamm:description "Data Matrix Code (DMC) link to the public of the transmission as specified in section 31 / page 26."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:see <https://eur-lex.europa.eu/resource.html?uri=cellar:bb8539b7-b1b5-11ec-9d96-01aa75ed71a1.0001.02/DOC_1&format=PDF>.
 :SustainabilityDetails a bamm:Entity;
     bamm:preferredName "Sustainability Details Entity"@en;
     bamm:description "Sustainability details for the transmission."@en;
@@ -117,22 +122,10 @@
   bamm:property :responsibleSourcingDocument;
   bamm:optional "true"^^xsd:boolean
 ] :carbonFootprint :recyclateContent :criticalRawMaterials :substancesOfConcern).
-:carbonFootprint a bamm:Property;
-    bamm:preferredName "Carbon Footprint"@en;
-    bamm:description "Describes the carbon footorint of the substance or mixture. Based on the Ecodesign."@en;
-    bamm:characteristic :CarbonFootprint.
-:CarbonFootprint a bamm:Characteristic;
-    bamm:preferredName "Carbon Footprint Characteristic"@en;
-    bamm:description "Set of information needed for the carbon footrpinrt ecodesign regulations."@en;
-    bamm:dataType :CarbonFootprintEntity.
-:CarbonFootprintEntity a bamm:Entity;
-    bamm:properties (:co2FootprintTotal :co2Calculation :co2Standard);
-    bamm:preferredName "Carbon Footprint Entity"@en;
-    bamm:description "Entity encapsulating the carbon footrprint."@en.
 :GeneralInformationEntity a bamm:Entity;
     bamm:preferredName "General Information Entity"@en;
     bamm:description "General Information Entity to describe several logical connected properties."@en;
-    bamm:properties (:productDescription :productType :physicalDimensions :additionalInformation :warrantyPeriod).
+    bamm:properties (:productDescription :productType :additionalInformation :warrantyPeriod physical-c:physicalDimensionsProperty).
 :StateOfHealthEntity a bamm:Entity;
     bamm:preferredName "State of health entity"@en;
     bamm:description "State of health entity describing several logically connected properties."@en;
@@ -168,10 +161,10 @@
     bamm:preferredName "Responsible Sourcing Document"@en;
     bamm:description "Document/Certificates on organizations compliance to ethical business practices."@en;
     bamm:characteristic :DocumentsCharacteristic.
-:co2FootprintTotal a bamm:Property;
-    bamm:preferredName "CO2 Footprint Total"@en;
-    bamm:description "The total carbon footprint of the transmission, calculated as kg of carbon dioxide equivalent."@en;
-    bamm:characteristic :Co2Total.
+:carbonFootprint a bamm:Property;
+    bamm:preferredName "Carbon Footprint"@en;
+    bamm:description "Describes the carbon footorint of the substance or mixture. Based on the Ecodesign."@en;
+    bamm:characteristic :CarbonFootprint.
 :recyclateContent a bamm:Property;
     bamm:preferredName "Recyclate Content"@en;
     bamm:description "List of recovered recyclate content. The following materials have to be reported on as a minimum: cobalt, lithium, nickel. Percentage of how much of the material was recycled. This can be an aggregation regarding the materials below. For example the amount of aluminium recovered from waste present in in each transmission model."@en;
@@ -184,6 +177,18 @@
     bamm:preferredName "Substances of Concern"@en;
     bamm:description "List of substances of concern. The name of the substances of concern present in the product. For example Lead; Cadmium; Dibortrioxide."@en;
     bamm:characteristic :StringList.
+:CarbonFootprint a bamm:Characteristic;
+    bamm:preferredName "Carbon Footprint Characteristic"@en;
+    bamm:description "Set of information needed for the carbon footrpinrt ecodesign regulations."@en;
+    bamm:dataType :CarbonFootprintEntity.
+:CarbonFootprintEntity a bamm:Entity;
+    bamm:preferredName "Carbon Footprint Entity"@en;
+    bamm:description "Entity encapsulating the carbon footrprint."@en;
+    bamm:properties (:co2FootprintTotal ext-pcf:productOrSectorSpecificRules ext-pcf:crossSectoralStandard).
+:co2FootprintTotal a bamm:Property;
+    bamm:preferredName "CO2 Footprint Total"@en;
+    bamm:description "The total carbon footprint of the transmission, calculated as kg of carbon dioxide equivalent."@en;
+    bamm:characteristic :Co2Total.
 :productDescription a bamm:Property;
     bamm:preferredName "Product Description"@en;
     bamm:description "The detailed description about the product type."@en;
@@ -195,10 +200,6 @@
     bamm:characteristic bamm-c:Text;
     bamm:exampleValue "8HP60MH";
     bamm:see <https://eclass.eu/en/eclass-standard/search-content/show?tx_eclasssearch_ecsearch%5Bcc2prdat%5D=0173-1%2302-AAW338%23001&tx_eclasssearch_ecsearch%5Bdischarge%5D=0&tx_eclasssearch_ecsearch%5Bid%5D=-1&tx_eclasssearch_ecsearch%5Blanguage%5D=1&tx_eclasssearch_ecsearch%5Boption%5D=pr&tx_eclasssearch_ecsearch%5Bsearchtxt%5D=0173-1%2302-AAW338%23001&tx_eclasssearch_ecsearch%5Bversion%5D=12.0&cHash=5a17e1979515f3f8fbb7350e9f27a8f9>.
-:physicalDimensions a bamm:Property;
-    bamm:preferredName "Physical Dimensions"@en;
-    bamm:description "Describing the physical dimensions without packaging."@en;
-    bamm:characteristic physical-c:PhysicalDimensionsCharacteristic.
 :remanufacturing a bamm:Property;
     bamm:preferredName "Remanufacturing"@en;
     bamm:description "Status of the transmission (first life or second life)."@en;
@@ -213,6 +214,20 @@
     bamm:characteristic :ExpectedLifespan;
     bamm:exampleValue "500000"^^xsd:integer;
     bamm:see <https://eclass.eu/eclass-standard/content-suche/show?tx_eclasssearch_ecsearch%5Bcc2prdat%5D=0173-1%2302-AAF779%23003&tx_eclasssearch_ecsearch%5Bdischarge%5D=0&tx_eclasssearch_ecsearch%5Bid%5D=-1&tx_eclasssearch_ecsearch%5Blanguage%5D=1&tx_eclasssearch_ecsearch%5Boption%5D=pr&tx_eclasssearch_ecsearch%5Bsearchtxt%5D=0173-1%2302-AAF779%23003&tx_eclasssearch_ecsearch%5Bversion%5D=12.0&cHash=c3d9bc495a76d479c4f0123af3681c80>.
+:supplierContact a bamm:Property;
+    bamm:preferredName "Supplier Contact"@en;
+    bamm:description "Contact information of the supplier"@en;
+    bamm:characteristic contact-c:ContactCharacteristic.
+:supplierId a bamm:Property;
+    bamm:preferredName "Supplier ID"@en;
+    bamm:description "BPNL of the supplier."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BPNL1234567890ZZ".
+:sparePartName a bamm:Property;
+    bamm:preferredName "Spare Part Name"@en;
+    bamm:description "Name or Identification of the spare part."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "torque converter".
 :driveType a bamm:Property;
     bamm:preferredName "Drive Type"@en;
     bamm:description "The type of transmission drive (combustion engine, hybrid drive or purely electric drive)."@en;
@@ -368,6 +383,14 @@
     bamm:preferredName "Remanufacturing Status Entity"@en;
     bamm:description "Status and Date of the (re-)manufacturing"@en;
     bamm:properties (:productStatusValue :remanufacturingDate).
+:SpeedResistanceEntity a bamm:Entity;
+    bamm:preferredName "Speed Resistance Entity"@en;
+    bamm:description "The speed resitance entity. Includes the gear and the speed as seperate properties."@en;
+    bamm:properties (:gear :speed).
+:GearRatio a bamm:Entity;
+    bamm:preferredName "Gear Ratio Entity"@en;
+    bamm:description "Entity for the ratio in the respective gear. Includes the gear and the ratio as seperate properties."@en;
+    bamm:properties (:gear :ratio).
 :documentTitle a bamm:Property;
     bamm:preferredName "Document Title"@en;
     bamm:description "The header or title of the document"@en;
@@ -378,6 +401,36 @@
     bamm:description "A link referencing to the document."@en;
     bamm:characteristic bamm-c:Text;
     bamm:exampleValue "https://www.xxx.pdf".
+:otherSubstance a bamm:Property;
+    bamm:preferredName "Other Substance"@en;
+    bamm:description "Details for the other optional substances."@en;
+    bamm:characteristic :OtherSubstance.
+:cobalt a bamm:Property;
+    bamm:preferredName "Cobalt"@en;
+    bamm:description "Percentage of the recyclate content of cobalt."@en;
+    bamm:characteristic :SubstancePercentage.
+:nickel a bamm:Property;
+    bamm:preferredName "Nickel"@en;
+    bamm:description "Percentage of the recyclate content of nickel."@en;
+    bamm:characteristic :SubstancePercentage.
+:lithium a bamm:Property;
+    bamm:preferredName "Lithium"@en;
+    bamm:description "Percentage of the recyclate content of lithium."@en;
+    bamm:characteristic :SubstancePercentage.
+:productStatusValue a bamm:Property;
+    bamm:preferredName "Product Status Value"@en;
+    bamm:description "Status of the transmission as first life or second life."@en;
+    bamm:characteristic :ProductStatusEnumeration;
+    bamm:exampleValue "second life".
+:remanufacturingDate a bamm:Property;
+    bamm:preferredName "Remanufacturing Date"@en;
+    bamm:description "Date of the (re-)manufacturing"@en;
+    bamm:characteristic bamm-c:Timestamp.
+:DocumentTitleTrait a bamm-c:Trait;
+    bamm:preferredName "Document Title Trait"@en;
+    bamm:description "Constraints the length to 60 characters."@en;
+    bamm-c:baseCharacteristic bamm-c:Text;
+    bamm-c:constraint :MaxTitleCharacters.
 :substanceName a bamm:Property;
     bamm:preferredName "Substance Name"@en;
     bamm:description "The name of the substance such as lead or aluminium."@en;
@@ -388,24 +441,11 @@
     bamm:description "Substance percentage of the recycled content."@en;
     bamm:characteristic :SubstancePercentage;
     bamm:exampleValue "8.0"^^xsd:decimal.
-:productStatusValue a bamm:Property;
-    bamm:preferredName "Product Status Value"@en;
-    bamm:description "Status of the transmission as first life or second life."@en;
-    bamm:characteristic :ProductStatusEnumeration;
-    bamm:exampleValue "second life".
-:remanufacturingDate a bamm:Property;
-    bamm:preferredName "Remanufacturing Date"@en;
-    bamm:description "Date of the (re-)manufacturing"@en;
-    bamm:characteristic bamm-c:Timestamp.
-:supplierContact a bamm:Property;
-    bamm:preferredName "Supplier Contact"@en;
-    bamm:description "Contact information of the supplier"@en;
-    bamm:characteristic contact-c:ContactCharacteristic.
-:DocumentTitleTrait a bamm-c:Trait;
-    bamm:preferredName "Document Title Trait"@en;
-    bamm:description "Constraints the length to 60 characters."@en;
-    bamm-c:baseCharacteristic bamm-c:Text;
-    bamm-c:constraint :MaxTitleCharacters.
+:SubstancePercentage a bamm-c:Quantifiable;
+    bamm:preferredName "Substance Percentage Characteristic"@en;
+    bamm:description "Substance percentage of the recycled content."@en;
+    bamm:dataType xsd:decimal;
+    bamm-c:unit unit:percent.
 :ProductStatusEnumeration a bamm-c:Enumeration;
     bamm:preferredName "Product Status Enumeration"@en;
     bamm:description "Enumeration to describe the status of the transmission as first life or second life."@en;
@@ -415,21 +455,6 @@
     bamm:preferredName "Max Title Characters Constraint"@en;
     bamm:description "Maximum title characters set to 60."@en;
     bamm-c:maxValue "60"^^xsd:nonNegativeInteger.
-:supplierId a bamm:Property;
-    bamm:preferredName "Supplier ID"@en;
-    bamm:description "BPNL of the supplier."@en;
-    bamm:characteristic bamm-c:Text;
-    bamm:exampleValue "BPNL1234567890ZZ".
-:sparePartName a bamm:Property;
-    bamm:preferredName "Spare Part Name"@en;
-    bamm:description "Name or Identification of the spare part."@en;
-    bamm:characteristic bamm-c:Text;
-    bamm:exampleValue "torque converter".
-:SubstancePercentage a bamm-c:Quantifiable;
-    bamm:preferredName "Substance Percentage Characteristic"@en;
-    bamm:description "Substance percentage of the recycled content."@en;
-    bamm:dataType xsd:decimal;
-    bamm-c:unit unit:percent.
 :gear a bamm:Property;
     bamm:preferredName "Gear"@en;
     bamm:description "Respective gear for the speed resistance."@en;
@@ -454,10 +479,6 @@
     bamm:description "The permissible maximum input speed in revolutions per minute in the respective gear."@en;
     bamm:dataType xsd:integer;
     bamm-c:unit unit:revolutionsPerMinute.
-:SpeedResistanceEntity a bamm:Entity;
-    bamm:preferredName "Speed Resistance Entity"@en;
-    bamm:description "The speed resitance entity. Includes the gear and the speed as seperate properties."@en;
-    bamm:properties (:gear :speed).
 :ratio a bamm:Property;
     bamm:preferredName "Ratio"@en;
     bamm:description "The ratio in the respective gear (ratio between transmission input speed and transmission output speed)."@en;
@@ -467,14 +488,6 @@
     bamm:preferredName "Ratio Characteristic"@en;
     bamm:description "The ratio in the respective gear."@en;
     bamm:dataType xsd:double.
-:GearRatio a bamm:Entity;
-    bamm:preferredName "Gear Ratio Entity"@en;
-    bamm:description "Entity for the ratio in the respective gear. Includes the gear and the ratio as seperate properties."@en;
-    bamm:properties (:gear :ratio).
-:otherSubstance a bamm:Property;
-    bamm:preferredName "Other Substance"@en;
-    bamm:description "Details for the other optional substances."@en;
-    bamm:characteristic :OtherSubstance.
 :OtherSubstance a bamm-c:List;
     bamm:preferredName "Other Substance Characteristic"@en;
     bamm:description "Characteristic for the other optional substances."@en;
@@ -483,22 +496,6 @@
     bamm:preferredName "Other Subastance Entity"@en;
     bamm:description "Percentage and substance name of the other substances."@en;
     bamm:properties (:substancePercentage :substanceName).
-:cobalt a bamm:Property;
-    bamm:preferredName "Cobalt"@en;
-    bamm:description "Percentage of the recyclate content of cobalt."@en;
-    bamm:characteristic :SubstancePercentage.
-:nickel a bamm:Property;
-    bamm:preferredName "Nickel"@en;
-    bamm:description "Percentage of the recyclate content of nickel."@en;
-    bamm:characteristic :SubstancePercentage.
-:lithium a bamm:Property;
-    bamm:preferredName "Lithium"@en;
-    bamm:description "Percentage of the recyclate content of lithium."@en;
-    bamm:characteristic :SubstancePercentage.
-:identification a bamm:Property;
-    bamm:preferredName "Identification"@en;
-    bamm:description "Identification parameters of the transmission."@en;
-    bamm:characteristic :Identification.
 :Identification a bamm:Characteristic;
     bamm:preferredName "Identification Characteristic"@en;
     bamm:description "Characteristic for the identification parameters of the transmission."@en;
@@ -506,12 +503,5 @@
 :IdentificationEntity a bamm:Entity;
     bamm:preferredName "Identification Entity"@en;
     bamm:description "Identification parameters of the transmission with data matrix code, manufacturerID and serial number."@en;
-    bamm:properties (:dataMatrixCode :manufacturerId).
-:co2Calculation a bamm:Property;
-    bamm:preferredName "CO2 Calculation"@en;
-    bamm:description "Product or sector specific rules applied for calculating or allocating GHG (Greenhouse Gas) emissions, e.g. PCRs (Product Category Rules), including operators or pubishers and according rule names."@en;
-    bamm:characteristic pcf-c:ProductOrSectorSpecificRuleSet.
-:co2Standard a bamm:Property;
-    bamm:preferredName "CO2 Standard"@en;
-    bamm:description "Discloses a cross-sectoral standard applied for calculating or allocating GHG (Greenhouse Gas) emissions."@en;
-    bamm:characteristic pcf-c:CrossSectoralStandardsUsedEnumerationCharacteristic.
+    bamm:properties (:dataMatrixCode :manufacturerId ext-typization:localIdentifiers).
+ext-pcf:otherOperatorName bamm:characteristic bamm-c:Text.
