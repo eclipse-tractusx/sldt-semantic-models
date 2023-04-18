@@ -1,0 +1,264 @@
+##########################################################################################
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e. V.
+# Copyright (c) 2023 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2023 Siemens AG
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+##########################################################################################
+
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.material_flow_simulation_result:1.0.0#>.
+
+:MaterialFlowSimulationResult a bamm:Aspect;
+    bamm:preferredName "Material Flow Simulation Result"@en;
+    bamm:description "Result of a Material Flow Simulation"@en;
+    bamm:properties (:timestamp :shipments :dataQuality :comment :expirationTimestamp :runId :owner :description);
+    bamm:operations ();
+    bamm:events ().
+:timestamp a bamm:Property;
+    bamm:preferredName "Timestamp"@en;
+    bamm:description "Timestamp of simulation run"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2023-03-09T14:13:42.806Z"^^xsd:dateTime.
+:shipments a bamm:Property;
+    bamm:preferredName "Shipments"@en;
+    bamm:description "List of shipments"@en;
+    bamm:characteristic :ShipmentList.
+:dataQuality a bamm:Property;
+    bamm:preferredName "Data Quality"@en;
+    bamm:description "Information on quality of simulation results"@en;
+    bamm:characteristic :DataQualityOptions;
+    bamm:exampleValue "0"^^xsd:positiveInteger.
+:comment a bamm:Property;
+    bamm:preferredName "Comment"@en;
+    bamm:description "Additional comments"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "successful simulation ".
+:expirationTimestamp a bamm:Property;
+    bamm:preferredName "ExpirationTimestamp"@en;
+    bamm:description "Date and time when the simulation is expired"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2023-03-24T09:15:24.000Z"^^xsd:dateTime.
+:runId a bamm:Property;
+    bamm:preferredName "RunId"@en;
+    bamm:description "Id of the simulation run"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "0fece48b-c8d1-4180-1a9caca6d67e".
+:owner a bamm:Property;
+    bamm:preferredName "Owner"@en;
+    bamm:description "Site identifier of the simulation originator"@en;
+    bamm:characteristic :OwnerCharacteristic.
+:description a bamm:Property;
+    bamm:preferredName "Description"@en;
+    bamm:description "Verbal description"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "Please simulate asap".
+:ShipmentList a bamm-c:List;
+    bamm:preferredName "Shipment List"@en;
+    bamm:description "List of shipments contained in the simulation"@en;
+    bamm:dataType :Shipment.
+:DataQualityOptions a bamm-c:Enumeration;
+    bamm:preferredName "Data Quality Options"@en;
+    bamm:description "Possible values determining data quality"@en;
+    bamm:dataType xsd:positiveInteger;
+    bamm-c:values ("0"^^xsd:positiveInteger "1"^^xsd:positiveInteger "2"^^xsd:positiveInteger "3"^^xsd:positiveInteger "4"^^xsd:positiveInteger "5"^^xsd:positiveInteger).
+:Text a bamm:Characteristic;
+    bamm:preferredName "Text"@en;
+    bamm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en;
+    bamm:dataType xsd:string.
+:OwnerCharacteristic a bamm-c:SingleEntity;
+    bamm:preferredName "Owner Characteristic"@en;
+    bamm:description "Site identifier of the simulation originator"@en;
+    bamm:dataType :BusinessPartnerSite.
+:Shipment a bamm:Entity;
+    bamm:preferredName "Shipment"@en;
+    bamm:description "Delivery item from a sender to a recipient containing goods"@en;
+    bamm:properties (:shipmentId :destination :destinationTimestamp :recipient :recipientTimestampPlanned :splittingAllowed :logistics :preceding :handlingUnits).
+:BusinessPartnerSite a bamm:Entity;
+    bamm:preferredName "Business Partner Site"@en;
+    bamm:description "Identifier for the physical location of a business partner plant or site, (e.g. BPNS in Catena-X context)"@en;
+    bamm:properties ().
+:shipmentId a bamm:Property;
+    bamm:preferredName "Shipment Id"@en;
+    bamm:description "ID to identify the shipment"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "DE51515151".
+:destination a bamm:Property;
+    bamm:preferredName "Destination"@en;
+    bamm:description "Address where the shipment is immediately delivered to (by logistician) or provided for pickup (by producer)"@en;
+    bamm:characteristic :DestinationCharacteristic.
+:destinationTimestamp a bamm:Property;
+    bamm:preferredName "Destination Timestamp"@en;
+    bamm:description "Time when delivery arrives or is ready at goods issue"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2023-03-19T09:00:00.000Z"^^xsd:dateTime.
+:recipient a bamm:Property;
+    bamm:preferredName "Recipient"@en;
+    bamm:description "Address of final recipient of shipment"@en;
+    bamm:characteristic :RecipientCharacteristic.
+:recipientTimestampPlanned a bamm:Property;
+    bamm:preferredName "Recipient Timestamp Planned"@en;
+    bamm:description "Planned delivery time"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2023-04-19T09:00:00.000Z"^^xsd:dateTime.
+:splittingAllowed a bamm:Property;
+    bamm:preferredName "Splitting Allowed"@en;
+    bamm:description "Permission to split the shipment into individual deliveries"@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.
+:logistics a bamm:Property;
+    bamm:preferredName "Logistics"@en;
+    bamm:description "Address of logistician executing the shipment"@en;
+    bamm:characteristic :LogisticsCharacteristic.
+:preceding a bamm:Property;
+    bamm:preferredName "Preceding"@en;
+    bamm:description "Reference ID of a preceding shipment"@en;
+    bamm:characteristic :PrecedingCharacteristic.
+:handlingUnits a bamm:Property;
+    bamm:preferredName "Handling Units"@en;
+    bamm:description "List of Handling Units"@en;
+    bamm:characteristic :HandlingUnitList.
+:DestinationCharacteristic a bamm-c:SingleEntity;
+    bamm:preferredName "Destination Characteristic"@en;
+    bamm:description "Address where the shipment is immediately delivered to (by logistician) or provided for pickup (by producer)"@en;
+    bamm:dataType :BusinessPartnerSite.
+:RecipientCharacteristic a bamm-c:SingleEntity;
+    bamm:preferredName "Recipient Characteristic"@en;
+    bamm:description "Location identifier of the final recipient of the shipment"@en;
+    bamm:dataType :BusinessPartnerSite.
+:LogisticsCharacteristic a bamm-c:SingleEntity;
+    bamm:preferredName "Logistics Characteristic"@en;
+    bamm:description "Site identifier of the logistician executing the shipment"@en;
+    bamm:dataType :BusinessPartnerSite.
+:PrecedingCharacteristic a bamm-c:SingleEntity;
+    bamm:preferredName "Preceding Characteristic"@en;
+    bamm:description "Reference of preceding shipments"@en;
+    bamm:dataType :BusinessPartnerSite.
+:HandlingUnitList a bamm-c:List;
+    bamm:preferredName "Handling Unit List"@en;
+    bamm:description "List of handling units included in the shipment"@en;
+    bamm:dataType :HandlingUnit.
+:HandlingUnit a bamm:Entity;
+    bamm:preferredName "Handling Unit"@en;
+    bamm:description "Handling Unit is the smallest shipment unit and cannot be divided into several shipments"@en;
+    bamm:properties (:handlingUnitId :name :volume :weight :amount :batches).
+:handlingUnitId a bamm:Property;
+    bamm:preferredName "Handling Unit Id"@en;
+    bamm:description "ID of the handling unit"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "HUT_1".
+:name a bamm:Property;
+    bamm:preferredName "Name"@en;
+    bamm:description "Name of the type of handling unit"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "Palette".
+:volume a bamm:Property;
+    bamm:preferredName "Volume"@en;
+    bamm:description "Volume of the handling unit"@en;
+    bamm:characteristic :VolumeCharacteristic;
+    bamm:exampleValue "1.00"^^xsd:float.
+:weight a bamm:Property;
+    bamm:preferredName "Weight"@en;
+    bamm:description "Weight of the handling unit"@en;
+    bamm:characteristic :WeightCharacteristic;
+    bamm:exampleValue "189"^^xsd:float.
+:amount a bamm:Property;
+    bamm:preferredName "Amount"@en;
+    bamm:description "Number of handling units with identical content"@en;
+    bamm:characteristic :AmountCharacteristic;
+    bamm:exampleValue "1"^^xsd:positiveInteger.
+:batches a bamm:Property;
+    bamm:preferredName "Batches"@en;
+    bamm:description "List of material batches contained within a handling unit"@en;
+    bamm:characteristic :BatchList.
+:VolumeCharacteristic a bamm-c:Measurement;
+    bamm:preferredName "Volume Characteristic"@en;
+    bamm:description "Volumetric value determining the volume of the handling unit"@en;
+    bamm:dataType xsd:float;
+    bamm-c:unit unit:litre.
+:WeightCharacteristic a bamm-c:Measurement;
+    bamm:preferredName "Weight Characteristic"@en;
+    bamm:description "Amount of weight of the handling unit"@en;
+    bamm:dataType xsd:float;
+    bamm-c:unit unit:kilogram.
+:AmountCharacteristic a bamm-c:Quantifiable;
+    bamm:preferredName "Amount Characteristic"@en;
+    bamm:description "Number describing handling units with identical pieces"@en;
+    bamm:dataType xsd:positiveInteger;
+    bamm-c:unit unit:piece.
+:BatchList a bamm-c:List;
+    bamm:preferredName "Batch List"@en;
+    bamm:description "List of material batches"@en;
+    bamm:dataType :MaterialBatch.
+:MaterialBatch a bamm:Entity;
+    bamm:preferredName "Material Batch"@en;
+    bamm:description "Material Batches are part of a handling unit"@en;
+    bamm:properties (:batchId :materialNumber :materialName :hazardousGoods :batchExpirationTimestamp :quantity :unitOfMeasurement :batchNumber :batchOrderId).
+:batchId a bamm:Property;
+    bamm:preferredName "Batch Id"@en;
+    bamm:description "ID for the material batch"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "Batch_1".
+:materialNumber a bamm:Property;
+    bamm:preferredName "Material Number"@en;
+    bamm:description "ID of the material contained in the batch"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "KK1000GR".
+:materialName a bamm:Property;
+    bamm:preferredName "Material Name"@en;
+    bamm:description "Name of the material"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "KK1000GR-Gehäuse-Rot".
+:hazardousGoods a bamm:Property;
+    bamm:preferredName "Hazardous Goods"@en;
+    bamm:description "Flags hazardous goods"@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "false"^^xsd:boolean.
+:batchExpirationTimestamp a bamm:Property;
+    bamm:preferredName "Batch Expiration Timestamp"@en;
+    bamm:description "Expiration date of batch"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2023-08-22T16:00:00.000Z"^^xsd:dateTime.
+:quantity a bamm:Property;
+    bamm:preferredName "Quantity"@en;
+    bamm:description "Amount of materials"@en;
+    bamm:characteristic :QuantityCharacteristic;
+    bamm:exampleValue "50"^^xsd:float.
+:unitOfMeasurement a bamm:Property;
+    bamm:preferredName "UnitOfMeasurement"@en;
+    bamm:description "Unit used for measuring the quantity"@en;
+    bamm:characteristic :UnitOfMeasurementCharacteristic.
+:batchNumber a bamm:Property;
+    bamm:preferredName "Batch Number"@en;
+    bamm:description "Number of the batch, generated by originator (e.g. from ERP system, no uuid)"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "45".
+:batchOrderId a bamm:Property;
+    bamm:preferredName "Batch Order Id"@en;
+    bamm:description "Order ID to which the batch belongs"@en;
+    bamm:characteristic :Text;
+    bamm:exampleValue "Order-0001".
+:QuantityCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Quantity Characteristic"@en;
+    bamm:description "Number of materials contained within a handling unit"@en;
+    bamm:dataType xsd:float.
+:UnitOfMeasurementCharacteristic a bamm-c:Enumeration;
+    bamm:preferredName "Unit Of Measurement Characteristic"@en;
+    bamm:description "Possible options for units of measurement"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("KG" "Liter" "Piece").
