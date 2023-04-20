@@ -1,0 +1,150 @@
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.bom_as_specified:1.0.1#>.
+
+:BomAsSpecified a bamm:Aspect;
+    bamm:preferredName "BOM as specified"@en;
+    bamm:description "The BomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place."@en;
+    bamm:properties (:catenaXId :childParts :lifecycleContext);
+    bamm:operations ();
+    bamm:events ().
+:catenaXId a bamm:Property;
+    bamm:preferredName "catenaXId"@en;
+    bamm:description "A unique reference within Catena-X of this items"@en;
+    bamm:characteristic :CatenaXIdCharacteristic;
+    bamm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d".
+:childParts a bamm:Property;
+    bamm:preferredName "childParts"@en;
+    bamm:description "The child part of the observed parent item"@en;
+    bamm:characteristic :ChildPartsCharacteristic.
+:lifecycleContext a bamm:Property;
+    bamm:preferredName "lifecycleContext"@en;
+    bamm:description "The lifecycle phase the item belongs to"@en;
+    bamm:characteristic :LifecycleContextCharacteristic;
+    bamm:exampleValue "asSpecified".
+:ChildPartsCharacteristic a bamm-c:Set;
+    bamm:preferredName "ChildParts Characteristic"@en;
+    bamm:description "The characteristic of the child part property"@en;
+    bamm:dataType :ChildPartsEntity.
+:LifecycleContextCharacteristic a bamm:Characteristic;
+    bamm:preferredName "LifecycleContext Characteristic"@en;
+    bamm:dataType xsd:string.
+:ChildPartsEntity a bamm:Entity;
+    bamm:preferredName "ChildParts entity"@en;
+    bamm:description "Encapsulates the properties describing the child part item"@en;
+    bamm:properties (:itemCategory :part).
+:itemCategory a bamm:Property;
+    bamm:preferredName "item category"@en;
+    bamm:description "The BomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "e.g. vehicle, winter wheels, bicycle rack".
+:part a bamm:Property;
+    bamm:preferredName "part"@en;
+    bamm:description "The description of the part in the primary language of the production facility of the product owner."@en;
+    bamm:characteristic :PartCharacteristic.
+:PartCharacteristic a bamm-c:Set;
+    bamm:preferredName "part characteristic"@en;
+    bamm:description "Characteristic of the part."@en;
+    bamm:dataType :PartEntity.
+:PartEntity a bamm:Entity;
+    bamm:preferredName "part entity"@en;
+    bamm:description "Entity encapsulating the properies describing a part"@en;
+    bamm:properties (:ownerPartId [
+  bamm:property :partVersion;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :partQuantity;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :partDescription;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :partClassification;
+  bamm:optional "true"^^xsd:boolean
+] :childCatenaXId :lastModifiedOn :createdOn).
+:ownerPartId a bamm:Property;
+    bamm:preferredName "owner part ID"@en;
+    bamm:description "This is the key field of the component which usually keeps the part numbers used in after-sales, e.g. when repairing broken parts and searching for a replacement. This ownerPartId itself isn't usually bound to one part version, with the assumption that all part versions with the same ownerPartId are mutually interchangeable."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "5A1BA91".
+:partVersion a bamm:Property;
+    bamm:preferredName "part version"@en;
+    bamm:description "This is the version of the part. The engineering will at times supercede an older part version by a newer one, which might have different material aspects, physical dimensions etc., still maintaining compatibility."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "05".
+:partQuantity a bamm:Property;
+    bamm:preferredName "part quantity"@en;
+    bamm:description "This is the quantity how often this part is in the item."@en;
+    bamm:characteristic :PartQuantityCharacteristic.
+:partDescription a bamm:Property;
+    bamm:preferredName "part description"@en;
+    bamm:description "The description of the part in the primary language of the production facility of the product owner."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "The steering wheel is nice and round".
+:partClassification a bamm:Property;
+    bamm:preferredName "part classification"@en;
+    bamm:description "The part classification."@en;
+    bamm:characteristic :PartClassificationCharacteristic.
+:childCatenaXId a bamm:Property;
+    bamm:preferredName "childCatenaXId"@en;
+    bamm:description "Describes the Catena-X ID of the child part"@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "urn:uuid:218b26f4-4a0b-4a7f-b2c1-d248927718bf ".
+:lastModifiedOn a bamm:Property;
+    bamm:preferredName "lastModifiedOn"@en;
+    bamm:description "The time the item was modified the last time"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+:createdOn a bamm:Property;
+    bamm:preferredName "createdOn"@en;
+    bamm:description "The time the item was created on"@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+:PartQuantityCharacteristic a bamm:Characteristic;
+    bamm:preferredName "part quantity characteristic"@en;
+    bamm:description "The characteristic of the part quantity."@en;
+    bamm:dataType :PartQuantityEntity.
+:PartClassificationCharacteristic a bamm-c:Set;
+    bamm:preferredName "part classification characteristic"@en;
+    bamm:description "The characteristic of the part classification."@en;
+    bamm:dataType :PartClassificationEntity.
+:PartQuantityEntity a bamm:Entity;
+    bamm:preferredName "part quantity entity"@en;
+    bamm:description "The entity encapsulating the properties describing the quantity of a part."@en;
+    bamm:properties (:measurementUnit :quantityNumber).
+:PartClassificationEntity a bamm:Entity;
+    bamm:preferredName "part classification entity"@en;
+    bamm:description "The entity encapsulating the properties of the part classification."@en;
+    bamm:properties (:key :value).
+:measurementUnit a bamm:Property;
+    bamm:preferredName "measurement unit"@en;
+    bamm:description "Unit of measurement for the quantity of serialized objects."@en;
+    bamm:characteristic bamm-c:UnitReference;
+    bamm:exampleValue "e.g. piece, kw"^^bamm:curie.
+:quantityNumber a bamm:Property;
+    bamm:preferredName "quantity number"@en;
+    bamm:description "The number of objects related to the measurement unit."@en;
+    bamm:characteristic :NumberOfObjects;
+    bamm:exampleValue "350"^^xsd:double.
+:key a bamm:Property;
+    bamm:preferredName "key"@en;
+    bamm:description "Key within the classification."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "BMW:PartFamily".
+:value a bamm:Property;
+    bamm:preferredName "value"@en;
+    bamm:description "Value within the classification."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "STEEWHL".
+:NumberOfObjects a bamm:Characteristic;
+    bamm:preferredName "number of objects"@en;
+    bamm:description "Quantifiable number of objects in reference to the measurementUnit."@en;
+    bamm:dataType xsd:double.
+:CatenaXIdCharacteristic a bamm:Characteristic;
+    bamm:preferredName "CatenaXId Characteristic"@en;
+    bamm:dataType xsd:string.
