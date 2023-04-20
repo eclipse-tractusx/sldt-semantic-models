@@ -1,0 +1,85 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.individual_asset_definition:1.0.0#>.
+@prefix ext-dimension: <urn:bamm:io.catenax.shared.physical_dimension:2.0.0#>.
+
+:IndividualAssetDefinition a bamm:Aspect;
+    bamm:preferredName "Individual Asset Definition"@en;
+    bamm:description "Permanent characteristics of an individual asset."@en;
+    bamm:properties (:catenaXId :assetOwnerId :assetSerialNumber :assetType :physicalDimensionsProperty);
+    bamm:operations ();
+    bamm:events ().
+:catenaXId a bamm:Property;
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:description "The fully anonymous Catena-X ID of the asset, valid for the Catena-X dataspace."@en;
+    bamm:characteristic :CatenaXIdTrait;
+    bamm:exampleValue "urn:uuid:ed85f17e-29dd-473c-9cb8-d7ad1dc44d2f".
+:assetOwnerId a bamm:Property;
+    bamm:preferredName "Asset Owner ID"@en;
+    bamm:description "BPNL of the asset owner."@en;
+    bamm:characteristic :AssetOwnerCharacteristic;
+    bamm:exampleValue "BPNL021738173000".
+:assetSerialNumber a bamm:Property;
+    bamm:preferredName "Asset Serial Number"@en;
+    bamm:description "The serial number of the asset."@en;
+    bamm:characteristic :AssetSerialNumberCharacteristic;
+    bamm:exampleValue "321-0740-6790-XY".
+:physicalDimensionsProperty a bamm:Property;
+    bamm:name "physicalDimensionsProperty";
+    bamm:preferredName "physical dimensions"@en;
+    bamm:description "Describes the physical dimensions of then entity."@en;
+    bamm:characteristic ext-dimension:PhysicalDimensionsCharacteristic.
+
+:assetType a bamm:Property;
+    bamm:preferredName "Asset Type"@en;
+    bamm:description "The type of an asset."@en;
+    bamm:characteristic :AssetTypeCharacteristic;
+    bamm:exampleValue "package".
+:CatenaXIdTrait a bamm-c:Trait;
+    bamm:preferredName "Catena-X Id Trait"@en;
+    bamm:description "Trait to ensure UUID v4 data format."@en;
+    bamm-c:baseCharacteristic :UUIDv4;
+    bamm-c:constraint :UUIDv4RegularExpression.
+:AssetOwnerCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Asset Owner Characteristic"@en;
+    bamm:description "Characteristic describing the property asset owner."@en;
+    bamm:dataType xsd:string.
+:AssetSerialNumberCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Asset Serial Number Characteristic"@en;
+    bamm:description "Characteristic describing the property serial number."@en;
+    bamm:dataType xsd:string.
+:AssetTypeCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Asset Type Characteristic"@en;
+    bamm:description "Characteristic describing the property asset type."@en;
+    bamm:dataType xsd:string.
+:UUIDv4 a bamm:Characteristic;
+    bamm:preferredName "UUIDv4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
