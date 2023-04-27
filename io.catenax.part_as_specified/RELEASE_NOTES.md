@@ -5,8 +5,7 @@ All notable changes to this model will be documented in this file.
 
 ## [2.0.0] - 2023-04-24
 ### Added
-- added new properties: catenaXId, partClassification, partDescription, partDescription
-
+- added new properties: catenaXId, partClassification, partDescription
 ### Changed
 - changed properties: classification -> itemCategory
 - updated exemplary values to depict current state of the model
