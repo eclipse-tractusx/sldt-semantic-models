@@ -1,0 +1,96 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.asset_tracker_links:1.0.0#>.
+
+:AssetTrackerLinks a bamm:Aspect;
+    bamm:preferredName "Asset Tracker Links"@en;
+    bamm:description "Represent the link between Asset and IoT Device (tracker) with timestamps of pairing and unpairing."@en;
+    bamm:properties (:catenaXId :childParts);
+    bamm:operations ();
+    bamm:events ().
+:catenaXId a bamm:Property;
+    bamm:preferredName "Catena-X Identifier"@en;
+    bamm:description "The Catena-X ID of the givenasset, valid for the Catena-X dataspace."@en;
+    bamm:characteristic :CatenaXIdTraitCharacteristic;
+    bamm:exampleValue "urn:uuid:ed85f17e-29dd-473c-9cb8-d7ad1dc44d2f".
+:childParts a bamm:Property;
+    bamm:preferredName "Child Parts"@en;
+    bamm:description "Set of child parts, of which the given parent object consist of."@en;
+    bamm:characteristic :SetOfChildPartsCharacteristic.
+:CatenaXIdTraitCharacteristic a bamm-c:Trait;
+    bamm:description "Trait to ensure UUID v4 data format"@en;
+    bamm-c:baseCharacteristic :UUIDv4Characteristic;
+    bamm-c:constraint :UUIDv4RegularExpression.
+:SetOfChildPartsCharacteristic a bamm-c:Set;
+    bamm:preferredName "Set of Child Parts"@en;
+    bamm:description "Set of child parts the parent object consist of."@en;
+    bamm:dataType :ChildData.
+:UUIDv4Characteristic a bamm:Characteristic;
+    bamm:preferredName "UUID v4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://tools.ietf.org/html/rfc4122>.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X Id Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
+:ChildData a bamm:Entity;
+    bamm:preferredName "Child Data"@en;
+    bamm:description "Catena-X ID and meta data of the child part."@en;
+    bamm:properties (:childCatenaXId :paired :pairedOn :unpairedOn :historicalData).
+:childCatenaXId a bamm:Property;
+    bamm:preferredName "Catena-X Child Identifier"@en;
+    bamm:description "The Catena-X ID of the child object which is linked to the given parent part."@en;
+    bamm:characteristic :CatenaXIdTraitCharacteristic.
+:paired a bamm:Property;
+    bamm:preferredName "paired"@en;
+    bamm:description "Currently paired when set to true."@en;
+    bamm:characteristic :PairedCharacteristic;
+    bamm:exampleValue "true"^^xsd:boolean.
+:pairedOn a bamm:Property;
+    bamm:preferredName "Paired On"@en;
+    bamm:description "Timestamp of pairing of an IoT Device to an Asset."@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2023-02-03T14:48:54.709Z"^^xsd:dateTime.
+:unpairedOn a bamm:Property;
+    bamm:preferredName "Unpaired On"@en;
+    bamm:description "Timestamp of the unpairing of an IoT Device from an Asset."@en;
+    bamm:characteristic bamm-c:Timestamp;
+    bamm:exampleValue "2023-02-04T14:48:54.709Z"^^xsd:dateTime.
+:PairedCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Paired Characteristic"@en;
+    bamm:description "Characteristic describing the property paired."@en;
+    bamm:dataType xsd:boolean.
+:historicalData a bamm:Property;
+    bamm:preferredName "Historical Data"@en;
+    bamm:description "Describes the location where the historical sensor data can be found. "@en;
+    bamm:characteristic :ResourcePath;
+    bamm:exampleValue "https://mycompany.s3.amazonaws.com/historicalsensordata"^^xsd:anyURI.
+:ResourcePath a bamm:Characteristic;
+    bamm:preferredName "Resource Path"@en;
+    bamm:description "The path of a resource."@en;
+    bamm:dataType xsd:anyURI.
