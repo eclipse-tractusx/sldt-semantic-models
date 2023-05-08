@@ -1,0 +1,117 @@
+#######################################################################
+# Copyright (c) 2023 Allgemeine Deutsche Automobil-Club (ADAC) e.V
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2023 Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
+# Copyright (c) 2023 Siemens AG
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#> .
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:bamm:io.catenax.time_series_reference:1.0.0#> .
+
+
+:TimeSeriesReference a bamm:Aspect;
+    bamm:preferredName "Time Series Reference"@en;
+    bamm:properties (:decimalSeperator :sourceFile :fileExtension :delimiter :payload);
+    bamm:operations ();
+    bamm:events ();
+    bamm:description "Aspect to describe a reference to a file which contains time series data."@en.
+:decimalSeperator a bamm:Property;
+    bamm:preferredName "Decimal Seperator"@en;
+    bamm:description "Indicates whether a dot or comma is used to separate the decimal place in the source file."@en;
+    bamm:characteristic :DecimalSeperator;
+    bamm:exampleValue "dot".
+:sourceFile a bamm:Property;
+    bamm:preferredName "Source File"@en;
+    bamm:description "Contains the URI to the referenced time series file."@en;
+    bamm:characteristic :ResourcePath.
+:fileExtension a bamm:Property;
+    bamm:preferredName "File Extension"@en;
+    bamm:description "Indicates whether csv, none or txt is used as file extension."@en;
+    bamm:characteristic :FileExtension;
+    bamm:exampleValue "csv".
+:delimiter a bamm:Property;
+    bamm:preferredName "Delimiter"@en;
+    bamm:description "Indicates whether a semicolon, comma or tab is used as a deliniter between datapoints."@en;
+    bamm:characteristic :Delimiter;
+    bamm:exampleValue "semicolon".
+:payload a bamm:Property;
+    bamm:preferredName "Payload"@en;
+    bamm:description "Contains the information about variable names and their units as well as the name of the time column."@en;
+    bamm:characteristic :PayloadCharacteristic.
+:DecimalSeperator a bamm-c:Enumeration;
+    bamm:preferredName "Decimal Separator Enumeration"@en;
+    bamm:description "Indicates whether a dot or comma is used to separate the decimal place in the source file."@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("comma" "dot").
+:ResourcePath a bamm:Characteristic;
+    bamm:preferredName "Resource Path"@en;
+    bamm:description "The path of a resource."@en;
+    bamm:dataType xsd:anyURI.
+:FileExtension a bamm-c:Enumeration;
+    bamm:preferredName "File Extension Enumeration"@en;
+    bamm:description "Indicates whether csv, none or txt is used as file extension."@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("csv" "none" "txt" "dat" "data").
+:Delimiter a bamm-c:Enumeration;
+    bamm:preferredName "Delimiter Enumeration"@en;
+    bamm:description "Indicates whether a semicolon, comma or tab is used as a deliniter between datapoints."@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("semicolon" "comma" "tab").
+:PayloadCharacteristic a bamm-c:TimeSeries;
+    bamm:preferredName "payload characteristic"@en;
+    bamm:description "Contains the information about variable names and their units as well as the name of the time column."@en;
+    bamm:dataType :PayloadEntity.
+:PayloadEntity a bamm:Entity;
+    bamm:preferredName "Payload Entity"@en;
+    bamm:properties (:units :variableNames :timeColumnName);
+    bamm:description "Contains the information about variable names and their units as well as the name of the time column."@en.
+:units a bamm:Property;
+    bamm:preferredName "Units"@en;
+    bamm:description "Lists the unit for each datapoint."@en;
+    bamm:characteristic :UnitsListCharacteristic.
+:variableNames a bamm:Property;
+    bamm:preferredName "Variable Names"@en;
+    bamm:description "Lists the name for each datapoint."@en;
+    bamm:characteristic :VariableListCharacteristic.
+:timeColumnName a bamm:Property;
+    bamm:preferredName "Time Column Name"@en;
+    bamm:description "Specifies the name of the Variable Names entry which contains the time column."@en;
+    bamm:characteristic :TimeColumnChoice.
+:VariableListCharacteristic a bamm-c:List;
+    bamm:description "Lists the name for each datapoint."@en;
+    bamm:dataType xsd:string.
+:TimeColumnChoice a bamm-c:Enumeration;
+    bamm:preferredName "time column name"@en;
+    bamm:description "Specifies the name of the time colums variable."@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("Time" "TIME" "time" "t").
+:UnitsListCharacteristic a bamm-c:List;
+    bamm:preferredName "Units List Characteristic"@en;
+    bamm:description "Lists the unit for each datapoint."@en;
+    bamm:dataType :UnitEntity.
+:unit a bamm:Property;
+    bamm:preferredName "Unit Property"@en;
+    bamm:description "The unit of a column."@en;
+    bamm:characteristic bamm-c:UnitReference.
+:UnitEntity a bamm:Entity;
+    bamm:preferredName "Unit Entity"@en;
+    bamm:properties (:unit);
+    bamm:description "The unit of a column."@en.
