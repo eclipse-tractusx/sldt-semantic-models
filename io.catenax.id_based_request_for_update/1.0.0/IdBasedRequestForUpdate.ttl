@@ -1,0 +1,94 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML)
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 Mercedes Benz AG
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 SupplyOn AG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.openmanufacturing.digitaltwin:1.0.0#>.
+
+:weekBasedMaterialDemand a bamm:Property;
+    bamm:description "Material demands the supplier requests an update for."@en;
+    bamm:characteristic :WeekBasedMaterialDemandCharacteristic;
+    bamm:preferredName "Week Based Material Demand"@en.
+:WeekBasedMaterialDemandCharacteristic a bamm-c:List;
+    bamm:description "A list of material demand UUIDs an update is requested for."@en;
+    bamm:preferredName "Week Based Material Demand Characteristic"@en;
+    bamm:dataType :WeekBasedMaterialDemandEntity.
+:weekBasedCapacityGroupList a bamm:Property;
+    bamm:description "Capacity groups the customer requests an update for."@en;
+    bamm:characteristic :WeekBasedCapacityGroupCharacteristic;
+    bamm:preferredName "Week Based Capacity Group List"@en.
+:WeekBasedCapacityGroupCharacteristic a bamm-c:List;
+    bamm:description "A list of capacity group UUIDs an update is requested for."@en;
+    bamm:preferredName "Week Based Capacity Group Characteristic"@en;
+    bamm:dataType :WeekBasedCapacityGroupEntity.
+:WeekBasedMaterialDemandEntity a bamm:Entity;
+    bamm:description "Encapsulates the information that is necessary for an update request."@en;
+    bamm:preferredName "Week Based Material Demand Entity"@en;
+    bamm:properties (:materialDemandId :changedAt).
+:capacityGroupID a bamm:Property;
+    bamm:description "The Capacity Group ID uniquely identifies the capacity group the supplier requests an update for within the business relationship between the supplier and its customer."@en;
+    bamm:characteristic :UUIDv4IdTrait;
+    bamm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110";
+    bamm:preferredName "Capacity Group ID"@en.
+:UUIDv4IdTrait a bamm-c:Trait;
+    bamm:description "Trait to ensure data format for UUIDv4."@en;
+    bamm:preferredName "UUIDv4 Trait"@en;
+    bamm-c:baseCharacteristic :UUIDv4;
+    bamm-c:constraint :UUIDv4RegularExpression.
+:changedAt a bamm:Property;
+    bamm:description "Point in time when the content (any property according to the data model) of the entity UUID was changed (according to information provided by the data provider), either by a human user or an automated process."@en;
+    bamm:characteristic :Timestamp;
+    bamm:exampleValue "2023-03-10T12:27:11.320Z"^^xsd:dateTimeStamp;
+    bamm:preferredName "Changed At"@en.
+:Timestamp a bamm:Characteristic;
+    bamm:description "Describes a Property which contains the date and time with an optional timezone."@en;
+    bamm:preferredName "Timestamp"@en;
+    bamm:dataType xsd:dateTime.
+:UUIDv4 a bamm:Characteristic;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:preferredName "UUIDv4"@en;
+    bamm:dataType xsd:string.
+:UUIDv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."@en;
+    bamm:preferredName "UUIDv4 Regular Expression"@en;
+    bamm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".
+:WeekBasedCapacityGroupEntity a bamm:Entity;
+    bamm:description "Encapsulates the information that is necessary for an update request."@en;
+    bamm:preferredName "Week Based Capacity Group Entity"@en;
+    bamm:properties (:capacityGroupID :changedAt).
+:materialDemandId a bamm:Property;
+    bamm:description "The Material Demand ID uniquely identifies the material demand the supplier requests an update for within the business relationship between the customer and its supplier."@en;
+    bamm:characteristic :UUIDv4IdTrait;
+    bamm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c3456";
+    bamm:preferredName "Material Demand ID"@en.
+:IdBasedRequestForUpdate a bamm:Aspect;
+    bamm:description "The requirements for a request for update from another Catena-X Partner of a specific material demand or capacity group."@en;
+    bamm:preferredName "ID Based Request For Update"@en;
+    bamm:properties (:weekBasedMaterialDemand :weekBasedCapacityGroupList);
+    bamm:operations ();
+    bamm:events ().
