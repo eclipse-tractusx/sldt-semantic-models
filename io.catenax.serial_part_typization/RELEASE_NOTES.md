@@ -3,10 +3,6 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.1.1] - 2023-05-08
-### Added
-- update to BAMM 2.0.0
-
 ## [1.1.1] - 2022-08-26
 ### Added
 - incremental additions of properties
