@@ -26,8 +26,8 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:bamm:io.catenax.sealant.sealant_pass:1.0.0#>.
-@prefix ext-typization: <urn:bamm:io.catenax.serial_part_typization:1.1.1#>.
-@prefix ext-pcf: <urn:bamm:io.catenax.pcf:2.0.0#>.
+@prefix ext-typization: <urn:bamm:io.catenax.serial_part_typization:2.1.1#>.
+@prefix ext-pcf: <urn:bamm:io.catenax.pcf:3.0.0#>.
 
 :SealantPass a bamm:Aspect;
     bamm:properties (:documents :performanceProperties :productIdentification :application :supplier :hazardsIdentification :productComposition :safetyMeasure :productProperties :productDisposal :transportInformation :regulatoryInformation :carbonFootprint);
@@ -166,7 +166,7 @@
     bamm:preferredName "Performance Entity"@en;
     bamm:description "Entity encapsulating the measures of the performance and durability."@en.
 :ProductIdentificationEntity a bamm:Entity;
-    bamm:properties (:tradeName :productCode :reachRegistration [
+    bamm:properties (:tradeName :productCode :reachRegistration :localIdentifiers [
   bamm:property :substanceName;
   bamm:optional "true"^^xsd:boolean
 ] :casNumber [
@@ -175,13 +175,17 @@
 ] [
   bamm:property :indexNumber;
   bamm:optional "true"^^xsd:boolean
-] ext-typization:localIdentifiers);
+]);
     bamm:preferredName "Product Identification Entity "@en;
     bamm:description "Entity encapsulating the product identification."@en.
 :ApplicationEntity a bamm:Entity;
     bamm:properties (:usage :recommendedUse);
     bamm:preferredName "Application Entity"@en;
     bamm:description "Entity encapsulating the substance or mixtures application."@en.
+:localIdentifiers a bamm:Property ;
+   bamm:preferredName "Local Identifiers"@en ;
+   bamm:description "A local identifier enables identification of a part in a specific dataspace, but is not unique in Catena-X dataspace. Multiple local identifiers may exist."@en ;
+   bamm:characteristic ext-typization:LocalIdentifierCharacteristic.
 :SupplierEntity a bamm:Entity;
     bamm:properties (:emergencyNumber :supplierId);
     bamm:preferredName "Supplier Entity"@en;
@@ -221,9 +225,19 @@
     bamm:preferredName "Regulatory Information Entity"@en;
     bamm:description "Entity encapsulating the regulatory information."@en.
 :CarbonFootprintEntity a bamm:Entity;
-    bamm:properties (:co2FootprintTotal ext-pcf:crossSectoralStandard ext-pcf:productOrSectorSpecificRules);
+    bamm:properties (:co2FootprintTotal :crossSectoralStandardsUsed :productOrSectorSpecificRules);
     bamm:preferredName "Carbon Footprint Entity"@en;
     bamm:description "Entity encapsulating the carbon footrprint."@en.
+:crossSectoralStandardsUsed a bamm:Property ;
+   bamm:preferredName "Cross Sectoral Standards Used"@en ;
+   bamm:description "Discloses the cross-sectoral standards applied for calculating or allocating GHG (Greenhouse Gas) emissions as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative."@en ;
+   bamm:see <https://wbcsd.github.io/introduction/> ;
+   bamm:characteristic ext-pcf:CrossSectoralStandardsUsedListCharacteristic.
+:productOrSectorSpecificRules a bamm:Property ;
+   bamm:preferredName "Product or Sector Specific Rules"@en ;
+   bamm:description "Product or sector specific rules applied for calculating or allocating GHG (Greenhouse Gas) emissions, e.g. PCRs (Product Category Rules), including operators or pubishers and according rule names. Specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative."@en ;
+   bamm:see <https://wbcsd.github.io/introduction/> ;
+   bamm:characteristic ext-pcf:ProductOrSectorSpecificRuleSet.
 :declarationOfConformity a bamm:Property;
     bamm:preferredName "Declaration of Conformity"@en;
     bamm:description "Declaration of conformity (CE) is describing a regulatory requirement from the EU."@en;
@@ -646,4 +660,3 @@
     bamm:description "Chemical nature of the mixture or substance."@en;
     bamm:characteristic bamm-c:Text;
     bamm:exampleValue "Mono constituent".
-ext-pcf:otherOperatorName bamm:characteristic bamm-c:Text.
