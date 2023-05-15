@@ -14,6 +14,7 @@ labels: update
 - [ ] The model that should be updated exists
 - [ ] The referenced use case exists
 - [ ] The potential updates are discussed with all stakeholders
+- [ ] A decision on versioning was made in consensus with the affected parties [according to the guidelines](https://github.com/eclipse-tractusx/sldt-semantic-models/blob/main/documentation/GOVERNANCE.md#retiring-a-model).
 - [ ] The potential update will be either 
   - [ ] backward compatible or 
   - [ ] a (chain of) migration strategy(-ies) from all non-deprecated previous versions to the new model will be developed
