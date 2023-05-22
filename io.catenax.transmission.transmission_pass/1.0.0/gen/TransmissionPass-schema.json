@@ -1,0 +1,619 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The transmission passport corresponds to the digital product passport information required by the proposed Ecodesign Regulation (ESPR-2022) and describes the data that is collected and available during the lifespan of a transmission.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DocumentTitleTrait" : {
+        "type" : "string",
+        "description" : "Maximum title characters set to 60.",
+        "maxLength" : 60
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Documents" : {
+        "description" : "Entity describing a document.",
+        "type" : "object",
+        "properties" : {
+          "documentTitle" : {
+            "description" : "The header or title of the document",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DocumentTitleTrait"
+          },
+          "documentLink" : {
+            "description" : "A link referencing to the document.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "documentLink" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DocumentsCharacteristic" : {
+        "description" : "Documents Characteristic with title and link.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Documents"
+        }
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Co2Total" : {
+        "type" : "number",
+        "description" : "Characteristic for the total carbon footprint of the transmission, calculated as kg of carbon dioxide equivalent."
+      },
+      "urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRuleOperator" : {
+        "type" : "string",
+        "description" : "Enumeration of PCR (Product Category Rule) operators as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "enum" : [ "PEF", "EPD International", "Other" ]
+      },
+      "urn_bamm_io.catenax.pcf_3.0.0_RuleNamesTrait" : {
+        "description" : "Constraint for defining a non-empty set of non-empty rule names as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "array",
+        "items" : {
+          "type" : "string",
+          "description" : "String that contains at least one character."
+        },
+        "uniqueItems" : true,
+        "minItems" : 1
+      },
+      "urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRulesEntity" : {
+        "description" : "Entity for defining the set of values for the product or sector specific rules of a product carbon footprint as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "object",
+        "properties" : {
+          "operator" : {
+            "description" : "Operator of PCR (Product Category Rule)/ PSR (Product Specific Rule) as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRuleOperator"
+          },
+          "ruleNames" : {
+            "description" : "Product-specific or sector-specific set of rules used for calculating or allocating GHG (Greenhouse Gas) emissions applied from the specified operator. Property defined by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_RuleNamesTrait"
+          },
+          "otherOperatorName" : {
+            "description" : "Other operator of PCR (Product Category Rule)/ PSR (Product Specific Rule) as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "operator", "ruleNames" ]
+      },
+      "urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRuleSet" : {
+        "description" : "Characteristic for defining the set of product or sector specific rules of a product carbon footprint as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRulesEntity"
+        },
+        "uniqueItems" : true
+      },
+      "urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardsUsedEnumerationCharacteristic" : {
+        "type" : "string",
+        "description" : "Characteristic for defining the enumeration of valid accounting standards used for product carbon footprint calculation as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "enum" : [ "GHG Protocol Product standard", "ISO Standard 14067", "ISO Standard 14044" ]
+      },
+      "urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardEntity" : {
+        "description" : "Entity for defining an accounting standard used for product carbon footprint calculation as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "object",
+        "properties" : {
+          "crossSectoralStandard" : {
+            "description" : "Discloses a cross-sectoral standard applied for calculating or allocating GHG (Greenhouse Gas) emissions as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardsUsedEnumerationCharacteristic"
+          }
+        },
+        "required" : [ "crossSectoralStandard" ]
+      },
+      "urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardsUsedListCharacteristic" : {
+        "description" : "Characteristic for defining the list of valid accounting standards used for product carbon footprint calculation as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardEntity"
+        }
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_CarbonFootprint" : {
+        "description" : "Set of information needed for the carbon footprint ecodesign regulations.",
+        "type" : "object",
+        "properties" : {
+          "co2FootprintTotal" : {
+            "description" : "The total carbon footprint of the transmission, calculated as kg of carbon dioxide equivalent.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Co2Total"
+          },
+          "productOrSectorSpecificRules" : {
+            "description" : "Product or sector specific rules applied for calculating or allocating GHG (Greenhouse Gas) emissions, e.g. PCRs (Product Category Rules), including operators or publishers and according rule names. Specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRuleSet"
+          },
+          "crossSectoralStandardsUsed" : {
+            "description" : "Discloses the cross-sectoral standards applied for calculating or allocating GHG (Greenhouse Gas) emissions as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardsUsedListCharacteristic"
+          }
+        },
+        "required" : [ "co2FootprintTotal", "productOrSectorSpecificRules", "crossSectoralStandardsUsed" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SubstancePercentage" : {
+        "type" : "number",
+        "description" : "Substance percentage of the recycled content."
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_OtherSubstanceEntity" : {
+        "description" : "Percentage and substance name of the other substances.",
+        "type" : "object",
+        "properties" : {
+          "substancePercentage" : {
+            "description" : "Substance percentage of the recycled content.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SubstancePercentage"
+          },
+          "substanceName" : {
+            "description" : "The name of the substance such as lead or aluminium.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "substancePercentage", "substanceName" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_OtherSubstance" : {
+        "description" : "Characteristic for the other optional substances.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_OtherSubstanceEntity"
+        }
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_RecyclateContent" : {
+        "description" : "Recyclate content in the transmission.",
+        "type" : "object",
+        "properties" : {
+          "otherSubstance" : {
+            "description" : "Details for the other optional substances.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_OtherSubstance"
+          },
+          "cobalt" : {
+            "description" : "Percentage of the recyclate content of cobalt.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SubstancePercentage"
+          },
+          "nickel" : {
+            "description" : "Percentage of the recyclate content of nickel.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SubstancePercentage"
+          },
+          "lithium" : {
+            "description" : "Percentage of the recyclate content of lithium.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SubstancePercentage"
+          }
+        },
+        "required" : [ "cobalt", "nickel", "lithium" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_StringList" : {
+        "description" : "A list with the data types string.",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        }
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Sustainability" : {
+        "description" : "Sustainability Characteristic to describe sustainability factors.",
+        "type" : "object",
+        "properties" : {
+          "responsibleSourcingDocument" : {
+            "description" : "Document/Certificates on organizations compliance to ethical business practices.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DocumentsCharacteristic"
+          },
+          "carbonFootprint" : {
+            "description" : "Describes the carbon footprint of the substance or mixture. Based on the Ecodesign.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_CarbonFootprint"
+          },
+          "recyclateContent" : {
+            "description" : "List of recovered recyclate content. The following materials have to be reported on as a minimum: cobalt, lithium, nickel. Percentage of how much of the material was recycled. This can be an aggregation regarding the materials below. For example the amount of aluminium recovered from waste present in in each transmission model.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_RecyclateContent"
+          },
+          "criticalRawMaterials" : {
+            "description" : "List of critical raw materials (CRM) as specified by EU in a transmission. For example Magnesium; Cobalt; Palladium.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_StringList"
+          },
+          "substancesOfConcern" : {
+            "description" : "List of substances of concern. The name of the substances of concern present in the product. For example Lead; Cadmium; Dibortrioxide.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_StringList"
+          }
+        },
+        "required" : [ "carbonFootprint", "recyclateContent", "criticalRawMaterials", "substancesOfConcern" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_ProductDescription" : {
+        "type" : "string",
+        "description" : "The detailed description about the product type as enumeration.",
+        "enum" : [ "manual transmission", "automated manual transmission", "automatic transmission", "continuously variable automatic transmissions (CVT transmission)" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_WarrantyPeriod" : {
+        "type" : "number",
+        "description" : "Commercial warranty period of the transmission (coupled to the Vehicle) in months as decimal."
+      },
+      "urn_bamm_io.catenax.shared.physical_dimension_2.0.0_KilogramCharacteristic" : {
+        "type" : "number",
+        "description" : "a measurement value given in the unit kilogram"
+      },
+      "urn_bamm_io.catenax.shared.physical_dimension_2.0.0_MillimetreCharacteristic" : {
+        "type" : "number",
+        "description" : "a measurement for a lenght given in the unit millimetre"
+      },
+      "urn_bamm_io.catenax.shared.physical_dimension_2.0.0_PhysicalDimensionsCharacteristic" : {
+        "description" : "Describes the physical dimensions of then entity.",
+        "type" : "object",
+        "properties" : {
+          "weight" : {
+            "description" : "Weight of the item",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_KilogramCharacteristic"
+          },
+          "diameter" : {
+            "description" : "Diameter of the item.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_MillimetreCharacteristic"
+          },
+          "height" : {
+            "description" : "Height of the item.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_MillimetreCharacteristic"
+          },
+          "width" : {
+            "description" : "Width of the item.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_MillimetreCharacteristic"
+          },
+          "length" : {
+            "description" : "Length of the item.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_MillimetreCharacteristic"
+          }
+        }
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_GeneralInformation" : {
+        "description" : "Characteristic for general information.",
+        "type" : "object",
+        "properties" : {
+          "productDescription" : {
+            "description" : "The detailed description about the product type.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_ProductDescription"
+          },
+          "productType" : {
+            "description" : "Type of transmission for passenger cars.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "additionalInformation" : {
+            "description" : "Open field for additional information such as a link.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "warrantyPeriod" : {
+            "description" : "Commercial warranty period of the transmission (coupled to the Vehicle) in months.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_WarrantyPeriod"
+          },
+          "physicalDimensionsProperty" : {
+            "description" : "Describes the physical dimensions of the entity.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_PhysicalDimensionsCharacteristic"
+          }
+        },
+        "required" : [ "productDescription", "productType", "additionalInformation", "warrantyPeriod", "physicalDimensionsProperty" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_ProductStatusEnumeration" : {
+        "type" : "string",
+        "description" : "Enumeration to describe the status of the transmission as first life or second life.",
+        "enum" : [ "first life", "second life" ]
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Remanufacturing" : {
+        "description" : "Status of the transmission (first life or second life) and remanufacturing history.",
+        "type" : "object",
+        "properties" : {
+          "productStatusValue" : {
+            "description" : "Status of the transmission as first life or second life.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_ProductStatusEnumeration"
+          },
+          "remanufacturingDate" : {
+            "description" : "Date of the (re-)manufacturing",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+          }
+        },
+        "required" : [ "productStatusValue", "remanufacturingDate" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_ServiceHistory" : {
+        "description" : "The dates of putting the transmission into service (service history) as list.",
+        "type" : "array",
+        "items" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_ExpectedLifespan" : {
+        "type" : "number",
+        "description" : "Expected transmission lifespan in km."
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_StateOfHealth" : {
+        "description" : "State of health characteristic describing several properties.",
+        "type" : "object",
+        "properties" : {
+          "remanufacturing" : {
+            "description" : "Status of the transmission (first life or second life).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Remanufacturing"
+          },
+          "serviceHistory" : {
+            "description" : "The dates of putting the transmission into service (service history).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_ServiceHistory"
+          },
+          "expectedLifespan" : {
+            "description" : "Expected transmission lifespan.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_ExpectedLifespan"
+          }
+        },
+        "required" : [ "remanufacturing", "serviceHistory", "expectedLifespan" ]
+      },
+      "urn_bamm_io.catenax.shared.contact_information_2.0.0_WebsiteCharacteristic" : {
+        "type" : "string",
+        "format" : "uri",
+        "description" : "Address of the website"
+      },
+      "urn_bamm_io.catenax.shared.contact_information_2.0.0_PhoneNumberTrait" : {
+        "type" : "string",
+        "description" : "Constraint to allow only numbers, whitespaces and an optional leading + sign.",
+        "pattern" : "^[+]?[0-9 ]+$"
+      },
+      "urn_bamm_io.catenax.shared.contact_information_2.0.0_EMailTrait" : {
+        "type" : "string",
+        "description" : "Regular expression for mail address as defined in W3C (see https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address)",
+        "pattern" : "^[a-zA-Z0-9.!#$%&’*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+      },
+      "urn_bamm_io.catenax.shared.contact_information_2.0.0_ContactCharacteristic" : {
+        "description" : "Characteristic describing information on how to contact an organization",
+        "type" : "object",
+        "properties" : {
+          "website" : {
+            "description" : "Website of the contact.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.contact_information_2.0.0_WebsiteCharacteristic"
+          },
+          "phoneNumber" : {
+            "description" : "Phone number with country and area code",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.contact_information_2.0.0_PhoneNumberTrait"
+          },
+          "email" : {
+            "description" : "An email address",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.contact_information_2.0.0_EMailTrait"
+          },
+          "faxNumber" : {
+            "description" : "Fax number with country and area code",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.contact_information_2.0.0_PhoneNumberTrait"
+          }
+        }
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SparePartEntity" : {
+        "description" : "Entity for details of the  spare parts and suppliers of replacement parts / spare parts.",
+        "type" : "object",
+        "properties" : {
+          "supplierContact" : {
+            "description" : "Contact information of the supplier",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.shared.contact_information_2.0.0_ContactCharacteristic"
+          },
+          "supplierId" : {
+            "description" : "BPNL of the supplier.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "sparePartName" : {
+            "description" : "Name or Identification of the spare part.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "supplierContact", "supplierId", "sparePartName" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SparePartSupplier" : {
+        "description" : "Characteristic for details of the  spare parts and suppliers of replacement parts / spare parts.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SparePartEntity"
+        }
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DriveTypeEnumeration" : {
+        "type" : "string",
+        "description" : "Enumeration of the drive types with the values combustion engine, hybrid drive and electric drive.",
+        "enum" : [ "combustion engine", "hybrid drive", "electric drive" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_TorqueNewtonMetre" : {
+        "type" : "number",
+        "description" : "Characteristic to describe the maximum input torque in newton meters."
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_PerformancePower" : {
+        "type" : "number",
+        "description" : "The performance power in kilowatt as decimal."
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_GearTrait" : {
+        "type" : "string",
+        "description" : "Constraint to match a gear from 1 to 99 or R (reverse).",
+        "pattern" : "^\\d{1,2}|R$"
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_RevolutionsPerMinute" : {
+        "type" : "number",
+        "description" : "The permissible maximum input speed in revolutions per minute in the respective gear."
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SpeedResistance" : {
+        "description" : "The speed resistance characteristic.",
+        "type" : "object",
+        "properties" : {
+          "gear" : {
+            "description" : "Respective gear for the speed resistance.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_GearTrait"
+          },
+          "speed" : {
+            "description" : "The permissible maximum input speed (rpm).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_RevolutionsPerMinute"
+          }
+        },
+        "required" : [ "gear", "speed" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Ratio" : {
+        "type" : "number",
+        "description" : "The ratio in the respective gear."
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_StandardGearRatio" : {
+        "description" : "The ratio in the respective gear.",
+        "type" : "object",
+        "properties" : {
+          "gear" : {
+            "description" : "Respective gear for the speed resistance.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_GearTrait"
+          },
+          "ratio" : {
+            "description" : "The ratio in the respective gear (ratio between transmission input speed and transmission output speed).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Ratio"
+          }
+        },
+        "required" : [ "gear", "ratio" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_TransmissionSpreading" : {
+        "type" : "number",
+        "description" : "The transmission spreading coefficient. The ratio between the smallest (shortest gear) and the largest (longest gear) ratio as decimal with no unit."
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Capacity" : {
+        "type" : "number",
+        "description" : "The oil capacity in dm³."
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_ProductSpecificParameters" : {
+        "description" : "The Characteristic to describe product specific parameters of the transmission.",
+        "type" : "object",
+        "properties" : {
+          "driveType" : {
+            "description" : "The type of transmission drive (combustion engine, hybrid drive or purely electric drive).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DriveTypeEnumeration"
+          },
+          "torque" : {
+            "description" : "The maximum input torque in newton meters (the operating characteristics of the transmission).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_TorqueNewtonMetre"
+          },
+          "power" : {
+            "description" : "The maximum power in kilowatt (the operating characteristics of the transmission).",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_PerformancePower"
+          },
+          "torqueConverter" : {
+            "description" : "A list of the used transmission damper technology (depending on the transmission type). For example NW 200 TTD and NW 200 ZDW",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_StringList"
+          },
+          "speedResistance" : {
+            "description" : "The permissible maximum input speed in the respective gear (depending on the transmission type). For example 1 : max 7800min-1; 2 : max 7800min-1; 3 : max 7800min-1; 4 : max 7800min-1; 5 : max 7800min-1; 6 : max 7800min-1; 7 : max 6800min-1; 8 : max 5800min-1; R : max 2000min-1.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SpeedResistance"
+          },
+          "standardGearRatio" : {
+            "description" : "The ratio in the respective gear (ratio between transmission input speed and transmission output speed). For example 1 : 4.1567; 2 : 3.898; 3 : 2.887; 4 : 2.7783; 5 : 1.811; 6 : 1.6545; 7 : 0.4377; 8 : 0.6121; R : -2.2183.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_StandardGearRatio"
+          },
+          "spreading" : {
+            "description" : "The transmission spreading coefficient. The ratio between the smallest (shortest gear) and the largest (longest gear) ratio.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_TransmissionSpreading"
+          },
+          "oilCapacity" : {
+            "description" : "The recomended oil volume in the transmission.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Capacity"
+          },
+          "oilType" : {
+            "description" : "The suitable type of the oil for the transmission.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "electricPerformance" : {
+            "description" : "The electric machine performance (the operating characteristics of the electric motor). Values are the kilowatt, volt and newtonmetre. An example could be 22 kW; 49 V and 150 Nm.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_StringList"
+          }
+        },
+        "required" : [ "driveType", "torque", "power", "standardGearRatio", "spreading", "oilCapacity", "oilType" ]
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Instructions" : {
+        "description" : "Instructions characteristic concerning the transmission.",
+        "type" : "object",
+        "properties" : {
+          "dismantlingProcedure" : {
+            "description" : "Document containing the transmission dismantling procedure.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DocumentsCharacteristic"
+          },
+          "vehicleDismantlingProcedure" : {
+            "description" : "Document containing the dismantling procedure from the vehicle.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DocumentsCharacteristic"
+          },
+          "packagingInstructions" : {
+            "description" : "Instructions for safely packaging of the transmission.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DocumentsCharacteristic"
+          },
+          "transportationInstructions" : {
+            "description" : "Instructions for safely transporting of the transmission.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DocumentsCharacteristic"
+          },
+          "safetyMeasures" : {
+            "description" : "Includes all safety relevant documents for e.g. Dismantling.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_DocumentsCharacteristic"
+          }
+        },
+        "required" : [ "dismantlingProcedure", "vehicleDismantlingProcedure", "safetyMeasures" ]
+      },
+      "urn_bamm_io.catenax.serial_part_typization_2.0.0_KeyCharacteristic" : {
+        "type" : "string",
+        "description" : "The key characteristic of a local identifier. A specific subset of keys is predefined, but additionally any other custom key is allowed. Predefined keys (to be used when applicable):\n- \"manufacturerId\" - The Business Partner Number (BPN) of the manufacturer. Value: BPN-Nummer\n- \"partInstanceId\" - The identifier of the manufacturer for the serialized instance of the part, e.g. the serial number\n- \"batchId\" - The identifier of the batch, to which the serialzed part belongs\n- \"van\" - The anonymized vehicle identification number (VIN). Value: anonymized VIN according to OEM anonymization rules. Note: If the key \"van\" is available, \"partInstanceId\" must also be available and hold the identical value."
+      },
+      "urn_bamm_io.catenax.serial_part_typization_2.0.0_ValueCharacteristic" : {
+        "type" : "string",
+        "description" : "The value of an identifier."
+      },
+      "urn_bamm_io.catenax.serial_part_typization_2.0.0_KeyValueList" : {
+        "description" : "A list of key value pairs for local identifiers, which are composed of a key and a corresponding value.",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "description" : "The key of a local identifier. ",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_2.0.0_KeyCharacteristic"
+          },
+          "value" : {
+            "description" : "The value of an identifier.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_2.0.0_ValueCharacteristic"
+          }
+        },
+        "required" : [ "key", "value" ]
+      },
+      "urn_bamm_io.catenax.serial_part_typization_2.0.0_LocalIdentifierCharacteristic" : {
+        "description" : "A single serialized part may have multiple attributes, that uniquely identify a that part in a specific dataspace (e.g. the manufacturer`s dataspace)",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_2.0.0_KeyValueList"
+        },
+        "uniqueItems" : true
+      },
+      "urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Identification" : {
+        "description" : "Characteristic for the identification parameters of the transmission.",
+        "type" : "object",
+        "properties" : {
+          "dataMatrixCode" : {
+            "description" : "Data Matrix Code (DMC) link to the public of the transmission as specified in section 31 / page 26.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "manufacturerId" : {
+            "description" : "The ID of the transmission manufacturer in form of the unique BPN(L) number.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "localIdentifiers" : {
+            "description" : "A local identifier enables identification of a part in a specific data space, but is not unique in Catena-X data space. Multiple local identifiers may exist.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_2.0.0_LocalIdentifierCharacteristic"
+          }
+        },
+        "required" : [ "dataMatrixCode", "manufacturerId", "localIdentifiers" ]
+      }
+    }
+  },
+  "properties" : {
+    "sustainability" : {
+      "description" : "Sustainability details about the transmission.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Sustainability"
+    },
+    "generalInformation" : {
+      "description" : "Property describing general information about the transmission.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_GeneralInformation"
+    },
+    "stateOfHealth" : {
+      "description" : "State of health property describing several properties.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_StateOfHealth"
+    },
+    "sparePartSupplier" : {
+      "description" : "Details of the  spare parts and suppliers of replacement parts / spare parts.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_SparePartSupplier"
+    },
+    "productSpecificParameters" : {
+      "description" : "Product specific parameters of the transmission.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_ProductSpecificParameters"
+    },
+    "instructions" : {
+      "description" : "Instructions concerning the transmission.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Instructions"
+    },
+    "identification" : {
+      "description" : "Identification parameters of the transmission.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.transmission.transmission_pass_1.0.0_Identification"
+    }
+  },
+  "required" : [ "sustainability", "generalInformation", "stateOfHealth", "sparePartSupplier", "productSpecificParameters", "instructions", "identification" ]
+}

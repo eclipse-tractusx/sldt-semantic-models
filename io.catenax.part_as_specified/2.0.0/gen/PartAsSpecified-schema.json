@@ -1,0 +1,111 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The aspect model PartAsSpecified belongs to the Part Catalogue. A PartAsSpecified represents a certain OEM catalog part on part number level. Providing a digital representation of the part as specified by the OEM. The link to the serialized part is done via the partId, this can only be done if the respective DT was provided by the supplier within the value chain.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_bamm_io.catenax.part_as_specified_2.0.0_PartClassificationEntity" : {
+        "description" : "The entity encapsulating the properties of the part classification",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "description" : "Key within the classification",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "value" : {
+            "description" : "Value within the classification",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "key", "value" ]
+      },
+      "urn_bamm_io.catenax.part_as_specified_2.0.0_PartClassificationCharacteristic" : {
+        "description" : "The characteristic of the part classification",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_bamm_io.catenax.part_as_specified_2.0.0_PartClassificationEntity"
+        },
+        "uniqueItems" : true
+      },
+      "urn_bamm_io.catenax.part_as_specified_2.0.0_ItemCategoryCharacteristic" : {
+        "type" : "string",
+        "description" : "A part type must be placed into one of the following classes: 'component', 'product', 'software', ‘assembly’, 'tool', or 'raw material'.",
+        "enum" : [ "component", "product", "software", "assembly", "tool", "raw material" ]
+      },
+      "urn_bamm_io.catenax.part_as_specified_2.0.0_PartTypeInformationCharacteristic" : {
+        "description" : "The characteristic of the part type.",
+        "type" : "object",
+        "properties" : {
+          "partClassification" : {
+            "description" : "The classification of the part type.",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.part_as_specified_2.0.0_PartClassificationCharacteristic"
+          },
+          "nameAtOwner" : {
+            "description" : "Name of the part as assigned by the part owner.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "ownerPartId" : {
+            "description" : "PartID as assigned by the part owner. The PartID identifies the part in the part owner's data space. The PartId does not reference a specific instance of a part and thus should not be confused with the serial number.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "partVersion" : {
+            "description" : "This is the version of the part. The engineering will at times supercede an older part version by a newer one, which might have different material aspects, physical dimensions etc., still maintaining compatibility.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          },
+          "itemCategory" : {
+            "description" : "The item category (component, product, software, assembly, tool, raw material) the part belongs to",
+            "$ref" : "#/components/schemas/urn_bamm_io.catenax.part_as_specified_2.0.0_ItemCategoryCharacteristic"
+          },
+          "partDescription" : {
+            "description" : "Description of the part of interest",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text"
+          }
+        },
+        "required" : [ "partClassification", "nameAtOwner", "ownerPartId", "partVersion", "itemCategory", "partDescription" ]
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_bamm_io.catenax.part_as_specified_2.0.0_ValidityPeriodCharacteristic" : {
+        "description" : "The characteristic of the validity period.",
+        "type" : "object",
+        "properties" : {
+          "validFrom" : {
+            "description" : "Start date of the validity period.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+          },
+          "validTo" : {
+            "description" : "End date of the validity period.",
+            "$ref" : "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp"
+          }
+        }
+      },
+      "urn_bamm_io.catenax.part_as_specified_2.0.0_CatenaXIdTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens).",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      }
+    }
+  },
+  "properties" : {
+    "partTypeInformation" : {
+      "description" : "Encapsulation for data related to the part type.",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.part_as_specified_2.0.0_PartTypeInformationCharacteristic"
+    },
+    "validityPeriod" : {
+      "description" : "Describes the validity period of a part, as some parts are just valid for a given period of time until newer versions of these parts are available",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.part_as_specified_2.0.0_ValidityPeriodCharacteristic"
+    },
+    "catenaXId" : {
+      "description" : "The unique ID within Catena-X",
+      "$ref" : "#/components/schemas/urn_bamm_io.catenax.part_as_specified_2.0.0_CatenaXIdTrait"
+    }
+  },
+  "required" : [ "partTypeInformation", "catenaXId" ]
+}
