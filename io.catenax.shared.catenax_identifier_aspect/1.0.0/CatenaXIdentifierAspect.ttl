@@ -1,0 +1,44 @@
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.shared.catenax_identifier_aspect:1.0.0#> .
+@prefix ext-identifier: <urn:samm:io.catenax.shared.abstract_identifier:1.0.0#> .
+
+
+:CatenaXIdentifierAspect a samm:Aspect ;
+   samm:properties ( :identifier ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:identifier a samm:Property ;
+   samm:characteristic :CatenaXIdentifierCharacteristic .
+
+:CatenaXIdentifierCharacteristic a samm-c:SingleEntity ;
+   samm:dataType :CatenaXIdentifier .
+
+:CatenaXIdentifier a samm:Entity ;
+   samm:extends ext-identifier:AbstractIdentifier ;
+   samm:description "The fully anonymous Catena-X ID of the just-in-sequence part, valid for the Catena-X dataspace."@en ;
+   samm:properties ( 
+      [ samm:extends ext-identifier:value ; samm:characteristic :CatenaXIdentifierTrait ]
+    ) .
+
+:CatenaXIdentifierTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :Uuidv4 ;
+   samm-c:constraint :Uuidv4RegularExpression .
+
+:Uuidv4 a samm:Characteristic ;
+   samm:preferredName "UUIDv4"@en ;
+   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   samm:dataType xsd:string .
+
+:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Catena-X ID Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), prefixed by \"urn:uuid:\" to make it an IRI."@en ;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   samm:value "(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
