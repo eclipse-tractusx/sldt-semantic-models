@@ -32,6 +32,15 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.single_level_bom_as_built:1.0.0#> .
 
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.single_level_bom_as_built:1.0.0#> .
+
 :SingleLevelBomAsBuilt a samm:Aspect ;
    samm:preferredName "Single Level Bill of Material as Built"@en ;
    samm:description "The single-level bill of material represents one sub-level of an assembly and does not include any lower-level subassemblies. The as-built lifecycle references all child parts as manufactured by the manufacturer referencing only child parts in an as built lifecycle themselves, e.g. serial parts or batches."@en ;
@@ -75,7 +84,7 @@
 :ChildData a samm:Entity ;
    samm:preferredName "Child Data"@en ;
    samm:description "Catena-X ID and meta data of the assembled child part."@en ;
-   samm:properties ( :createdOn :quantity [ samm:property :lastModifiedOn; samm:optional true ] :lifecycleContext :catenaXId :supplier ) .
+   samm:properties ( :createdOn :quantity [ samm:property :lastModifiedOn; samm:optional true ] :lifecycleContext :catenaXId [ samm:property :businessPartner; samm:optional true ] ) .
 
 :createdOn a samm:Property ;
    samm:preferredName "Created On"@en ;
@@ -100,8 +109,8 @@
    samm:characteristic :LifecycleContextCharacteristic ;
    samm:exampleValue "AsBuilt" .
 
-:supplier a samm:Property ;
-   samm:preferredName "Supplier"@en ;
+:businessPartner a samm:Property ;
+   samm:preferredName "Business Partner"@en ;
    samm:description "The supplier of the given child item."@en ;
    samm:characteristic :BpnTrait ;
    samm:exampleValue "BPNL50096894aNXY" .
@@ -134,8 +143,8 @@
 
 :BpnConstraint a samm-c:RegularExpressionConstraint ;
    samm:preferredName "BPN Constraint"@en ;
-   samm:description "Business Partner Number Contraint"@en ;
-   samm:value "^(BPN)(L|S|A)(\\d{8})([a-zA-Z0-9]{4})$" .
+   samm:description "Business Partner Number Contraint only BPNL wich stands for a legal entity is allowed."@en ;
+   samm:value "^(BPNL)(\\d{8})([a-zA-Z0-9]{4})$" .
 
 :quantityNumber a samm:Property ;
    samm:preferredName "Quantity Number"@en ;
@@ -152,3 +161,4 @@
 :NumberofObjects a samm:Characteristic ;
    samm:description "Quantifiable number of objects in reference to the measurementUnit"@en ;
    samm:dataType xsd:double .
+
