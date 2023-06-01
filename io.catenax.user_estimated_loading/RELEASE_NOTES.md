@@ -1,2 +1,14 @@
+# Changelog
+All notable changes to this model will be documented in this file.
 
-## Test
+## [Unreleased]
+
+## [1.0.0] - 2023-06-01
+### Added
+model created
+
+### Changed
+n/a
+
+### Removed
+n/a
