@@ -74,8 +74,7 @@ as long as the descriptions do not change the inherent meaning of a Property/Tra
 - Patch: A patch is a change in the model that does not add or remove functionality. This could for example be
 updating a model with an additional `bamm:see` attribute that has equivalent semantics to the aspect. 
 Standard documents must be adjusted to reflect the patched versions.
-- Minor: A minor increment is widening the scope of a model by adding or removing optional elements of a semantic model or
-changing the allowed value range.
+- Minor: There are no minor increments of aspect models.
 - Major: Major increments are constituted by breaking API changes such as adding, removing or (in cumolo) renaming 
 elements (optional or non-optional) of a semantic model. Changing the meaning/semantics or the data type of an element
 is a major change too.
