@@ -1,7 +1,7 @@
 #######################################################################
 # Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
 # Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
-# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG 
+# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
 # Copyright (c) 2023 Volkswagen AG
 # Copyright (c) 2023 Contributors to the Eclipse Foundation
 #
@@ -23,15 +23,13 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:bamm:io.catenax.product_stock:1.0.0#>.
-@prefix ext-planned: <urn:bamm:io.catenax.single_level_bom_as_planned:1.1.0#>.
-@prefix ext-demand: <urn:bamm:io.catenax.week_based_material_demand:1.0.0#>.
 
 :ProductStock a bamm:Aspect;
     bamm:properties (:positions :materialNumberCustomer [
   bamm:property :materialNumberCatenaX;
   bamm:optional "true"^^xsd:boolean
 ] [
-  bamm:property ext-demand:materialNumberSupplier;
+  bamm:property :materialNumberSupplier;
   bamm:optional "true"^^xsd:boolean
 ]);
     bamm:operations ();
@@ -45,12 +43,12 @@
 :materialNumberCustomer a bamm:Property;
     bamm:preferredName "Customer Material Number"@en;
     bamm:description "Material identifier as assigned by customer. This material number identifies the material (as planned) in customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the materialNumberSupplier should be set in this field, too."@en;
-    bamm:characteristic ext-demand:MaterialNumber;
+    bamm:characteristic :MaterialNumber;
     bamm:exampleValue "MNR-7307-AU340474.002".
 :materialNumberCatenaX a bamm:Property;
     bamm:preferredName "Material UUID Used in Catena-X"@en;
     bamm:description "Material identifier used uniquely within Catena-X to identify the Material (e.g. PartAsPlanned)."@en;
-    bamm:characteristic ext-planned:CatenaXIdTraitCharacteristic;
+    bamm:characteristic :CatenaXIdTraitCharacteristic;
     bamm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
 :PositionsCollection a bamm-c:Collection;
     bamm:preferredName "Positions Collection"@en;
@@ -118,7 +116,7 @@
 :quantityOnAllocatedStock a bamm:Property;
     bamm:preferredName "Quantity on Allocated Stock"@en;
     bamm:description "This is the quantity of the material within the position that is already ready to be delivered."@en;
-    bamm:characteristic ext-planned:QuantityCharacteristic.
+    bamm:characteristic :QuantityCharacteristic.
 :supplierStockLocationId a bamm:Property;
     bamm:preferredName "Location ID of Supplier's Stock"@en;
     bamm:description "One stock has always one location. The location is identified using BPNs. The location can be identified differently depending on the partner."@en;
@@ -161,3 +159,60 @@
     bamm:description "The actual key based on the type."@en;
     bamm:dataType xsd:string;
     bamm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
+
+:QuantityCharacteristic a bamm-c:Quantifiable;
+    bamm:preferredName "Quantity Characteristic"@en;
+    bamm:description "Describes the quantity in which the child part is assembled in the given parent object by providing a quantity value and the measurement unit in which the quantity is measured."@en;
+    bamm:dataType :Quantity.
+
+:Quantity a bamm:Entity;
+    bamm:preferredName "Quantity"@en;
+    bamm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en;
+    bamm:properties (:quantityNumber :measurementUnit).
+
+:quantityNumber a bamm:Property;
+    bamm:preferredName "Quantity Number"@en;
+    bamm:description "The number of objects related to the measurement unit"@en;
+    bamm:characteristic :NumberofObjects;
+    bamm:exampleValue "2.5"^^xsd:double.
+
+:measurementUnit a bamm:Property;
+    bamm:preferredName "Measurement Unit"@en;
+    bamm:description "Unit of measurement for the quantity of objects.\nIf possible, use units from the aspect meta model unit catalog, which is based on the UNECE Recommendation No. 20 \"Codes for Units of Measure used in International Trade\"."@en;
+    bamm:characteristic bamm-c:UnitReference;
+    bamm:exampleValue "unit:litre"^^bamm:curie;
+    bamm:see <https://github.com/eclipse-esmf/esmf-semantic-aspect-meta-model/blob/main/esmf-semantic-aspect-meta-model/src/main/resources/samm/unit/2.0.0/units.ttl>.
+
+:NumberofObjects a bamm:Characteristic;
+    bamm:preferredName "Number of Objects"@en;
+    bamm:description "Quantifiable number of objects in reference to the measurementUnit"@en;
+    bamm:dataType xsd:double.
+
+:materialNumberSupplier a bamm:Property;
+    bamm:preferredName "Supplier Material Number"@en;
+    bamm:description "Material identifier as assigned by supplier. This material number identifies the material (as planned) in supplier's database."@en;
+    bamm:characteristic :MaterialNumber;
+    bamm:exampleValue "MNR-8101-ID146955.001".
+
+:MaterialNumber a bamm:Characteristic;
+    bamm:preferredName "Material Number"@en;
+    bamm:description "The material number is a multi-character string, usually assigned by an ERP system."@en;
+    bamm:dataType xsd:string.
+
+:CatenaXIdTraitCharacteristic a bamm-c:Trait;
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm:description "Trait to ensure UUID v4 data format"@en;
+    bamm-c:baseCharacteristic :Uuidv4Characteristic;
+    bamm-c:constraint :Uuidv4RegularExpression.
+
+:Uuidv4Characteristic a bamm:Characteristic;
+    bamm:preferredName "UUID v4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://tools.ietf.org/html/rfc4122>.
+
+:Uuidv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X ID Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
