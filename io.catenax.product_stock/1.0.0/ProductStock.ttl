@@ -1,0 +1,218 @@
+#######################################################################
+# Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
+# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.product_stock:1.0.0#>.
+
+:ProductStock a bamm:Aspect;
+    bamm:properties (:positions :materialNumberCustomer [
+  bamm:property :materialNumberCatenaX;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :materialNumberSupplier;
+  bamm:optional "true"^^xsd:boolean
+]);
+    bamm:operations ();
+    bamm:events ();
+    bamm:preferredName "Stock of Products of a Supplier"@en;
+    bamm:description "This aspect represents the latest quantities of a supplier's products that are on stock. The stock represent the build-to-order (BTO) stocks already available for the customer.\n"@en.
+:positions a bamm:Property;
+    bamm:preferredName "Positions"@en;
+    bamm:description "The positions refer to positions within an order that refer to the given product (see materialNumberSupplier, materialNumberCustomer and materialNumberDataSpace) for which the stocks are transferred. The positions are differentiated by the orderPositionReference."@en;
+    bamm:characteristic :PositionsCollection.
+:materialNumberCustomer a bamm:Property;
+    bamm:preferredName "Customer Material Number"@en;
+    bamm:description "Material identifier as assigned by customer. This material number identifies the material (as planned) in customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the materialNumberSupplier should be set in this field, too."@en;
+    bamm:characteristic :MaterialNumber;
+    bamm:exampleValue "MNR-7307-AU340474.002".
+:materialNumberCatenaX a bamm:Property;
+    bamm:preferredName "Material UUID Used in Catena-X"@en;
+    bamm:description "Material identifier used uniquely within Catena-X to identify the Material (e.g. PartAsPlanned)."@en;
+    bamm:characteristic :CatenaXIdTraitCharacteristic;
+    bamm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
+:PositionsCollection a bamm-c:Collection;
+    bamm:preferredName "Positions Collection"@en;
+    bamm:description "If any stock is available, then there is at least one position. If the supplier does differentiate the stock according to the order positions (an OrderPositionReference is set), then multiple positions can be given. There could also be only one position without an OrderPositionReference indicating an anonymous stock which is allocated to the customer."@en;
+    bamm:dataType :Position.
+:Position a bamm:Entity;
+    bamm:properties ([
+  bamm:property :orderPositionReference;
+  bamm:optional "true"^^xsd:boolean
+] :lastUpdatedOnDateTime :allocatedStocks);
+    bamm:preferredName "Position"@en;
+    bamm:description "The Position can be located at several stocks. A position may be anonymous or may reference an position within an order."@en.
+:orderPositionReference a bamm:Property;
+    bamm:preferredName "Order Position Reference"@en;
+    bamm:description "The order position reference contains information to identify a position within an order."@en;
+    bamm:characteristic :OrderPositionReferenceCharacteristic.
+:lastUpdatedOnDateTime a bamm:Property;
+    bamm:preferredName "Lasted Updated on Date"@en;
+    bamm:description "Date and time at which the position has been updated by the supplier's systems. Date and time are set according to a timezone."@en;
+    bamm:characteristic :DateTimeStamp;
+    bamm:exampleValue "2023-04-01T14:23:00"^^xsd:date.
+:allocatedStocks a bamm:Property;
+    bamm:preferredName "Allocated Stocks"@en;
+    bamm:description "Stocks already allocated to the customer. There is one AllocatedStock per supplierStockLocation."@en;
+    bamm:characteristic :AllocatedStockCollection.
+:OrderPositionReferenceCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Order Position Reference Characteristic"@en;
+    bamm:description "The order position reference includes reference numbers for the order and the ID. As these information are meant for the customer, the customer reference numbers are mandatory."@en;
+    bamm:dataType :OrderPositionReference.
+:DateTimeStamp a bamm:Characteristic;
+    bamm:preferredName "Date Time Stamp Characteristic"@en;
+    bamm:description "The Date with the the timezone of the involved site."@en;
+    bamm:dataType xsd:date;
+    bamm:see <https://www.iso.org/iso-8601-date-and-time-format.html>.
+:AllocatedStockCollection a bamm-c:Collection;
+    bamm:preferredName "Allocated Stock Collection"@en;
+    bamm:description "Collection of AllocatedStocks that may relate to different supplierStockLocations."@en;
+    bamm:dataType :AllocatedStock.
+:OrderPositionReference a bamm:Entity;
+    bamm:properties ([
+  bamm:property :supplierOrderId;
+  bamm:optional "true"^^xsd:boolean
+] :customerOrderId :customerOrderPositionId);
+    bamm:preferredName "Reference to Order Position"@en;
+    bamm:description "Encapsulates the references to identify a position within an order."@en.
+:AllocatedStock a bamm:Entity;
+    bamm:properties (:quantityOnAllocatedStock :supplierStockLocationId);
+    bamm:preferredName "Stock Allocated to Customer"@en;
+    bamm:description "This is the quantity of already produced goods at a given location that has not yet been shipped. The allocated stock is the stock available for the customer and may refer to a given position (see OrderPositionReference). Quantities of Materials belonging to this stock are not available for other positions or customers. This stock consists only of the good parts."@en.
+:supplierOrderId a bamm:Property;
+    bamm:preferredName "Supplier Order ID"@en;
+    bamm:description "This is the order number on the supplier side that is given by e.g., the supplier's enterprise resource planning system."@en;
+    bamm:characteristic :OrderIdCharacteristic;
+    bamm:exampleValue "M-Nbr-4711".
+:customerOrderId a bamm:Property;
+    bamm:preferredName "Customer Order ID"@en;
+    bamm:description "This is the order number on the customer side that can be given by e.g., the customer's enterprise resource planning system."@en;
+    bamm:characteristic :OrderIdCharacteristic;
+    bamm:exampleValue "C-Nbr-4711".
+:customerOrderPositionId a bamm:Property;
+    bamm:preferredName "Customer Order Position ID"@en;
+    bamm:description "This is an identifier for the position of an order defined by the customer. It's not a technical identifier, such as an UUID. This identifier is used within the business context when talking about the position."@en;
+    bamm:characteristic :OrderPositionIdCharacteristic;
+    bamm:exampleValue "PositionId-01".
+:quantityOnAllocatedStock a bamm:Property;
+    bamm:preferredName "Quantity on Allocated Stock"@en;
+    bamm:description "This is the quantity of the material within the position that is already ready to be delivered."@en;
+    bamm:characteristic :QuantityCharacteristic.
+:supplierStockLocationId a bamm:Property;
+    bamm:preferredName "Location ID of Supplier's Stock"@en;
+    bamm:description "One stock has always one location. The location is identified using BPNs. The location can be identified differently depending on the partner."@en;
+    bamm:characteristic :SupplierStockLocationIDCharacteristic;
+    bamm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
+:OrderIdCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Order ID Characteristic"@en;
+    bamm:description "This is a proprietary order ID, generated by either the supplier side or customer side."@en;
+    bamm:dataType xsd:string.
+:OrderPositionIdCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Position ID within Order"@en;
+    bamm:description "The position ID is unique for an order and used within business context to refer to a position."@en;
+    bamm:dataType xsd:string.
+:SupplierStockLocationIDCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Location ID Characteristic of Supplier's Stock"@en;
+    bamm:description "This is the location where the stock is located."@en;
+    bamm:dataType :LocationId.
+:LocationId a bamm:Entity;
+    bamm:properties (:locationIdType :locationId);
+    bamm:preferredName "Location ID"@en;
+    bamm:description "A location can be described by different kinds of identifiers. Within Catena-X, a location can either be described by a BPNS or BPNA."@en.
+:locationIdType a bamm:Property;
+    bamm:preferredName "Type of Location ID"@en;
+    bamm:description "Type of the location's ID."@en;
+    bamm:characteristic :LocationIdTypeEnum;
+    bamm:exampleValue "BPNS".
+:locationId a bamm:Property;
+    bamm:preferredName "Location ID"@en;
+    bamm:description "The actual ID reflecting the type (locationIdType) of the location."@en;
+    bamm:characteristic :LocationIdCharacteristic;
+    bamm:exampleValue "BPNS0123456789ZZ".
+:LocationIdTypeEnum a bamm-c:Enumeration;
+    bamm:preferredName "Location ID Type Enum"@en;
+    bamm:description "Enumeration specifying types of keys for locations within Catena-X."@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>;
+    bamm-c:values ("BPNS" "BPNA").
+:LocationIdCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Location ID Characteristic"@en;
+    bamm:description "The actual key based on the type."@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
+
+:QuantityCharacteristic a bamm-c:Quantifiable;
+    bamm:preferredName "Quantity Characteristic"@en;
+    bamm:description "Describes the quantity in which the child part is assembled in the given parent object by providing a quantity value and the measurement unit in which the quantity is measured."@en;
+    bamm:dataType :Quantity.
+
+:Quantity a bamm:Entity;
+    bamm:preferredName "Quantity"@en;
+    bamm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en;
+    bamm:properties (:quantityNumber :measurementUnit).
+
+:quantityNumber a bamm:Property;
+    bamm:preferredName "Quantity Number"@en;
+    bamm:description "The number of objects related to the measurement unit"@en;
+    bamm:characteristic :NumberofObjects;
+    bamm:exampleValue "2.5"^^xsd:double.
+
+:measurementUnit a bamm:Property;
+    bamm:preferredName "Measurement Unit"@en;
+    bamm:description "Unit of measurement for the quantity of objects.\nIf possible, use units from the aspect meta model unit catalog, which is based on the UNECE Recommendation No. 20 \"Codes for Units of Measure used in International Trade\"."@en;
+    bamm:characteristic bamm-c:UnitReference;
+    bamm:exampleValue "unit:litre"^^bamm:curie;
+    bamm:see <https://github.com/eclipse-esmf/esmf-semantic-aspect-meta-model/blob/main/esmf-semantic-aspect-meta-model/src/main/resources/samm/unit/2.0.0/units.ttl>.
+
+:NumberofObjects a bamm:Characteristic;
+    bamm:preferredName "Number of Objects"@en;
+    bamm:description "Quantifiable number of objects in reference to the measurementUnit"@en;
+    bamm:dataType xsd:double.
+
+:materialNumberSupplier a bamm:Property;
+    bamm:preferredName "Supplier Material Number"@en;
+    bamm:description "Material identifier as assigned by supplier. This material number identifies the material (as planned) in supplier's database."@en;
+    bamm:characteristic :MaterialNumber;
+    bamm:exampleValue "MNR-8101-ID146955.001".
+
+:MaterialNumber a bamm:Characteristic;
+    bamm:preferredName "Material Number"@en;
+    bamm:description "The material number is a multi-character string, usually assigned by an ERP system."@en;
+    bamm:dataType xsd:string.
+
+:CatenaXIdTraitCharacteristic a bamm-c:Trait;
+    bamm:preferredName "Catena-X ID Trait"@en;
+    bamm:description "Trait to ensure UUID v4 data format"@en;
+    bamm-c:baseCharacteristic :Uuidv4Characteristic;
+    bamm-c:constraint :Uuidv4RegularExpression.
+
+:Uuidv4Characteristic a bamm:Characteristic;
+    bamm:preferredName "UUID v4"@en;
+    bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://tools.ietf.org/html/rfc4122>.
+
+:Uuidv4RegularExpression a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Catena-X ID Regular Expression"@en;
+    bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    bamm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".

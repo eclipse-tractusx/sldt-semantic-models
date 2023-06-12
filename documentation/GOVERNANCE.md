@@ -61,3 +61,20 @@ Modeling_Team
 to the PR. We have filters, which check for such comments. 
 ## Retiring a model
 Once a model gets the status "DEPRECATED" it should not be used anymore by new use cases. Existing applications should look for a way to migrate to an alternative version or model. In alignment with the overall release cycles of Tractus-X, the modeling team tags the current main branch with the corresponding Tractus-X release and publishes modeling release notes. These release notes contain a hint about all model versions that changed the status to "DEPRECATED" since the previous Tractus-X release. The modeling team will delete these models two Tractus-X releases cycles later. So use cases are advised to react to the deprecation of models within the next release cycle.
+
+## Versioning
+The semantic modeling in Tractus-X follows [Semantic Versioning](https://semver.org/). Since the version is included in the Aspect Model's URI
+(i.e. `urn:bamm:io.catenax.batch:1.0.2#Batch`), applications that work on the model may have incompatible API-changes even when the changes in the model
+are marginal. The same phenomenon may occur with the [CX-standard-documents](https://catena-x.net/de/standard-library) that reference
+a semantic model. Inspired by the definitions of SemVer, the following best practices shall be followed here:
+
+- No increment: Trivial changes that do not affect the functional parts of the model may be changed via PR without an incremented version number. 
+Changes must not affect the functional generated json-schema. This particularly applies to copyright-headers and descriptions,
+as long as the descriptions do not change the inherent meaning of a Property/Trait etc.
+- Patch: A patch is a change in the model that does not add or remove functionality. This could for example be
+updating a model with an additional `bamm:see` attribute that has equivalent semantics to the aspect. 
+Standard documents must be adjusted to reflect the patched versions.
+- Minor: There are no minor increments of aspect models.
+- Major: Major increments are constituted by breaking API changes such as adding, removing or (in cumolo) renaming 
+elements (optional or non-optional) of a semantic model. Changing the meaning/semantics or the data type of an element
+is a major change too.
