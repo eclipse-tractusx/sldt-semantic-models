@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 #######################################################################
 # Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
 # Copyright (c) 2023 Contributors to the Eclipse Foundation
