@@ -69,6 +69,9 @@ async function gatherValidationResults(startPath, fileEnding, returnValue) {
 async function validateChanges(added, modified, prNumber) {
     var validationOutput = []
 
+    added = added.filter(fileName => fileName.endsWith('.ttl'))
+    modified = modified.filter(fileName => fileName.endsWith('.ttl'))
+
     await validateAllInputs(added, modified, validationOutput)
 
     console.log(validationOutput)
@@ -126,20 +129,18 @@ async function validateAllInputs(added, modified, validationOutput) {
 
 async function validateModel(file) {
     return new Promise((resolve, reject) => {
-        if (path.extname(file) === ".ttl") {
-            console.log(`Validating TTL file ${file}`)
+        console.log(`Validating TTL file ${file}`)
 
-            exec(`java -jar ${bammSdkPath} aspect ${file} validate`, (error, stdout, stderr) => {
-                if (stderr) {
-                    reject(stderr)
-                }
+        exec(`java -jar ${bammSdkPath} aspect ${file} validate`, (error, stdout, stderr) => {
+            if (stderr) {
+                reject(stderr)
+            }
 
-                resolve({
-                    file: file,
-                    response: stdout
-                })
+            resolve({
+                file: file,
+                response: stdout
             })
-        }
+        })
     })
 
 }
