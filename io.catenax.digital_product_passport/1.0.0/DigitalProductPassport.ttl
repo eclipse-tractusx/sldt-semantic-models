@@ -7,7 +7,6 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:bamm:io.catenax.digital_product_passport:1.0.0#>.
 @prefix ext-dimension: <urn:bamm:io.catenax.shared.physical_dimension:2.0.0#>.
-@prefix ext-typization: <urn:bamm:io.catenax.serial_part_typization:2.0.0#>.
 @prefix ext-part: <urn:bamm:io.catenax.serial_part:1.0.0#>.
 @prefix ext-pcf: <urn:bamm:io.catenax.pcf:4.0.0#>.
 
@@ -62,6 +61,14 @@
     bamm:preferredName "Passport Characterisitc"@en;
     bamm:description "Characteristic for the passport metadata of the digital product passport."@en;
     bamm:dataType :PassportEntity.
+:TypologyCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Typology Characteristic"@en;
+    bamm:description "Characteristic to further describe product."@en;
+    bamm:dataType :TypologyEntity.
+:HandlingCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Handling Characteristic"@en;
+    bamm:description "Characteristic to describe aspects which are connected with the handling of the product."@en;
+    bamm:dataType :HandlingEntity.
 :Characteristic7 a bamm:Characteristic;
     bamm:dataType :Entity9.
 :Characteristic6 a bamm:Characteristic;
@@ -80,6 +87,10 @@
 :ListCh a bamm:Characteristic;
     bamm:preferredName "ListCh"@en;
     bamm:dataType :Entity22.
+:PassportEntity a bamm:Entity;
+    bamm:preferredName "Passport Entity"@en;
+    bamm:description "Passport Entity to descibe version, status, validity and issue date. "@en;
+    bamm:properties (:version :status :validityDate :issueDate).
 :Entity9 a bamm:Entity;
     bamm:properties (:state :material :critical :carbonFootprint).
 :Entity4 a bamm:Entity;
@@ -102,37 +113,6 @@
 ]).
 :Entity22 a bamm:Entity;
     bamm:properties (:resourceName :content :category :contentType :header).
-:productDescription a bamm:Property;
-    bamm:preferredName "Product Description"@en;
-    bamm:description "A general short product description. "@en;
-    bamm:characteristic bamm-c:Text.
-:class a bamm:Property;
-    bamm:preferredName "Class"@en;
-    bamm:description "The associated product category according to ECLASS. The ECLASS is the worldwide reference data standard for classifying and clearly describing products and services."@en;
-    bamm:see <https://eclass.eu/en/eclass-standard/search-content/show?tx_eclasssearch_ecsearch%5Bdischarge%5D=0&tx_eclasssearch_ecsearch%5Bid%5D=44000000&tx_eclasssearch_ecsearch%5Blanguage%5D=1&tx_eclasssearch_ecsearch%5Bversion%5D=13.0&cHash=10abd2696c4c5c526da4e3367e78c592>;
-    bamm:characteristic :ClassCharacteristic.
-:name a bamm:Property;
-    bamm:preferredName "name"@en;
-    bamm:description "The name of the product type."@en;
-    bamm:characteristic bamm-c:Text;
-    bamm:exampleValue "Transmission Type 8HP60".
-:maintenanceHistory a bamm:Property;
-    bamm:preferredName "Maintenance History"@en;
-    bamm:description "The maintenance history of the product with dates, titles and descriptions."@en;
-    bamm:characteristic :MaintenanceHistoryList.
-:spareParts a bamm:Property;
-    bamm:preferredName "Spare Parts"@en;
-    bamm:description "The list of spare parts available for the product from a supplier."@en;
-    bamm:characteristic :PartList.
-:substanceOfConcern a bamm:Property;
-    bamm:preferredName "Concerning Substance"@en;
-    bamm:description "Details to the substance of concern."@en;
-    bamm:characteristic :SubstanceList.
-:reuseablePackaging a bamm:Property;
-    bamm:preferredName "Reuseable Packaging"@en;
-    bamm:description "Definition of whether the product uses a reuse system. The values true or false are allowed."@en;
-    bamm:characteristic bamm-c:Boolean;
-    bamm:exampleValue "true"^^xsd:boolean.
 :state a bamm:Property;
     bamm:preferredName "State"@en;
     bamm:description "Status of the product (first life or second life)."@en;
@@ -218,6 +198,91 @@
 :header a bamm:Property;
     bamm:preferredName "Header"@en;
     bamm:characteristic bamm-c:Text.
+:productDescription a bamm:Property;
+    bamm:preferredName "Product Description"@en;
+    bamm:description "A general short product description. "@en;
+    bamm:characteristic bamm-c:Text.
+:class a bamm:Property;
+    bamm:preferredName "Class"@en;
+    bamm:description "The associated product category according to ECLASS. The ECLASS is the worldwide reference data standard for classifying and clearly describing products and services."@en;
+    bamm:see <https://eclass.eu/en/eclass-standard/search-content/show?tx_eclasssearch_ecsearch%5Bdischarge%5D=0&tx_eclasssearch_ecsearch%5Bid%5D=44000000&tx_eclasssearch_ecsearch%5Blanguage%5D=1&tx_eclasssearch_ecsearch%5Bversion%5D=13.0&cHash=10abd2696c4c5c526da4e3367e78c592>;
+    bamm:characteristic :ClassCharacteristic.
+:ClassCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Class Characteristic"@en;
+    bamm:description "Characteristic to describe the eclass typology of a product."@en;
+    bamm:dataType :ClassEntity.
+:name a bamm:Property;
+    bamm:preferredName "name"@en;
+    bamm:description "The name of the product type."@en;
+    bamm:characteristic bamm-c:Text;
+    bamm:exampleValue "Transmission Type 8HP60".
+:maintenanceHistory a bamm:Property;
+    bamm:preferredName "Maintenance History"@en;
+    bamm:description "The maintenance history of the product with dates, titles and descriptions."@en;
+    bamm:characteristic :MaintenanceHistoryList.
+:MaintenanceHistoryList a bamm-c:List;
+    bamm:preferredName "Maintenance History List"@en;
+    bamm:description "A list of entries of the service history."@en;
+    bamm:dataType :MaintenanceHistoryEntity.
+:spareParts a bamm:Property;
+    bamm:preferredName "Spare Parts"@en;
+    bamm:description "The list of spare parts available for the product from a supplier."@en;
+    bamm:characteristic :PartList.
+:PartList a bamm-c:List;
+    bamm:preferredName "Part List"@en;
+    bamm:description "The list of spare parts with different identifiers."@en;
+    bamm:dataType :PartEntity.
+:substanceOfConcern a bamm:Property;
+    bamm:preferredName "Concerning Substance"@en;
+    bamm:description "Details to the substance of concern."@en;
+    bamm:characteristic :SubstanceList.
+:SubstanceList a bamm-c:List;
+    bamm:preferredName "Substance List"@en;
+    bamm:description "Characteristic for a list of substances of concern."@en;
+    bamm:dataType :SubstanceEntity.
+:reuseablePackaging a bamm:Property;
+    bamm:preferredName "Reuseable Packaging"@en;
+    bamm:description "Definition of whether the product uses a reuse system. The values true or false are allowed."@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.
+:StateEnumeration a bamm-c:Enumeration;
+    bamm:preferredName "State Enumeration"@en;
+    bamm:description "Enumeration with the values first life and second life."@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("first life" "second life").
+:MaterialList a bamm-c:List;
+    bamm:preferredName "Material List"@en;
+    bamm:dataType :Entity10.
+:CriticalList a bamm-c:List;
+    bamm:preferredName "Critical List"@en;
+    bamm:dataType xsd:string.
+:Characteristic15 a bamm:Characteristic;
+    bamm:dataType :Entity19.
+:Characteristic8 a bamm:Characteristic;
+    bamm:dataType :Entity11.
+:TimeStamp a bamm:Characteristic;
+    bamm:preferredName "Time Stamp"@en;
+    bamm:description "A time stamp in the format (yyyy-mm-dd) with or without time zone."@en;
+    bamm:dataType xsd:date.
+:WarrantyCharacteristic a bamm-c:Measurement;
+    bamm:preferredName "Warranty Characteristic"@en;
+    bamm:dataType xsd:decimal;
+    bamm-c:unit unit:month.
+:Characteristic12 a bamm:Characteristic;
+    bamm:dataType :Entity16.
+:GtinTrait a bamm-c:Trait;
+    bamm-c:baseCharacteristic bamm-c:Text;
+    bamm-c:constraint :Constraint3.
+:List a bamm-c:List;
+    bamm:dataType :Entity15.
+:Characteristic14 a bamm:Characteristic;
+    bamm:dataType :Entity18.
+:Characteristic16 a bamm:Characteristic;
+    bamm:dataType :Entity21.
+:CategoryEnumeration a bamm-c:Enumeration;
+    bamm:preferredName "Category Enumeration"@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("Handling-Safety" "Handling:EoL" "Handling:Maintenance" "Handling:SubstanceOfConcern" "Sustainability" "Compliance" "Passport").
 :version a bamm:Property;
     bamm:preferredName "Version"@en;
     bamm:description "The current version of the product passport."@en;
@@ -237,57 +302,32 @@
     bamm:description "The timestamp for  the product passport until when it is available."@en;
     bamm:characteristic :TimeStamp;
     bamm:exampleValue "2000-01-01"^^xsd:date.
-:TimeStamp a bamm:Characteristic;
-    bamm:preferredName "Time Stamp"@en;
-    bamm:description "A time stamp in the format (yyyy-mm-dd) with or without time zone."@en;
-    bamm:dataType xsd:date.
 :issueDate a bamm:Property;
     bamm:preferredName "Issue Date"@en;
     bamm:description "The timestamp for  the product passport since when it is available."@en;
     bamm:characteristic :TimeStamp;
     bamm:exampleValue "2000-01-01"^^xsd:date.
-:MaintenanceHistoryList a bamm-c:List;
-    bamm:preferredName "Maintenance History List"@en;
-    bamm:description "A list of entries of the service history."@en;
-    bamm:dataType :MaintenanceHistoryEntity.
-:PartList a bamm-c:List;
-    bamm:preferredName "Part List"@en;
-    bamm:description "The list of spare parts with different identifiers."@en;
-    bamm:dataType :PartEntity.
-:SubstanceList a bamm-c:List;
-    bamm:preferredName "Substance List"@en;
-    bamm:description "Characteristic for a list of substances of concern."@en;
-    bamm:dataType :SubstanceEntity.
-:StateEnumeration a bamm-c:Enumeration;
-    bamm:preferredName "State Enumeration"@en;
-    bamm:description "Enumeration with the values first life and second life."@en;
-    bamm:dataType xsd:string;
-    bamm-c:values ("first life" "second life").
-:MaterialList a bamm-c:List;
-    bamm:preferredName "Material List"@en;
-    bamm:dataType :Entity10.
-:CriticalList a bamm-c:List;
-    bamm:preferredName "Critical List"@en;
-    bamm:dataType xsd:string.
-:Characteristic15 a bamm:Characteristic;
-    bamm:dataType :Entity19.
-:Characteristic8 a bamm:Characteristic;
-    bamm:dataType :Entity11.
-:WarrantyCharacteristic a bamm-c:Measurement;
-    bamm:preferredName "Warranty Characteristic"@en;
-    bamm:dataType xsd:decimal;
-    bamm-c:unit unit:month.
-:Characteristic12 a bamm:Characteristic;
-    bamm:dataType :Entity16.
-:GtinTrait a bamm-c:Trait;
-    bamm-c:baseCharacteristic bamm-c:Text;
-    bamm-c:constraint :Constraint3.
-:List a bamm-c:List;
-    bamm:dataType :Entity15.
-:Characteristic14 a bamm:Characteristic;
-    bamm:dataType :Entity18.
-:Characteristic16 a bamm:Characteristic;
-    bamm:dataType :Entity21.
+:MaintenanceHistoryEntity a bamm:Entity;
+    bamm:preferredName "Maintenance History Entity"@en;
+    bamm:description "Entity describing a list of entries of the service history with title, text, activities and dates."@en;
+    bamm:properties (:title :text [
+  bamm:property :maintenanceDate;
+  bamm:payloadName "date"
+] :activity).
+:PartEntity a bamm:Entity;
+    bamm:preferredName "Part Entity"@en;
+    bamm:description "Entity with the attributes partId, producerId and partName to describe a list of spare parts."@en;
+    bamm:properties (:partId :producerId [
+  bamm:property :partName;
+  bamm:payloadName "name"
+]).
+:SubstanceEntity a bamm:Entity;
+    bamm:preferredName "Substance Entity"@en;
+    bamm:description "Entity to describe a list of properties regarding a substance of concern such as the substance name, location, unit and concentration."@en;
+    bamm:properties ([
+  bamm:property :substanceName;
+  bamm:payloadName "name"
+] :location :unit :concentration).
 :Entity10 a bamm:Entity;
     bamm:properties ([
   bamm:property :materialName;
@@ -316,12 +356,52 @@
 ]).
 :Entity18 a bamm:Entity;
     bamm:properties (ext-part:customerPartId ext-part:manufacturerPartId).
+:Entity21 a bamm:Entity;
+    bamm:properties ([
+  bamm:property :typeUnit;
+  bamm:optional "true"^^xsd:boolean
+] :datatype).
+:materialName a bamm:Property;
+    bamm:preferredName "Material Name"@en;
+    bamm:characteristic bamm-c:Text.
+:recyclable a bamm:Property;
+    bamm:preferredName "Recyclable"@en;
+    bamm:characteristic bamm-c:Boolean.
+:renewable a bamm:Property;
+    bamm:preferredName "Renewable"@en;
+    bamm:characteristic bamm-c:Boolean.
+:percentage a bamm:Property;
+    bamm:preferredName "Percentage"@en;
+    bamm:characteristic :Percent.
+:lifeUnit a bamm:Property;
+    bamm:preferredName "Life Unit"@en;
+    bamm:characteristic :LifespanEnumeration.
+:lifeValue a bamm:Property;
+    bamm:preferredName "Life Value"@en;
+    bamm:characteristic :LifeValueCharacteristic.
+:ownerId a bamm:Property;
+    bamm:preferredName "Owner Id"@en;
+    bamm:characteristic bamm-c:Text.
+:eori a bamm:Property;
+    bamm:preferredName "EORI"@en;
+    bamm:characteristic bamm-c:Text.
+:codeName a bamm:Property;
+    bamm:preferredName "Code Name"@en;
+    bamm:characteristic bamm-c:Text.
+:codeValue a bamm:Property;
+    bamm:preferredName "Code Value"@en;
+    bamm:characteristic bamm-c:Text.
 :code a bamm:Property;
     bamm:preferredName "Code"@en;
     bamm:description "The associated product category CODE according to ECLASS. "@en;
     bamm:see <https://eclass.eu/en/eclass-standard/search-content/show?tx_eclasssearch_ecsearch[discharge]=0&tx_eclasssearch_ecsearch[id]=44000000&tx_eclasssearch_ecsearch[language]=1&tx_eclasssearch_ecsearch[version]=13.0&cHash=10abd2696c4c5c526da4e3367e78c592>;
     bamm:characteristic :CodeTrait;
     bamm:exampleValue "44-09-02-02".
+:CodeTrait a bamm-c:Trait;
+    bamm:preferredName "Code Trait"@en;
+    bamm:description "Trait to limit the input to the specified format (00-00-00-00)."@en;
+    bamm-c:baseCharacteristic bamm-c:Text;
+    bamm-c:constraint :CodeConstraint.
 :definition a bamm:Property;
     bamm:preferredName "Definition"@en;
     bamm:description "The associated product category NAME according to ECLASS. "@en;
@@ -332,6 +412,11 @@
     bamm:preferredName "Title"@en;
     bamm:description "The title of the data object with a maximum of 100 characters."@en;
     bamm:characteristic :TitleTrait.
+:TitleTrait a bamm-c:Trait;
+    bamm:preferredName "Title Trait"@en;
+    bamm:description "A trait for the title."@en;
+    bamm-c:baseCharacteristic bamm-c:Text;
+    bamm-c:constraint :TitleConstraint.
 :text a bamm:Property;
     bamm:preferredName "Text"@en;
     bamm:description "The text of the data object."@en;
@@ -344,6 +429,11 @@
     bamm:preferredName "Activity"@en;
     bamm:description "The activities of putting the product into service in form of an enumeration with the values Inspection, Maintenance, Repair, Preventive Maintenance, Accident and Other."@en;
     bamm:characteristic :ActivityEnumeration.
+:ActivityEnumeration a bamm-c:Enumeration;
+    bamm:preferredName "Activity Enumeration"@en;
+    bamm:description "The activities of putting the product into service in form of an enumeration with the values Inspection, Maintenance, Repair, Preventive Maintenance, Accident and Other."@en;
+    bamm:dataType xsd:string;
+    bamm-c:values ("Inspection" "Maintenance" "Repair" "Preventive Maintenance" "Accident" "Other").
 :partId a bamm:Property;
     bamm:preferredName "Part Id"@en;
     bamm:description "The identification of spare parts available for the product."@en;
@@ -367,55 +457,16 @@
     bamm:see <https://eclipse-esmf.github.io/samm-specification/snapshot/appendix/unitcatalog.html>;
     bamm:characteristic :ConcentrationEnumeration;
     bamm:exampleValue "unit:percent".
-:concentration a bamm:Property;
-    bamm:preferredName "Concentration"@en;
-    bamm:description "Concentration of substances of concern at the level of the product."@en;
-    bamm:characteristic :Either.
-:materialName a bamm:Property;
-    bamm:preferredName "Material Name"@en;
-    bamm:characteristic bamm-c:Text.
-:recyclable a bamm:Property;
-    bamm:preferredName "Recyclable"@en;
-    bamm:characteristic bamm-c:Boolean.
-:renewable a bamm:Property;
-    bamm:preferredName "Renewable"@en;
-    bamm:characteristic bamm-c:Boolean.
-:percentage a bamm:Property;
-    bamm:preferredName "Percentage"@en;
-    bamm:characteristic :Percent.
-:lifeUnit a bamm:Property;
-    bamm:preferredName "Life Unit"@en;
-    bamm:characteristic :LifespanEnumeration.
-:lifeValue a bamm:Property;
-    bamm:preferredName "Life Value"@en;
-    bamm:characteristic :LifeValueCharacteristic.
-:codeName a bamm:Property;
-    bamm:preferredName "Code Name"@en;
-    bamm:characteristic bamm-c:Text.
-:codeValue a bamm:Property;
-    bamm:preferredName "Code Value"@en;
-    bamm:characteristic bamm-c:Text.
-:CodeTrait a bamm-c:Trait;
-    bamm:preferredName "Code Trait"@en;
-    bamm:description "Trait to limit the input to the specified format (00-00-00-00)."@en;
-    bamm-c:baseCharacteristic bamm-c:Text;
-    bamm-c:constraint :CodeConstraint.
-:TitleTrait a bamm-c:Trait;
-    bamm:preferredName "Title Trait"@en;
-    bamm:description "A trait for the title."@en;
-    bamm-c:baseCharacteristic bamm-c:Text;
-    bamm-c:constraint :TitleConstraint.
-:ActivityEnumeration a bamm-c:Enumeration;
-    bamm:preferredName "Activity Enumeration"@en;
-    bamm:description "The activities of putting the product into service in form of an enumeration with the values Inspection, Maintenance, Repair, Preventive Maintenance, Accident and Other."@en;
-    bamm:dataType xsd:string;
-    bamm-c:values ("Inspection" "Maintenance" "Repair" "Preventive Maintenance" "Accident" "Other").
 :ConcentrationEnumeration a bamm-c:Enumeration;
     bamm:preferredName "Concentration Enumeration"@en;
     bamm:description "Enumeration of possible units of concentration with percent, volume percent, parts per thousand, parts per million, parts per billion and  parts per trillion."@en;
     bamm:see <https://eclipse-esmf.github.io/samm-specification/snapshot/appendix/unitcatalog.html>;
     bamm:dataType xsd:string;
     bamm-c:values ("unit:partPerMillion" "unit:percent" "unit:percentVolume" "unit:partPerThousand" "unit:partPerTrillionUs" "unit:partPerBillionUs").
+:concentration a bamm:Property;
+    bamm:preferredName "Concentration"@en;
+    bamm:description "Concentration of substances of concern at the level of the product."@en;
+    bamm:characteristic :Either.
 :Either a bamm-c:Either;
     bamm:preferredName "Either"@en;
     bamm:description "Characteristic with two possible  values."@en;
@@ -432,12 +483,10 @@
 :LifeValueCharacteristic a bamm-c:Quantifiable;
     bamm:preferredName "Life Value Characteristic"@en;
     bamm:dataType xsd:integer.
-:ownerId a bamm:Property;
-    bamm:preferredName "Owner Id"@en;
-    bamm:characteristic bamm-c:Text.
-:eori a bamm:Property;
-    bamm:preferredName "EORI"@en;
-    bamm:characteristic bamm-c:Text.
+:CodeConstraint a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Code Constraint"@en;
+    bamm:description "Constraint to limit the inout to a valid eclass number. The constraint ensures that each pair of digits is followed by a hyphen, resulting in a pattern like \"00-00-00-00\" where the zeros can be replaced by any digit."@en;
+    bamm:value "^\\d{2}-\\d{2}-\\d{2}-\\d{2}$".
 :TitleConstraint a bamm-c:LengthConstraint;
     bamm:preferredName "Title Constraint"@en;
     bamm:description "A constraint that limits the title to 100 characters."@en;
@@ -446,11 +495,14 @@
 :RangeTrait a bamm-c:Trait;
     bamm-c:baseCharacteristic bamm-c:Text;
     bamm-c:constraint :ConcentrationRangeConstraint.
-:Entity21 a bamm:Entity;
-    bamm:properties ([
-  bamm:property :typeUnit;
-  bamm:optional "true"^^xsd:boolean
-] :datatype).
+:ConcentrationCharacteristic a bamm-c:Quantifiable;
+    bamm:preferredName "Concentration Characteristic"@en;
+    bamm:description "Concentration of substances of concern at the level of the product."@en;
+    bamm:dataType xsd:float.
+:ConcentrationRangeConstraint a bamm-c:RegularExpressionConstraint;
+    bamm:preferredName "Concentration Range Constraint"@en;
+    bamm:description "Constraint to limit the input to a range in the format \"00.00-00.00\"."@en;
+    bamm:value "^\\d+\\.\\d+-\\d+\\.\\d+$".
 :typeUnit a bamm:Property;
     bamm:preferredName "Type Unit"@en;
     bamm:description "from unit catalog or null if object"@en;
@@ -463,18 +515,6 @@
     bamm:description "Data type that describe the content of the aatributes elements and data. In case \"object\" is specified, the elements field will be used in the entity20. If it is an other type, the content will be specified in data as a string."@en;
     bamm:dataType xsd:string;
     bamm-c:values ("string" "int" "boolean" "double" "float" "array" "object" "byte").
-:CategoryEnumeration a bamm-c:Enumeration;
-    bamm:preferredName "Category Enumeration"@en;
-    bamm:dataType xsd:string;
-    bamm-c:values ("Handling-Safety" "Handling:EoL" "Handling:Maintenance" "Handling:SubstanceOfConcern" "Sustainability" "Compliance" "Passport").
-:PassportEntity a bamm:Entity;
-    bamm:preferredName "Passport Entity"@en;
-    bamm:description "Passport Entity to descibe version, status, validity and issue date. "@en;
-    bamm:properties (:version :status :validityDate :issueDate).
-:TypologyCharacteristic a bamm:Characteristic;
-    bamm:preferredName "Typology Characteristic"@en;
-    bamm:description "Characteristic to further describe product."@en;
-    bamm:dataType :TypologyEntity.
 :TypologyEntity a bamm:Entity;
     bamm:preferredName "Typology Entity"@en;
     bamm:description "Entity describing attributes such as the product description, class and different names."@en;
@@ -482,57 +522,16 @@
   bamm:property :productDescription;
   bamm:payloadName "description"
 ] :class :name ext-part:nameAtManufacturer ext-part:nameAtCustomer).
-:ClassCharacteristic a bamm:Characteristic;
-    bamm:preferredName "Class Characteristic"@en;
-    bamm:description "Characteristic to describe the eclass typology of a product."@en;
-    bamm:dataType :ClassEntity.
 :ClassEntity a bamm:Entity;
     bamm:preferredName "Class Entity"@en;
     bamm:description "Entity to describe the associated product category according to ECLASS. The ECLASS is the worldwide reference data standard for classifying and clearly describing products and services. Properties seperated into the code and name."@en;
     bamm:properties (:code :definition).
-:CodeConstraint a bamm-c:RegularExpressionConstraint;
-    bamm:preferredName "Code Constraint"@en;
-    bamm:description "Constraint to limit the inout to a valid eclass number. The constraint ensures that each pair of digits is followed by a hyphen, resulting in a pattern like \"00-00-00-00\" where the zeros can be replaced by any digit."@en;
-    bamm:value "^\\d{2}-\\d{2}-\\d{2}-\\d{2}$".
-:MaintenanceHistoryEntity a bamm:Entity;
-    bamm:preferredName "Maintenance History Entity"@en;
-    bamm:description "Entity describing a list of entries of the service history with title, text, activities and dates."@en;
-    bamm:properties (:title :text [
-  bamm:property :maintenanceDate;
-  bamm:payloadName "date"
-] :activity).
-:PartEntity a bamm:Entity;
-    bamm:preferredName "Part Entity"@en;
-    bamm:description "Entity with the attributes partId, producerId and partName to describe a list of spare parts."@en;
-    bamm:properties (:partId :producerId [
-  bamm:property :partName;
-  bamm:payloadName "name"
-]).
 :HandlingEntity a bamm:Entity;
     bamm:preferredName "Handling Entity"@en;
     bamm:description "Entity to describe different aspects in relation with the handling of the product. Properties are the maintenance history spare parts, substances of concern and reusable packaging."@en;
     bamm:properties (:maintenanceHistory :spareParts :substanceOfConcern :reuseablePackaging).
-:HandlingCharacteristic a bamm:Characteristic;
-    bamm:preferredName "Handling Characteristic"@en;
-    bamm:description "Characteristic to describe aspects which are connected with the handling of the product."@en;
-    bamm:dataType :HandlingEntity.
-:SubstanceEntity a bamm:Entity;
-    bamm:preferredName "Substance Entity"@en;
-    bamm:description "Entity to describe a list of properties regarding a substance of concern such as the substance name, location, unit and concentration."@en;
-    bamm:properties ([
-  bamm:property :substanceName;
-  bamm:payloadName "name"
-] :location :unit :concentration).
 :substanceName a bamm:Property;
     bamm:preferredName "Substance Name"@en;
     bamm:description "In accordance with the ESPR specification the name of the substances of concern which is present in the product have to be declared."@en;
     bamm:characteristic bamm-c:Text;
     bamm:exampleValue "Lead".
-:ConcentrationCharacteristic a bamm-c:Quantifiable;
-    bamm:preferredName "Concentration Characteristic"@en;
-    bamm:description "Concentration of substances of concern at the level of the product."@en;
-    bamm:dataType xsd:float.
-:ConcentrationRangeConstraint a bamm-c:RegularExpressionConstraint;
-    bamm:preferredName "Concentration Range Constraint"@en;
-    bamm:description "Constraint to limit the input to a range in the format \"00.00-00.00\"."@en;
-    bamm:value "^\\d+\\.\\d+-\\d+\\.\\d+$".
