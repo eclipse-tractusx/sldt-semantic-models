@@ -46,7 +46,13 @@
 :PartAnalysis a samm:Entity ;
    samm:preferredName "Part Analysis"@en ;
    samm:description "The analysis results of ONE part"@en ;
-   samm:properties ( :qualityTaskId :anonymizedVin :status :isDefect :resultsDescription :manufacturerAnalysisID :manufacturerSerialPartNumber :manufacturerPartNumber :manufacturerPartName [ samm:property :addtionalInformation; samm:optional true ] [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :customerAnalysisID; samm:optional true ] [ samm:property :customerPartNumber; samm:optional true ] ) .
+   samm:properties ( :manufacturerAnalysisID :qualityTaskId :anonymizedVin :status :isDefect :resultsDescription :manufacturerSerialPartNumber :manufacturerPartNumber :manufacturerPartName [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :customerAnalysisID; samm:optional true ] [ samm:property :customerPartNumber; samm:optional true ] [ samm:property :addtionalInformation; samm:optional true ] ) .
+
+:manufacturerAnalysisID a samm:Property ;
+   samm:preferredName "Manufacturer Analysis ID"@en ;
+   samm:description "Internal identifier for this analysis at manufacturer."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "TIER-647439403403" .
 
 :qualityTaskId a samm:Property ;
    samm:preferredName "Quality Task ID"@en ;
@@ -56,7 +62,7 @@
 
 :anonymizedVin a samm:Property ;
    samm:preferredName "Anonymized VIN"@en ;
-   samm:description "Reference to vehicle. OEM-specific hashed VIN. This property is the link to the vehicle from which the analyzed part came"@en ;
+   samm:description "Reference to vehicle. OEM-specific hashed VIN. This property is the link to the vehicle from which the analyzed part came from."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "3747429FGH382923974682" .
 
@@ -78,12 +84,6 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Corrossion on component xyz in steering motor" .
 
-:manufacturerAnalysisID a samm:Property ;
-   samm:preferredName "Manufacturer Analysis ID"@en ;
-   samm:description "Internal identifier for this analysis from manufacturer"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "TIER-647439403403" .
-
 :manufacturerSerialPartNumber a samm:Property ;
    samm:preferredName "Manufacturer serial part number"@en ;
    samm:description "Serial Part Number of the analyzed part as assigned by the manufacturer of the part. The serial part number is unique for each serial part. Not available for all kinds of parts."@en ;
@@ -92,7 +92,7 @@
 
 :manufacturerPartNumber a samm:Property ;
    samm:preferredName "Manufacturer Part Number"@en ;
-   samm:description "Part number property fro non-serial parts -> Therefore this part number is not unique"@en ;
+   samm:description "Part number property for parts. This part number is not unique. Same parts have normally same part number."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "123-0.740-3434-A" .
 
@@ -102,28 +102,33 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Steering assembly" .
 
-:addtionalInformation a samm:Property ;
-   samm:preferredName "Additional information"@en ;
-   samm:description "You can use this key:value list for additional properties that were not defined in this aspect model."@en ;
-   samm:characteristic :ListOfAdditionalInformation .
-
 :catenaXPartId a samm:Property ;
    samm:preferredName "Catena-X Part ID"@en ;
-   samm:description "The fully anonymous Catena-X ID of the analyzed part - only available after digital twin registry is fully operational"@en ;
+   samm:description "The fully anonymous Catena-X ID of the analyzed part - only available after digital twin registry is fully operational."@en ;
    samm:characteristic :CatenaXIdTrait ;
    samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9000" .
 
 :customerAnalysisID a samm:Property ;
    samm:preferredName "Customer Analysis ID"@en ;
-   samm:description "Internal identifier for this analysis at manufacturer"@en ;
+   samm:description "Internal identifier for this analysis at customer."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "OE-43673473438" .
 
 :customerPartNumber a samm:Property ;
    samm:preferredName "Customer part number"@en ;
-   samm:description "Part number from original manufacturer equipment (OEM)"@en ;
+   samm:description "Part number from original manufacturer equipment (OEM). This part number is normally not unique."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "OE-PRT-12345" .
+
+:addtionalInformation a samm:Property ;
+   samm:preferredName "Additional information"@en ;
+   samm:description "You can use this key:value list for additional properties that were not defined in this aspect model."@en ;
+   samm:characteristic :Text .
+
+:UniqueID a samm:Characteristic ;
+   samm:preferredName "unique ID"@en ;
+   samm:description "Characteristic for a unique id: every linked property to this characteristic is a unique ID"@en ;
+   samm:dataType xsd:string .
 
 :StatusCharacteristic a samm-c:Enumeration ;
    samm:preferredName "StatusCharacteristic"@en ;
@@ -131,20 +136,16 @@
    samm:dataType xsd:string ;
    samm-c:values ( "new" "in progress" "completed" "closed" ) .
 
-:ListOfAdditionalInformation a samm-c:List ;
-   samm:preferredName "Additional information list"@en ;
-   samm:dataType :AdditionalInformation .
-
 :CatenaXIdTrait a samm-c:Trait ;
    samm:preferredName "Catena-X ID Trait"@en ;
    samm:description "Trait to ensure data format for Catena-X ID"@en ;
    samm-c:baseCharacteristic :UUIDv4 ;
    samm-c:constraint :UUIDv4RegularExpression .
 
-:AdditionalInformation a samm:Entity ;
-   samm:preferredName "Additional information"@en ;
-   samm:description "One key:value information pair"@en ;
-   samm:properties ( :key :value ) .
+:Text a samm:Characteristic ;
+   samm:preferredName "Text"@en ;
+   samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+   samm:dataType :AdditionalInformation .
 
 :UUIDv4 a samm:Characteristic ;
    samm:preferredName "UUIDv4"@en ;
@@ -157,15 +158,26 @@
    samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
    samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
 
-:key a samm:Property ;
-   samm:preferredName "Key id"@en ;
-   samm:description "Key identifier for this additional information"@en ;
-   samm:characteristic samm-c:Text ;
+:AdditionalInformation a samm:Entity ;
+   samm:preferredName "Additional information"@en ;
+   samm:description "Additional information is stored as list of keys and list of values"@en ;
+   samm:properties ( :keys :values ) .
+
+:keys a samm:Property ;
+   samm:preferredName "Keys"@en ;
+   samm:description "a list of keys"@en ;
+   samm:characteristic :Keys ;
    samm:exampleValue "Steel quality" .
 
-:value a samm:Property ;
-   samm:preferredName "Value"@en ;
-   samm:description "Value for this additional information"@en ;
-   samm:characteristic samm-c:Text ;
+:values a samm:Property ;
+   samm:preferredName "Values"@en ;
+   samm:description "Values for the keys defined"@en ;
+   samm:characteristic :Values ;
    samm:exampleValue "Stainless steel" .
+
+:Keys a samm-c:List ;
+   samm:dataType xsd:string .
+
+:Values a samm-c:List ;
+   samm:dataType xsd:string .
 
