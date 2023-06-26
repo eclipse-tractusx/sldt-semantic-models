@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [3.0.0] - 2023-05-16
+## [3.0.0] - 2023-06-26
 ### Added
 Model in version 3.0.0 updated to SAMM version 2.0.0
 - model now uses SAMM 2.0
