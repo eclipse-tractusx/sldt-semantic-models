@@ -14,7 +14,7 @@
 #######################################################################
 -->
 # Detect Changes Action
-This action validates whether and which changes in the repository need to be applied to an instance of the Semantic Hub beeing associtated with the repository.
+This action validates whether and which changes in the repository need to be applied to an instance of the Semantic Hub being associated with the repository.
 The action expects multiple arrays which either contain added, modified, renamed and deleted files from the last commit. 
 
 The actual deployment to an Semantic Hub instance is done through the Upload-action which expects a JSON-file with the changes to apply. Because of that, the result of the validation action is an archived JSON-file communicating these detected changes. 

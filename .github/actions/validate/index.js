@@ -179,7 +179,7 @@ function deleteAspects(files) {
         if (isModelFile(file)) {
             
             splitted = file.split("/")
-            urn = "urn:bamm:" + splitted[0] + ":" + splitted[1] + '%23'
+            urn = "urn:samm:" + splitted[0] + ":" + splitted[1] + '%23'
             console.log("Urn is" + urn)
             output.delete.push(urn)
         }
