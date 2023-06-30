@@ -25,6 +25,7 @@ Closes #
 - [ ] when relying on **external standards**, they are referenced through a **"see"** element
 - [ ] all properties with an [simple type](https://openmanufacturingplatform.github.io/sds-documentation/bamm-specification/v1.0.0/datatypes.html) have an example value
 - [ ] metadata.json exists with status "release"
+- [ ] generated json schema validates against example json payload
 - [ ] file RELEASE_NOTES.md exists and contains entries for proposed model changes 
 - [ ] all contributors to this model are mentioned in copyright header of model file
 
