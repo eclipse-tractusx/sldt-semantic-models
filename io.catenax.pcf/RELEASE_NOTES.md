@@ -3,6 +3,10 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [4.0.1] 2023-06-30
+### Changed
+- changed data type of property "version" from "positiveInteger" to "nonNegativeInteger"
+
 ## [4.0.0] 2023-05-31
 ### Changed
 - updated for compatibility with specification WBCSD v2 and PCF Rulebook v2
