@@ -1,0 +1,233 @@
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.sis:1.0.0#> .
+
+:SISRequestOperations a samm:Aspect ;
+   samm:preferredName "SISRequest"@en ;
+   samm:description "Aspect Model for a Request of the SIS"@en ;
+   samm:properties ( :cxHeader ) ;
+   samm:operations ( :synchronousRerquest :cyclicRequest :notificationRequest ) ;
+   samm:events ( ) .
+
+:cxHeader a samm:Property ;
+   samm:preferredName "cxHeader"@en ;
+   samm:description "header that refers to the request of a customer"@en ;
+   samm:characteristic :CXHeaderDataType .
+
+:synchronousRerquest a samm:Operation ;
+   samm:preferredName "synchronousRerquest"@en ;
+   samm:description "Operation for a synchronous Request"@en ;
+   samm:input ( :synchronousHeader :communicationMode ) .
+
+:cyclicRequest a samm:Operation ;
+   samm:preferredName "cyclicRequest"@en ;
+   samm:description "Operation for a cyclic request"@en ;
+   samm:input ( :cyclicHeader :communicationMode ) .
+
+:notificationRequest a samm:Operation ;
+   samm:preferredName "notificationRequest"@en ;
+   samm:description "Operation for a notification Request of the SIS"@en ;
+   samm:input ( :notificationHeader :communicationMode ) .
+
+:CXHeaderDataType a samm:Characteristic ;
+   samm:preferredName "CXHeaderDataType"@en ;
+   samm:description "all information required for a header specified by CX"@en ;
+   samm:dataType :CXHeaderEntity .
+
+:synchronousHeader a samm:Property ;
+   samm:preferredName "synchronousHeader"@en ;
+   samm:description "Header for a synchronous Request of the SIS"@en ;
+   samm:characteristic :SynchronousHeaderDataType .
+
+:communicationMode a samm:Property ;
+   samm:preferredName "communicationMode"@en ;
+   samm:description "Value to select the communication mode"@en ;
+   samm:characteristic :CommunicationModeEnum ;
+   samm:exampleValue "Notification" .
+
+:cyclicHeader a samm:Property ;
+   samm:preferredName "cyclicHeader"@en ;
+   samm:description "Header for a cyclic request"@en ;
+   samm:characteristic :CyclicHeaderDataType .
+
+:notificationHeader a samm:Property ;
+   samm:preferredName "notificationHeader"@en ;
+   samm:description "Header for a notification Request of the SIS"@en ;
+   samm:characteristic :NotificationHeaderDataType .
+
+:CXHeaderEntity a samm:Entity ;
+   samm:preferredName "CXHeaderEntity"@en ;
+   samm:description "Header specified by Catena-X"@en ;
+   samm:properties ( :relatedMessageId :messageId :senderId :recipientBpn :context :sendDateTime :version ) .
+
+:SynchronousHeaderDataType a samm:Characteristic ;
+   samm:preferredName "SynchronousHeaderDataType"@en ;
+   samm:description "SynchronousHeaderDataType"@en ;
+   samm:dataType :SynchronousHeaderEntity .
+
+:CommunicationModeEnum a samm-c:Enumeration ;
+   samm:preferredName "CommunicationModeEnum"@en ;
+   samm:description "Enumeration that holds all possible communication modes"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "synchronous" "cyclic" "notification" ) .
+
+:CyclicHeaderDataType a samm:Characteristic ;
+   samm:preferredName "CyclicHeaderDataType"@en ;
+   samm:description "CyclicHeaderDataType"@en ;
+   samm:dataType :CyclicHeaderEntity .
+
+:NotificationHeaderDataType a samm:Characteristic ;
+   samm:preferredName "NotificationHeaderDataType"@en ;
+   samm:description "DataType for a Notification Header"@en ;
+   samm:dataType :NotificationHeaderEntity .
+
+:relatedMessageId a samm:Property ;
+   samm:preferredName "relatedMessageId"@en ;
+   samm:description "Id of the initial message that started the exchange of messages"@en ;
+   samm:characteristic :UUID ;
+   samm:exampleValue "00000000-0000-0000-C000-000000000046" .
+
+:messageId a samm:Property ;
+   samm:preferredName "messageId"@en ;
+   samm:description "Id of the message"@en ;
+   samm:characteristic :UUID ;
+   samm:exampleValue "00000000-0000-0000-C000-000000000046" .
+
+:senderId a samm:Property ;
+   samm:preferredName "senderId"@en ;
+   samm:description "Id of the sender"@en ;
+   samm:characteristic :SenderId .
+
+:recipientBpn a samm:Property ;
+   samm:preferredName "recipientBpn"@en ;
+   samm:description "BPN of the recipient"@en ;
+   samm:characteristic :RecipientBpn .
+
+:context a samm:Property ;
+   samm:preferredName "context"@en ;
+   samm:description "context of the message"@en ;
+   samm:characteristic :Context .
+
+:sendDateTime a samm:Property ;
+   samm:preferredName "sendDateTime"@en ;
+   samm:description "Datetime when the message is sent"@en ;
+   samm:characteristic :SendDateTime .
+
+:version a samm:Property ;
+   samm:preferredName "version"@en ;
+   samm:characteristic :Version .
+
+:SynchronousHeaderEntity a samm:Entity ;
+   samm:preferredName "SynchronousHeaderEntity"@en ;
+   samm:description "Header for a synchronous request of the SIS"@en ;
+   samm:properties ( :offset :customerId [ samm:property :precision; samm:optional true ] :productionForecast4All :orderId ) .
+
+:CyclicHeaderEntity a samm:Entity ;
+   samm:extends :SynchronousHeaderEntity ;
+   samm:preferredName "CyclicHeaderEntity"@en ;
+   samm:description "the header for a cyclic communication  Mode"@en ;
+   samm:properties ( :interval ) .
+
+:NotificationHeaderEntity a samm:Entity ;
+   samm:extends :CyclicHeaderEntity ;
+   samm:preferredName "NotificationHeaderEntity"@en ;
+   samm:description "The Header for a notification communication mode"@en ;
+   samm:properties ( :deviation ) .
+
+:UUID a samm:Characteristic ;
+   samm:preferredName "UUID"@en ;
+   samm:description "A Universally Unique Identifier (UUID)"@en ;
+   samm:dataType xsd:string .
+
+:SenderId a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:RecipientBpn a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:Context a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:SendDateTime a samm:Characteristic ;
+   samm:dataType xsd:dateTime .
+
+:Version a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:offset a samm:Property ;
+   samm:preferredName "offset"@en ;
+   samm:description """Meaning: Send/start time of the first message/notification
+- \"0\" ==> immediate response"""@en ;
+   samm:characteristic :TimeValueCharacteristic .
+
+:customerId a samm:Property ;
+   samm:preferredName "customerId"@en ;
+   samm:description "internal customerId"@en ;
+   samm:characteristic :UUID .
+
+:precision a samm:Property ;
+   samm:preferredName "precision"@en ;
+   samm:description """Accuracy of the time specification of the completion date.
+- default: implicitly defined by production
+- only as a REQUEST of the requester, since it cannot be guaranteed that the store floor can provide the data in this accuracy."""@en ;
+   samm:characteristic :TimeValueCharacteristic .
+
+:productionForecast4All a samm:Property ;
+   samm:preferredName "productionForecast4All"@en ;
+   samm:description "boolean variable that detemines whether the customer request information about each position of an order, or information about the complete order"@en ;
+   samm:characteristic samm-c:Boolean .
+
+:orderId a samm:Property ;
+   samm:preferredName "orderId"@en ;
+   samm:description "The Id identifying subject of the request"@en ;
+   samm:characteristic :UUID .
+
+:interval a samm:Property ;
+   samm:preferredName "interval"@en ;
+   samm:description "Interval time that either specifies the cyclic send time or limits the notification time"@en ;
+   samm:characteristic :TimeValueCharacteristic .
+
+:deviation a samm:Property ;
+   samm:preferredName "deviation"@en ;
+   samm:description """'- relevant for CommunicationMode = \"notification\".
+- 2-stage:
+    1. synchronous response with delivery date
+    2. if deviation from targeted delivery date"""@en ;
+   samm:characteristic :TimeValueCharacteristic .
+
+:TimeValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "TimeValueCharacteristic"@en ;
+   samm:description "Link to the  TimeUnit Data Type"@en ;
+   samm:dataType :TimeValueDataType .
+
+:TimeValueDataType a samm:Entity ;
+   samm:preferredName "TimeValueDataType"@en ;
+   samm:description "Datatype to express a time value"@en ;
+   samm:properties ( :value :timeUnit ) .
+
+:value a samm:Property ;
+   samm:preferredName "value"@en ;
+   samm:description "the amount of timeUnits considered"@en ;
+   samm:characteristic :Value ;
+   samm:exampleValue 3 .
+
+:timeUnit a samm:Property ;
+   samm:preferredName "timeUnit"@en ;
+   samm:description "specifies the unit in which the time es represented"@en ;
+   samm:characteristic :TimeUnitEnum ;
+   samm:exampleValue "day" .
+
+:Value a samm:Characteristic ;
+   samm:dataType xsd:integer .
+
+:TimeUnitEnum a samm-c:Enumeration ;
+   samm:preferredName "TimeUnitEnum"@en ;
+   samm:description "Enumerates all possible time units"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "month" "week" "day" "hour" "minute" "second" ) .
+
