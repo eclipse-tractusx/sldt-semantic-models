@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [4.0.1] 2023-06-30
+## [4.0.1] 2023-07-03
 ### Changed
 - changed data type of property "version" from "positiveInteger" to "nonNegativeInteger"
 
