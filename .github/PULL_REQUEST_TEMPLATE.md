@@ -12,8 +12,8 @@ Closes #
 - [ ] use **Camel-Case** (e.g., "MyModelElement" or "TimeDifferenceGmtId", when in doubt follow https://google.github.io/styleguide/javaguide.html#s5.3-camel-case)
 - [ ] the identifiers for all model elements **start with a capital letter** except for properties
 - [ ] the identifier for **properties starts with a small letter**
-- [ ] all model elements **at least contain the fields "name" and "description"** in English language. 
-- [ ] **no duplicate names or preferredNames** within an Aspect (e.g. a Property and the referenced Characteristic should not have the same name)
+- [ ] all model elements **at least contain the fields "preferred name" and "description"** in English language. The description must be comprehensible. It is not required to write full sentences but style should be consistent over the whole model
+- [ ] Property and the referenced Characteristic should not have the same name
 - [ ] the versioning in the URN **follows semantic versioning**, where minor version bumps are backwards compatible and major version bumps are not backwards compatible. 
 - [ ] use **abbreviations only when necessary** and if these are sufficiently common
 - [ ] **avoid redundant prefixes in property names** (consider adding properties to an enclosing Entity or even adapt the namespace of the model elements, e.g., instead of having two properties `DismantlerId` and `DismantlerName` use an Entity `Dismantler` with the properties `name` and `id` or use a URN like `io.catenax.dismantler:0.0.1`)
@@ -25,6 +25,7 @@ Closes #
 - [ ] when relying on **external standards**, they are referenced through a **"see"** element
 - [ ] all properties with an [simple type](https://openmanufacturingplatform.github.io/sds-documentation/bamm-specification/v1.0.0/datatypes.html) have an example value
 - [ ] metadata.json exists with status "release"
+- [ ] generated json schema validates against example json payload
 - [ ] file RELEASE_NOTES.md exists and contains entries for proposed model changes 
 - [ ] all contributors to this model are mentioned in copyright header of model file
 
@@ -36,3 +37,4 @@ Closes #
 - [ ] There exists valid test data
 - [ ] In case of a new (incompatible) major version to an existing version, a migration strategy has been developed
 - [ ] The model has at least version '1.0.0'
+- [ ] The release date in the Release Note is set to the date of the MS3 approval
