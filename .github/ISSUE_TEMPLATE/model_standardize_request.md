@@ -11,6 +11,8 @@ labels: standardize
 
 ## MS1 Criteria
 <!-- This checklist is filled by the issue reviewer -->
-- [ ] The model that is used in a standard exists
+- [ ] The model exists
+- [ ] There is a [Catena-X standard](https://catena-x.net/de/standard-library) referencing this model
 - [ ] The model is in status "release"
 - [ ] The model is not yet in status "standardize"
+- [ ] Release note entry for model version referenced in standard received link to standard document
