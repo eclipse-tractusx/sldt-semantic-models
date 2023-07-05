@@ -1,0 +1,126 @@
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.message_header:1.0.0#> .
+
+:MessageHeaderAspect a samm:Aspect ;
+   samm:preferredName "Message Header Aspect"@en ;
+   samm:description "Aspect model describing the message header which must be included in every message"@en ;
+   samm:properties ( :header ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:header a samm:Property ;
+   samm:preferredName "header"@en ;
+   samm:description "Contains information common to all messages"@en ;
+   samm:characteristic :HeaderCharacteristic .
+
+:HeaderCharacteristic a samm:Characteristic ;
+   samm:preferredName "Header Characteristic"@en ;
+   samm:description "Characteristic describing the common shared aspect Message Header"@en ;
+   samm:dataType :MessageHeader .
+
+:MessageHeader a samm:Entity ;
+   samm:preferredName "Message Header"@en ;
+   samm:description "The header that must be included in every message."@en ;
+   samm:properties ( :messageId :context :sentDateTime :senderBpn :receiverBpn [ samm:property :expectedResponseBy; samm:optional true ] [ samm:property :relatedMessageId; samm:optional true ] :version ) .
+
+:messageId a samm:Property ;
+   samm:preferredName "Message ID"@en ;
+   samm:description """Unique ID identifying the message.
+
+The purpose of the ID is to uniquely identify a single message, therefore it MUST not be reused."""@en ;
+   samm:characteristic :UuidCharacteristic ;
+   samm:exampleValue "3b4edc05-e214-47a1-b0c2-1d831cdd9ba9" .
+
+:context a samm:Property ;
+   samm:preferredName "Context"@en ;
+   samm:description """Information about the context the message should be considered in.
+
+Default: For Use Cases which need to validate against the Semantic Hub automatically.
+
+Fallback: For Use Cases which do not use automatic validation.
+
+In both cases: Versioning only refers to major versions.
+
+String pattern of the value follows: <domain>-<subdomain>-<object>-<major version>"""@en ;
+   samm:characteristic :ContextCharacteristic ;
+   samm:exampleValue "urn:samm:io.catenax.<trace-QM-Alert>:1.x.x" .
+
+:sentDateTime a samm:Property ;
+   samm:preferredName "Sent Date Time"@en ;
+   samm:description """Time zone aware timestamp holding the date and the time the message was sent by the sending party
+
+The value MUST be formatted according to the ISO 8601 standard"""@en ;
+   samm:characteristic :Timestamp ;
+   samm:exampleValue "2023-06-19T21:24:00+07:00"^^xsd:dateTimeStamp .
+
+:senderBpn a samm:Property ;
+   samm:preferredName "Sender BPN"@en ;
+   samm:description """The Business Partner Number of the sending party.
+
+The value MUST be a valid BPN. Applicable constraints are defined in the corresponding standard"""@en ;
+   samm:characteristic :BpnCharacteristic ;
+   samm:exampleValue "BPNL7588787849VQ" .
+
+:receiverBpn a samm:Property ;
+   samm:preferredName "Receiver BPN"@en ;
+   samm:description """The Business Partner Number of the receiving party.
+
+The value MUST be a valid BPN. Applicable constraints are defined in the corresponding standard."""@en ;
+   samm:characteristic :BpnCharacteristic ;
+   samm:exampleValue "BPNL6666787765VQ" .
+
+:expectedResponseBy a samm:Property ;
+   samm:preferredName "Expected Response By"@en ;
+   samm:description """Time zone aware timestamp holding the date and time by which the sending party expects a certain type of response from the receiving party.
+
+The meaning and interpretation of the fields's value are context-bound and MUST therefore be defined by any business domain or platform capability making use of it.
+
+The value MUST be formatted according to the ISO 8601 standard"""@en ;
+   samm:characteristic :Timestamp ;
+   samm:exampleValue "2023-06-19T21:24:00+07:00"^^xsd:dateTimeStamp .
+
+:relatedMessageId a samm:Property ;
+   samm:preferredName "Related Message ID"@en ;
+   samm:description "Unique ID identifying a message somehow related to the current one"@en ;
+   samm:characteristic :UuidCharacteristic ;
+   samm:exampleValue "d9452f24-3bf3-4134-b3eb-68858f1b2362" .
+
+:version a samm:Property ;
+   samm:preferredName "Version"@en ;
+   samm:description """The version of the standard defining the semantics and the structure of the message's header.
+
+The version number should follow the Semantic Versioning 2.0.0 specification"""@en ;
+   samm:characteristic :VersionCharacteristic ;
+   samm:exampleValue "urn:samm:io.catenax.message_header:1.0.0" .
+
+:UuidCharacteristic a samm:Characteristic ;
+   samm:preferredName "UUID Characteristic"@en ;
+   samm:description "Structured Value for defining a property which requires an UUID"@en ;
+   samm:dataType xsd:string .
+
+:ContextCharacteristic a samm:Characteristic ;
+   samm:preferredName "Context Characteristic"@en ;
+   samm:description "Defining a string value for the context"@en ;
+   samm:dataType xsd:string .
+
+:Timestamp a samm:Characteristic ;
+   samm:preferredName "Timestamp"@en ;
+   samm:description "Describes a Property which contains the date and time with an timezone."@en ;
+   samm:dataType xsd:dateTimeStamp .
+
+:BpnCharacteristic a samm:Characteristic ;
+   samm:preferredName "BPN Characteristic"@en ;
+   samm:description "Characteristic for defining BPN values"@en ;
+   samm:dataType xsd:string .
+
+:VersionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Version Characteristic"@en ;
+   samm:description "Characteristic defining the value of version."@en ;
+   samm:dataType xsd:string .
+
