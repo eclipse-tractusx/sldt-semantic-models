@@ -2,7 +2,7 @@
 All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
-- Version 1.0.0 is now set to deprecated: Some important attributes were missing. Use version 2.0.0 instead
+
 
 ## [2.0.0] - 2023-06-23
 ### Added
@@ -18,7 +18,8 @@ All notable changes to this model will be documented in this file.
 - nameAtManufacturer to manufacturerPartName: All properties from manufacturer have no the prefix manufacturer for better readability
 
 ### Removed
-
+- Version 1.0.0 is now set to deprecated: Some important attributes were missing. Use version 2.0.0 instead
+  
 ## [1.0.0] - 2022-12-13
 ### Added
 - initial version of this model
