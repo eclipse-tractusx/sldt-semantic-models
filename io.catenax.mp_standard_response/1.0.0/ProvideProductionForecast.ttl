@@ -1,0 +1,166 @@
+##########################################################################################
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e. V.
+# Copyright (c) 2023 Siemens AG
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+##########################################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.mp_standard_response:1.0.0#> .
+@prefix ext-header: <urn:samm:io.catenax.messaging_header:1.0.0#> .
+@prefix ext-request: <urn:samm:io.catenax.mp_standard_request:1.0.0#> .
+@prefix ext-unsubscribe: <urn:samm:io.catenax.mp_standard_unsubscribe:1.0.0#> .
+
+:ProvideProductionForecast a samm:Aspect ;
+   samm:preferredName "ProvideProductionForecast"@en ;
+   samm:description "Answer to a customer with all information about the requested items"@en ;
+   samm:properties ( :productionForecastResponse :cxHeader ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:productionForecastResponse a samm:Property ;
+   samm:preferredName "productionForecastResponse"@en ;
+   samm:description "the concrete information about a production forecast"@en ;
+   samm:characteristic :ProductionForecastCharacteristic .
+
+:cxHeader a samm:Property ;
+   samm:preferredName "cxHeader"@en ;
+   samm:description "header that refers to the request of a customer"@en ;
+   samm:characteristic :CXHeaderCharacteristic .
+
+:ProductionForecastCharacteristic a samm:Characteristic ;
+   samm:preferredName "ProductionForecastCharacteristic"@en ;
+   samm:description "All Data that is related to a production forecast"@en ;
+   samm:dataType :ProductionForecastItem .
+
+:CXHeaderCharacteristic a samm:Characteristic ;
+   samm:preferredName "CXHeaderCharacteristic"@en ;
+   samm:description "all information required for a header specified by CX"@en ;
+   samm:dataType ext-header:MessageHeader .
+
+:ProductionForecastItem a samm:Entity ;
+   samm:preferredName "ProductionForecastItem"@en ;
+   samm:description "Datamodel of the concrete production forecast"@en ;
+   samm:properties ( :listOfForecastItems [ samm:property :iterationNo; samm:optional true ] :communicationMode ) .
+
+:listOfForecastItems a samm:Property ;
+   samm:preferredName "listOfForecastItems"@en ;
+   samm:description "List of ForecastItems matching the items to an order"@en ;
+   samm:characteristic :ForecastItemList .
+
+:iterationNo a samm:Property ;
+   samm:preferredName "iterationNo"@en ;
+   samm:description "only set in CommunicationMode == \"notification/cycle\" to be able to check the order of the notifications. "@en ;
+   samm:characteristic :IntegerCharacteristic .
+
+:communicationMode a samm:Property ;
+   samm:preferredName "communicationMode"@en ;
+   samm:description "confirmation of the requested communication mode"@en ;
+   samm:characteristic :CommunicationModeEnum ;
+   samm:exampleValue "synchronous" .
+
+:ForecastItemList a samm-c:List ;
+   samm:preferredName "ForecastItemList"@en ;
+   samm:description "List with the forecast items"@en ;
+   samm:dataType :ForecastItem .
+
+:IntegerCharacteristic a samm:Characteristic ;
+   samm:preferredName "IntegerCharacteristic"@en ;
+   samm:dataType xsd:integer .
+
+:CommunicationModeEnum a samm-c:Enumeration ;
+   samm:preferredName "CommunicationModeEnum"@en ;
+   samm:description "Enum that features all possible communication modes"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Month" "Day" "Week" "Hour" "Minute" "Second" ) .
+
+:ForecastItem a samm:Entity ;
+   samm:preferredName "ForecastItem"@en ;
+   samm:description "a ForecastItem entry for the requested order"@en ;
+   samm:properties ( :positionId :productionForecast :precisionOfForecast :prodcutionStatus [ samm:property :reasons4Delay; samm:optional true ] :returnCode :forecastDate ) .
+
+:positionId a samm:Property ;
+   samm:preferredName "positionId"@en ;
+   samm:description "Identifier of a position of an order"@en ;
+   samm:characteristic :String ;
+   samm:exampleValue "00000000-0000-0000-C000-000000000046" .
+
+:productionForecast a samm:Property ;
+   samm:preferredName "productionForecast"@en ;
+   samm:description "date of completion"@en ;
+   samm:characteristic :Datetime .
+
+:precisionOfForecast a samm:Property ;
+   samm:preferredName "precisionOfForecast"@en ;
+   samm:description "accuracy of the prediction"@en ;
+   samm:characteristic :TimeValueCharacteristic .
+
+:prodcutionStatus a samm:Property ;
+   samm:preferredName "prodcutionStatus"@en ;
+   samm:description "Status of the order/position within MP"@en ;
+   samm:characteristic :ProductionStatusEnum ;
+   samm:exampleValue "ItemPlanned" .
+
+:reasons4Delay a samm:Property ;
+   samm:preferredName "reasons4Delay"@en ;
+   samm:description "optional field to provide information to the customer why a delivery date is not met"@en ;
+   samm:characteristic :Reasons4DelayEnum ;
+   samm:exampleValue "supply problems" .
+
+:returnCode a samm:Property ;
+   samm:preferredName "returnCode"@en ;
+   samm:description "return code that indicates whether a single item of an order matches the customers desired request"@en ;
+   samm:characteristic :ReturnCodeEnum ;
+   samm:exampleValue "lower accuracy of precision" .
+
+:forecastDate a samm:Property ;
+   samm:preferredName "forecastDate"@en ;
+   samm:description "Date/time of the forecast calculation"@en ;
+   samm:characteristic :Datetime .
+
+:String a samm:Characteristic ;
+   samm:preferredName "String"@en ;
+   samm:description "String values"@en ;
+   samm:dataType xsd:string .
+
+:Datetime a samm:Characteristic ;
+   samm:preferredName "Datetime"@en ;
+   samm:description "date of completion of an order position"@en ;
+   samm:dataType xsd:dateTime .
+
+:TimeValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "TimeValueCharacteristic"@en ;
+   samm:description "Link to the  TimeUnit Data Type"@en ;
+   samm:dataType ext-unsubscribe:TimeValue .
+
+:ProductionStatusEnum a samm-c:Enumeration ;
+   samm:preferredName "ProductionStatusEnum"@en ;
+   samm:description "Enum with possible states of an order within MP"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "itemReceived" "itemPlanned" "itemInProduction" "itemCompleted" "statusUndefined" ) .
+
+:Reasons4DelayEnum a samm-c:Enumeration ;
+   samm:preferredName "Reasons4DelayEnum"@en ;
+   samm:description "Enum that specifies reasons for a delay of an order"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "supply problems" "internal problems" "other circumstances" "no Information available" ) .
+
+:ReturnCodeEnum a samm-c:Enumeration ;
+   samm:preferredName "ReturnCodeEnum"@en ;
+   samm:description "Enum with all Return Codes"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "ok" "faulty request" "lower accuracy of precision" "acknowledged" ) .
+
