@@ -21,18 +21,18 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.shopfloor_information.provide_production_forecast:1.0.0#> .
-@prefix ext-header: <urn:samm:io.catenax.messaging_header:1.0.0#> .
+@prefix ext-header: <urn:samm:io.catenax.message_header:1.0.0#> .
 @prefix ext-types: <urn:samm:io.catenax.shared.shopfloor_information_types:1.0.0#> .
 
 :ProvideProductionForecast a samm:Aspect ;
-   samm:preferredName "ProvideProductionForecast"@en ;
+   samm:preferredName "Provide Production Forecast"@en ;
    samm:description "Answer to a customer with all information about the requested items"@en ;
    samm:properties ( :productionForecastResponse ext-header:header ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
 :productionForecastResponse a samm:Property ;
-   samm:preferredName "production Forecast Response"@en ;
+   samm:preferredName "Production Forecast Response"@en ;
    samm:description "The concrete information about a production forecast"@en ;
    samm:characteristic :ProductionForecastCharacteristic .
 
@@ -47,13 +47,13 @@
    samm:properties ( :listOfForecastItems [ samm:property :iterationNo; samm:optional true ] ext-types:communicationMode ext-types:versionDataModel ) .
 
 :listOfForecastItems a samm:Property ;
-   samm:preferredName "list Of Forecast Items"@en ;
+   samm:preferredName "List Of Forecast Items"@en ;
    samm:description "List of ForecastItems matching the items to an order"@en ;
    samm:characteristic :ForecastItemList .
 
 :iterationNo a samm:Property ;
-   samm:preferredName "iterationNo"@en ;
-   samm:description "only set in CommunicationMode == \"notification/cycle\" to be able to check the order of the notifications. "@en ;
+   samm:preferredName "IterationNo"@en ;
+   samm:description "Only set in CommunicationMode == \"notification/cyclic\" to be able to check the order of the notifications. \n\nNot required for communication mode = \"synchronous\""@en ;
    samm:characteristic ext-types:IntegerValueCharacteristic ;
    samm:exampleValue 6 .
 
@@ -65,48 +65,48 @@
 :ForecastItem a samm:Entity ;
    samm:preferredName "ForecastItem"@en ;
    samm:description "a ForecastItem entry for the requested order"@en ;
-   samm:properties ( :positionId :productionForecast :precisionOfForecast :prodcutionStatus [ samm:property :reasons4Delay; samm:optional true ] :returnCode :forecastDate ) .
+   samm:properties ( :positionId :productionForecast :precisionOfForecast :productionStatus [ samm:property :reasons4Delay; samm:optional true ] :returnCode :forecastDate ) .
 
 :positionId a samm:Property ;
-   samm:preferredName "positionId"@en ;
+   samm:preferredName "PositionId"@en ;
    samm:description "Identifier of a position of an order"@en ;
    samm:characteristic ext-header:UuidCharacteristic ;
    samm:exampleValue "00000000-0000-0000-C000-000000000046" .
 
 :productionForecast a samm:Property ;
-   samm:preferredName "production Forecast"@en ;
+   samm:preferredName "Production Forecast"@en ;
    samm:description "Date of completion"@en ;
-   samm:characteristic ext-header:Timestamp ;
-   samm:exampleValue "2023-06-19T21:24:00+07:00"^^xsd:dateTimeStamp .
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-06-19T21:24:00+07:00"^^xsd:dateTime .
 
 :precisionOfForecast a samm:Property ;
-   samm:preferredName "precision Of Forecast"@en ;
+   samm:preferredName "Precision Of Forecast"@en ;
    samm:description "Accuracy of the prediction"@en ;
    samm:characteristic ext-types:TimeValueCharacteristic .
 
-:prodcutionStatus a samm:Property ;
-   samm:preferredName "prodcution Status"@en ;
+:productionStatus a samm:Property ;
+   samm:preferredName "Production Status"@en ;
    samm:description "Status of the order/position within MP"@en ;
    samm:characteristic :ProductionStatusEnum ;
    samm:exampleValue "itemPlanned" .
 
 :reasons4Delay a samm:Property ;
-   samm:preferredName "reasons 4 Delay"@en ;
+   samm:preferredName "Reasons 4 Delay"@en ;
    samm:description "Optional field to provide information to the customer why a delivery date is not met"@en ;
    samm:characteristic :Reasons4DelayEnum ;
-   samm:exampleValue "supply problems" .
+   samm:exampleValue "supplyProblems" .
 
 :returnCode a samm:Property ;
-   samm:preferredName "return Code"@en ;
+   samm:preferredName "Return Code"@en ;
    samm:description "Return code that indicates whether a single item of an order matches the customers desired request"@en ;
    samm:characteristic :ReturnCodeEnum ;
-   samm:exampleValue "lower accuracy of precision" .
+   samm:exampleValue "ok" .
 
 :forecastDate a samm:Property ;
-   samm:preferredName "forecast Date"@en ;
+   samm:preferredName "Forecast Date"@en ;
    samm:description "Date/time of the forecast calculation"@en ;
-   samm:characteristic ext-header:Timestamp ;
-   samm:exampleValue "2023-06-19T21:24:00+07:00"^^xsd:dateTimeStamp .
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-06-19T21:24:00+07:00"^^xsd:dateTime .
 
 :ProductionStatusEnum a samm-c:Enumeration ;
    samm:preferredName "Production Status Enumeration"@en ;
@@ -118,11 +118,11 @@
    samm:preferredName "Reasons 4 Delay Enum"@en ;
    samm:description "Enum that specifies reasons for a delay of an order"@en ;
    samm:dataType xsd:string ;
-   samm-c:values ( "supply problems" "internal problems" "other circumstances" "no information available" ) .
+   samm-c:values ( "supplyProblems" "otherCircumstances" "internalProblems" "noInformationAvailable" ) .
 
 :ReturnCodeEnum a samm-c:Enumeration ;
    samm:preferredName "Return Code Enumeration"@en ;
    samm:description "Enumeration with all Return Codes"@en ;
    samm:dataType xsd:string ;
-   samm-c:values ( "ok" "faulty request" "lower accuracy of precision" "acknowledged" ) .
+   samm-c:values ( "ok" "lowerAccuracyOfPrecision" "noForecastAvailable" ) .
 
