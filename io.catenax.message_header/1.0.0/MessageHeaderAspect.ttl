@@ -49,7 +49,7 @@ String pattern of the value follows: <domain>-<subdomain>-<object>-<major versio
    samm:preferredName "Sent Date Time"@en ;
    samm:description "Time zone aware timestamp holding the date and the time the message was sent by the sending party. The value MUST be formatted according to the ISO 8601 standard"@en ;
    samm:characteristic samm-c:Timestamp ;
-   samm:exampleValue "2023-06-19T21:24:00+07:00"^^xsd:dateTimeStamp .
+   samm:exampleValue "2023-06-19T21:24:00+07:00"^^xsd:dateTime .
 
 :senderBpn a samm:Property ;
    samm:preferredName "Sender BPN"@en ;
@@ -67,7 +67,7 @@ String pattern of the value follows: <domain>-<subdomain>-<object>-<major versio
    samm:preferredName "Expected Response By"@en ;
    samm:description "Time zone aware timestamp holding the date and time by which the sending party expects a certain type of response from the receiving party. The meaning and interpretation of the fields's value are context-bound and MUST therefore be defined by any business domain or platform capability making use of it. The value MUST be formatted according to the ISO 8601 standard"@en ;
    samm:characteristic samm-c:Timestamp ;
-   samm:exampleValue "2023-06-19T21:24:00+07:00"^^xsd:dateTimeStamp .
+   samm:exampleValue "2023-06-19T21:24:00+07:00"^^xsd:dateTime .
 
 :relatedMessageId a samm:Property ;
    samm:preferredName "Related Message ID"@en ;
@@ -101,3 +101,26 @@ String pattern of the value follows: <domain>-<subdomain>-<object>-<major versio
    samm:description "Characteristic defining the value of version."@en ;
    samm:dataType xsd:string .
 
+:SemVer a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Semantic Versioning Constraint"@en ;
+   samm:description "Constraint for defining a SemVer version."@en ;
+   samm:value """
+    ^(0|[1-9][0-9]*).(0|[1-9][0-9]*).(0|[1-9][0-9]*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*)(.[0-9A-Za-z-]+)*)?(+[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?$
+    """ .
+
+:UUIDv4 a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "UUID v4 Constraint"@en ;
+   samm:description "Constraint for defining a UUID v4 identifier."@en ;
+   samm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" .
+
+:IdTrait a samm-c:Trait ;
+   samm:preferredName "ID (Identifier) Trait"@en ;
+   samm:description "Trait for defining the UuidCharacteristic to be a UUIDv4 compliant property."@en ;
+   samm-c:baseCharacteristic :UuidCharacteristic ;
+   samm-c:constraint :UUIDv4 .
+
+:SemanticVersioningTrait a samm-c:Trait ;
+   samm:preferredName "Semantic Versioning Trait"@en ;
+   samm:description "Trait for defining the Semantic Versioning Characteristic to be SemVer.org compliant."@en ;
+   samm-c:baseCharacteristic :VersionCharacteristic ;
+   samm-c:constraint :SemVer .
