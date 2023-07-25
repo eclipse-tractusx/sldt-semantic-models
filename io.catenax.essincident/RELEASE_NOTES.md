@@ -8,6 +8,7 @@ All notable changes to this model will be documented in this file.
 - updated version of model
 - change ess product information from characteristic to set
 - change name subdivision to region 
+- use reference to shared aspect address
 
 ### Added
 - incident external notes and external subject for external communication
