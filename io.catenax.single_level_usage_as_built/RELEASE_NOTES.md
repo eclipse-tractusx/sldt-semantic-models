@@ -7,7 +7,7 @@ All notable changes to this model will be documented in this file.
 ### Added
 - added `customers` to reflect that the relation to parent items is not known at all times. Instead a reference to the customer is made.
 - restructured `parentParts` to be enclosed 
-- added mandatory `businessPartner` to enable decentralized Digital Twin registry
+- added optional `businessPartner` to enable decentralized Digital Twin registry
 
 
 ### Changed
