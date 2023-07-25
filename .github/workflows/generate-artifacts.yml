@@ -1,0 +1,54 @@
+#######################################################################
+# Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+name: Generate Model Artifacts
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-model-artifacts:
+    name: 02 Generate model artifacts
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Check Changes
+        id: changes
+        uses: Ana06/get-changed-files@v2.2.0
+        with:
+          format: csv
+          filter: "*.ttl"
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Generate artifacts for new models
+        run: |
+          mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.changes.outputs.added_modified }}')
+          for added_modified_file in "${added_modified_files[@]}"; do
+            echo "Generate model artifacts for ${added_modified_file}."
+            ./generate.sh ${added_modified_file}
+            git add $(dirname "${added_modified_file}")
+          done
+      - name: Commit new artifacts
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "username@users.noreply.github.com"
+          git commit -a -m "Adding auto-generated artifacts for new models"
+          git push

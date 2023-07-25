@@ -1,0 +1,187 @@
+#######################################################################
+# Copyright (c) 2023 Robert Bosch GmbH
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 Siemens AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.parts_analyses:2.0.0#> .
+
+:PartsAnalyses a samm:Aspect ;
+   samm:preferredName "Parts Analysis"@en ;
+   samm:description "Parts analysis that are related to one quality task"@en ;
+   samm:properties ( :listOfPartAnalyses ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:listOfPartAnalyses a samm:Property ;
+   samm:preferredName "List Of several Part Analyses"@en ;
+   samm:description "A list of several part analyses"@en ;
+   samm:characteristic :ListOfPartsAnalyses .
+
+:ListOfPartsAnalyses a samm-c:List ;
+   samm:preferredName "Part Analyses"@en ;
+   samm:description "A list for multiple part analyses"@en ;
+   samm:dataType :PartAnalysis .
+
+:PartAnalysis a samm:Entity ;
+   samm:preferredName "Part Analysis"@en ;
+   samm:description "The analysis results of ONE part"@en ;
+   samm:properties ( :manufacturerAnalysisID :qualityTaskId :anonymizedVin :status :isDefect :resultsDescription :manufacturerSerialPartNumber :manufacturerPartNumber :manufacturerPartName [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :customerAnalysisID; samm:optional true ] [ samm:property :customerPartNumber; samm:optional true ] [ samm:property :addtionalInformation; samm:optional true ] ) .
+
+:manufacturerAnalysisID a samm:Property ;
+   samm:preferredName "Manufacturer Analysis ID"@en ;
+   samm:description "Internal identifier for this analysis at manufacturer."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "TIER-647439403403" .
+
+:qualityTaskId a samm:Property ;
+   samm:preferredName "Quality Task ID"@en ;
+   samm:description "A unique quality task identifier where these list of parts analysis belong to."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BPN-811_2022_000001" .
+
+:anonymizedVin a samm:Property ;
+   samm:preferredName "Anonymized VIN"@en ;
+   samm:description "Reference to vehicle. OEM-specific hashed VIN. This property is the link to the vehicle from which the analyzed part came from."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "3747429FGH382923974682" .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "Status of this part analysis"@en ;
+   samm:characteristic :StatusCharacteristic ;
+   samm:exampleValue "new" .
+
+:isDefect a samm:Property ;
+   samm:preferredName "Part defect flag"@en ;
+   samm:description "True: Analysis turned out that analyzed part is defect accroding part's specification."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:resultsDescription a samm:Property ;
+   samm:preferredName "Several results of analysis"@en ;
+   samm:description "Detailed description of part analysis results."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Corrossion on component xyz in steering motor" .
+
+:manufacturerSerialPartNumber a samm:Property ;
+   samm:preferredName "Manufacturer serial part number"@en ;
+   samm:description "Serial Part Number of the analyzed part as assigned by the manufacturer of the part. The serial part number is unique for each serial part. Not available for all kinds of parts."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "436347347.4343884384.FTG.538348" .
+
+:manufacturerPartNumber a samm:Property ;
+   samm:preferredName "Manufacturer Part Number"@en ;
+   samm:description "Part number property for parts. This part number is not unique. Same parts have normally same part number."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "123-0.740-3434-A" .
+
+:manufacturerPartName a samm:Property ;
+   samm:preferredName "Manufacturer part name"@en ;
+   samm:description "Name of the analyzed part as assigned by the manufacturer of the part."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Steering assembly" .
+
+:catenaXPartId a samm:Property ;
+   samm:preferredName "Catena-X Part ID"@en ;
+   samm:description "The fully anonymous Catena-X ID of the analyzed part - only available after digital twin registry is fully operational."@en ;
+   samm:characteristic :CatenaXIdTrait ;
+   samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9000" .
+
+:customerAnalysisID a samm:Property ;
+   samm:preferredName "Customer Analysis ID"@en ;
+   samm:description "Internal identifier for this analysis at customer."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "OE-43673473438" .
+
+:customerPartNumber a samm:Property ;
+   samm:preferredName "Customer part number"@en ;
+   samm:description "Part number from original manufacturer equipment (OEM). This part number is normally not unique."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "OE-PRT-12345" .
+
+:addtionalInformation a samm:Property ;
+   samm:preferredName "Additional information"@en ;
+   samm:description "You can use this key:value list for additional properties that were not defined in this aspect model."@en ;
+   samm:characteristic :Text .
+
+:UniqueID a samm:Characteristic ;
+   samm:preferredName "unique ID"@en ;
+   samm:description "Characteristic for a unique id: every linked property to this characteristic is a unique ID"@en ;
+   samm:dataType xsd:string .
+
+:StatusCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "StatusCharacteristic"@en ;
+   samm:description "Enumeration of the different status values"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "in progress" "completed" "closed" ) .
+
+:CatenaXIdTrait a samm-c:Trait ;
+   samm:preferredName "Catena-X ID Trait"@en ;
+   samm:description "Trait to ensure data format for Catena-X ID"@en ;
+   samm-c:baseCharacteristic :UUIDv4 ;
+   samm-c:constraint :UUIDv4RegularExpression .
+
+:Text a samm:Characteristic ;
+   samm:preferredName "Text"@en ;
+   samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+   samm:dataType :AdditionalInformation .
+
+:UUIDv4 a samm:Characteristic ;
+   samm:preferredName "UUIDv4"@en ;
+   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
+   samm:dataType xsd:string .
+
+:UUIDv4RegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Catena-X Id Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
+
+:AdditionalInformation a samm:Entity ;
+   samm:preferredName "Additional information"@en ;
+   samm:description "Additional information is stored as list of keys and list of values"@en ;
+   samm:properties ( :keys :values ) .
+
+:keys a samm:Property ;
+   samm:preferredName "Keys"@en ;
+   samm:description "a list of keys"@en ;
+   samm:characteristic :Keys ;
+   samm:exampleValue "Steel quality" .
+
+:values a samm:Property ;
+   samm:preferredName "Values"@en ;
+   samm:description "Values for the keys defined"@en ;
+   samm:characteristic :Values ;
+   samm:exampleValue "Stainless steel" .
+
+:Keys a samm-c:List ;
+   samm:preferredName "Keys"@en ;
+   samm:description "A list of additional keys. Togther with the values list this list forms the additional data information."@en ;
+   samm:dataType xsd:string .
+
+:Values a samm-c:List ;
+   samm:preferredName "Values"@en ;
+   samm:description "A list of additional values that forms the additional data. Togther with the keys list this list forms the additional data information."@en ;
+   samm:dataType xsd:string .
+

@@ -1,0 +1,232 @@
+#######################################################################
+# Copyright (c) 2023 Allgemeine Deutsche Automobil-Club (ADAC) e.V
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#>.
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#>.
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#>.
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:bamm:io.catenax.user_estimated_loading:1.0.0#>.
+
+:UserEstimatedLoading a bamm:Aspect;
+    bamm:preferredName "User defined loading"@en;
+    bamm:description "User defined list of usage with percentage, driving style, eniviroment (hilliness, city_use, trailer_use)"@en;
+    bamm:properties (:vehicleStatus :vehicleData :history :future);
+    bamm:operations ();
+    bamm:events ().
+:vehicleStatus a bamm:Property;
+    bamm:preferredName "Current status of vehicle"@en;
+    bamm:description "Current status of vehicle: age, mileage"@en;
+    bamm:characteristic :VehicleStatusCharacteristic.
+:vehicleData a bamm:Property;
+    bamm:preferredName "Technical vehicle data"@en;
+    bamm:description "Basic technical data of the vehicle"@en;
+    bamm:characteristic :VehicleDataCharacteristic.
+:history a bamm:Property;
+    bamm:preferredName "History user profiles"@en;
+    bamm:description "User profiles of previous use"@en;
+    bamm:characteristic :HistoryProfileList.
+:future a bamm:Property;
+    bamm:preferredName "Future usage"@en;
+    bamm:description "Collection of future usages"@en;
+    bamm:characteristic :FutureList.
+:VehicleStatusCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Vehicle status characteristic"@en;
+    bamm:description "Characteristic decribing the vehicle status"@en;
+    bamm:dataType :VehicleStatusEntity.
+:VehicleDataCharacteristic a bamm:Characteristic;
+    bamm:preferredName "Vehicle data characteristic"@en;
+    bamm:description "Characteristic describing the basic technical data of the vehicle "@en;
+    bamm:dataType :VehicleDataEntity.
+:HistoryProfileList a bamm-c:List;
+    bamm:preferredName "History profile list"@en;
+    bamm:description "Characteristic of historie profile list\n"@en;
+    bamm:dataType :HistoryProfilesEnity.
+:FutureList a bamm-c:List;
+    bamm:preferredName "Future usage list"@en;
+    bamm:description "Characteristic of future usages"@en;
+    bamm:dataType :FutureScenarioEntity.
+:VehicleStatusEntity a bamm:Entity;
+    bamm:preferredName "Vehicle status entity"@en;
+    bamm:description "Vehicle status is basically described by mileage and age"@en;
+    bamm:properties ([
+  bamm:property :mileage;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :ageInMonth;
+  bamm:optional "true"^^xsd:boolean
+]).
+:VehicleDataEntity a bamm:Entity;
+    bamm:preferredName "Vehicle data entity"@en;
+    bamm:description "Basic technical data of the vehicle as specified in KBA data"@en;
+    bamm:properties ([
+  bamm:property :vehicleType;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :numberOfDriveAxle;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :energySourceCode;
+  bamm:optional "true"^^xsd:boolean
+] :powerKW :grossVehicleWeightKG).
+:HistoryProfilesEnity a bamm:Entity;
+    bamm:preferredName "History profiles entity"@en;
+    bamm:description "Collection of previous usage profiles "@en;
+    bamm:properties (:percentage [
+  bamm:property :trailerUse;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :cityDriving;
+  bamm:optional "true"^^xsd:boolean
+] :drivingStyle :hilliness :curviness).
+:FutureScenarioEntity a bamm:Entity;
+    bamm:preferredName "Future scenario list entity"@en;
+    bamm:description "List of future scenarios"@en;
+    bamm:properties (:futureScenario :futureScenarioId).
+:mileage a bamm:Property;
+    bamm:preferredName "Mileage @en"@en;
+    bamm:description "Distance the vehicle has travelled in kilometre"@en;
+    bamm:characteristic :Mileage;
+    bamm:exampleValue "123456"^^xsd:positiveInteger.
+:ageInMonth a bamm:Property;
+    bamm:preferredName "Vehicle age"@en;
+    bamm:description "Age of the vehicle in month"@en;
+    bamm:characteristic :AgeInMonths;
+    bamm:exampleValue "42"^^xsd:nonNegativeInteger.
+:vehicleType a bamm:Property;
+    bamm:preferredName "Vehicle variant"@en;
+    bamm:description "Vehicle variant - body shapes like SUV, Van, Limousine"@en;
+    bamm:characteristic :KbaVariant;
+    bamm:exampleValue "SUV".
+:numberOfDriveAxle a bamm:Property;
+    bamm:preferredName "Number of drive axles"@en;
+    bamm:description "Identification of 4WD, default 1: 2WD"@en;
+    bamm:characteristic :NumberOfDriveAxle;
+    bamm:exampleValue "2"^^xsd:positiveInteger.
+:energySourceCode a bamm:Property;
+    bamm:preferredName "Energy source code"@en;
+    bamm:description "The code for the energy source respectively fuel type of the vehicle according to KBA list"@en;
+    bamm:characteristic :EnergySource;
+    bamm:exampleValue "0002".
+:powerKW a bamm:Property;
+    bamm:preferredName "Power @en"@en;
+    bamm:description "Engine power is the power that an engine can put out in kW"@en;
+    bamm:characteristic :EnginePowerKW;
+    bamm:exampleValue "145"^^xsd:integer.
+:grossVehicleWeightKG a bamm:Property;
+    bamm:preferredName "Gross vehicle weight"@en;
+    bamm:description "Technical permissable maximum weight of the vehicle in kg"@en;
+    bamm:characteristic :Weight.
+:percentage a bamm:Property;
+    bamm:preferredName "Weightfactor in percantage"@en;
+    bamm:description "Weighfactor of the different profiles, a user has. Different profiles indicates different user as well as different usages of like profiles for daily work routes or for caravan holiday."@en;
+    bamm:characteristic :Percentage;
+    bamm:exampleValue "23.5"^^xsd:decimal.
+:trailerUse a bamm:Property;
+    bamm:preferredName "Trailer use switch"@en;
+    bamm:description "Usage of trailer like caravan. "@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.
+:cityDriving a bamm:Property;
+    bamm:preferredName "City driving switch"@en;
+    bamm:description "City driving means a short distances."@en;
+    bamm:characteristic bamm-c:Boolean;
+    bamm:exampleValue "true"^^xsd:boolean.
+:drivingStyle a bamm:Property;
+    bamm:preferredName "Driving style assessment"@en;
+    bamm:description "Numerical value between 1 and 100 describing the driving style. 1 for extreme economic driving, about 30 for normal driving, about 65 for sportive driving, 100 for aggressive driving."@en;
+    bamm:characteristic :WeightFactor;
+    bamm:exampleValue "45.5"^^xsd:decimal.
+:hilliness a bamm:Property;
+    bamm:preferredName "Hilliness assessment"@en;
+    bamm:description "Numerical value between 1 and 100 to describe the hilliness.\n1: absolut flat region, 100 steep mountain roads"@en;
+    bamm:characteristic :WeightFactor;
+    bamm:exampleValue "75.2"^^xsd:decimal.
+:curviness a bamm:Property;
+    bamm:preferredName "Curviness assessment"@en;
+    bamm:description "Numerical value between 1 and 100 describing the curviness (1: straight road ... 100: very curvy road."@en;
+    bamm:characteristic :WeightFactor;
+    bamm:exampleValue "60.0"^^xsd:decimal.
+:futureScenario a bamm:Property;
+    bamm:preferredName "Future scenario"@en;
+    bamm:description "The future scenario cotains one or more future usage profiles where the sum of percentage is 100"@en;
+    bamm:characteristic :FutureScenarioList.
+:futureScenarioId a bamm:Property;
+    bamm:preferredName "Future scenario ID"@en;
+    bamm:description "Identification number of future scenarios"@en;
+    bamm:characteristic :PositiveInteger;
+    bamm:exampleValue "1"^^xsd:positiveInteger.
+:Mileage a bamm-c:Measurement;
+    bamm:preferredName "Mileage @en"@en;
+    bamm:description "Distance in kilometre"@en;
+    bamm:dataType xsd:positiveInteger;
+    bamm-c:unit unit:kilometre.
+:AgeInMonths a bamm-c:Duration;
+    bamm:preferredName "Age in months"@en;
+    bamm:description "Age of vehicle in month"@en;
+    bamm:dataType xsd:nonNegativeInteger;
+    bamm-c:unit unit:month.
+:KbaVariant a bamm-c:Enumeration;
+    bamm:preferredName "KBA Variant @en"@en;
+    bamm:description "Current version of the Enumeration is sub-set of list defined from the German Federal Office for motor vehicles."@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://www.kba.de/DE/Statistik/Verzeichnisse/systematische_verzeichnisse_inhalt.html?nn=3505666>;
+    bamm-c:values ("Limousine" "Kombilimousine" "Pick-up" "Van" "SUV" "andere").
+:NumberOfDriveAxle a bamm:Characteristic;
+    bamm:preferredName "Number of drive axles"@en;
+    bamm:description "Characteristic of number of drive axles"@en;
+    bamm:dataType xsd:positiveInteger.
+:EnergySource a bamm-c:Enumeration;
+    bamm:preferredName "Energy Source"@en;
+    bamm:description "Enumeration of possible energy sources/fuel types of a vehicle. The list is defined from the German Federal Office for motor vehicles."@en;
+    bamm:dataType xsd:string;
+    bamm:see <https://www.kba.de/DE/Statistik/Verzeichnisse/systematische_verzeichnisse_inhalt.html?nn=3505666>;
+    bamm-c:values ("Unbekannt" "Diesel" "Benzin" "LPG" "Hybr.Benzin/E" "Hybr.Diesel/E" "0001" "0002" "0003" "0005" "0006" "0007" "0008" "0009" "0010" "0019" "0022" "0023" "0024" "0025" "0026" "0027" "0029" "0030" "0000" "Vielstoff" "Benzin/LPG" "Benzin/komp.Erdgas" "Erdgas NG" "Hybr.Vielstoff/E" "Hybr.Erdgas/E" "Benzin/Ethanol" "Hybr.LPG/E" "Hybr.B/E plug-in" "Hybr.D/E plug-in" "Hybr.LPG/E plug-in" "Hybr.V/E plug-in" "Hybr.NG/E plug-in").
+:EnginePowerKW a bamm-c:Measurement;
+    bamm:preferredName "Engine Power @en"@en;
+    bamm:description "Engine power expressed in kilowatt"@en;
+    bamm:dataType xsd:integer;
+    bamm-c:unit unit:kilowatt.
+:Weight a bamm-c:Measurement;
+    bamm:preferredName "Weight"@en;
+    bamm:description "Weight of an object"@en;
+    bamm:dataType xsd:double;
+    bamm-c:unit unit:kilogram.
+:Percentage a bamm:Characteristic;
+    bamm:dataType xsd:decimal.
+:WeightFactor a bamm:Characteristic;
+    bamm:description "Weightfactor is a number between 1 and 100 weightening the hilliness or curviness or driving style."@en;
+    bamm:dataType xsd:decimal.
+:FutureScenarioList a bamm-c:Collection;
+    bamm:preferredName "Future scenario list"@en;
+    bamm:description "Characteristic of future scenario"@en;
+    bamm:dataType :FutureProfilesEntity.
+:PositiveInteger a bamm:Characteristic;
+    bamm:preferredName "Positive integer"@en;
+    bamm:description "Positive integer number without unit"@en;
+    bamm:dataType xsd:positiveInteger.
+:FutureProfilesEntity a bamm:Entity;
+    bamm:preferredName "Future profiles entity"@en;
+    bamm:description "Future scenario: collection of usage profiles"@en;
+    bamm:properties (:curviness :hilliness :drivingStyle [
+  bamm:property :cityDriving;
+  bamm:optional "true"^^xsd:boolean
+] [
+  bamm:property :trailerUse;
+  bamm:optional "true"^^xsd:boolean
+] :percentage).

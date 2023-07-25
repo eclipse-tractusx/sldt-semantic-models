@@ -59,6 +59,12 @@ Thus, if you want to mark an issue or a PR, please add the aforementioned labels
 Modeling_Team
 ```
 to the PR. We have filters, which check for such comments. 
+
+## Standardizing a model
+If a model is used in a standard, this should be indicated by changing the status of the model to status "STANDARDIZED". 
+A model with can only reach status "STANDARDIZED" if it is "RELEASED" beforehand.
+A model with status "STANDARDIZED" can only be moved to status "DEPRECATED" if the corresponding standard is "DEPRECATED" as well.
+
 ## Retiring a model
 Once a model gets the status "DEPRECATED" it should not be used anymore by new use cases. Existing applications should look for a way to migrate to an alternative version or model. In alignment with the overall release cycles of Tractus-X, the modeling team tags the current main branch with the corresponding Tractus-X release and publishes modeling release notes. These release notes contain a hint about all model versions that changed the status to "DEPRECATED" since the previous Tractus-X release. The modeling team will delete these models two Tractus-X releases cycles later. So use cases are advised to react to the deprecation of models within the next release cycle.
 

@@ -3,6 +3,14 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [4.0.1] 2023-07-03
+### Changed
+- changed data type of property "version" from "positiveInteger" to "nonNegativeInteger"
+
+## [4.0.0] 2023-05-31
+### Changed
+- updated for compatibility with specification WBCSD v2 and PCF Rulebook v2
+
 ## [3.0.0] 2023-04-24
 ### Changed
 - new BAMM 2.0.0 version
