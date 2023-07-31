@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-### [3.0.0] - 2023-07-27
+### [3.0.0] - 2023-07-31
 - migrated from BAMM to SAMM
 
 
