@@ -5,6 +5,14 @@ All notable changes to this model will be documented in this file.
 
 ## [1.0.0] - 2023-06-30
 ### Added
+- added new properties: partGeometry (represting the side a part belongs to, e.g. left or right) and manufacturerId (BPN of the manufacturer)
+
+### Changed
+
+### Removed
+
+## [1.0.0] - 2023-06-30
+### Added
 - added new properties: createdOn, lastModifiedOn
 
 ### Changed
