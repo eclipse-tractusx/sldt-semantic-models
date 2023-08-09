@@ -30,7 +30,7 @@
 
 
 # Adjust if SAMM CLI version changes
-JARNAME=bamm-cli-2.1.3.jar
+JARNAME=samm-cli-2.3.1.jar
 SAMMFOLDER=.SAMMCLI/
 SAMMCLI=$SAMMFOLDER$JARNAME
 # Adjust if BAMM CLI version changes
