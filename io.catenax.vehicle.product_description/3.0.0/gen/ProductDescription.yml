@@ -1,0 +1,515 @@
+---
+openapi: 3.0.3
+info:
+  title: Vehicle master data
+  version: v3
+servers:
+- url: catenax.io/api/v3
+  variables:
+    api-version:
+      default: v3
+paths:
+  /{tenant-id}/product-description:
+    get:
+      tags:
+      - ProductDescription
+      operationId: getProductDescription
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/ProductDescription'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_UniqueID:
+      type: string
+      description: "Characteristic for a unique id: every linked property to this\
+        \ characteristic is a unique ID."
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_CatenaXIdTrait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_VehicleSteeringPos:
+      type: string
+      description: "Vehicle steering position enumeration from NHTSA, see table [vPICList_lite].[dbo].[Steering]"
+      enum:
+      - Left-Hand Drive
+      - Right-Hand Drive
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_Weight:
+      type: number
+      description: Weight of an object.
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_DriveTypeNHTSA:
+      type: string
+      description: "Enumeration of drive type according NHTSA, table [vPICList_lite].[dbo].[DriveType]"
+      enum:
+      - All-Wheel Drive
+      - Front-Wheel Drive
+      - Rear-Wheel Drive
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_EnginePower:
+      type: number
+      description: Engine power expressed in kilowatt.
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_Hybridization:
+      type: string
+      description: Enumeration of possible hybridization values
+      enum:
+      - battery electric vehicle
+      - hybrid electric vehicle
+      - no hybrid
+      - plugin hybrid electric vehicle
+      - range extender
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_OemShortNameTrait:
+      type: string
+      description: Restricts the length of wmiCode to exactly 3 chars
+      maxLength: 3
+      minLength: 3
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_OEMCharacteristic:
+      description: OEM characteristic describes an original eequipment manufacturer(OEM).
+      type: object
+      properties:
+        wmiCode:
+          description: "Short name/code of vehicle manufacturer according to world\
+            \ manufacturer information(wmi). The wmiCode are the first 3 chars of\
+            \ the vehicle identification number.\nA list of in NHTSA registered wmiCodes\
+            \ can be found in attribute Wmi in table [vPICList_lite].[dbo].[Wmi] "
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_OemShortNameTrait'
+        wmiDescription:
+          description: |-
+            Name of OEM according NHTSA or other authorities. Has to be compliant with/linked wmiCode attribute.
+            For NHTSA: name of table [vPICList_lite].[dbo].[Manufacturer]
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        cxBPN:
+          description: Catena-X business partner number of this company.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - wmiCode
+      - wmiDescription
+      - cxBPN
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_PositiveNumber:
+      type: number
+      minimum: 1
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_KbaVariant:
+      type: string
+      description: 'Current version of the Enumeration is sub-set of list defined
+        from the German Federal Office for motor vehicles. '
+      enum:
+      - Limousine
+      - Kombilimousine
+      - Kabrio-Limousine
+      - Cabrio-Limousine
+      - Mehrzweckfahrzeug
+      - Pkw-Pick-up
+      - Van
+      - Pick-up
+      - Coupe
+      - Schraeghecklimousine
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_NhtsaVariant:
+      type: string
+      description: "Enumeration comming from NHTSA offline database vpic, table [vPICList_lite].[dbo].[BodyStyle]"
+      enum:
+      - Cargo Van
+      - Convertible
+      - Cabriolet
+      - Coupe
+      - Crossover Utility Vehicle(CUV)
+      - Hatchback
+      - Liftback
+      - Notchback
+      - Limousine
+      - Low Speed Vehicle(LSV)
+      - Neighborhood Electric Vehicle(NEV)
+      - Minivan
+      - Pickup
+      - Roadster
+      - Sedan
+      - Saloon
+      - Sport Utility Truck(SUT)
+      - Sport Utility Vehicle(SUV)
+      - Multi-Purpose Vehicle(MPV)
+      - Van
+      - Wagon
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_BodyCharacteristic:
+      description: Bundles all body-related information.
+      type: object
+      properties:
+        numberOfDoors:
+          description: Describes the number of doors of a vehicle.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_PositiveNumber'
+        colorId:
+          description: Colour code describes the code of a specific colour of a vehicle.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        colorDescription:
+          description: Colour name describes the colour of the colour code as a written
+            word.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        kbaBody:
+          description: Vehicle variant - Body shapes according German KBA
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_KbaVariant'
+        nhtsaBody:
+          description: Vehicle variant - Body shapes according US NHTSA
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_NhtsaVariant'
+      required:
+      - numberOfDoors
+      - colorId
+      - colorDescription
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_Equipment:
+      description: One equipment of the vehicle.
+      type: object
+      properties:
+        equipmentIdentifier:
+          description: The identifier of a specific equipment.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        equipmentDescription:
+          description: The equipment variants description.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        group:
+          description: Bundels all equipment-oriented information into categories
+            like Interior
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - equipmentIdentifier
+      - equipmentDescription
+      - group
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_Equipments:
+      description: List of equipments installed in the vehicle.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_Equipment'
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_ProductionCharacteristic:
+      description: Production Characteristic
+      type: object
+      properties:
+        productionDate:
+          description: Production date of the vehicle
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        plantIdentifier:
+          description: Plant id of the final assembly of the vehicle
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        plantDescription:
+          description: Long name of the production plant of the vehicle
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - productionDate
+      - plantIdentifier
+      - plantDescription
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_CountryCodeTrait:
+      type: string
+      description: 'Regular Expression that ensures a three-letter code '
+      pattern: "^[A-Z][A-Z][A-Z]$"
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_SaleCharacteristic:
+      description: Characteristic for sale-oriented information.
+      type: object
+      properties:
+        soldDate:
+          description: Sold date of the vehicle = warranty start date for this vehicle
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        countryCode:
+          description: Vehicle sold country in ISO 8601 alpha 3
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_CountryCodeTrait'
+        countryGroup:
+          description: Region where this car was sold
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - soldDate
+      - countryCode
+      - countryGroup
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_CubicCapacity:
+      type: number
+      description: Cubic capacity of the engine
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_Engine:
+      description: Describing one installed engine
+      type: object
+      properties:
+        engineId:
+          description: OEM-specific identifier/type of the installed engine
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        engineDescription:
+          description: Description of the engine
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        engineSeries:
+          description: Engine series as defined by OEM
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        serialNumber:
+          description: Serial number of the installed engine
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        size:
+          description: Cubic capacity in a combustion engine  - not available in battery-electric
+            vehicles
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_CubicCapacity'
+        power:
+          description: Engine power is the power that an engine can put out
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_EnginePower'
+        engineProductionDate:
+          description: Date when the engine was produced
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        installDate:
+          description: Date when the engine was installed
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+      required:
+      - engineId
+      - engineDescription
+      - engineSeries
+      - serialNumber
+      - power
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_Engines:
+      description: A list of all installed engines in the vehicle
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_Engine'
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_FuelKBA:
+      type: string
+      description: Enumeration of possible fuel types of a vehicle according german
+        KBA
+      enum:
+      - Unbekannt
+      - Diesel
+      - Benzin
+      - Vielstoff
+      - Elektro
+      - Benzin/Fl?ssiggas
+      - Benzin/komp.Erdgas
+      - Hybr.Benzin/E
+      - Erdgas NG
+      - Hybr.Diesel/E
+      - Wasserstoff
+      - Hybr.Wasserst./E
+      - Wasserstoff/Benzin
+      - Wasserst./Benzin/E
+      - BZ/Wasserstoff
+      - BZ/Benzin
+      - BZ/Methanol
+      - BZ/Ethanol
+      - Hybr.Vielstoff/E
+      - Methan
+      - Benzin/Methan
+      - Hybr.Erdgas/E
+      - Benzin/Ethanol
+      - Hybr.B/E ext.aufl.
+      - Hybr.D/E ext.aufl.
+      - Hybr.LPG/E ext.aufl.
+      - Hybr.W/E ext.aufl.
+      - Hybr.V/E ext.aufl.
+      - Hybr.NG/E ext.aufl.
+      - Hybr.Wod.B/Eext.aufl
+      - Wasserstoff/NG
+      - Hybr.W/NG/E ext.aufl
+      - Ethanol
+      - Hybr.BZ/W/E
+      - Hybr.BZ/W/E ext. aufl.
+      - Zweistoff LNG/Diesel
+      - Andere
+      - Fluessiggas
+      - Hybr.Fluessiggas/E
+      - Verfluessigtes Erdgas(LNG)
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_FuelNHTSA:
+      type: string
+      description: "Enumeration from NHTSA vpic database, table [vPICList_lite].[dbo].[FuelType]"
+      enum:
+      - Compressed Hydrogen/Hydrogen
+      - Compressed Natural Gas(CNG)
+      - Diesel
+      - Electric
+      - Ethanol(E85)
+      - Flexible Fuel Vehicle(FFV)
+      - Fuel Cell
+      - Gasoline
+      - Liquefied Natural Gas(LNG)
+      - Liquefied Petroleum Gas(propane or LPG)
+      - Methanol(M85)
+      - Natural Gas
+      - Neat Ethanol(E100)
+      - Neat Methanol(M100)
+      - Unknown
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_FuelCharacteristic:
+      description: Characteristic for the fuel used in the vehicle.
+      type: object
+      properties:
+        kbaFuelType:
+          description: Description of the fuel according german KBA
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_FuelKBA'
+        nhtsaFuelType:
+          description: Description of the fuel according US NHTSA
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_FuelNHTSA'
+    urn_samm_io.catenax.vehicle.product_description_3.0.0_VehicleCharacteristic:
+      description: This chracteristic bundles all general vehicle data.
+      type: object
+      properties:
+        anonymizedVin:
+          description: OEM-specific hashed VIN; link to car data over pseydomized/hashed
+            VIN or Catena-X unique digital twin identifier.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_UniqueID'
+        catenaXId:
+          description: "A fully anonymous Catena-X identifier that is registered in\
+            \ C-X Digital twin registry. Can be used for vehicles, parts, workshops,\
+            \ ....."
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_CatenaXIdTrait'
+        vehicleSeries:
+          description: "vehicle series, normally one level above model. E.g. vehicle\
+            \ series =\"Golf\", vehicle model=\"Golf VIII\""
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        modelDescription:
+          description: Detail vehicle model like "Golf VIII"
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        modelIdentifier:
+          description: OEM-specific model identifier or OEM-specific project name.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        class:
+          description: Class of the vehicle.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        steeringPos:
+          description: "Position of vehicle steering wheel, Left or right."
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_VehicleSteeringPos'
+        emptyWeight:
+          description: The empty weight of the vehicle in kg as specified.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_Weight'
+        driveType:
+          description: Drive type of a vehicle according enumeration.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_DriveTypeNHTSA'
+        systemPower:
+          description: Complete power of this vehicle in KW.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_EnginePower'
+        hybridizationType:
+          description: Degree of hybridization in this vehicle.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_Hybridization'
+        softwareCategory:
+          description: |-
+            Some OEMs bring in the software as complete package for all systems:
+            To identify this software: software category and software version is needed.
+            Software category when this car was built.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        softwareVersion:
+          description: |-
+            Some OEMs brings in the software as complete package for all systems:
+            To identify this software: software category and software version is needed.
+            Software version when this car was built
+            .
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        oem:
+          description: Original equipment manufacturer.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_OEMCharacteristic'
+        body:
+          description: Vehicle body.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_BodyCharacteristic'
+        equipments:
+          description: Equipments.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_Equipments'
+        production:
+          description: This property bundles production-related information.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_ProductionCharacteristic'
+        sale:
+          description: This property bundles all sales related information.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_SaleCharacteristic'
+        engines:
+          description: List of installed engines in the vehicle.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_Engines'
+        fuel:
+          description: The fuel type of the vehicle.
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_FuelCharacteristic'
+      required:
+      - anonymizedVin
+      - vehicleSeries
+      - modelDescription
+      - modelIdentifier
+      - class
+      - steeringPos
+      - emptyWeight
+      - driveType
+      - systemPower
+      - oem
+      - body
+      - equipments
+      - production
+      - sale
+      - engines
+      - fuel
+    ProductDescription:
+      description: Master data of one vehicle - from an end customer view. So this
+        model represents the vehicle as it was sold to the customer. All entities
+        and properties are immutable over the lifetime of the vehicle.
+      type: object
+      properties:
+        vehicle:
+          description: "A vehicle can be a car, bus, truck..."
+          $ref: '#/components/schemas/urn_samm_io.catenax.vehicle.product_description_3.0.0_VehicleCharacteristic'
+      required:
+      - vehicle
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ProductDescription:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductDescription'
+      description: The request was successful.
+  requestBodies:
+    ProductDescription:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductDescription'

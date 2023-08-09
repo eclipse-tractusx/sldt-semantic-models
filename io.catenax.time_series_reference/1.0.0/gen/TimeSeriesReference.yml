@@ -1,0 +1,240 @@
+---
+openapi: 3.0.3
+info:
+  title: Time Series Reference
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/time-series-reference:
+    get:
+      tags:
+      - TimeSeriesReference
+      operationId: getTimeSeriesReference
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: since
+        in: query
+        description: A timestamp that points to the start of the time-based data.
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: until
+        in: query
+        description: A timestamp that points to the end of the time-based data.
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: limit
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      responses:
+        "200":
+          $ref: '#/components/responses/TimeSeriesReference'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSeriesReference'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.time_series_reference_1.0.0_DecimalSeperator:
+      type: string
+      description: Indicates whether a dot or comma is used to separate the decimal
+        place in the source file.
+      enum:
+      - comma
+      - dot
+    urn_samm_io.catenax.time_series_reference_1.0.0_ResourcePath:
+      type: string
+      format: uri
+      description: The path of a resource.
+    urn_samm_io.catenax.time_series_reference_1.0.0_FileExtension:
+      type: string
+      description: "Indicates whether csv, none or txt is used as file extension."
+      enum:
+      - csv
+      - none
+      - txt
+      - dat
+      - data
+    urn_samm_io.catenax.time_series_reference_1.0.0_Delimiter:
+      type: string
+      description: "Indicates whether a semicolon, comma or tab is used as a deliniter\
+        \ between datapoints."
+      enum:
+      - semicolon
+      - comma
+      - tab
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: Describes a Property containing a reference to one of the units
+        in the Unit Catalog.
+    urn_samm_io.catenax.time_series_reference_1.0.0_UnitEntity:
+      description: The unit of a column.
+      type: object
+      properties:
+        unit:
+          description: The unit of a column.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference'
+      required:
+      - unit
+    urn_samm_io.catenax.time_series_reference_1.0.0_UnitsListCharacteristic:
+      description: Lists the unit for each datapoint.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_UnitEntity'
+    urn_samm_io.catenax.time_series_reference_1.0.0_VariableListCharacteristic:
+      description: Lists the name for each datapoint.
+      type: array
+      items:
+        type: string
+    urn_samm_io.catenax.time_series_reference_1.0.0_TimeColumnChoice:
+      type: string
+      description: Specifies the name of the time colums variable.
+      enum:
+      - Time
+      - TIME
+      - time
+      - t
+    urn_samm_io.catenax.time_series_reference_1.0.0_PayloadEntity:
+      description: Contains the information about variable names and their units as
+        well as the name of the time column.
+      type: object
+      properties:
+        units:
+          description: Lists the unit for each datapoint.
+          $ref: '#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_UnitsListCharacteristic'
+        variableNames:
+          description: Lists the name for each datapoint.
+          $ref: '#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_VariableListCharacteristic'
+        timeColumnName:
+          description: Specifies the name of the Variable Names entry which contains
+            the time column.
+          $ref: '#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_TimeColumnChoice'
+      required:
+      - units
+      - variableNames
+      - timeColumnName
+    urn_samm_io.catenax.time_series_reference_1.0.0_PayloadCharacteristic:
+      description: Contains the information about variable names and their units as
+        well as the name of the time column.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_PayloadEntity'
+      uniqueItems: true
+    TimeSeriesReference:
+      description: Aspect to describe a reference to a file which contains time series
+        data.
+      type: object
+      properties:
+        decimalSeperator:
+          description: Indicates whether a dot or comma is used to separate the decimal
+            place in the source file.
+          $ref: '#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_DecimalSeperator'
+        sourceFile:
+          description: Contains the URI to the referenced time series file.
+          $ref: '#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_ResourcePath'
+        fileExtension:
+          description: "Indicates whether csv, none or txt is used as file extension."
+          $ref: '#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_FileExtension'
+        delimiter:
+          description: "Indicates whether a semicolon, comma or tab is used as a deliniter\
+            \ between datapoints."
+          $ref: '#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_Delimiter'
+        payload:
+          description: Contains the information about variable names and their units
+            as well as the name of the time column.
+          $ref: '#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_PayloadCharacteristic'
+      required:
+      - decimalSeperator
+      - sourceFile
+      - fileExtension
+      - delimiter
+      - payload
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TimeSeriesReference:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    TimeSeriesReference:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TimeSeriesReference'
