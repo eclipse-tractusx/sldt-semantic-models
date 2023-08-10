@@ -3,12 +3,12 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2023-08-09
+## [2.0.0] - 2023-08-10
 ### Changed
 - updated version of model
 - change headline to subject
 - change ess incident issuer name to first name, add last name
-- change ess incident issuer field descriptions 
+- change field descriptions 
 - use reference to shared aspect address, replace formerly used fields for address information
 
 ### Added
