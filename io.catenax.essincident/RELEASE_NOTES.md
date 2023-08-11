@@ -9,7 +9,10 @@ All notable changes to this model will be documented in this file.
 - change headline to subject
 - change ess incident issuer name to first name, add last name
 - change field descriptions 
-- use reference to shared aspect address, replace formerly used fields for address information
+- use reference to shared aspect address, replace formerly used fields for address information 
+- keep ess originator country subdivision (not in shared aspect)
+- keep ess incident issuer country subdivision (not in shared aspect)
+
 
 ### Added
 - incident external notes and external subject for external communication
@@ -26,6 +29,7 @@ All notable changes to this model will be documented in this file.
 - unique part number
 - ess originator bpn available
 - ess originator cx member
+- ess incident issuer company name
 
 
 
