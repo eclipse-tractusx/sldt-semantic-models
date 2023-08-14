@@ -3,9 +3,9 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [1.0.0] - 2023-06-26
+## [1.0.0] - 2023-07-10
 ### Added
-- model created
+- model renamed and created
 
 ### Changed
 n/a

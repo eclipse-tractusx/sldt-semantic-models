@@ -3,6 +3,13 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [3.0.0] - 2023-06-26
+### Added
+Model in version 3.0.0 updated to SAMM version 2.0.0
+- model now uses SAMM 2.0
+- linkage between entities changed: Vehicle entity is now root, enties OEM, Body,Equipment, Production, Sale, Engines and Fuel are children of Vehicle
+
+
 ## [2.0.0] - 2022-12-13
 ### Added
 The new aspect model enhances the version 1.0.0 with
