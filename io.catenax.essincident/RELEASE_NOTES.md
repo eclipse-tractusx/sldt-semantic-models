@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2023-08-10
+## [2.0.0] - 2023-08-21
 ### Changed
 - updated version of model
 - change headline to subject
