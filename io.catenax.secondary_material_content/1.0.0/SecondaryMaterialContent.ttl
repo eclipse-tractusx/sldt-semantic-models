@@ -1,0 +1,417 @@
+#######################################################################
+# Copyright (c) 2023 BMW AG
+# Copyright (c) 2023 BASF Coatings GmbH
+# Copyright (c) 2023 SAP Deutschland SE & Co.KG
+# Copyright (c) 2023 T-Systems International GmbH
+# Copyright (c) 2023 Robert Bosch GmbH
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.secondary_material_content:1.0.0#> .
+@prefix ext-part: <urn:samm:io.catenax.serial_part:1.0.1#> .
+
+:SecondaryMaterialContent a samm:Aspect ;
+   samm:preferredName "Secondary Material Content"@en ;
+   samm:description "This model refers to a part containing one or more different material. It references the share on primary and secondary material and relevant details."@en ;
+   samm:properties ( :secondaryMaterialContent :supplierID :orderNumber ext-part:manufacturerPartId ext-part:customerPartId ext-part:nameAtManufacturer ext-part:nameAtCustomer ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:secondaryMaterialContent a samm:Property ;
+   samm:preferredName "secondary Material Content"@en ;
+   samm:description "List of relevant materials which are built in this part and details on the share of primary and secondary material."@en ;
+   samm:characteristic :SecondaryMaterialContentMaterials .
+
+:supplierID a samm:Property ;
+   samm:preferredName "supplier ID"@en ;
+   samm:description "Suppliers individual business ID within the Catena-X network."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BPN1234567890ZZ" .
+
+:orderNumber a samm:Property ;
+   samm:preferredName "order Number"@en ;
+   samm:description "Order number as provided by supplier."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "856496" .
+
+:SecondaryMaterialContentMaterials a samm-c:Set ;
+   samm:preferredName "Secondary Material Content Materials"@en ;
+   samm:description "List of relevant materials which are built in this part and details on the share of primary and secondary material."@en ;
+   samm:dataType :SecondaryMaterialContentMaterialsEntity .
+
+:SecondaryMaterialContentMaterialsEntity a samm:Entity ;
+   samm:preferredName "Secondary Material Content Materials Entity"@en ;
+   samm:description "List of relevant materials which are built in this part and details on the share of primary and secondary material."@en ;
+   samm:properties ( :materialNameAtSupplier :materialClass :materialNameStandardized :unitOfMeasure :bioBased :inorganic :certificate ) .
+
+:materialNameAtSupplier a samm:Property ;
+   samm:preferredName "material name at supplier"@en ;
+   samm:description "Material name as provided by supplier."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Opatex" .
+
+:materialClass a samm:Property ;
+   samm:preferredName "material Class"@en ;
+   samm:description "Material class according to VDA standard 231-106."@en ;
+   samm:see <https://www.mdsystem.com/imdsnt/startpage/index.jsp> ;
+   samm:characteristic :MaterialClass ;
+   samm:exampleValue "5.1" .
+
+:materialNameStandardized a samm:Property ;
+   samm:preferredName "material name standardized"@en ;
+   samm:description "Material name according to standard."@en ;
+   samm:characteristic :MaterialNameStandardized .
+
+:unitOfMeasure a samm:Property ;
+   samm:preferredName "unit of measure"@en ;
+   samm:description "Attribute to define the measure and actual mass of the material."@en ;
+   samm:characteristic :UnitOfMeasure .
+
+:bioBased a samm:Property ;
+   samm:preferredName "bio Based"@en ;
+   samm:description "Bio-based materials are materials of biological origin excluding material embedded in geological formations and/or fossilised."@en ;
+   samm:characteristic :BioBased .
+
+:inorganic a samm:Property ;
+   samm:preferredName "inorganic"@en ;
+   samm:description "Material based on inorganic matter or fossil fuels."@en ;
+   samm:characteristic :Inorganic .
+
+:certificate a samm:Property ;
+   samm:preferredName "certificate"@en ;
+   samm:description "If available, the name of a certificate verifying the recycling content can be included."@en ;
+   samm:characteristic :Certificate .
+
+:MaterialClass a samm:Characteristic ;
+   samm:preferredName "material class"@en ;
+   samm:description "Class according to the referenced standard the material belongs to. The IMDS recommendations and the IMDS rules are exclusively accessible within the IMDS portal to members of the IMDS association. In order to access the data one needs to be member of the association."@en ;
+   samm:see <https://www.mdsystem.com/imdsnt/startpage/index.jsp> ;
+   samm:dataType xsd:string .
+
+:MaterialNameStandardized a samm:Characteristic ;
+   samm:preferredName "Material Name Standardized"@en ;
+   samm:description "Material name according to standard."@en ;
+   samm:dataType :MaterialNameStandardizedEntity .
+
+:UnitOfMeasure a samm:Characteristic ;
+   samm:preferredName "Unit of Measure"@en ;
+   samm:description "Attribute to define the measure and actual mass of the material."@en ;
+   samm:dataType :UnitOfMeasureEntity .
+
+:BioBased a samm:Characteristic ;
+   samm:preferredName "Bio Based"@en ;
+   samm:description "Bio-based materials are materials of biological origin excluding material embedded in geological formations and/or fossilised."@en ;
+   samm:dataType :BioBasedEntity .
+
+:Inorganic a samm:Characteristic ;
+   samm:preferredName "Inorganic"@en ;
+   samm:description "Material based on inorganic matter or fossil fuels."@en ;
+   samm:dataType :InorganicEntity .
+
+:Certificate a samm-c:Set ;
+   samm:preferredName "Certificate"@en ;
+   samm:description "If available, the name of a certificate verifying the recycling content can be included."@en ;
+   samm:dataType :CertificateEntity .
+
+:MaterialNameStandardizedEntity a samm:Entity ;
+   samm:preferredName "Material NameStandardized Entity"@en ;
+   samm:description "Material name according to standard."@en ;
+   samm:properties ( :referencedStandard :referencedStandardID :materialNameStandardizedValue ) .
+
+:UnitOfMeasureEntity a samm:Entity ;
+   samm:preferredName "Unit of Measure Entity"@en ;
+   samm:description "Attribute to define the measure and actual mass of the material."@en ;
+   samm:properties ( :unitOfMeasureKey :unitOfMeasureValue ) .
+
+:BioBasedEntity a samm:Entity ;
+   samm:preferredName "Bio Based Entity"@en ;
+   samm:description "Bio-based materials are materials of biological origin excluding material embedded in geological formations and/or fossilised."@en ;
+   samm:properties ( :bioBasedClass :secondaryBioBased :primaryBioBased ) .
+
+:InorganicEntity a samm:Entity ;
+   samm:preferredName "Inorganic Entity"@en ;
+   samm:description "Material based on inorganic matter or fossil fuels."@en ;
+   samm:properties ( :secondaryInorganic :primaryInorganic ) .
+
+:CertificateEntity a samm:Entity ;
+   samm:preferredName "Certificate Entity"@en ;
+   samm:description "If available, the name of a certificate verifying the recycling content can be included."@en ;
+   samm:properties ( :certificateName :certificateLink ) .
+
+:referencedStandard a samm:Property ;
+   samm:preferredName "referenced Standard"@en ;
+   samm:description "Norm authority who governs norm."@en ;
+   samm:characteristic :ReferencedStandard ;
+   samm:exampleValue "ISO" .
+
+:referencedStandardID a samm:Property ;
+   samm:preferredName "referenced Standard ID"@en ;
+   samm:description "Norm code of related naming norm."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "1043" .
+
+:materialNameStandardizedValue a samm:Property ;
+   samm:preferredName "material Name Standardized Value"@en ;
+   samm:description "Name of the material according to the norming authority and the referenced ID of the norm."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "PP-TD10" .
+
+:unitOfMeasureKey a samm:Property ;
+   samm:preferredName "unit of Measure Key"@en ;
+   samm:description "Unit of measure in which the mass of the material is being measured."@en ;
+   samm:characteristic :UnitOfMeasureKeyTrait ;
+   samm:exampleValue "unit:gramm"^^samm:curie .
+
+:unitOfMeasureValue a samm:Property ;
+   samm:preferredName "unit of Measure Value"@en ;
+   samm:description "Net mass of material in defined unit."@en ;
+   samm:characteristic :UnitOfMeasureValue ;
+   samm:exampleValue "3000.0"^^xsd:float .
+
+:bioBasedClass a samm:Property ;
+   samm:preferredName "bio Based Class"@en ;
+   samm:description "Information on bio-based material class."@en ;
+   samm:characteristic :BioBasedClass ;
+   samm:exampleValue "gen1" .
+
+:secondaryBioBased a samm:Property ;
+   samm:preferredName "secondary Bio Based"@en ;
+   samm:description "Secondary materials are recycled materials that can be used in manufacturing processes instead of or alongside virgin raw materials."@en ;
+   samm:characteristic :SecondaryBioBased .
+
+:primaryBioBased a samm:Property ;
+   samm:preferredName "primary Bio Based"@en ;
+   samm:description "Primary materials are raw materials that are used for the first time during the planned process."@en ;
+   samm:characteristic :PrimaryBioBased .
+
+:secondaryInorganic a samm:Property ;
+   samm:preferredName "secondary Inorganic"@en ;
+   samm:description "Secondary materials are recycled materials that can be used in manufacturing processes instead of or alongside virgin raw materials."@en ;
+   samm:characteristic :SecondaryInorganic .
+
+:primaryInorganic a samm:Property ;
+   samm:preferredName "primary Inorganic"@en ;
+   samm:description "Primary materials are raw materials that are used for the first time during the planned process."@en ;
+   samm:characteristic :PrimaryInorganic .
+
+:certificateName a samm:Property ;
+   samm:preferredName "certificate Name"@en ;
+   samm:description "If available, the name of a certificate verifying the recycling content can be included."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Redcert" .
+
+:certificateLink a samm:Property ;
+   samm:preferredName "certificateLink"@en ;
+   samm:description "The certificate can be referenced for example as a PDF file."@en ;
+   samm:characteristic samm-c:ResourcePath .
+
+:ReferencedStandard a samm-c:Enumeration ;
+   samm:preferredName "Referenced Standard"@en ;
+   samm:description "Norm authority who governs norm."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "AISI" "AS" "ASME" "DIN" "DIN EN" "EN" "JASO" "JIS" "GB" "ISO" "IS" ) .
+
+:UnitOfMeasureKeyTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :UnitReference ;
+   samm-c:constraint :AllowMassUnit .
+
+:UnitOfMeasureValue a samm-c:Quantifiable ;
+   samm:preferredName "Unit of Measure Value"@en ;
+   samm:description "Net mass of material in defined unit."@en ;
+   samm:dataType xsd:float .
+
+:BioBasedClass a samm-c:Enumeration ;
+   samm:preferredName "bio Based Class"@en ;
+   samm:description "Information on bio-based material class."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "gen1" "gen2" "gen3" ) .
+
+:SecondaryBioBased a samm:Characteristic ;
+   samm:preferredName "Secondary Bio Based"@en ;
+   samm:description "Secondary materials are recycled materials that can be used in manufacturing processes instead of or alongside virgin raw materials."@en ;
+   samm:dataType :SecondaryBioBasedEntity .
+
+:PrimaryBioBased a samm:Characteristic ;
+   samm:preferredName "Primary Bio Based"@en ;
+   samm:description "Primary materials are raw materials that are used for the first time during the planned process."@en ;
+   samm:dataType :PrimaryBioBasedEntity .
+
+:SecondaryInorganic a samm:Characteristic ;
+   samm:preferredName "Secondary Inorganic"@en ;
+   samm:description "Secondary materials are recycled materials that can be used in manufacturing processes instead of or alongside virgin raw materials."@en ;
+   samm:dataType :SecondaryInorganicEntity .
+
+:PrimaryInorganic a samm:Characteristic ;
+   samm:preferredName "Primary Inorganic"@en ;
+   samm:description "Primary materials are raw materials that are used for the first time during the planned process."@en ;
+   samm:dataType :PrimaryInorganicEntity .
+
+:UnitReference a samm:Characteristic ;
+   samm:preferredName "Unit Reference"@en ;
+   samm:description "Describes a Property containing a reference to one of the units in the Unit Catalog."@en ;
+   samm:see <https://openmanufacturingplatform.github.io/sds-documentation/bamm-specification/v1.0.0/appendix/unitcatalog.html#unit-catalog-units> ;
+   samm:dataType samm:curie .
+
+:AllowMassUnit a samm-c:RegularExpressionConstraint ;
+   samm:description "Only allow mass related Units"@en ;
+   samm:see <https://openmanufacturingplatform.github.io/sds-documentation/bamm-specification/v1.0.0/appendix/unitcatalog.html#unit-catalog-units> ;
+   samm:value "unit:(centigram|decagram|decigram|decitonne|grain|gram|hectogram|hundredPoundCwtOrHundredWeightUs|hundredWeightUk|kilogram|kilotonne|megagram|microgram|milligram|ounceAvoirdupois|pfund|pound|slug|stoneUk|tonAssay|tonUkOrLongTonUs|tonUsOrShortTonUkorus|tonneMetricTon|troyOunceOrApothecaryOunce)" .
+
+:SecondaryBioBasedEntity a samm:Entity ;
+   samm:preferredName "Secondary Bio Based Entity"@en ;
+   samm:description "Secondary materials are recycled materials that can be used in manufacturing processes instead of or alongside virgin raw materials."@en ;
+   samm:properties ( :isMassBalanced :percentageOfMaterialWeight ) .
+
+:PrimaryBioBasedEntity a samm:Entity ;
+   samm:preferredName "Primary Bio Based Entity"@en ;
+   samm:description "Primary materials are raw materials that are used for the first time during the planned process."@en ;
+   samm:properties ( :percentageOfMaterialWeight ) .
+
+:SecondaryInorganicEntity a samm:Entity ;
+   samm:preferredName "Secondary Inorganic Entity"@en ;
+   samm:description "Secondary materials are recycled materials that can be used in manufacturing processes instead of or alongside virgin raw materials."@en ;
+   samm:properties ( :preConsumer :postConsumer :reutilization ) .
+
+:PrimaryInorganicEntity a samm:Entity ;
+   samm:preferredName "Primary Inorganic Entity"@en ;
+   samm:description "Primary materials are raw materials that are used for the first time during the planned process."@en ;
+   samm:properties ( :percentageOfMaterialWeight ) .
+
+:isMassBalanced a samm:Property ;
+   samm:preferredName "is Mass Balanced"@en ;
+   samm:description "Information whether mass-balancing was applied: Mass balance is one of several well-known chain of custody approaches that can be used to track the flow of materials through the value chain. The total quantity of the content in question is tracked through the production system and the allocation of this content is made to the end products based on verifiable accounting."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:percentageOfMaterialWeight a samm:Property ;
+   samm:preferredName "percentage Of Material Weight"@en ;
+   samm:description "Share of the full material weight in percentage."@en ;
+   samm:characteristic :PercentageOfMaterialWeightTrait ;
+   samm:exampleValue "12"^^xsd:float .
+
+:preConsumer a samm:Property ;
+   samm:preferredName "pre Consumer"@en ;
+   samm:description "Amount of material that is Pre-consumer material. Material diverted from the waste stream during a manufacturing process. Excluded is reutilization of materials such as rework, regrind or scrap generated in a process and capable of being reclaimed within the same process that generated it. Pre-consumer material can be used in form of recovered or recycled material as a substitute for primary material."@en ;
+   samm:characteristic :PreConsumer .
+
+:postConsumer a samm:Property ;
+   samm:preferredName "post Consumer"@en ;
+   samm:description "Amount of material that is Post-consumer material. Material generated by households or by commercial, industrial and institutional facilities in their role as end-users of the product which can no longer be used for ist intended purpose. This includes returns of material from the distribution chain. Post-consumer material can be used in form of recovered or recycled material as a substitute for primary material."@en ;
+   samm:characteristic :PostConsumer .
+
+:reutilization a samm:Property ;
+   samm:preferredName "reutilization"@en ;
+   samm:description "Amount of material content that has been reutilised. Reutilization of materials such as rework, regrind, or scrap materials generated within the process and capable of being reused within the same process that generated it."@en ;
+   samm:characteristic :Reutilization .
+
+:PercentageOfMaterialWeightTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :PercentageOfMaterialWeight ;
+   samm-c:constraint :PercentageConstraint .
+
+:PreConsumer a samm:Characteristic ;
+   samm:preferredName "Pre Consumer"@en ;
+   samm:description "Amount of material that is Pre-consumer material. Material diverted from the waste stream during a manufacturing process. Excluded is reutilization of materials such as rework, regrind or scrap generated in a process and capable of being reclaimed within the same process that generated it. Pre-consumer material can be used in form of recovered or recycled material as a substitute for primary material."@en ;
+   samm:dataType :PreConsumerEntity .
+
+:PostConsumer a samm:Characteristic ;
+   samm:preferredName "Post Consumer"@en ;
+   samm:description "Amount of material that is Post-consumer material. Material generated by households or by commercial, industrial and institutional facilities in their role as end-users of the product which can no longer be used for ist intended purpose. This includes returns of material from the distribution chain. Post-consumer material can be used in form of recovered or recycled material as a substitute for primary material."@en ;
+   samm:dataType :PostConsumerEntity .
+
+:Reutilization a samm:Characteristic ;
+   samm:preferredName "Reutilization"@en ;
+   samm:description "Amount of material content that has been reutilised. Reutilization of materials such as rework, regrind, or scrap materials generated within the process and capable of being reused within the same process that generated it."@en ;
+   samm:dataType :ReutilizationEntity .
+
+:PercentageOfMaterialWeight a samm-c:Quantifiable ;
+   samm:preferredName "Percentage Of Material Weight"@en ;
+   samm:description "Share of the full material weight in percentage."@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit :PercentageOfMaterialWeightUnit .
+
+:PercentageConstraint a samm-c:RangeConstraint ;
+   samm:preferredName "Percentage Constraint"@en ;
+   samm:description "Ensure that no percentage values is below zero or above 100."@en ;
+   samm-c:minValue "0.0"^^xsd:float ;
+   samm-c:maxValue "100.0"^^xsd:float ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:AT_MOST .
+
+:PreConsumerEntity a samm:Entity ;
+   samm:preferredName "Pre Consumer Entity"@en ;
+   samm:description "Amount of material that is Pre-consumer material. Material diverted from the waste stream during a manufacturing process. Excluded is reutilization of materials such as rework, regrind or scrap generated in a process and capable of being reclaimed within the same process that generated it. Pre-consumer material can be used in form of recovered or recycled material as a substitute for primary material."@en ;
+   samm:properties ( :chemicalRecycling :mechanicalRecycling ) .
+
+:PostConsumerEntity a samm:Entity ;
+   samm:preferredName "Post Consumer Entity"@en ;
+   samm:description "Amount of material that is Post-consumer material. Material generated by households or by commercial, industrial and institutional facilities in their role as end-users of the product which can no longer be used for ist intended purpose. This includes returns of material from the distribution chain. Post-consumer material can be used in form of recovered or recycled material as a substitute for primary material."@en ;
+   samm:properties ( :mechanicalRecycling :chemicalRecycling :isPreviousIndustryAutomotive ) .
+
+:ReutilizationEntity a samm:Entity ;
+   samm:preferredName "Reutilization Entity"@en ;
+   samm:description "Amount of material content that has been reutilised. Reutilization of materials such as rework, regrind, or scrap materials generated within the process and capable of being reused within the same process that generated it."@en ;
+   samm:properties ( :percentageOfMaterialWeight ) .
+
+:PercentageOfMaterialWeightUnit a samm:Unit ;
+   samm:preferredName "Percentage Of Material Weight Unit"@en ;
+   samm:referenceUnit unit:percent ;
+   samm:symbol "%" .
+
+:chemicalRecycling a samm:Property ;
+   samm:preferredName "chemical Recycling"@en ;
+   samm:description "Materials that have undergone chemical recycling."@en ;
+   samm:characteristic :ChemicalRecycling .
+
+:mechanicalRecycling a samm:Property ;
+   samm:preferredName "mechanical Recycling"@en ;
+   samm:description "Materials that have undergone mechanical recycling."@en ;
+   samm:characteristic :MechanicalRecycling .
+
+:isPreviousIndustryAutomotive a samm:Property ;
+   samm:preferredName "isPreviousIndustryAutomotive"@en ;
+   samm:description "Information if the material was previously used in automotive industry."@en ;
+   samm:characteristic :Boolean ;
+   samm:exampleValue true .
+
+:ChemicalRecycling a samm:Characteristic ;
+   samm:preferredName "Chemical Recycling"@en ;
+   samm:description "Materials that have undergone chemical recycling."@en ;
+   samm:dataType :ChemicalRecyclingEntity .
+
+:MechanicalRecycling a samm:Characteristic ;
+   samm:preferredName "Mechanical Recycling"@en ;
+   samm:description "Materials that have undergone mechanical recycling."@en ;
+   samm:dataType :MechanicalRecyclingEntity .
+
+:Boolean a samm:Characteristic ;
+   samm:preferredName "Boolean"@en ;
+   samm:description "Represents a boolean value (i.e. a \"flag\")."@en ;
+   samm:dataType xsd:boolean .
+
+:ChemicalRecyclingEntity a samm:Entity ;
+   samm:preferredName "Chemical Recycling Entity"@en ;
+   samm:description "Materials that have undergone chemical recycling."@en ;
+   samm:properties ( :isMassBalanced :percentageOfMaterialWeight ) .
+
+:MechanicalRecyclingEntity a samm:Entity ;
+   samm:preferredName "Mechanical Recycling Entity"@en ;
+   samm:description "Materials that have undergone mechanical recycling."@en ;
+   samm:properties ( :percentageOfMaterialWeight ) .
+
