@@ -4,11 +4,15 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2023-08-07
+## [2.0.0] - 2023-08-28
 
 ### Added
 
 - added new properties: partGeometry (represting the side a part belongs to, e.g. left or right) and manufacturerId (BPN of the manufacturer)
+- adjusted bamm meta model to samm meta model since it samm is default since 07.07.2023
+- rename property catenaXIf to assetId to accomodate ongoing discussion
+- removed unused property since it is already defined by samm-characteristics
+- adjust examle value of CatenaXIdTrait to a valid random uuid value
 
 ### Changed
 
