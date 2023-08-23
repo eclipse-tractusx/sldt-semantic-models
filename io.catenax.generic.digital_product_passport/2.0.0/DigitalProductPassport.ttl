@@ -1,24 +1,3 @@
-#######################################################################
-# Copyright (c) 2022, 2023 ZF Friedrichshafen AG
-# Copyright (c) 2022, 2023 BMW AG
-# Copyright (c) 2022, 2023 BASF Coatings GmbH
-# Copyright (c) 2022, 2023 Henkel AG & Co. KGaA
-# Copyright (c) 2022, 2023 CGI Deutschland B.V. & Co. KG
-# Copyright (c) 2022, 2023 SAP Deutschland SE & Co.KG
-# Copyright (c) 2022, 2023 T-Systems International GmbH
-# Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
-#
-# See the NOTICE file(s) distributed with this work for additional
-# information regarding copyright ownership.
-#
-# This work is made available under the terms of the
-# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
-# which is available at
-# https://creativecommons.org/licenses/by/4.0/legalcode.
-#
-# SPDX-License-Identifier: CC-BY-4.0
-#######################################################################
-
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
@@ -146,13 +125,13 @@
 
 :TypologyEntity a samm:Entity ;
    samm:preferredName "Typology Entity"@en ;
-   samm:description "Entity describing attributes such as the intended use, class and different names."@en ;
-   samm:properties ( :longName [ samm:property :class; samm:optional true ] :shortName [ samm:property :intendedUse; samm:optional true ] ) .
+   samm:description "Entity describing attributes such class and different names of the product."@en ;
+   samm:properties ( :longName [ samm:property :class; samm:optional true ] :shortName ) .
 
 :HandlingEntity a samm:Entity ;
    samm:preferredName "Handling Entity"@en ;
    samm:description "Entity to describe different aspects in relation with the handling of the product. Properties are the maintenance history spare parts, substances of concern and reusable packaging."@en ;
-   samm:properties ( [ samm:property :spareParts; samm:optional true ] :substanceOfConcern ) .
+   samm:properties ( :spareParts :substanceOfConcern ) .
 
 :SustainabilityEntity a samm:Entity ;
    samm:preferredName "Sustainability Entity"@en ;
@@ -162,7 +141,7 @@
 :CharacteristicsEntity a samm:Entity ;
    samm:preferredName "Characteristics Entity"@en ;
    samm:description "Entity which defines specific characteristics of a product such as different life spans and physical dimensions."@en ;
-   samm:properties ( :lifespan :physicalDimension ) .
+   samm:properties ( :lifespan :physicalDimension :physicalState ) .
 
 :CommercialEntity a samm:Entity ;
    samm:preferredName "Commercial Entity"@en ;
@@ -204,8 +183,8 @@
 :validityDate a samm:Property ;
    samm:preferredName "Validity Date"@en ;
    samm:description "The timestamp in the format (yyyy-mm-dd) with or without time zone for the product passport until when it is available. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 8:\n(2) (h) the period during which the product passport shall remain available which shall correspond to at least the expected lifetime of a specific product."@en ;
-   samm:characteristic :TimeStamp ;
-   samm:exampleValue "2000-01-01Z"^^xsd:date .
+   samm:characteristic :ValidCharacteristic ;
+   samm:exampleValue "2000-01-01Z" .
 
 :issueDate a samm:Property ;
    samm:preferredName "Issue Date"@en ;
@@ -242,21 +221,15 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "8HP60" .
 
-:intendedUse a samm:Property ;
-   samm:preferredName "Intended Use"@en ;
-   samm:description "The intended use of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (ii)  information for consumers and other end-users on how to [...] use [...] the product in order to minimise its impact on the environment and to ensure optimum durability, as well as on how to return or dispose of the product at end-of-life."@en ;
-   samm:characteristic :StringList ;
-   samm:exampleValue "Consumer uses: Ink and Toners" .
-
 :spareParts a samm:Property ;
    samm:preferredName "Spare Parts"@en ;
-   samm:description "The list of spare parts available for the product from various  suppliers."@en ;
-   samm:characteristic :SparePartCharacteristic .
+   samm:description "The list of spare parts available for the product from various suppliers."@en ;
+   samm:characteristic :EitherSparePart .
 
 :substanceOfConcern a samm:Property ;
    samm:preferredName "Concerning Substance"@en ;
    samm:description "Information regarding substances of concern in the product. Attributes are among others substance names, ids, concentration, location. This is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number.\n(5) (b) the location of the substances of concern within the product.\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...].\n(5) (c) provide exemptions for substances of concern or information elements from the information requirements referred to in the first subparagraph."@en ;
-   samm:characteristic :SubstanceList .
+   samm:characteristic :SubstanceCharacteristic .
 
 :state a samm:Property ;
    samm:preferredName "State"@en ;
@@ -267,13 +240,13 @@
 :material a samm:Property ;
    samm:preferredName "Material"@en ;
    samm:description "Information on different materials in the product."@en ;
-   samm:characteristic :MaterialList .
+   samm:characteristic :EitherMaterialCharacteristic .
 
 :critical a samm:Property ;
    samm:preferredName "Critical"@en ;
    samm:description "A list of critical raw material names which are included at the level of the product. This attribute is complemented to the ESPR proposal by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(hb) use or content of critical raw materials.\nIn Annex II of the connected proposal Act of Critical Raw Materials, a list of critical raw materials can be found."@en ;
    samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM:2023:0160:FIN> ;
-   samm:characteristic :CriticalList .
+   samm:characteristic :EitherCritical .
 
 :productEnvironmentalFootprint a samm:Property ;
    samm:preferredName "Product Environmental Footprint"@en ;
@@ -290,6 +263,12 @@
    samm:description "Physical dimensions are properties  associated with physical quantities for purposes of classification or differentiation. Mentioned are a part of these requirements in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (i) information on the performance of the product in relation to the product parameters referred to in Annex I;\nAnnex I (i) weight and volume of the product and its packaging, and the product-to-packaging ratio."@en ;
    samm:characteristic :PhysicalDimensionCharacteristic .
 
+:physicalState a samm:Property ;
+   samm:preferredName "Physical State"@en ;
+   samm:description "The physical sate of the item. There are three states of matter solid, liquid and gas which can be chosen from an enumeration."@en ;
+   samm:characteristic :PhysicalStateEnumeration ;
+   samm:exampleValue "solid" .
+
 :placedOnMarket a samm:Property ;
    samm:preferredName "Placed on Market"@en ;
    samm:description "The timestamp in the format (yyyy-mm-dd) with or without time zone when the product was put in the market."@en ;
@@ -299,7 +278,7 @@
 :importer a samm:Property ;
    samm:preferredName "Importer"@en ;
    samm:description "Information regarding the importer of the product, if different from the owner of the passport. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(j) information related to the importer, including the information referred to in Article 23(3) and its EORI number;\nArticle 23 states:\n(3) Importers shall indicate on the product their name, registered trade name or registered trade mark and the postal address and, where available, electronic means of communication, where they can be contacted or, where this is not possible, on the packaging, in a document accompanying the product or, where available, in a product passport. The contact details shall be clear, understandable and legible."@en ;
-   samm:characteristic :ImporterCharacteristic .
+   samm:characteristic :EitherImporter .
 
 :manufacturer a samm:Property ;
    samm:preferredName "Manufacturer"@en ;
@@ -329,7 +308,7 @@
 
 :category a samm:Property ;
    samm:preferredName "Category"@en ;
-   samm:description "The category in which the document can be sorted. The category could be for example: \"safety\" \"sustainability\" \"compliance\" \"passport\" \"substance of concern\" \"other\" \"tool and process\" \"assembly\" \"disassembly\" \"repair and installation\" \"user manual\" \"end of life\" \"return and disposal\" \"waste generation\" \"product packaging\" \"positioning\" \"waste prevention\". These are mentioned in the ESPR proposal from March 30th, 2022 ANNEX III:\n(e) compliance documentation and information required under this Regulation or other Union law applicable to the product, such as the declaration of conformity, technical documentation or conformity certificates;\n(f) user manuals, instructions, warnings or safety information, as required by other Union legislation applicable to the product.\nAdditionally requirements are mentioned in Article 21:\n(7) Manufacturers shall ensure that that a product covered by a delegated act adopted pursuant to Article 4 is accompanied by instructions that enable consumers and other end-users to safely assemble, install, operate, store, maintain, repair and dispose of the product in a language that can be easily understood by consumers and other end-users, as determined by the Member State concerned. Such instructions shall be clear, understandable and legible and include at least the information specified in the delegated acts adopted pursuant to Article 4 and pursuant to Article 7(2)(b), point (ii).\nArticle 7 states additionally:\n(2) (b) (ii) information for consumers and other end-users on how to install, use, maintain and repair the product in order to minimise its impact on the environment and to ensure optimum durability, as well as on how to return or dispose of the product at end-of-life;\n(2) (b) (iii) information for treatment facilities on disassembly, recycling, or disposal at end-of-life;\n(2) (b) (iv) other information that may influence the way the product is handled by parties other than the manufacturer in order to improve performance in relation to product parameters referred to in Annex I.\n(5) (d) relevant instructions for the safe use of the product."@en ;
+   samm:description "The category in which the document can be sorted. The category could be for example: \"safety\" \"sustainability\" \"compliance\" \"passport\" \"substance of concern\" \"other\" \"tool and process\" \"assembly\" \"disassembly\" \"repair and installation\" \"user manual\" \"end of life\" \"return and disposal\" \"waste generation\" \"product packaging\" \"positioning\" \"waste prevention\" or \"specific voluntary labels\". These are mentioned in the ESPR proposal from March 30th, 2022 ANNEX III:\n(e) compliance documentation and information required under this Regulation or other Union law applicable to the product, such as the declaration of conformity, technical documentation or conformity certificates;\nANNEX IV states additional information regarding the content of the technical documentation\nFurther information on documents are mentioned in the proposal from March 30th, 2022 ANNEX III:\n(f) user manuals, instructions, warnings or safety information, as required by other Union legislation applicable to the product.\nAdditionally requirements are mentioned in Article 21:\n(7) Manufacturers shall ensure that that a product covered by a delegated act adopted pursuant to Article 4 is accompanied by instructions that enable consumers and other end-users to safely assemble, install, operate, store, maintain, repair and dispose of the product in a language that can be easily understood by consumers and other end-users, as determined by the Member State concerned. Such instructions shall be clear, understandable and legible and include at least the information specified in the delegated acts adopted pursuant to Article 4 and pursuant to Article 7(2)(b), point (ii).\nArticle 7 states additionally:\n(2) (b) (ii) information for consumers and other end-users on how to install, use, maintain and repair the product in order to minimise its impact on the environment and to ensure optimum durability, as well as on how to return or dispose of the product at end-of-life;\n(2) (b) (iii) information for treatment facilities on disassembly, recycling, or disposal at end-of-life;\n(2) (b) (iv) other information that may influence the way the product is handled by parties other than the manufacturer in order to improve performance in relation to product parameters referred to in Annex I.\n(5) (d) relevant instructions for the safe use of the product."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Sustainability" .
 
@@ -379,6 +358,12 @@
    samm:dataType xsd:string ;
    samm-c:values ( "draft" "approved" "invalid" "expired" ) .
 
+:ValidCharacteristic a samm-c:Either ;
+   samm:preferredName "Valid Characteristic"@en ;
+   samm:description "Validity with either a timestamp (left) or an open string field for a comment (right.)"@en ;
+   samm-c:left :TimeStamp ;
+   samm-c:right :Comment .
+
 :TimeStamp a samm:Characteristic ;
    samm:preferredName "Time Stamp"@en ;
    samm:description "A timestamp in the format (yyyy-mm-dd) with or without time zone. For example 2000-01-01 or 2000-01-01Z."@en ;
@@ -399,20 +384,17 @@
    samm:description "Characteristic to describe the ECLASS typology of a product."@en ;
    samm:dataType :ClassEntity .
 
-:StringList a samm-c:List ;
-   samm:preferredName "String List"@en ;
-   samm:description "List of strings for the respective property."@en ;
-   samm:dataType xsd:string .
+:EitherSparePart a samm-c:Either ;
+   samm:preferredName "Either Spare Part"@en ;
+   samm:description "Either spare parts and optional spare part producers (left) or the string value \"not applicable\" (right)."@en ;
+   samm-c:left :SparePartCharacteristic ;
+   samm-c:right :NotApplicableEnumeration .
 
-:SparePartCharacteristic a samm:Characteristic ;
-   samm:preferredName "Spare Part Characteristic"@en ;
-   samm:description "Characteristic describing producers and spare parts."@en ;
-   samm:dataType :SparePartEntity .
-
-:SubstanceList a samm-c:List ;
-   samm:preferredName "Substance List"@en ;
-   samm:description "Characteristic for a list of substances of concern."@en ;
-   samm:dataType :SubstanceEntity .
+:SubstanceCharacteristic a samm-c:Either ;
+   samm:preferredName "Substance Characteristic"@en ;
+   samm:description "Either a list of substances (left) or the string value \"not applicable\" (right)."@en ;
+   samm-c:left :SubstanceList ;
+   samm-c:right :NotApplicableEnumeration .
 
 :StateEnumeration a samm-c:Enumeration ;
    samm:preferredName "State Enumeration"@en ;
@@ -420,15 +402,17 @@
    samm:dataType xsd:string ;
    samm-c:values ( "first life" "second life" ) .
 
-:MaterialList a samm-c:List ;
-   samm:preferredName "Material List"@en ;
-   samm:description "A list of different materials in the product."@en ;
-   samm:dataType :MaterialEntity .
+:EitherMaterialCharacteristic a samm-c:Either ;
+   samm:preferredName "Either Material Characteristic"@en ;
+   samm:description "Either a material list (left) or the string value \"not applicable\" (right)."@en ;
+   samm-c:left :MaterialList ;
+   samm-c:right :NotApplicableEnumeration .
 
-:CriticalList a samm-c:List ;
-   samm:preferredName "Critical List"@en ;
-   samm:description "The list of critical raw materials in the product (CRM) which is specified by EU."@en ;
-   samm:dataType xsd:string .
+:EitherCritical a samm-c:Either ;
+   samm:preferredName "Either Critical"@en ;
+   samm:description "Either a list of critical materials (left) or the string value \"not applicable\" (right)."@en ;
+   samm-c:left :CriticalList ;
+   samm-c:right :NotApplicableEnumeration .
 
 :ProductEnvironmentalFootprintCharacteristic a samm:Characteristic ;
    samm:preferredName "Product Environmental Footprint Characteristic"@en ;
@@ -445,10 +429,17 @@
    samm:description "Characteristic for physical dimensions with linear, mass and capacity attributes."@en ;
    samm:dataType :PhysicalDimensionEntity .
 
-:ImporterCharacteristic a samm:Characteristic ;
-   samm:preferredName "Importer Characteristic"@en ;
-   samm:description "Characteristic with information regarding the importer."@en ;
-   samm:dataType :ImporterEntity .
+:PhysicalStateEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Physical State Enumeration"@en ;
+   samm:description "Enumeration with the values solid, liquid and gas."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "solid" "liquid" "gas" ) .
+
+:EitherImporter a samm-c:Either ;
+   samm:preferredName "Either Importer"@en ;
+   samm:description "Either the importer with its ids (left) or the string value \"not applicable\" (right)."@en ;
+   samm-c:left :ImporterCharacteristic ;
+   samm-c:right :NotApplicableEnumeration .
 
 :ManufacturerCharacteristic a samm:Characteristic ;
    samm:preferredName "Manufacturer Characteristic"@en ;
@@ -479,6 +470,11 @@
    samm:description "Characteristic for the data type."@en ;
    samm:dataType :TypeEntity .
 
+:Comment a samm:Characteristic ;
+   samm:preferredName "Comment"@en ;
+   samm:description "A open comment field regarding the validity of the product passport."@en ;
+   samm:dataType xsd:string .
+
 :EconomicOperatorEntity a samm:Entity ;
    samm:preferredName "Economic Operator Entity"@en ;
    samm:description "Economic operator entity with identification and EORI."@en ;
@@ -489,20 +485,31 @@
    samm:description "Entity to describe the associated product category according to ECLASS. ECLASS is a monohierachical classification system where each class has a preferred name and a coded name that represents the classification structure."@en ;
    samm:properties ( :code :definition ) .
 
-:SparePartEntity a samm:Entity ;
-   samm:preferredName "Spare Part Entity"@en ;
-   samm:description "Entity with the attributes partId, producerId and partName to describe a list of spare parts."@en ;
-   samm:properties ( [ samm:property :sparePart; samm:payloadName "part" ] [ samm:property :sparePartProducer; samm:payloadName "producer" ] ) .
+:SparePartCharacteristic a samm:Characteristic ;
+   samm:preferredName "Spare Part Characteristic"@en ;
+   samm:description "Characteristic describing producers and spare parts."@en ;
+   samm:dataType :SparePartEntity .
 
-:SubstanceEntity a samm:Entity ;
-   samm:preferredName "Substance Entity"@en ;
-   samm:description "Information regarding substances of concern in the product. Attributes are among others substance names, ids, concentration, location. This is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number.\n(5) (b) the location of the substances of concern within the product.\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...].\n(5) (c) provide exemptions for substances of concern or information elements from the information requirements referred to in the first subparagraph. "@en ;
-   samm:properties ( [ samm:property :substanceName; samm:payloadName "name" ] :location [ samm:property :substanceUnit; samm:payloadName "unit" ] :concentration [ samm:property :substanceIdentification; samm:payloadName "id" ] [ samm:property :listType; samm:payloadName "type" ] :exemption ) .
+:NotApplicableEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Not Applicable Enumeration"@en ;
+   samm:description "Enumeration with the value \"not applicable\"."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "not applicable" ) .
 
-:MaterialEntity a samm:Entity ;
-   samm:preferredName "Material Entity"@en ;
-   samm:description "Information regarding recycled and/or renewable materials in the product. Attributes are among others material names, ids and percentage. These attributes are mentioned in the ESPR proposal from March 30th, 2022 Article 1:\n(1) (f) recycled content in products.\nAnd complemented by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(ha) use or content of sustainably sourced renewable materials."@en ;
-   samm:properties ( [ samm:property :materialName; samm:payloadName "name" ] :recycled :renewable [ samm:property :materialValue; samm:payloadName "value" ] [ samm:property :substanceUnit; samm:payloadName "unit" ] [ samm:property :materialIdentification; samm:payloadName "id" ] [ samm:property :listType; samm:payloadName "type" ] ) .
+:SubstanceList a samm-c:List ;
+   samm:preferredName "Substance List"@en ;
+   samm:description "Characteristic for a list of substances of concern."@en ;
+   samm:dataType :SubstanceEntity .
+
+:MaterialList a samm-c:List ;
+   samm:preferredName "Material List"@en ;
+   samm:description "A list of different materials in the product."@en ;
+   samm:dataType :MaterialEntity .
+
+:CriticalList a samm-c:List ;
+   samm:preferredName "Critical List"@en ;
+   samm:description "The list of critical raw materials in the product (CRM) which is specified by EU."@en ;
+   samm:dataType xsd:string .
 
 :ProductEnvironmentalFootprintEntity a samm:Entity ;
    samm:preferredName "Product Environmental Footprint Entity"@en ;
@@ -517,12 +524,12 @@
 :PhysicalDimensionEntity a samm:Entity ;
    samm:preferredName "Physical Dimension Entity"@en ;
    samm:description "Entity for physical dimensions with linear, mass and capacity attributes."@en ;
-   samm:properties ( [ samm:property :width; samm:optional true ] :length :weight [ samm:property :diameter; samm:optional true ] [ samm:property :height; samm:optional true ] :volume :grossWeight :grossVolume [ samm:property :physicalState; samm:optional true ] ) .
+   samm:properties ( [ samm:property :width; samm:optional true ] [ samm:property :length; samm:optional true ] [ samm:property :diameter; samm:optional true ] [ samm:property :height; samm:optional true ] :grossWeight [ samm:property :grossVolume; samm:optional true ] :weightOrVolume ) .
 
-:ImporterEntity a samm:Entity ;
-   samm:preferredName "Importer Entity"@en ;
-   samm:description "Entity with information regarding the importer such as the identification and the EORI."@en ;
-   samm:properties ( :eori [ samm:property :importerIdentification; samm:payloadName "id" ] ) .
+:ImporterCharacteristic a samm:Characteristic ;
+   samm:preferredName "Importer Characteristic"@en ;
+   samm:description "Characteristic with information regarding the importer."@en ;
+   samm:dataType :ImporterEntity .
 
 :ManufacturerEntity a samm:Entity ;
    samm:preferredName "Manufacturer Entity"@en ;
@@ -580,87 +587,20 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Manual transmission (motor vehicle)" .
 
-:sparePart a samm:Property ;
-   samm:preferredName "sparePart"@en ;
-   samm:description "Spare parts with name and identification."@en ;
-   samm:characteristic :PartList .
+:SparePartEntity a samm:Entity ;
+   samm:preferredName "Spare Part Entity"@en ;
+   samm:description "Entity with the attributes partId, producerId and partName to describe a list of spare parts."@en ;
+   samm:properties ( [ samm:property :sparePart; samm:payloadName "part" ] [ samm:property :sparePartProducer; samm:optional true; samm:payloadName "producer" ] ) .
 
-:sparePartProducer a samm:Property ;
-   samm:preferredName "Spare Part Producer"@en ;
-   samm:description "Producer of possible spare parts."@en ;
-   samm:characteristic :ProducerList .
+:SubstanceEntity a samm:Entity ;
+   samm:preferredName "Substance Entity"@en ;
+   samm:description "Information regarding substances of concern in the product. Attributes are among others substance names, ids, concentration, location. This is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number.\n(5) (b) the location of the substances of concern within the product.\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...].\n(5) (c) provide exemptions for substances of concern or information elements from the information requirements referred to in the first subparagraph. "@en ;
+   samm:properties ( [ samm:property :substanceName; samm:payloadName "name" ] :location [ samm:property :substanceUnit; samm:payloadName "unit" ] :concentration [ samm:property :substanceIdentification; samm:payloadName "id" ] [ samm:property :listType; samm:payloadName "type" ] :exemption ) .
 
-:substanceName a samm:Property ;
-   samm:preferredName "Substance Name"@en ;
-   samm:description "The substance name, in accordance with the specification in the attribute for the list type, which is present in the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Lead" .
-
-:location a samm:Property ;
-   samm:preferredName "Location"@en ;
-   samm:description "The location of the substances of concern within the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (b) the location of the substances of concern within the product."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Housing" .
-
-:substanceUnit a samm:Property ;
-   samm:preferredName "Substance Unit"@en ;
-   samm:description "The unit of concentration chosen from an enumeration: mass percent, volume percent, parts per thousand, parts per million, parts per billion and  parts per trillion."@en ;
-   samm:see <https://eclipse-esmf.github.io/samm-specification/snapshot/appendix/unitcatalog.html> ;
-   samm:characteristic :ConcentrationEnumeration ;
-   samm:exampleValue "unit:percent"^^samm:curie .
-
-:concentration a samm:Property ;
-   samm:preferredName "Concentration"@en ;
-   samm:description "Concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...]."@en ;
-   samm:characteristic :EitherConcentration .
-
-:substanceIdentification a samm:Property ;
-   samm:preferredName "Substance Identification"@en ;
-   samm:description "The substance identification, in accordance with the specification in the attribute for the list type. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number."@en ;
-   samm:characteristic :IdentifierCharacteristic ;
-   samm:exampleValue "RC0402" .
-
-:listType a samm:Property ;
-   samm:preferredName "List Type"@en ;
-   samm:description "The type of list used for the identification of the substances. Selected can be for example IUPAC, ECHA or CAS. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number."@en ;
-   samm:characteristic :ChemicalEnumeration ;
-   samm:exampleValue "CAS" .
-
-:exemption a samm:Property ;
-   samm:preferredName "Exemption"@en ;
-   samm:description "Exemptions to the substance of concern. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) provide exemptions for substances of concern or information elements from the information requirements referred to in the first subparagraph."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "shall not apply to product x containing not more than 1,5 ml of liquid" .
-
-:materialName a samm:Property ;
-   samm:preferredName "Material Name"@en ;
-   samm:description "The material name, in accordance with the specification in the attribute for the list type. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 1:\n(1) (f) recycled content in products."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Aluminium" .
-
-:recycled a samm:Property ;
-   samm:preferredName "Recycled"@en ;
-   samm:description "A flag if the material is recovered recycled content from the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 1:\n(1) (f) recycled content in products."@en ;
-   samm:characteristic samm-c:Boolean ;
-   samm:exampleValue false .
-
-:renewable a samm:Property ;
-   samm:preferredName "Renewable"@en ;
-   samm:description "A flag if the material is from a renewable resource that can be replenished. Renewable resources are those that can be reproduced by physical, chemical, or mechanical processes. These are the kind of resources that can be regenerated throughout time. Forest wood, for example, can be grown through reforestation. This attribute is complemented to the ESPR proposal by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(ha) use or content of sustainably sourced renewable materials."@en ;
-   samm:characteristic samm-c:Boolean ;
-   samm:exampleValue true .
-
-:materialValue a samm:Property ;
-   samm:preferredName "Material Value"@en ;
-   samm:description "Concentration of the material in correlation to the material sum."@en ;
-   samm:characteristic :ActualConcentration ;
-   samm:exampleValue "5.0"^^xsd:float .
-
-:materialIdentification a samm:Property ;
-   samm:preferredName "Material Identification"@en ;
-   samm:description "The material identification, in accordance with the specification in the attribute list type."@en ;
-   samm:characteristic :IdentifierCharacteristic ;
-   samm:exampleValue "CAS" .
+:MaterialEntity a samm:Entity ;
+   samm:preferredName "Material Entity"@en ;
+   samm:description "Information regarding recycled and/or renewable materials in the product. Attributes are among others material names, ids and percentage. These attributes are mentioned in the ESPR proposal from March 30th, 2022 Article 1:\n(1) (f) recycled content in products.\nAnd complemented by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(ha) use or content of sustainably sourced renewable materials."@en ;
+   samm:properties ( [ samm:property :materialName; samm:payloadName "name" ] :recycled :renewable [ samm:property :materialValue; samm:payloadName "value" ] [ samm:property :substanceUnit; samm:payloadName "unit" ] [ samm:property :materialIdentification; samm:payloadName "id" ] [ samm:property :listType; samm:payloadName "type" ] ) .
 
 :environmentalFootprint a samm:Property ;
    samm:preferredName "Environmental Footprint"@en ;
@@ -701,11 +641,6 @@
    samm:description "The length of the item measured in an specific unit which can be declared in the corresponding unit attribute."@en ;
    samm:characteristic :LinearCharacteristic .
 
-:weight a samm:Property ;
-   samm:preferredName "weight"@en ;
-   samm:description "The weight of the item measured in an specific unit which can be declared in the corresponding unit attribute. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (i) information on the performance of the product in relation to the product parameters referred to in Annex I; \nAnnex I (i) weight and volume of the product [...]."@en ;
-   samm:characteristic :MassCharacteristic .
-
 :diameter a samm:Property ;
    samm:preferredName "diameter"@en ;
    samm:description "The diameter of the item, if applicable, measured in an specific unit which can be declared in the corresponding unit attribute."@en ;
@@ -715,11 +650,6 @@
    samm:preferredName "height"@en ;
    samm:description "The height of the item measured in an specific unit which can be declared in the corresponding unit attribute."@en ;
    samm:characteristic :LinearCharacteristic .
-
-:volume a samm:Property ;
-   samm:preferredName "volume"@en ;
-   samm:description "The volume of the item measured in an specific unit which can be declared in the corresponding unit attribute. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (i) information on the performance of the product in relation to the product parameters referred to in Annex I; \nAnnex I (i) weight and volume of the product [...]."@en ;
-   samm:characteristic :CapacityCharacteristic .
 
 :grossWeight a samm:Property ;
    samm:preferredName "Gross Weight"@en ;
@@ -731,24 +661,16 @@
    samm:description "The gross volume of the item measured in an specific unit which can be declared in the corresponding unit attribute. Gross volume refers to the total volume of a product, including the volume of the packaging. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (i) information on the performance of the product in relation to the product parameters referred to in Annex I; \nAnnex I (i) weight and volume of the product and its   packaging, and the product-to-packaging ratio."@en ;
    samm:characteristic :CapacityCharacteristic .
 
-:physicalState a samm:Property ;
-   samm:preferredName "Physical State"@en ;
-   samm:description "The physical sate of the item. There are three states of matter solid, liquid and gas which can be chosen from an enumeration."@en ;
-   samm:characteristic :PhysicalStateEnumeration ;
-   samm:exampleValue "solid" .
+:weightOrVolume a samm:Property ;
+   samm:preferredName "Weight or Volume"@en ;
+   samm:description "Weight or volume of the product."@en ;
+   samm:characteristic :EitherCharacteristic ;
+   samm:exampleValue "23.6" .
 
-:eori a samm:Property ;
-   samm:preferredName "EORI"@en ;
-   samm:description "An economic operator established in the customs territory of the Union needs, for customs purposes, an EORI number. EORI stands for economic operators registration and identification number. In this case, the importer's EORI must be provided. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(j) information related to the importer, including the information referred to in Article 23(3) and its EORI number."@en ;
-   samm:see <https://taxation-customs.ec.europa.eu/customs-4/customs-procedures-import-and-export-0/customs-procedures/economic-operators-registration-and-identification-number-eori_en> ;
-   samm:characteristic :EoriTrait ;
-   samm:exampleValue "GB123456789000" .
-
-:importerIdentification a samm:Property ;
-   samm:preferredName "Importer Identification"@en ;
-   samm:description "The importer of the product, if different from the owner of the passport. In the Catena-X network, the BPNL is used for the identification of companies and the information stored for this like contact information and addresses. \nThis attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(j) information related to the importer, including the information referred to in Article 23(3) and its EORI number;\nArticle 23 states:\n(3) Importers shall indicate on the product their name, registered trade name or registered trade mark and the postal address and, where available, electronic means of communication, where they can be contacted or, where this is not possible, on the packaging, in a document accompanying the product or, where available, in a product passport. The contact details shall be clear, understandable and legible."@en ;
-   samm:characteristic :CompanyIdentification ;
-   samm:exampleValue "BPNL1234567890ZZ" .
+:ImporterEntity a samm:Entity ;
+   samm:preferredName "Importer Entity"@en ;
+   samm:description "Entity with information regarding the importer such as the identification and the EORI."@en ;
+   samm:properties ( :eori [ samm:property :importerIdentification; samm:payloadName "id" ] ) .
 
 :facilityIdentification a samm:Property ;
    samm:preferredName "Facility Identification"@en ;
@@ -827,42 +749,87 @@
    samm-c:baseCharacteristic :IdentifierCharacteristic ;
    samm-c:constraint :CodeConstraint .
 
-:PartList a samm-c:List ;
-   samm:preferredName "Part List"@en ;
-   samm:description "A list of spare parts with their respective identification and name."@en ;
-   samm:dataType :PartEntity .
+:sparePart a samm:Property ;
+   samm:preferredName "sparePart"@en ;
+   samm:description "Spare parts with name and identification."@en ;
+   samm:characteristic :PartList .
 
-:ProducerList a samm-c:List ;
-   samm:preferredName "Producer List"@en ;
-   samm:description "List of possible spare part producer."@en ;
-   samm:dataType :ProducerEntity .
+:sparePartProducer a samm:Property ;
+   samm:preferredName "Spare Part Producer"@en ;
+   samm:description "Producer of possible spare parts."@en ;
+   samm:characteristic :ProducerList .
 
-:ConcentrationEnumeration a samm-c:Enumeration ;
-   samm:preferredName "Concentration Enumeration"@en ;
-   samm:description "Enumeration of possible units of concentration with percent, volume percent, parts per thousand, parts per million, parts per billion and parts per trillion."@en ;
+:substanceName a samm:Property ;
+   samm:preferredName "Substance Name"@en ;
+   samm:description "The substance name, in accordance with the specification in the attribute for the list type, which is present in the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Lead" .
+
+:location a samm:Property ;
+   samm:preferredName "Location"@en ;
+   samm:description "The location of the substances of concern within the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (b) the location of the substances of concern within the product."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Housing" .
+
+:substanceUnit a samm:Property ;
+   samm:preferredName "Substance Unit"@en ;
+   samm:description "The unit of concentration chosen from an enumeration: mass percent, volume percent, parts per thousand, parts per million, parts per billion and  parts per trillion."@en ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/snapshot/appendix/unitcatalog.html> ;
-   samm:dataType samm:curie ;
-   samm-c:values ( "unit:partPerMillion"^^samm:curie "unit:percent"^^samm:curie "unit:percentVolume"^^samm:curie "unit:partPerThousand"^^samm:curie "unit:partPerTrillionUs"^^samm:curie "unit:partPerBillionUs"^^samm:curie ) .
+   samm:characteristic :ConcentrationEnumeration ;
+   samm:exampleValue "unit:percent"^^samm:curie .
 
-:EitherConcentration a samm-c:Either ;
-   samm:preferredName "Either Concentration"@en ;
-   samm:description "Characteristic with two possible values. Either left: the concentration range, or right: a single concentration, which can be either the maximum concentration or an actual concentration."@en ;
-   samm-c:left :RangeCharacteristic ;
-   samm-c:right :ConcentrationCharacteristic .
+:concentration a samm:Property ;
+   samm:preferredName "Concentration"@en ;
+   samm:description "Concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...]."@en ;
+   samm:characteristic :EitherConcentration .
 
-:ChemicalEnumeration a samm-c:Enumeration ;
-   samm:preferredName "Chemical Enumeration"@en ;
-   samm:description "Enumeration of different systems and organizations related to the identification and classification of chemical substances in the field of chemistry. The enumeration values are IUPAC, ECHA (EINECS, ELINCS, NLP) or CAS."@en ;
-   samm:see <https://iupac.org/> ;
-   samm:see <https://echa.europa.eu/de/information-on-chemicals/ec-inventory> ;
-   samm:see <https://www.cas.org/cas-data/cas-registry> ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "IUPAC" "CAS" "ECHA" ) .
+:substanceIdentification a samm:Property ;
+   samm:preferredName "Substance Identification"@en ;
+   samm:description "The substance identification, in accordance with the specification in the attribute for the list type. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number."@en ;
+   samm:characteristic :IdentifierCharacteristic ;
+   samm:exampleValue "RC0402" .
 
-:ActualConcentration a samm-c:Quantifiable ;
-   samm:preferredName "Actual Concentration"@en ;
-   samm:description "The actual value of the concentration as float."@en ;
-   samm:dataType xsd:float .
+:listType a samm:Property ;
+   samm:preferredName "List Type"@en ;
+   samm:description "The type of list used for the identification of the substances. Selected can be for example IUPAC, ECHA or CAS. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number."@en ;
+   samm:characteristic :ChemicalEnumeration ;
+   samm:exampleValue "CAS" .
+
+:exemption a samm:Property ;
+   samm:preferredName "Exemption"@en ;
+   samm:description "Exemptions to the substance of concern. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) provide exemptions for substances of concern or information elements from the information requirements referred to in the first subparagraph."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "shall not apply to product x containing not more than 1,5 ml of liquid" .
+
+:materialName a samm:Property ;
+   samm:preferredName "Material Name"@en ;
+   samm:description "The material name, in accordance with the specification in the attribute for the list type. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 1:\n(1) (f) recycled content in products."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Aluminium" .
+
+:recycled a samm:Property ;
+   samm:preferredName "Recycled"@en ;
+   samm:description "A flag if the material is recovered recycled content from the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 1:\n(1) (f) recycled content in products."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
+:renewable a samm:Property ;
+   samm:preferredName "Renewable"@en ;
+   samm:description "A flag if the material is from a renewable resource that can be replenished. Renewable resources are those that can be reproduced by physical, chemical, or mechanical processes. These are the kind of resources that can be regenerated throughout time. Forest wood, for example, can be grown through reforestation. This attribute is complemented to the ESPR proposal by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(ha) use or content of sustainably sourced renewable materials."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:materialValue a samm:Property ;
+   samm:preferredName "Material Value"@en ;
+   samm:description "Concentration of the material in correlation to the material sum."@en ;
+   samm:characteristic :ConcentrationValue ;
+   samm:exampleValue "5.0"^^xsd:float .
+
+:materialIdentification a samm:Property ;
+   samm:preferredName "Material Identification"@en ;
+   samm:description "The material identification, in accordance with the specification in the attribute list type."@en ;
+   samm:characteristic :IdentifierCharacteristic ;
+   samm:exampleValue "CAS" .
 
 :FootprintList a samm-c:List ;
    samm:preferredName "Footprint List"@en ;
@@ -902,15 +869,24 @@
    samm:description "Characteristic for capacity measurements of an item."@en ;
    samm:dataType :CapacityEntity .
 
-:PhysicalStateEnumeration a samm-c:Enumeration ;
-   samm:preferredName "Physical State Enumeration"@en ;
-   samm:description "Enumeration with the values solid, liquid and gas."@en ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "solid" "liquid" "gas" ) .
+:EitherCharacteristic a samm-c:Either ;
+   samm:preferredName "Either Characteristic"@en ;
+   samm:description "Either a volume (left) or a weight (right) are mandatory."@en ;
+   samm-c:left :CapacityCharacteristic ;
+   samm-c:right :LinearCharacteristic .
 
-:EoriTrait a samm-c:Trait ;
-   samm-c:baseCharacteristic :IdentifierCharacteristic ;
-   samm-c:constraint :EoriConstraint .
+:eori a samm:Property ;
+   samm:preferredName "EORI"@en ;
+   samm:description "An economic operator established in the customs territory of the Union needs, for customs purposes, an EORI number. EORI stands for economic operators registration and identification number. In this case, the importer's EORI must be provided. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(j) information related to the importer, including the information referred to in Article 23(3) and its EORI number."@en ;
+   samm:see <https://taxation-customs.ec.europa.eu/customs-4/customs-procedures-import-and-export-0/customs-procedures/economic-operators-registration-and-identification-number-eori_en> ;
+   samm:characteristic :EoriTrait ;
+   samm:exampleValue "GB123456789000" .
+
+:importerIdentification a samm:Property ;
+   samm:preferredName "Importer Identification"@en ;
+   samm:description "The importer of the product, if different from the owner of the passport. In the Catena-X network, the BPNL is used for the identification of companies and the information stored for this like contact information and addresses. \nThis attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(j) information related to the importer, including the information referred to in Article 23(3) and its EORI number;\nArticle 23 states:\n(3) Importers shall indicate on the product their name, registered trade name or registered trade mark and the postal address and, where available, electronic means of communication, where they can be contacted or, where this is not possible, on the packaging, in a document accompanying the product or, where available, in a product passport. The contact details shall be clear, understandable and legible."@en ;
+   samm:characteristic :CompanyIdentification ;
+   samm:exampleValue "BPNL1234567890ZZ" .
 
 :CodeEnumeration a samm-c:Enumeration ;
    samm:preferredName "Code Enumeration"@en ;
@@ -922,18 +898,18 @@
    samm:preferredName "Identifier Enumeration"@en ;
    samm:description "Enumeration with \"PartInstanceID\" \"BatchID\" and \"ModelID\"."@en ;
    samm:dataType xsd:string ;
-   samm-c:values ( "PartInstanceID" "BatchID" "ModelID" ) .
+   samm-c:values ( "PartInstanceId" "BatchId" "ModelId" ) .
 
 :UnitCatalog a samm:Characteristic ;
    samm:preferredName "Unit Catalog"@en ;
    samm:description "Link to the unit catalog with all possible units in the format \"unit:xxx\"."@en ;
-   samm:see <https://openmanufacturingplatform.github.io/sds-documentation/bamm-specification/v1.0.0/appendix/unitcatalog.html> ;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
    samm:dataType xsd:string .
 
 :DataTypeEnumeration a samm-c:Enumeration ;
    samm:preferredName "Data Type Enumeration"@en ;
    samm:description "Data type that describe the content of the attributes children and data. In case \"object\" is selected in the enumeration, the children field will be used in the AdditionalDataEntity instead of the \"data\" property. If it is an other type, the content will be specified in \"data\" as a string."@en ;
-   samm:see <https://openmanufacturingplatform.github.io/sds-documentation/bamm-specification/v1.0.0/datatypes.html> ;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
    samm:dataType xsd:string ;
    samm-c:values ( "array" "object" "xsd:string" "xsd:integer" "xsd:boolean" "xsd:double" "xsd:float" "xsd:byte" ) .
 
@@ -942,25 +918,42 @@
    samm:description "Constraint to limit the input to a valid ECLASS number. The constraint ensures that each pair of digits is followed by a hyphen, resulting in a pattern like \"00-00-00-00\" where the zeros can be replaced by any digit."@en ;
    samm:value "^\\d{2}-\\d{2}-\\d{2}-\\d{2}$" .
 
-:PartEntity a samm:Entity ;
-   samm:preferredName "Part Entity"@en ;
-   samm:description "Information regarding  possible spare parts. This is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(b) ease of repair and maintenance as expressed through: characteristics, availability and delivery time of spare parts, modularity, compatibility with commonly available spare parts, availability of repair and maintenance instructions, number of materials and components used, use of standard components, use of component and material coding standards for the identification of components and materials, number and complexity of processes and tools needed,  ease of non-destructive disassembly and re-assembly, conditions for access to product data, conditions for access to or use of hardware and software needed;\n(c) the Global Trade Identification Number as provided for in standard ISO/IEC 15459-6 or equivalent of products or their parts."@en ;
-   samm:properties ( [ samm:property :partName; samm:optional true; samm:payloadName "name" ] [ samm:property :gtin; samm:optional true ] ) .
+:PartList a samm-c:List ;
+   samm:preferredName "Part List"@en ;
+   samm:description "A list of spare parts with their respective identification and name."@en ;
+   samm:dataType :PartEntity .
 
-:ProducerEntity a samm:Entity ;
-   samm:preferredName "Producer Entity"@en ;
-   samm:description "Entity for a possible spare part producer."@en ;
-   samm:properties ( [ samm:property :producerIdentification; samm:payloadName "id" ] ) .
+:ProducerList a samm-c:List ;
+   samm:preferredName "Producer List"@en ;
+   samm:description "List of possible spare part producer."@en ;
+   samm:dataType :ProducerEntity .
 
-:RangeCharacteristic a samm-c:List ;
-   samm:preferredName "Range Characteristic"@en ;
-   samm:description "Range characteristic with two values, the highest and the lowest of the concentration range."@en ;
-   samm:dataType :RangeEntity .
+:ConcentrationEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Concentration Enumeration"@en ;
+   samm:description "Enumeration of possible units of concentration with percent, volume percent, parts per thousand, parts per million, parts per billion and parts per trillion."@en ;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/snapshot/appendix/unitcatalog.html> ;
+   samm:dataType samm:curie ;
+   samm-c:values ( "unit:partPerMillion"^^samm:curie "unit:percent"^^samm:curie "unit:percentVolume"^^samm:curie "unit:partPerThousand"^^samm:curie "unit:partPerTrillionUs"^^samm:curie "unit:partPerBillionUs"^^samm:curie ) .
 
-:ConcentrationCharacteristic a samm:Characteristic ;
-   samm:preferredName "Concentration Characteristic"@en ;
-   samm:description "Single concentration characteristic for the maximum or actual concentration."@en ;
-   samm:dataType :SingleEntity .
+:EitherConcentration a samm-c:Either ;
+   samm:preferredName "Either Concentration"@en ;
+   samm:description "Characteristic with two possible values. Either the concentration range, which can be either the range or only the maximum concentration (left) or a single concentration (right)."@en ;
+   samm-c:left :RangeCharacteristic ;
+   samm-c:right :ConcentrationCharacteristic .
+
+:ChemicalEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Chemical Enumeration"@en ;
+   samm:description "Enumeration of different systems and organizations related to the identification and classification of chemical substances in the field of chemistry. The enumeration values are IUPAC, ECHA (EINECS, ELINCS, NLP) or CAS."@en ;
+   samm:see <https://www.cas.org/cas-data/cas-registry> ;
+   samm:see <https://echa.europa.eu/de/information-on-chemicals/ec-inventory> ;
+   samm:see <https://iupac.org/> ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "IUPAC" "CAS" "ECHA" ) .
+
+:ConcentrationValue a samm-c:Quantifiable ;
+   samm:preferredName "Concentration Value"@en ;
+   samm:description "Float number representing a concentration."@en ;
+   samm:dataType xsd:float .
 
 :FootprintEntity a samm:Entity ;
    samm:preferredName "Footprint Entity"@en ;
@@ -982,38 +975,29 @@
    samm:description "Entity for capacity measurements of an item with an unit and value."@en ;
    samm:properties ( [ samm:property :dimensionValue; samm:payloadName "value" ] [ samm:property :capacityUnit; samm:payloadName "unit" ] ) .
 
-:EoriConstraint a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "EORI Constraint"@en ;
-   samm:description "Constraint with a pattern which ensures that the EORI number starts with two alphanumeric characters, followed by two alphabetic characters, and ends with 2 to 15 alphanumeric characters."@en ;
-   samm:value "^[A-Z]{2}[A-Z0-9]{1,18}$" .
+:EoriTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :IdentifierCharacteristic ;
+   samm-c:constraint :EoriConstraint .
 
-:partName a samm:Property ;
-   samm:preferredName "Part Name"@en ;
-   samm:description "The name of the spare part. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(b) ease of repair and maintenance as expressed through: characteristics, availability and delivery time of spare parts, modularity, compatibility with commonly available spare parts, availability of repair and maintenance instructions, number of materials and components used, use of standard components, use of component and material coding standards for the identification of components and materials, number and complexity of processes and tools needed,  ease of non-destructive disassembly and re-assembly, conditions for access to product data, conditions for access to or use of hardware and software needed."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Aluminum Housing" .
+:PartEntity a samm:Entity ;
+   samm:preferredName "Part Entity"@en ;
+   samm:description "Information regarding  possible spare parts. This is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(b) ease of repair and maintenance as expressed through: characteristics, availability and delivery time of spare parts, modularity, compatibility with commonly available spare parts, availability of repair and maintenance instructions, number of materials and components used, use of standard components, use of component and material coding standards for the identification of components and materials, number and complexity of processes and tools needed,  ease of non-destructive disassembly and re-assembly, conditions for access to product data, conditions for access to or use of hardware and software needed;\n(c) the Global Trade Identification Number as provided for in standard ISO/IEC 15459-6 or equivalent of products or their parts."@en ;
+   samm:properties ( [ samm:property :partName; samm:optional true; samm:payloadName "name" ] [ samm:property :gtin; samm:optional true ] ) .
 
-:gtin a samm:Property ;
-   samm:preferredName "GTIN"@en ;
-   samm:description "GTIN stands for Global Trade Item Number. It is a unique and internationally recognized identifier used to identify products in the global marketplace. GTINs are typically encoded in barcodes and are used by retailers, manufacturers, and suppliers to track and manage their products throughout the supply chain. Valid inputs are all GTIN versions (GTIN-8, GTIN-12, GTIN-13, and GTIN-14).This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III: \n(c) the Global Trade Identification Number as provided for in standard ISO/IEC 15459-6 or equivalent of products or their parts."@en ;
-   samm:characteristic :GtinTrait ;
-   samm:exampleValue "12345678" .
+:ProducerEntity a samm:Entity ;
+   samm:preferredName "Producer Entity"@en ;
+   samm:description "Entity for a possible spare part producer."@en ;
+   samm:properties ( [ samm:property :producerIdentification; samm:payloadName "id" ] ) .
 
-:producerIdentification a samm:Property ;
-   samm:preferredName "Producer Identification"@en ;
-   samm:description "The identifier of a spare part producer of the product. In the Catena-X network, the BPNL is used for the identification of companies and the information stored for this like contact information and addresses. "@en ;
-   samm:characteristic :CompanyIdentification ;
-   samm:exampleValue "BPNL1234567890ZZ" .
+:RangeCharacteristic a samm-c:List ;
+   samm:preferredName "Range Characteristic"@en ;
+   samm:description "Range characteristic with two values, the highest and the lowest of the concentration range. Only providing the maximum range is also possible."@en ;
+   samm:dataType :RangeEntity .
 
-:RangeEntity a samm:Entity ;
-   samm:preferredName "Range Entity"@en ;
-   samm:description "Entity for the concentration range with two values, the highest and the lowest of the concentration range."@en ;
-   samm:properties ( [ samm:property :minConcentration; samm:payloadName "min" ] [ samm:property :maxConcentration; samm:payloadName "max" ] ) .
-
-:SingleEntity a samm:Entity ;
-   samm:preferredName "Single Entity"@en ;
-   samm:description "Entity for a single concentration for the maximum or actual concentration."@en ;
-   samm:properties ( [ samm:property :concentrationSingle; samm:payloadName "value" ] ) .
+:ConcentrationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Concentration Characteristic"@en ;
+   samm:description "Single concentration characteristic for the actual concentration."@en ;
+   samm:dataType :SingleEntity .
 
 :footprintValue a samm:Property ;
    samm:preferredName "Footprint Value"@en ;
@@ -1069,27 +1053,38 @@
    samm:characteristic :CapacityUnitEnumeration ;
    samm:exampleValue "unit:litre"^^samm:curie .
 
-:GtinTrait a samm-c:Trait ;
-   samm-c:baseCharacteristic :IdentifierCharacteristic ;
-   samm-c:constraint :GtinConstraint .
+:EoriConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "EORI Constraint"@en ;
+   samm:description "Constraint with a pattern which ensures that the EORI number starts with two alphanumeric characters, followed by two alphabetic characters, and ends with 2 to 15 alphanumeric characters."@en ;
+   samm:value "^[A-Z]{2}[A-Z0-9]{1,18}$" .
 
-:minConcentration a samm:Property ;
-   samm:preferredName "Minimum Concentration"@en ;
-   samm:description "The minimum concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) [...] concentration range of the substances of concern, at the level of the product [...]."@en ;
-   samm:characteristic :ConcentrationValue ;
-   samm:exampleValue "2.1"^^xsd:float .
+:partName a samm:Property ;
+   samm:preferredName "Part Name"@en ;
+   samm:description "The name of the spare part. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(b) ease of repair and maintenance as expressed through: characteristics, availability and delivery time of spare parts, modularity, compatibility with commonly available spare parts, availability of repair and maintenance instructions, number of materials and components used, use of standard components, use of component and material coding standards for the identification of components and materials, number and complexity of processes and tools needed,  ease of non-destructive disassembly and re-assembly, conditions for access to product data, conditions for access to or use of hardware and software needed."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Aluminum Housing" .
 
-:maxConcentration a samm:Property ;
-   samm:preferredName "Maximum Concentration"@en ;
-   samm:description "The maximum concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) [...] concentration range of the substances of concern, at the level of the product [...]."@en ;
-   samm:characteristic :ConcentrationValue ;
-   samm:exampleValue "2.6"^^xsd:float .
+:gtin a samm:Property ;
+   samm:preferredName "GTIN"@en ;
+   samm:description "GTIN stands for Global Trade Item Number. It is a unique and internationally recognized identifier used to identify products in the global marketplace. GTINs are typically encoded in barcodes and are used by retailers, manufacturers, and suppliers to track and manage their products throughout the supply chain. Valid inputs are all GTIN versions (GTIN-8, GTIN-12, GTIN-13, and GTIN-14).This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III: \n(c) the Global Trade Identification Number as provided for in standard ISO/IEC 15459-6 or equivalent of products or their parts."@en ;
+   samm:characteristic :GtinTrait ;
+   samm:exampleValue "12345678" .
 
-:concentrationSingle a samm:Property ;
-   samm:preferredName "Concentration Single"@en ;
-   samm:description "Concentration of the substance of concern at the level of the product. This can be either left: the maximum concentration, or  right: the concentration. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) the concentration, maximum concentration [...]."@en ;
-   samm:characteristic :EitherSingleConcentration ;
-   samm:exampleValue "2.41" .
+:producerIdentification a samm:Property ;
+   samm:preferredName "Producer Identification"@en ;
+   samm:description "The identifier of a spare part producer of the product. In the Catena-X network, the BPNL is used for the identification of companies and the information stored for this like contact information and addresses. "@en ;
+   samm:characteristic :CompanyIdentification ;
+   samm:exampleValue "BPNL1234567890ZZ" .
+
+:RangeEntity a samm:Entity ;
+   samm:preferredName "Range Entity"@en ;
+   samm:description "Entity for the concentration range with two values, the highest and the lowest of the concentration range."@en ;
+   samm:properties ( [ samm:property :minConcentration; samm:optional true; samm:payloadName "min" ] [ samm:property :maxConcentration; samm:payloadName "max" ] ) .
+
+:SingleEntity a samm:Entity ;
+   samm:preferredName "Single Entity"@en ;
+   samm:description "Entity for a single concentration for the maximum or actual concentration."@en ;
+   samm:properties ( [ samm:property :concentrationSingle; samm:payloadName "value" ] ) .
 
 :FootprintValueCharacteristic a samm-c:Quantifiable ;
    samm:preferredName "Footprint Value Characteristic"@en ;
@@ -1119,24 +1114,30 @@
    samm:dataType samm:curie ;
    samm-c:values ( "unit:cubicMetre"^^samm:curie "unit:litre"^^samm:curie "unit:millilitre"^^samm:curie "unit:cubicCentimetre"^^samm:curie ) .
 
+:GtinTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :IdentifierCharacteristic ;
+   samm-c:constraint :GtinConstraint .
+
+:minConcentration a samm:Property ;
+   samm:preferredName "Minimum Concentration"@en ;
+   samm:description "The minimum concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) [...] concentration range of the substances of concern, at the level of the product [...]."@en ;
+   samm:characteristic :ConcentrationValue ;
+   samm:exampleValue "2.1"^^xsd:float .
+
+:maxConcentration a samm:Property ;
+   samm:preferredName "Maximum Concentration"@en ;
+   samm:description "The maximum concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...]."@en ;
+   samm:characteristic :ConcentrationValue ;
+   samm:exampleValue "2.6"^^xsd:float .
+
+:concentrationSingle a samm:Property ;
+   samm:preferredName "Concentration Single"@en ;
+   samm:description "Concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) the concentration [...] of the substances of concern, at the level of the product [...]."@en ;
+   samm:characteristic :ConcentrationValue ;
+   samm:exampleValue "2.41"^^xsd:float .
+
 :GtinConstraint a samm-c:RegularExpressionConstraint ;
    samm:preferredName "GTIN Constraint"@en ;
    samm:description "This pattern allows for matching any GTIN version by specifying the required number of digits for each version."@en ;
    samm:value "^(?:\\d{8}|\\d{12}|\\d{13}|\\d{14})$" .
-
-:ConcentrationValue a samm-c:Quantifiable ;
-   samm:preferredName "Concentration Value"@en ;
-   samm:description "Float number representing a concentration."@en ;
-   samm:dataType xsd:float .
-
-:EitherSingleConcentration a samm-c:Either ;
-   samm:preferredName "Either Single Concentration"@en ;
-   samm:description "Characteristic with two possible values. Either left: the maximum concentration, or right: the actual concentration."@en ;
-   samm-c:left :MaxConcentration ;
-   samm-c:right :ActualConcentration .
-
-:MaxConcentration a samm-c:Quantifiable ;
-   samm:preferredName "Maximum Concentration"@en ;
-   samm:description "The maximum value of the concentration as float."@en ;
-   samm:dataType xsd:float .
 
