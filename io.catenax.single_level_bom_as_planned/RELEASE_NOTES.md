@@ -3,6 +3,19 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.0]
+### Added
+- optional `businessPartner` to each child item
+
+### Changed
+- changed `childCatenaXId` to `catenaXId`
+- changed `childParts` to `childItems`
+- changed several descriptions to use `item` instead of `part` where applicable
+- updated reference for SAMM Unit Catalog to a more readable one
+
+### Removed
+n/a
+
 ## [1.1.0]
 ### Added
 - optional validity period for child-parent relation
@@ -24,4 +37,3 @@ All notable changes to this model will be documented in this file.
 n/a
 
 ### Removed
-
