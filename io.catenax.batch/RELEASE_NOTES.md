@@ -2,7 +2,7 @@
 All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
-## [2.0.0] - 2022-08-23
+## [2.0.0] - 2023-09-04
 ### Added
 - added KeyRegularExpression
 
