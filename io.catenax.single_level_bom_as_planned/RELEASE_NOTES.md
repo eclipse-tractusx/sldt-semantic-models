@@ -5,7 +5,7 @@ All notable changes to this model will be documented in this file.
 
 ## [2.0.0]
 ### Added
-- optional `businessPartner` to each child item
+- mandatory `businessPartner` to each child item
 
 ### Changed
 - changed `childCatenaXId` to `catenaXId`
