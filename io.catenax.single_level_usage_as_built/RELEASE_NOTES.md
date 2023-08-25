@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2023-08-28
+## [2.0.0]
 ### Added
 - added `customers` to reflect that the relation to parent items is not known at all times. Instead a reference to the customer is made.
 - restructured `parentParts` to be enclosed 
