@@ -6,6 +6,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.planned_production:1.0.0#> .
+@prefix ext-demand: <urn:samm:io.catenax.material_demand:1.0.0#> .
 
 :PlannedProduction a samm:Aspect ;
    samm:preferredName "Stock of Products of a Supplier"@en ;
@@ -79,7 +80,7 @@
    samm:preferredName "Lasted Updated on Date"@en ;
    samm:description "Date and time at which the position has been updated by the supplier's systems. Date and time are set according to a timezone."@en ;
    samm:characteristic :DateTimeStamp ;
-   samm:exampleValue "2023-04-01T14:23:00"^^xsd:date .
+   samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:date .
 
 :allocatedProductionOutputs a samm:Property ;
    samm:preferredName "Allocated Production Outpus"@en ;
@@ -93,7 +94,7 @@
 
 :DateTimeStamp a samm:Characteristic ;
    samm:preferredName "Date Time Stamp Characteristic"@en ;
-   samm:description "The Date with the the timezone of the involved site."@en ;
+   samm:description "The Date with the timezone of the involved site."@en ;
    samm:see <https://www.iso.org/iso-8601-date-and-time-format.html> ;
    samm:dataType xsd:date .
 
@@ -109,7 +110,7 @@
 
 :PlannedProductionOutput a samm:Entity ;
    samm:preferredName "Planned Production Output"@en ;
-   samm:description "TBD: This is the quantity of already produced goods at a given location that has not yet been shipped. The allocated stock is the stock available for the customer and may refer to a given position (see OrderPositionReference). Quantities of Materials belonging to this stock are not available for other positions or customers. This stock consists only of the good parts."@en ;
+   samm:description "Quantity, site of the supplier and date with time at which a production of a certain material for a certain customer is planned to be finished."@en ;
    samm:properties ( :plannedProductionQuantity :productionSiteBpns :estimatedTimeOfCompletion ) .
 
 :supplierOrderId a samm:Property ;
@@ -132,20 +133,22 @@
 
 :plannedProductionQuantity a samm:Property ;
    samm:preferredName "Planned Production Quantity"@en ;
-   samm:description "TBD: This is the quantity of the material within the position that is already ready to be delivered."@en ;
+   samm:description """Quantity of a product that a supplier plans to produce on a certain date and time for a specific customer (that is: that will be allocated in a specific customer's \"allocated product stock\").
+Quantities already produced are put on stock or delivered. Therefore those quantities MUST NOT be considered in the allocated production output to build a consistent view on the supply situation. """@en ;
    samm:characteristic :QuantityCharacteristic .
 
 :productionSiteBpns a samm:Property ;
    samm:preferredName "BPNS of Supplier's Production Location"@en ;
    samm:description "One PlannedProductionOutput has always one site. The location is identified using BPNS."@en ;
    samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf> ;
-   samm:characteristic :BpnsCharacteristic ;
+   samm:characteristic ext-demand:BPNSTrait ;
    samm:exampleValue "BPNS0123456789ZZ" .
 
 :estimatedTimeOfCompletion a samm:Property ;
    samm:preferredName "Estimated Time of Completion"@en ;
-   samm:description "TBD: ISO"@en ;
-   samm:characteristic :DateTimeStamp .
+   samm:description "Date and time on which the allocated production output is planned to be completed. Date and time are set according to a timezone of the supplier's production site."@en ;
+   samm:characteristic :DateTimeStamp ;
+   samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:date .
 
 :OrderIdCharacteristic a samm:Characteristic ;
    samm:preferredName "Order ID Characteristic"@en ;
@@ -162,16 +165,10 @@
    samm:description "Describes the quantity in which the child part is assembled in the given parent object by providing a quantity value and the measurement unit in which the quantity is measured."@en ;
    samm:dataType :Quantity .
 
-:BpnsCharacteristic a samm:Characteristic ;
-   samm:preferredName "BPNS Characteristic"@en ;
-   samm:description "TODO Tom"@en ;
-   samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf> ;
-   samm:dataType xsd:string .
-
 :Quantity a samm:Entity ;
    samm:preferredName "Quantity"@en ;
    samm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en ;
-   samm:properties ( :quantityNumber :measurementUnit ) .
+   samm:properties ( :quantityNumber ext-demand:unitOfMeasure ) .
 
 :quantityNumber a samm:Property ;
    samm:preferredName "Quantity Number"@en ;
@@ -179,16 +176,14 @@
    samm:characteristic :NumberofObjects ;
    samm:exampleValue "2.5"^^xsd:double .
 
-:measurementUnit a samm:Property ;
-   samm:preferredName "Measurement Unit"@en ;
-   samm:description """Unit of measurement for the quantity of objects.
-If possible, use units from the aspect meta model unit catalog, which is based on the UNECE Recommendation No. 20 \"Codes for Units of Measure used in International Trade\"."""@en ;
-   samm:see <https://github.com/eclipse-esmf/esmf-semantic-aspect-meta-model/blob/main/esmf-semantic-aspect-meta-model/src/main/resources/samm/unit/2.0.0/units.ttl> ;
-   samm:characteristic samm-c:UnitReference ;
-   samm:exampleValue "unit:litre"^^samm:curie .
-
 :NumberofObjects a samm:Characteristic ;
    samm:preferredName "Number of Objects"@en ;
    samm:description "Quantifiable number of objects in reference to the measurementUnit"@en ;
    samm:dataType xsd:double .
+
+:BpnsCharacteristic a samm:Characteristic ;
+   samm:preferredName "BPNS Characteristic"@en ;
+   samm:description "TODO Tom"@en ;
+   samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf> ;
+   samm:dataType xsd:string .
 
