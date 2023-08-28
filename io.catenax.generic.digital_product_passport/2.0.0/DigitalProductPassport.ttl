@@ -205,13 +205,13 @@
    samm:preferredName "Validity Date"@en ;
    samm:description "The timestamp in the format (yyyy-mm-dd) with or without time zone for the product passport until when it is available. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 8:\n(2) (h) the period during which the product passport shall remain available which shall correspond to at least the expected lifetime of a specific product."@en ;
    samm:characteristic :ValidCharacteristic ;
-   samm:exampleValue "2000-01-01Z" .
+   samm:exampleValue "2000-01-01" .
 
 :issueDate a samm:Property ;
    samm:preferredName "Issue Date"@en ;
-   samm:description "The timestamp in the format (yyyy-mm-dd) with or without time zone since when the product passport is available."@en ;
-   samm:characteristic :TimeStamp ;
-   samm:exampleValue "2000-01-01"^^xsd:date .
+   samm:description "The timestamp in the format (yyyy-mm-dd) since when the product passport is available."@en ;
+   samm:characteristic :ValidCharacteristicTrait ;
+   samm:exampleValue "2000-01-01" .
 
 :economicOperator a samm:Property ;
    samm:preferredName "Economic Operator"@en ;
@@ -293,8 +293,8 @@
 :placedOnMarket a samm:Property ;
    samm:preferredName "Placed on Market"@en ;
    samm:description "The timestamp in the format (yyyy-mm-dd) with or without time zone when the product was put in the market."@en ;
-   samm:characteristic :TimeStamp ;
-   samm:exampleValue "2000-01-01"^^xsd:date .
+   samm:characteristic :ValidCharacteristicTrait ;
+   samm:exampleValue "2000-01-01" .
 
 :importer a samm:Property ;
    samm:preferredName "Importer"@en ;
@@ -382,13 +382,12 @@
 :ValidCharacteristic a samm-c:Either ;
    samm:preferredName "Valid Characteristic"@en ;
    samm:description "Validity with either a timestamp (left) or an open string field for a comment (right.)"@en ;
-   samm-c:left :TimeStamp ;
+   samm-c:left :ValidCharacteristicTrait ;
    samm-c:right :Comment .
 
-:TimeStamp a samm:Characteristic ;
-   samm:preferredName "Time Stamp"@en ;
-   samm:description "A timestamp in the format (yyyy-mm-dd) with or without time zone. For example 2000-01-01 or 2000-01-01Z."@en ;
-   samm:dataType xsd:date .
+:ValidCharacteristicTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :DateConstraint .
 
 :EconomicOperatorCharacteristic a samm:Characteristic ;
    samm:preferredName "Economic Operator Characteristic"@en ;
@@ -505,8 +504,13 @@
 
 :Comment a samm:Characteristic ;
    samm:preferredName "Comment"@en ;
-   samm:description "An open comment field regarding the validity of the product passport."@en ;
+   samm:description "Open string field for a comment."@en ;
    samm:dataType xsd:string .
+
+:DateConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Date Constraint"@en ;
+   samm:description "Constraint fo a timestamp in the format (yyyy-mm-dd)."@en ;
+   samm:value "^\\d{4}-\\d{2}-\\d{2}$" .
 
 :EconomicOperatorEntity a samm:Entity ;
    samm:preferredName "Economic Operator Entity"@en ;
@@ -650,7 +654,7 @@
    samm:description "The unit of the respective lifespan expressed through the possible units day, month, cycle, year and runningOrOperatingHour."@en ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
    samm:characteristic :LifeEnumeration ;
-   samm:exampleValue "unit:month".
+   samm:exampleValue "unit:month" .
 
 :lifeValue a samm:Property ;
    samm:preferredName "Life Value"@en ;
@@ -719,9 +723,9 @@
 
 :manufacturingDate a samm:Property ;
    samm:preferredName "Manufacturing Date"@en ;
-   samm:description "The timestamp in the format (yyyy-mm-dd) with or without time zone of the manufacturing date as the final step in production process (e.g. final quality check, ready-for-shipment event)."@en ;
-   samm:characteristic :TimeStamp ;
-   samm:exampleValue "2000-01-31"^^xsd:date .
+   samm:description "The timestamp in the format (yyyy-mm-dd) of the manufacturing date as the final step in production process (e.g. final quality check, ready-for-shipment event)."@en ;
+   samm:characteristic :ValidCharacteristicTrait ;
+   samm:exampleValue "2000-01-31" .
 
 :codeKey a samm:Property ;
    samm:preferredName "Code Key"@en ;
@@ -768,8 +772,8 @@
 :dataType a samm:Property ;
    samm:preferredName "Data Type"@en ;
    samm:description "Data type that describe the content of the attributes children and data. In case \"object\" is selected in the enumeration, the children field will be used in the AdditionalDataEntity instead of the \"data\" property. If it is an other type, the content will be specified in \"data\" as a string."@en ;
-   samm:characteristic :DataTypeEnumeration ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
+   samm:characteristic :DataTypeEnumeration ;
    samm:exampleValue "xsd:integer" .
 
 :CompanyIdentification a samm:Characteristic ;
@@ -809,7 +813,7 @@
    samm:description "The unit of concentration chosen from an enumeration: mass percent, volume percent, parts per thousand, parts per million, parts per billion and  parts per trillion."@en ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
    samm:characteristic :ConcentrationEnumeration ;
-   samm:exampleValue "unit:percent".
+   samm:exampleValue "unit:percent" .
 
 :concentration a samm:Property ;
    samm:preferredName "Concentration"@en ;
@@ -933,8 +937,8 @@
 :DataTypeEnumeration a samm-c:Enumeration ;
    samm:preferredName "Data Type Enumeration"@en ;
    samm:description "Data type that describe the content of the attributes children and data. In case \"object\" is selected in the enumeration, the children field will be used in the AdditionalDataEntity instead of the \"data\" property. If it is an other type, the content will be specified in \"data\" as a string."@en ;
+   samm:see <https://www.w3.org/2001/XMLSchema> ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
-   samm:see <https://www.w3.org/2001/XMLSchema>;
    samm:dataType xsd:string ;
    samm-c:values ( "array" "object" "xsd:string" "xsd:integer" "xsd:boolean" "xsd:double" "xsd:float" "xsd:byte" ) .
 
@@ -1074,22 +1078,22 @@
 :linearUnit a samm:Property ;
    samm:preferredName "Linear Unit"@en ;
    samm:description "The unit of a physical dimensions attribute. For linear attributes possible units are millimetre, metre and centimetre."@en ;
-   samm:characteristic :LinearUnitEnumeration ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
+   samm:characteristic :LinearUnitEnumeration ;
    samm:exampleValue "unit:millimetre" .
 
 :massUnit a samm:Property ;
    samm:preferredName "Mass Unit"@en ;
    samm:description "The unit of a physical dimensions attribute. For mass attributes weight possible units are gram and kilogram."@en ;
-   samm:characteristic :MassUnitEnumeration ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
+   samm:characteristic :MassUnitEnumeration ;
    samm:exampleValue "unit:kilogram" .
 
 :capacityUnit a samm:Property ;
    samm:preferredName "Capacity Unit"@en ;
    samm:description "The unit of a physical dimensions attribute. For capacity attributes the units are cubic metre, cubic centimetre, millilitre and litre."@en ;
-   samm:characteristic :CapacityUnitEnumeration ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
+   samm:characteristic :CapacityUnitEnumeration ;
    samm:exampleValue "unit:litre" .
 
 :EoriConstraint a samm-c:RegularExpressionConstraint ;
@@ -1168,22 +1172,22 @@
 :LinearUnitEnumeration a samm-c:Enumeration ;
    samm:preferredName "Linear Unit Enumeration"@en ;
    samm:description "The unit of a linear attribute. For height, width, length and diameter possible units are millimetre, centimetre and metre."@en ;
-   samm:dataType xsd:string ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
+   samm:dataType xsd:string ;
    samm-c:values ( "unit:millimetre" "unit:metre" "unit:centimetre" ) .
 
 :MassUnitEnumeration a samm-c:Enumeration ;
    samm:preferredName "Mass Unit Enumeration"@en ;
    samm:description "Enumeration for mass units with kilogram and gram."@en ;
-   samm:dataType xsd:string ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
+   samm:dataType xsd:string ;
    samm-c:values ( "unit:kilogram" "unit:gram" ) .
 
 :CapacityUnitEnumeration a samm-c:Enumeration ;
    samm:preferredName "Capacity Unit Enumeration"@en ;
    samm:description "Enumeration for capacity units."@en ;
-   samm:dataType xsd:string ;
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
+   samm:dataType xsd:string ;
    samm-c:values ( "unit:cubicMetre" "unit:litre" "unit:millilitre" "unit:cubicCentimetre" ) .
 
 :GtinTrait a samm-c:Trait ;
@@ -1193,8 +1197,8 @@
 :ListTypeEnumerationName a samm-c:Enumeration ;
    samm:preferredName "List Type Enumeration Name"@en ;
    samm:description "Enumeration of different systems and organizations related to the identification and classification of chemical substances in the field of chemistry. The enumeration values are IUPAC, EC or CAS."@en ;
-   samm:see <https://www.cas.org/cas-data/cas-registry> ;
    samm:see <https://iupac.org/> ;
+   samm:see <https://www.cas.org/cas-data/cas-registry> ;
    samm:dataType xsd:string ;
    samm-c:values ( "IUPAC" "CAS" "EC" ) .
 
@@ -1227,3 +1231,4 @@
    samm:preferredName "GTIN Constraint"@en ;
    samm:description "This pattern allows for matching any GTIN version by specifying the required number of digits for each version."@en ;
    samm:value "^(?:\\d{8}|\\d{12}|\\d{13}|\\d{14})$" .
+
