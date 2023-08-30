@@ -13,6 +13,9 @@
 # SPDX-License-Identifier: CC-BY-4.0
 #######################################################################
 -->
+# Not on updating ESMF SDK 
+The action uses the [ESMF SDK](https://github.com/eclipse-esmf/esmf-sdk). In case of an update you need to change the variable ``bamm_version`` to the required version of the ESMF SDK in the file [action.yml](action.yml).
+
 # Detect Changes Action
 This action validates whether and which changes in the repository need to be applied to an instance of the Semantic Hub being associated with the repository.
 The action expects multiple arrays which either contain added, modified, renamed and deleted files from the last commit. 
