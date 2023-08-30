@@ -13,7 +13,7 @@
 # SPDX-License-Identifier: CC-BY-4.0
 #######################################################################
 -->
-# Not on updating ESMF SDK 
+# Note on updating ESMF SDK 
 The action uses the [ESMF SDK](https://github.com/eclipse-esmf/esmf-sdk). In case of an update you need to change the variable ``bamm_version`` to the required version of the ESMF SDK in the file [action.yml](action.yml).
 
 # Detect Changes Action
