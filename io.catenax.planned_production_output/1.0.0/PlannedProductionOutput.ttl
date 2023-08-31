@@ -58,7 +58,7 @@
     samm:properties ([
   samm:property :orderPositionReference;
   samm:optional "true"^^xsd:boolean
-] :lastUpdatedOnDateTime :allocatedProductionOutputs).
+] :lastUpdatedOnDateTime :allocatedPlannedProductionOutputs).
 :Uuidv4Characteristic a samm:Characteristic;
     samm:preferredName "UUID v4"@en;
     samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
@@ -75,26 +75,26 @@
     samm:characteristic :OrderPositionReferenceCharacteristic.
 :lastUpdatedOnDateTime a samm:Property;
     samm:preferredName "Lasted Updated on Date"@en;
-    samm:description "Date and time at which the position has been updated by the supplier's systems. Date and time are set according to a timezone."@en;
+    samm:description "Date and time at which the position has been updated by the supplier's systems. Date and time are set according to the timezone."@en;
     samm:characteristic :DateTimeStamp;
     samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:date.
-:allocatedProductionOutputs a samm:Property;
-    samm:preferredName "Allocated Production Outpus"@en;
-    samm:description "Planned Production already allocated to the customer."@en;
+:allocatedPlannedProductionOutputs a samm:Property;
+    samm:preferredName "Planned and Allocated Production Outpus"@en;
+    samm:description "Planned Production Outputs already allocated to the customer."@en;
     samm:characteristic :AllocatedProductionOutputCollection.
 :OrderPositionReferenceCharacteristic a samm:Characteristic;
     samm:preferredName "Order Position Reference Characteristic"@en;
-    samm:description "The order position reference includes reference numbers for the order and the ID. As these information are meant for the customer, the customer reference numbers are mandatory."@en;
+    samm:description "The order position reference includes reference numbers for the order and the position. As these information are meant for the customer, the customer reference numbers are mandatory."@en;
     samm:dataType :OrderPositionReference.
 :DateTimeStamp a samm:Characteristic;
     samm:preferredName "Date Time Stamp Characteristic"@en;
-    samm:description "The Date with the timezone of the involved site."@en;
+    samm:description "The Date with the timezone."@en;
     samm:dataType xsd:date;
     samm:see <https://www.iso.org/iso-8601-date-and-time-format.html>.
-:AllocatedProductionOutputCollection a samm-c:Collection;
-    samm:preferredName "Allocated Production Output Collection"@en;
-    samm:description "Collection of PlannedProductionOutputs that may relate to different production locations and estimated time of completions."@en;
-    samm:dataType :PlannedProductionOutput.
+:AllocatedPlannedProductionOutputCollection a samm-c:Collection;
+    samm:preferredName "Planned and Allocated Production Output Collection"@en;
+    samm:description "Collection of planned and allocated production outputs that may relate to different production locations and estimated time of completions."@en;
+    samm:dataType :AllocatedPlannedProductionOutput.
 :OrderPositionReference a samm:Entity;
     samm:preferredName "Reference to Order Position"@en;
     samm:description "Encapsulates the references to identify a position within an order."@en;
@@ -102,8 +102,8 @@
   samm:property :supplierOrderId;
   samm:optional "true"^^xsd:boolean
 ] :customerOrderId :customerOrderPositionId).
-:PlannedProductionOutput a samm:Entity;
-    samm:preferredName "Planned Production Output"@en;
+:AllocatedPlannedProductionOutput a samm:Entity;
+    samm:preferredName "Planned and Allocated Production Output"@en;
     samm:description "Quantity, site of the supplier and date with time at which a production of a certain material for a certain customer is planned to be finished."@en;
     samm:properties (:plannedProductionQuantity :productionSiteBpns :estimatedTimeOfCompletion).
 :supplierOrderId a samm:Property;
@@ -123,17 +123,17 @@
     samm:exampleValue "PositionId-01".
 :plannedProductionQuantity a samm:Property;
     samm:preferredName "Planned Production Quantity"@en;
-    samm:description "Quantity of a product that a supplier plans to produce on a certain date and time for a specific customer (that is: that will be allocated in a specific customer's \"allocated product stock\").\nQuantities already produced are put on stock or delivered. Therefore those quantities MUST NOT be considered in the allocated production output to build a consistent view on the supply situation. "@en;
+    samm:description "Quantity of a product that a supplier plans to produce on a certain date and time for a specific customer (that is: that will be allocated in a specific customer's \"allocated product stock\").\nQuantities that have already been produced are put on stock or delivered. Therefore those quantities MUST NOT be considered in the allocated production output to build a consistent view on the supply situation. "@en;
     samm:characteristic :QuantityCharacteristic.
 :productionSiteBpns a samm:Property;
-    samm:preferredName "BPNS of Supplier's Production Location"@en;
-    samm:description "One PlannedProductionOutput has always one site. The location is identified using BPNS."@en;
+    samm:preferredName "BPNS of Supplier's Production Site"@en;
+    samm:description "One planned and alllocated production output has always one site. The site is identified by the BPNS."@en;
     samm:characteristic ext-demand:BPNSTrait;
     samm:exampleValue "BPNS0123456789ZZ";
     samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
 :estimatedTimeOfCompletion a samm:Property;
     samm:preferredName "Estimated Time of Completion"@en;
-    samm:description "Date and time on which the allocated production output is planned to be completed. Date and time are set according to a timezone of the supplier's production site."@en;
+    samm:description "Date and time on which the planned and allocated production output is estimated to be completed. Date and time are set according to a timezone."@en;
     samm:characteristic :DateTimeStamp;
     samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:date.
 :OrderIdCharacteristic a samm:Characteristic;
@@ -146,24 +146,24 @@
     samm:dataType xsd:string.
 :QuantityCharacteristic a samm-c:Quantifiable;
     samm:preferredName "Quantity Characteristic"@en;
-    samm:description "Describes the quantity in which the child part is assembled in the given parent object by providing a quantity value and the measurement unit in which the quantity is measured."@en;
+    samm:description "Describes the quantity and the unit of measure with which the planned and allocated production output is measured."@en;
     samm:dataType :Quantity.
 :Quantity a samm:Entity;
     samm:preferredName "Quantity"@en;
-    samm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en;
-    samm:properties (:quantityNumber ext-demand:unitOfMeasure).
+    samm:description "Comprises the number of objects and the unit of measurement."@en;
+    samm:properties (:quantityNumber ext-demand:unitOfMeasure). #TODO: Tom
 :quantityNumber a samm:Property;
     samm:preferredName "Quantity Number"@en;
-    samm:description "The number of objects related to the measurement unit"@en;
+    samm:description "The number of objects related to the unit of measure."@en;
     samm:characteristic :NumberofObjects;
     samm:exampleValue "2.5"^^xsd:double.
 :NumberofObjects a samm:Characteristic;
     samm:preferredName "Number of Objects"@en;
-    samm:description "Quantifiable number of objects in reference to the measurementUnit"@en;
+    samm:description "Quantifiable number of objects in reference to the unit of measure."@en;
     samm:dataType xsd:double.
 :BpnsCharacteristic a samm:Characteristic;
     samm:preferredName "BPNS Characteristic"@en;
-    samm:description "TODO Tom"@en;
+    samm:description "TODO: Tom"@en;
     samm:dataType xsd:string;
     samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
 
