@@ -6,7 +6,6 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:samm:io.catenax.planned_production_output:1.0.0#>.
-@prefix ext-demand: <urn:samm:io.catenax.material_demand:1.0.0#>.
 
 :PlannedProductionOutput a samm:Aspect;
     samm:preferredName "Planned Production Output of a Supplier"@en;
@@ -81,7 +80,7 @@
 :allocatedPlannedProductionOutputs a samm:Property;
     samm:preferredName "Planned and Allocated Production Outpus"@en;
     samm:description "Planned Production Outputs already allocated to the customer."@en;
-    samm:characteristic :AllocatedProductionOutputCollection.
+    samm:characteristic :AllocatedPlannedProductionOutputCollection.
 :OrderPositionReferenceCharacteristic a samm:Characteristic;
     samm:preferredName "Order Position Reference Characteristic"@en;
     samm:description "The order position reference includes reference numbers for the order and the position. As these information are meant for the customer, the customer reference numbers are mandatory."@en;
@@ -128,7 +127,7 @@
 :productionSiteBpns a samm:Property;
     samm:preferredName "BPNS of Supplier's Production Site"@en;
     samm:description "One planned and alllocated production output has always one site. The site is identified by the BPNS."@en;
-    samm:characteristic ext-demand:BPNSTrait;
+    samm:characteristic :BPNSTrait;
     samm:exampleValue "BPNS0123456789ZZ";
     samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
 :estimatedTimeOfCompletion a samm:Property;
@@ -151,7 +150,18 @@
 :Quantity a samm:Entity;
     samm:preferredName "Quantity"@en;
     samm:description "Comprises the number of objects and the unit of measurement."@en;
-    samm:properties (:quantityNumber ext-demand:unitOfMeasure). #TODO: Tom
+    samm:properties (:quantityNumber :unitOfMeasure).
+:unitOfMeasure a samm:Property;
+    samm:preferredName "Unit of Measure"@en;
+    samm:description "Unit of measurement for demand quantities."@en;
+    samm:characteristic :UnitOfMeasure;
+    samm:exampleValue "KGM".
+:UnitOfMeasure a samm-c:Enumeration;
+    samm:preferredName "Unit of Measure"@en;
+    samm:description "The Enumeration lists a selection of allowed units of measure referenced by their official code according to Codes for Units of Measure Used in International Trade"@en;
+    samm:dataType xsd:string;
+    samm:see <https://tfig.unece.org/contents/recommendation-20.htm>;
+    samm-c:values ("GRM" "KGM" "TNE" "STN" "ONZ" "LBR" "CMT" "MTR" "KTM" "INH" "FOT" "YRD" "CMK" "MTK" "INK" "FTK" "YDK" "CMQ" "MTQ" "INQ" "FTQ" "YDQ" "MLT" "LTR" "HLT" "H87" "SET" "PR" "ZP" "KWH" "").
 :quantityNumber a samm:Property;
     samm:preferredName "Quantity Number"@en;
     samm:description "The number of objects related to the unit of measure."@en;
@@ -161,9 +171,16 @@
     samm:preferredName "Number of Objects"@en;
     samm:description "Quantifiable number of objects in reference to the unit of measure."@en;
     samm:dataType xsd:double.
-:BpnsCharacteristic a samm:Characteristic;
-    samm:preferredName "BPNS Characteristic"@en;
-    samm:description "TODO: Tom"@en;
-    samm:dataType xsd:string;
-    samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
-
+:BPNSTrait a samm-c:Trait;
+    samm:preferredName "BPNS Trait"@en;
+    samm:description "Trait to ensure data format for BPNS."@en;
+    samm-c:baseCharacteristic :BPNS;
+    samm-c:constraint :BPNSRegularExpression.
+:BPNS a samm:Characteristic;
+    samm:preferredName "Business Partner Number Site"@en;
+    samm:description "BPNS represents a site which can be a production plant inside one location."@en;
+    samm:dataType xsd:string.
+:BPNSRegularExpression a samm-c:RegularExpressionConstraint;
+    samm:preferredName "BPNS Regular Expression"@en;
+    samm:description "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two uppercase letters."@en;
+    samm:value "^BPNS[0-9]{8}[a-zA-Z0-9]{4}$".
