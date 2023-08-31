@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0]
+## [2.0.0] - 2023-09-01
 ### Added
 - mandatory `businessPartner` to each child item
 
