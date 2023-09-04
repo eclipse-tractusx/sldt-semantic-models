@@ -1,0 +1,175 @@
+---
+openapi: 3.0.3
+info:
+  title: Message Header Aspect
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/message-header-aspect:
+    get:
+      tags:
+      - MessageHeaderAspect
+      operationId: getMessageHeaderAspect
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/MessageHeaderAspect'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_samm_io.catenax.shared.message_header_1.0.0_UuidCharacteristic:
+      type: string
+      description: Structured Value for defining a property which requires an UUID
+    urn_samm_io.catenax.shared.message_header_1.0.0_ContextCharacteristic:
+      type: string
+      description: Defining a string value for the context
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.shared.message_header_1.0.0_BpnCharacteristic:
+      type: string
+      description: Characteristic for defining BPN values
+    urn_samm_io.catenax.shared.message_header_1.0.0_VersionCharacteristic:
+      type: string
+      description: Characteristic defining the value of version.
+    urn_samm_io.catenax.shared.message_header_1.0.0_HeaderCharacteristic:
+      description: Characteristic describing the common shared aspect Message Header
+      type: object
+      properties:
+        messageId:
+          description: "Unique ID identifying the message. The purpose of the ID is\
+            \ to uniquely identify a single message, therefore it MUST not be reused."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_UuidCharacteristic'
+        context:
+          description: |-
+            Information about the context the message should be considered in.
+            The value MUST consist of two parts: an identifier of the context (e.g. business domain, etc.) followed by a version number.
+            Both the identifier and the version number MUST correspond to the content of the message.
+            If the content of a message is described by an aspect model available in the Catena-X Semantic Hub, then the unique identifier of this semantic model (e.g. urn:samm:io.catenax.<ASPECT-MODEL-NAME>:1.x.x) MUST be used as a value of the context field. This is considered the default case.
+            In all other cases the value of the context field MUST follow the pattern <domain>-<subdomain>-<object>:<[major] version> (e.g. TRACE-QM-Alert:1.x.x).
+            Versioning only refers to major versions in both default and fallback cases.
+            Note: The version of the message's header is specified in the version field.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_ContextCharacteristic'
+        sentDateTime:
+          description: Time zone aware timestamp holding the date and the time the
+            message was sent by the sending party. The value MUST be formatted according
+            to the ISO 8601 standard
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        senderBpn:
+          description: The Business Partner Number of the sending party. The value
+            MUST be a valid BPN. BPNA and BPNS are not allowed. Applicable constraints
+            are defined in the corresponding standard
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_BpnCharacteristic'
+        receiverBpn:
+          description: The Business Partner Number of the receiving party. The value
+            MUST be a valid BPN. BPNA and BPNS are not allowed. Applicable constraints
+            are defined in the corresponding standard.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_BpnCharacteristic'
+        expectedResponseBy:
+          description: Time zone aware timestamp holding the date and time by which
+            the sending party expects a certain type of response from the receiving
+            party. The meaning and interpretation of the fields's value are context-bound
+            and MUST therefore be defined by any business domain or platform capability
+            making use of it. The value MUST be formatted according to the ISO 8601
+            standard
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        relatedMessageId:
+          description: Unique ID identifying a message somehow related to the current
+            one
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_UuidCharacteristic'
+        version:
+          description: The unique identifier of the aspect model defining the structure
+            and the semantics of the message's header. The version number should reflect
+            the versioning schema of aspect models in Catena-X.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_VersionCharacteristic'
+      required:
+      - messageId
+      - context
+      - sentDateTime
+      - senderBpn
+      - receiverBpn
+      - version
+    MessageHeaderAspect:
+      description: Aspect model describing the shared message header.
+      type: object
+      properties:
+        header:
+          description: Contains standardized attributes for message processing common
+            across several use cases.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_HeaderCharacteristic'
+      required:
+      - header
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MessageHeaderAspect:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageHeaderAspect'
+      description: The request was successful.
+  requestBodies:
+    MessageHeaderAspect:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageHeaderAspect'
