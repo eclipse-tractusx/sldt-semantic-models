@@ -6,7 +6,7 @@ All notable changes to this model will be documented in this file.
 ## [2.0.0]
 ### Added
 - property called hasAlternative
-- Constraint called BPN and its characteristic
+- Boolean characteristic
 
 ### Changed
 - Description of the main property 'SingleLevelBomAsBuil' was adapted to the new requirements of the model
