@@ -8,7 +8,7 @@ Closes #
 <!-- The MS2 and MS3 criteria are intended for merges to the main-branch. For small bug-fixes or during the model development, for instance, when merging to a feature branch, you may decide to not fill out the checklists. However, we recommend to follow the MS2 checklist during the development. The MS3 checklist becomes relevant for merges to the main-branch. -->
 ## MS2 Criteria
 (to be filled out by PR reviewer)
-- [ ] the model **validates** with the BAMM SDS SDK in the version specified in the Readme.md of this repository by the time of the MS2 check  (e.g., 'java -jar bamm-cli.jar -i \<path-to-aspect-model\> -v ). The  BAMM CLI is available [here](https://openmanufacturingplatform.github.io/sds-documentation/sds-developer-guide/dev-snapshot/tooling-guide/bamm-cli.html) and in [GitHub](https://github.com/OpenManufacturingPlatform/sds-sdk/releases)
+- [ ] the model **validates** with the BAMM SDS SDK in the version specified in the Readme.md of this repository by the time of the MS2 check  (e.g., 'java -jar bamm-cli.jar -i \<path-to-aspect-model\> -v ). The  SAMM CLI is available [here](https://eclipse-esmf.github.io/esmf-developer-guide/tooling-guide/samm-cli.html) and in [GitHub](https://github.com/eclipse-esmf/esmf-sdk/releases/tag/v2.3.1)
 - [ ] use **Camel-Case** (e.g., "MyModelElement" or "TimeDifferenceGmtId", when in doubt follow https://google.github.io/styleguide/javaguide.html#s5.3-camel-case)
 - [ ] the identifiers for all model elements **start with a capital letter** except for properties
 - [ ] the identifier for **properties starts with a small letter**
@@ -23,7 +23,7 @@ Closes #
 - [ ] units are referenced from the BAMM unit catalog whenever possible
 - [ ] **use constraints** to make known constraints from the use case explicit in the aspect model 
 - [ ] when relying on **external standards**, they are referenced through a **"see"** element
-- [ ] all properties with an [simple type](https://openmanufacturingplatform.github.io/sds-documentation/bamm-specification/v1.0.0/datatypes.html) have an example value
+- [ ] all properties with an [simple type](https://eclipse-esmf.github.io/samm-specification/2.0.0/datatypes.html) have an example value
 - [ ] metadata.json exists with status "release"
 - [ ] generated json schema validates against example json payload
 - [ ] file RELEASE_NOTES.md exists and contains entries for proposed model changes 
