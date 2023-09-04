@@ -3,6 +3,18 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.0]
+### Added
+- property called hasAlternative
+- Constraint called BPN and its characteristic
+
+### Changed
+- Description of the main property 'SingleLevelBomAsBuil' was adapted to the new requirements of the model
+
+### Removed
+- 
+
+
 ## [1.0.0]
 ### Added
 - renamed model from `io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship`
