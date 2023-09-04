@@ -34,7 +34,7 @@ JARNAME=samm-cli-2.3.1.jar
 SAMMFOLDER=.SAMMCLI/
 SAMMCLI=$SAMMFOLDER$JARNAME
 # Adjust if SAMM CLI version changes
-SAMMCLIURL=https://github.com/eclipse-esmf/esmf-sdk/releases/download/v2.2.3/samm-cli-2.3.1.jar
+SAMMCLIURL=https://github.com/eclipse-esmf/esmf-sdk/releases/download/v2.3.1/samm-cli-2.3.1.jar
 
 CATENAXCSS=$SAMMFOLDER/catena-template.css
 CATENAXCUSTOMCSSURL=https://raw.githubusercontent.com/eclipse-tractusx/sldt-semantic-hub/main/backend/src/main/resources/catena-template.css

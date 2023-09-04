@@ -9,7 +9,7 @@ const { TIMEOUT } = require('dns');
 
 var bulk = JSON.parse(core.getInput('bulk'))
 var bammVersion = core.getInput('bamm_version')
-var bammSdkPath = `${__dirname}/bamm-cli-${bammVersion}.jar`;
+var bammSdkPath = `${__dirname}/samm-cli-${bammVersion}.jar`;
 
 var added = JSON.parse(core.getInput('added'))
 var modified = JSON.parse(core.getInput('modified'))
@@ -19,7 +19,7 @@ main()
 
 async function main() {
     try {
-        await asyncBammSdkDownload(`https://github.com/eclipse-esmf/esmf-sdk/releases/download/v${bammVersion}/bamm-cli-${bammVersion}.jar`)
+        await asyncBammSdkDownload(`https://github.com/eclipse-esmf/esmf-sdk/releases/download/v${bammVersion}/samm-cli-${bammVersion}.jar`)
 
         if(bulk === false){
             validateChanges(added, modified, prNumber)
@@ -131,7 +131,7 @@ async function validateModel(file) {
     return new Promise((resolve, reject) => {
         console.log(`Validating TTL file ${file}`)
 
-        exec(`java -jar ${bammSdkPath} aspect ${file} validate`, (error, stdout, stderr) => {
+        exec(`java -Dpolyglot.engine.WarnInterpreterOnly=false -jar ${bammSdkPath} aspect ${file} validate`, (error, stdout, stderr) => {
             if (stderr) {
                 reject(stderr)
             }
@@ -154,21 +154,21 @@ async function asyncBammSdkDownload(url) {
 async function downloadBammSdk(url, resolve, reject) {
     https.get(url, (response) => {
         if (response.statusCode >= 400) {
-            reject("Could not download BAMM SDK v${bammVersion}")
+            reject("Could not download SAMM SDK v${bammVersion}")
         }
 
         if (response.statusCode > 300 && response.statusCode < 400 && !!response.headers.location) {
             downloadBammSdk(response.headers.location, resolve, reject)
         } else {
-            console.log(`Starting download of BAMM SDK v${bammVersion}`)
+            console.log(`Starting download of SAMM SDK v${bammVersion}`)
 
             const filePath = fs.createWriteStream(bammSdkPath);
 
             response.pipe(filePath)
             filePath.on('finish', () => {
                 filePath.close()
-                console.log(`Downloaded BAMM SDK v${bammVersion}`)
-                resolve(`Downloaded BAMM SDK v${bammVersion}`)
+                console.log(`Downloaded SAMM SDK v${bammVersion}`)
+                resolve(`Downloaded SAMM SDK v${bammVersion}`)
             })
         }
     })
