@@ -1,3 +1,24 @@
+#######################################################################
+# Copyright (c) 2023 BMW AG
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IPK)
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 SAP Deutschland SE & Co.KG
+# Copyright (c) 2023 T-Systems International GmbH
+# Copyright (c) 2023 Robert Bosch GmbH
+# Copyright (c) 2023 tec4U-Ingenieurgesellschaft mbH
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
@@ -34,13 +55,7 @@
 :SecondaryMaterialContentMaterialsEntity a samm:Entity ;
    samm:preferredName "Secondary Material Content Materials Entity"@en ;
    samm:description "List of relevant materials which are built in this part and details on the share of primary and secondary material."@en ;
-   samm:properties ( :materialNameAtSupplier :materialClass :materialNameStandardized :unitOfMeasure :bioBased :inorganic :certificate ) .
-
-:materialNameAtSupplier a samm:Property ;
-   samm:preferredName "material name at supplier"@en ;
-   samm:description "Material name as provided by supplier."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Opatex" .
+   samm:properties ( :materialClass :materialNameStandardized :unitOfMeasure :bioBased :inorganic [ samm:property :certificate; samm:optional true ] ) .
 
 :materialClass a samm:Property ;
    samm:preferredName "material Class"@en ;
@@ -128,7 +143,7 @@
 :CertificateEntity a samm:Entity ;
    samm:preferredName "Certificate Entity"@en ;
    samm:description "If available, the name of a certificate verifying the recycling content can be included"@en ;
-   samm:properties ( [ samm:property :certificateName; samm:optional true ] [ samm:property :certificateLink; samm:optional true ] ) .
+   samm:properties ( :certificateName :certificateLink ) .
 
 :referencedStandard a samm:Property ;
    samm:preferredName "referenced Standard"@en ;
@@ -193,7 +208,7 @@
    samm:exampleValue "Redcert" .
 
 :certificateLink a samm:Property ;
-   samm:preferredName "certificateLink"@en ;
+   samm:preferredName "certificate Link"@en ;
    samm:description "The certificate can be referenced for example as a PDF file."@en ;
    samm:characteristic samm-c:ResourcePath .
 
@@ -332,7 +347,7 @@
 :PreConsumerEntity a samm:Entity ;
    samm:preferredName "Pre Consumer Entity"@en ;
    samm:description "Amount of material that is Pre-consumer material. Material diverted from the waste stream during a manufacturing process. Excluded is reutilization of materials such as rework, regrind or scrap generated in a process and capable of being reclaimed within the same process that generated it. Pre-consumer material can be used in form of recovered or recycled material as a substitute for primary material."@en ;
-   samm:properties ( :chemicalRecycling :mechanicalRecycling ) .
+   samm:properties ( :mechanicalRecycling ) .
 
 :PostConsumerEntity a samm:Entity ;
    samm:preferredName "Post Consumer Entity"@en ;
@@ -342,51 +357,51 @@
 :ReutilizationEntity a samm:Entity ;
    samm:preferredName "Reutilization Entity"@en ;
    samm:description "Amount of material content that has been reutilised. Reutilization of materials such as rework, regrind, or scrap materials generated within the process and capable of being reused within the same process that generated it.  "@en ;
-   samm:properties ( [ samm:property :percentageOfMaterialWeight; samm:optional true ] ) .
+   samm:properties ( :percentageOfMaterialWeight ) .
 
 :PercentageOfMaterialWeightUnit a samm:Unit ;
    samm:preferredName "Percentage Of Material Weight Unit"@en ;
    samm:referenceUnit unit:percent ;
    samm:symbol "%" .
 
-:chemicalRecycling a samm:Property ;
-   samm:preferredName "chemical Recycling"@en ;
-   samm:description "Materials that have undergone chemical recycling."@en ;
-   samm:characteristic :ChemicalRecycling .
-
 :mechanicalRecycling a samm:Property ;
    samm:preferredName "mechanical Recycling"@en ;
    samm:description "Materials that have undergone mechanical recycling."@en ;
    samm:characteristic :MechanicalRecycling .
 
+:chemicalRecycling a samm:Property ;
+   samm:preferredName "chemical Recycling"@en ;
+   samm:description "Materials that have undergone chemical recycling."@en ;
+   samm:characteristic :ChemicalRecycling .
+
 :isPreviousIndustryAutomotive a samm:Property ;
-   samm:preferredName "isPreviousIndustryAutomotive"@en ;
+   samm:preferredName "is Previous Industry Automotive"@en ;
    samm:description "Information if the material was previously used in automotive industry."@en ;
    samm:characteristic :Boolean ;
    samm:exampleValue true .
-
-:ChemicalRecycling a samm:Characteristic ;
-   samm:preferredName "Chemical Recycling"@en ;
-   samm:description "Materials that have undergone chemical recycling."@en ;
-   samm:dataType :ChemicalRecyclingEntity .
 
 :MechanicalRecycling a samm:Characteristic ;
    samm:preferredName "Mechanical Recycling"@en ;
    samm:description "Materials that have undergone mechanical recycling."@en ;
    samm:dataType :MechanicalRecyclingEntity .
 
+:ChemicalRecycling a samm:Characteristic ;
+   samm:preferredName "Chemical Recycling"@en ;
+   samm:description "Materials that have undergone chemical recycling."@en ;
+   samm:dataType :ChemicalRecyclingEntity .
+
 :Boolean a samm:Characteristic ;
    samm:preferredName "Boolean"@en ;
    samm:description "Represents a boolean value (i.e. a \"flag\")."@en ;
    samm:dataType xsd:boolean .
 
-:ChemicalRecyclingEntity a samm:Entity ;
-   samm:preferredName "Chemical Recycling Entity"@en ;
-   samm:description "Materials that have undergone chemical recycling."@en ;
-   samm:properties ( :isMassBalanced :percentageOfMaterialWeight ) .
-
 :MechanicalRecyclingEntity a samm:Entity ;
    samm:preferredName "Mechanical Recycling Entity"@en ;
    samm:description "Materials that have undergone mechanical recycling."@en ;
    samm:properties ( :percentageOfMaterialWeight ) .
+
+:ChemicalRecyclingEntity a samm:Entity ;
+   samm:preferredName "Chemical Recycling Entity"@en ;
+   samm:description "Materials that have undergone chemical recycling."@en ;
+   samm:properties ( :isMassBalanced :percentageOfMaterialWeight ) .
 
