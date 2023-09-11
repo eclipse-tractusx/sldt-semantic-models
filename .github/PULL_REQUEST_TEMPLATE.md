@@ -37,5 +37,5 @@ Closes #
 - [ ] There exists valid test data
 - [ ] In case of a new (incompatible) major version to an existing version, a migration strategy has been developed
 - [ ] The model has at least version '1.0.0'
-- [ ] If a previous model exists, is model deprecation checked for previous model
+- [ ] If a previous model exists, model deprecation has been checked for previous model
 - [ ] The release date in the Release Note is set to the date of the MS3 approval
