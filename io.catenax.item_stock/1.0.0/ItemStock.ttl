@@ -58,6 +58,16 @@
 ] :lastUpdatedOnDateTime :allocatedStocks);
     samm:preferredName "Position"@en;
     samm:description "The Position can be located at several stocks. \nIn case of a supplier's stock for a customer, a position may be either anonymous or reference a position within a customer order. \nIn case of a customer's stock for a supplier, the order position reference MUST NOT be set."@en.
+:Uuidv4Characteristic a samm:Characteristic;
+    samm:preferredName "UUID v4"@en;
+    samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    samm:dataType xsd:string;
+    samm:see <https://tools.ietf.org/html/rfc4122>.
+:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint;
+    samm:preferredName "Catena-X ID Regular Expression"@en;
+    samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    samm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
 :orderPositionReference a samm:Property;
     samm:preferredName "Order Position Reference"@en;
     samm:description "The order position reference contains information to identify a position within an order."@en;
@@ -69,7 +79,7 @@
     samm:exampleValue "2023-04-01T14:23:00"^^xsd:date.
 :allocatedStocks a samm:Property;
     samm:preferredName "Allocated Stocks"@en;
-    samm:description "Stocks already allocated to the customer. There is one AllocatedStock per supplierStockLocation."@en;
+    samm:description "Stocks that have been already allocated to the customer or delivered by a specific supplier. An allocated stock always refers to a stock location."@en;
     samm:characteristic :AllocatedStockCollection.
 :OrderPositionReferenceCharacteristic a samm:Characteristic;
     samm:preferredName "Order Position Reference Characteristic"@en;
@@ -82,7 +92,7 @@
     samm:see <https://www.iso.org/iso-8601-date-and-time-format.html>.
 :AllocatedStockCollection a samm-c:Collection;
     samm:preferredName "Allocated Stock Collection"@en;
-    samm:description "Collection of AllocatedStocks that may relate to different supplierStockLocations."@en;
+    samm:description "Collection of allocated stocks that may relate to different stock locations."@en;
     samm:dataType :AllocatedStock.
 :OrderPositionReference a samm:Entity;
     samm:properties ([
@@ -135,6 +145,10 @@
     samm:preferredName "Location ID Characteristic of Supplier's Stock"@en;
     samm:description "This is the location where the stock is located."@en;
     samm:dataType :LocationId.
+:Quantity a samm:Entity;
+    samm:properties (:quantityNumber :measurementUnit);
+    samm:preferredName "Quantity"@en;
+    samm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en.
 :LocationId a samm:Entity;
     samm:properties (:locationIdType :locationId);
     samm:preferredName "Location ID"@en;
@@ -160,10 +174,6 @@
     samm:description "The actual key based on the type."@en;
     samm:dataType xsd:string;
     samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
-:Quantity a samm:Entity;
-    samm:properties (:quantityNumber :measurementUnit);
-    samm:preferredName "Quantity"@en;
-    samm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en.
 :quantityNumber a samm:Property;
     samm:preferredName "Quantity Number"@en;
     samm:description "The number of objects related to the measurement unit"@en;
@@ -179,14 +189,3 @@
     samm:preferredName "Number of Objects"@en;
     samm:description "Quantifiable number of objects in reference to the measurementUnit"@en;
     samm:dataType xsd:double.
-:Uuidv4Characteristic a samm:Characteristic;
-    samm:preferredName "UUID v4"@en;
-    samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
-    samm:dataType xsd:string;
-    samm:see <https://tools.ietf.org/html/rfc4122>.
-:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint;
-    samm:preferredName "Catena-X ID Regular Expression"@en;
-    samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
-    samm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
-    samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
-
