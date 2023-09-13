@@ -1,29 +1,3 @@
-#######################################################################
-# Copyright (c) 2023 BASF SE
-# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
-# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML and Fraunhofer ISST)
-# Copyright (c) 2023 Henkel AG & Co. KGaA
-# Copyright (c) 2023 Mercedes Benz AG
-# Copyright (c) 2023 SAP SE
-# Copyright (c) 2023 SupplyOn AG
-# Copyright (c) 2023 Volkswagen AG
-# Copyright (c) 2023 ZF Friedrichshafen AG
-# Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
-# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
-# Copyright (c) 2023 Volkswagen AG
-# Copyright (c) 2023 Contributors to the Eclipse Foundation
-#
-# See the NOTICE file(s) distributed with this work for additional
-# information regarding copyright ownership.
-#
-# This work is made available under the terms of the
-# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
-# which is available at
-# https://creativecommons.org/licenses/by/4.0/legalcode.
-#
-# SPDX-License-Identifier: CC-BY-4.0
-#######################################################################
-
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
@@ -31,12 +5,12 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-@prefix : <urn:samm:io.catenax.shared.unit_of_measure:1.0.1#>.
+@prefix : <urn:samm:io.catenax.shared.unit_of_measure:1.0.0#>.
 
 :UnitOfMeasure a samm:Aspect;
     samm:preferredName "Unit of Measure"@en;
     samm:description "The aspect may be reused whenever the unit of measure is within demand and supply communications of items."@en;
-    samm:properties (:unitOfMeasure);
+    samm:properties (:unitOfMeasure :unitOfMeasureTwo);
     samm:operations ();
     samm:events ().
 :unitOfMeasure a samm:Property;
@@ -50,4 +24,15 @@
     samm:dataType xsd:string;
     samm:see <https://tfig.unece.org/contents/recommendation-20.htm>;
     samm-c:values ("GRM" "KGM" "TNE" "STN" "ONZ" "LBR" "CMT" "MTR" "KTM" "INH" "FOT" "YRD" "CMK" "MTK" "INK" "FTK" "YDK" "CMQ" "MTQ" "INQ" "FTQ" "YDQ" "MLT" "LTR" "HLT" "H87" "SET" "PR" "ZP" "KWH").
-
+:unitOfMeasureTwo a samm:Property;
+    samm:preferredName "Unit of Measure"@en;
+    samm:description "Unit of measure commonly used in demand and supply communication of items."@en;
+    samm:characteristic :UomTrait;
+    samm:exampleValue "unit:piece"^^samm:curie.
+:UomTrait a samm-c:Trait;
+    samm-c:baseCharacteristic samm-c:UnitReference;
+    samm-c:constraint :CommonUnitsRegex.
+:CommonUnitsRegex a samm-c:RegularExpressionConstraint;
+    samm:preferredName "Regular Expressions for common units"@en;
+    samm:description "TBD."@en;
+    samm:value "^unit\\:(piece|set|pair|page|kilowattHour|kilogram|gram|tonneMetricTon|tonUsOrShortTonUkorus|ounceAvoirdupois|pound|centimetre|metre|kilometre|inch|foot|yard|squareCentimetre|squareMetre|squareInch|squareFoot|squareYard|cubicCentimetre|cubicMetre|cubicInch|cubicFoot|cubicYard|litre|millilitre|hectolitre)$".
