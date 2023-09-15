@@ -3,6 +3,10 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [5.0.0] 2023-09-18
+- added missing property "distributionStageAircraftGhgEmissions"
+- changed declaration of properties "productOrSectorSpecificRules" and "geographyRegionOrSubregion" from optional to mandatory
+
 ## [4.0.1] 2023-07-03
 ### Changed
 - changed data type of property "version" from "positiveInteger" to "nonNegativeInteger"
