@@ -1,0 +1,297 @@
+---
+openapi: 3.0.3
+info:
+  title: Single Level BOM as Specified
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/single-level-bom-as-specified:
+    get:
+      tags:
+      - SingleLevelBomAsSpecified
+      operationId: getSingleLevelBomAsSpecified
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/SingleLevelBomAsSpecified'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleLevelBomAsSpecified'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_assetIdTrait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: Describes a Property containing a reference to one of the units
+        in the Unit Catalog.
+    urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_NumberOfObjects:
+      type: number
+      description: Quantifiable number of objects in reference to the measurementUnit.
+    urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemQuantityCharacteristic:
+      description: The characteristic of the item quantity.
+      type: object
+      properties:
+        measurementUnit:
+          description: Unit of measurement for the quantity of serialized objects.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference'
+        quantityNumber:
+          description: The number of objects related to the measurement unit.
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_NumberOfObjects'
+      required:
+      - measurementUnit
+      - quantityNumber
+      - measurementUnit
+      - quantityNumber
+    urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemClassificationEntity:
+      description: The entity encapsulating the properties of the item classification.
+      type: object
+      properties:
+        key:
+          description: Key within the classification.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        value:
+          description: Value within the classification.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - key
+      - value
+    urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemClassificationCharacteristic:
+      description: The characteristic of the item classification.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemClassificationEntity'
+      uniqueItems: true
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemPositioningCharacteristic:
+      type: string
+      description: Describes the characteristic of the left or right mark entity with
+        its possible values (left or right)
+      enum:
+      - left
+      - right
+    urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemEntity:
+      description: Entity encapsulating the properies describing a item
+      type: object
+      properties:
+        ownerItemId:
+          description: "This is the key field of the component which usually keeps\
+            \ the part numbers used in after-sales, e.g. when repairing broken parts\
+            \ and searching for a replacement. This ownerPartId itself isn't usually\
+            \ bound to one part version, with the assumption that all part versions\
+            \ with the same ownerPartId are mutually interchangeable."
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_assetIdTrait'
+        itemVersion:
+          description: "This is the version of the item. The engineering will at times\
+            \ supercede an older item version by a newer one, which might have different\
+            \ material aspects, physical dimensions etc., still maintaining compatibility."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        itemQuantity:
+          description: This is the quantity how often this item is in the item.
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemQuantityCharacteristic'
+        itemDescription:
+          description: The description of the item in the primary language of the
+            production facility of the product owner.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        itemClassification:
+          description: The item classification.
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemClassificationCharacteristic'
+        lastModifiedOn:
+          description: The time the item was modified the last time
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        createdOn:
+          description: The time the item was created on
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        itemPositioning:
+          description: "Some parts are intended to be used on either the left or right\
+            \ side, e.g. mirrors, hence this entity describes on which side a part\
+            \ is to be used"
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemPositioningCharacteristic'
+      required:
+      - ownerItemId
+      - ownerItemId
+    urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemCharacteristic:
+      description: Characteristic of the item.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ChildItemEntity:
+      description: Encapsulates the properties describing the child item
+      type: object
+      properties:
+        childItemCategory:
+          description: "The BomAsSpecified defines the view of the OEM or producer\
+            \ of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related\
+            \ information and specifies the promised and guaranteed content of the\
+            \ whole product to the end customer. This \"top-down\" view is in contrast\
+            \ to the \"bottom-up\" view of the SingleLevelBoMAsPlanned, though several\
+            \ sub-aspects are shared. The BomAsSpecified is merely one aspect, which\
+            \ is attached to the twin of the whole product and itself does neither\
+            \ introduce further twins nor reference them. Instead it merely comprises\
+            \ all functional information required by dismantlers, workshops or requestors\
+            \ for used parts to search for and to make a match on the market place."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        item:
+          description: The description of the part in the primary language of the
+            production facility of the product owner.
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ItemCharacteristic'
+        childassetId:
+          description: Describes the Catena-X ID of the child part
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - childItemCategory
+      - item
+      - childItemCategory
+      - item
+      - childassetId
+    urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ChildItemCharacteristic:
+      description: The characteristic of the child item property
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ChildItemEntity'
+      uniqueItems: true
+    SingleLevelBomAsSpecified:
+      description: "The SingleLevelBomAsSpecified defines the view of the OEM or producer\
+        \ of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related\
+        \ information and specifies the promised and guaranteed content of the whole\
+        \ product to the end customer. This \"top-down\" view is in contrast to the\
+        \ \"bottom-up\" view of the SingleLevelBoMAsPlanned, though several sub-aspects\
+        \ are shared. The BomAsSpecified is merely one aspect, which is attached to\
+        \ the twin of the whole product and itself does neither introduce further\
+        \ twins nor reference them. Instead it merely comprises all functional information\
+        \ required by dismantlers, workshops or requestors for used parts to search\
+        \ for and to make a match on the market place."
+      type: object
+      properties:
+        assetId:
+          description: A unique reference to an asset which could be registered within
+            Catena-X DataSpace
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_assetIdTrait'
+        childItems:
+          description: The child Items of the observed parent item
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_bom_as_specified_2.0.0_ChildItemCharacteristic'
+        manufacturerId:
+          description: The ID of the initial issuer of the single level BoMAsSpecified
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - assetId
+      - childItems
+      - manufacturerId
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    SingleLevelBomAsSpecified:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    SingleLevelBomAsSpecified:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SingleLevelBomAsSpecified'

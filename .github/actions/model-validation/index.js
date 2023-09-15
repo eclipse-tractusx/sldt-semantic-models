@@ -131,7 +131,7 @@ async function validateModel(file) {
     return new Promise((resolve, reject) => {
         console.log(`Validating TTL file ${file}`)
 
-        exec(`java -jar ${bammSdkPath} aspect ${file} validate`, (error, stdout, stderr) => {
+        exec(`java -Dpolyglot.engine.WarnInterpreterOnly=false -jar ${bammSdkPath} aspect ${file} validate`, (error, stdout, stderr) => {
             if (stderr) {
                 reject(stderr)
             }

@@ -1,0 +1,154 @@
+#######################################################################
+# Copyright (c) 2022,2023 BASF SE
+# Copyright (c) 2022,2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022,2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022,2023 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022,2023 Henkel AG & Co. KGaA
+# Copyright (c) 2022,2023 Mercedes Benz AG
+# Copyright (c) 2022,2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022,2023 SAP SE
+# Copyright (c) 2022,2023 Siemens AG
+# Copyright (c) 2022,2023 T-Systems International GmbH
+# Copyright (c) 2022,2023 ZF Friedrichshafen AG
+# Copyright (c) 2022,2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.single_level_usage_as_built:2.0.0#>.
+
+:SingleLevelUsageAsBuilt a samm:Aspect;
+   samm:preferredName "SingleLevelUsageAsBuilt"@en;
+   samm:description "The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part."@en;
+   samm:properties (:catenaXId :customers);
+   samm:operations ();
+   samm:events ().
+
+:catenaXId a samm:Property;
+   samm:preferredName "Catena-X Identifier"@en;
+   samm:description "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace."@en;
+   samm:characteristic :CatenaXIdTraitCharacteristic;
+   samm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d".
+
+:customers a samm:Property;
+   samm:preferredName "Customers"@en;
+   samm:description "A list of all customers of this item. If the parent items in which this item is assembled into are known, they should be listed as well.\n\nFor serialized items the list should contain only one customer with one parent item.\nAs different subsets of a batch might be sold to different customers this is a list."@en;
+   samm:characteristic :ListOfCustomersCharacteristic.
+
+:CatenaXIdTraitCharacteristic a samm-c:Trait;
+   samm:description "Trait to ensure UUID v4 data format"@en;
+   samm-c:baseCharacteristic :UUIDv4Characteristic;
+   samm-c:constraint :UUIDv4RegularExpression.
+
+:ListOfCustomersCharacteristic a samm-c:List;
+   samm:preferredName "List of Customers Characteristic"@en;
+   samm:description "A list of customers and their related parent items."@en;
+   samm:dataType :Customer.
+
+:UUIDv4Characteristic a samm:Characteristic;
+   samm:preferredName "UUID v4"@en;
+   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+   samm:dataType xsd:string.
+
+:UUIDv4RegularExpression a samm-c:RegularExpressionConstraint;
+   samm:preferredName "Catena-X Id Regular Expression"@en;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
+
+:Customer a samm:Entity;
+   samm:preferredName "Customer"@en;
+   samm:description "A customer and their related items, if known."@en;
+   samm:properties ([samm:property :parentItems; samm:optional true][samm:property :businessPartner; samm:optional false] :createdOn [samm:property :lastModifiedOn; samm:optional true]).
+
+:parentItems a samm:Property;
+   samm:preferredName "Parent Items"@en;
+   samm:description "Set of parent items, in which the given child object is assembled in (one structural level up).\n\nFor serialized items the list should contain only one parent item.\nAs different subsets of a batch might be used by a customer in different items this is a list."@en;
+   samm:characteristic :SetOfParentItemsCharacteristic.
+
+:businessPartner a samm:Property;
+   samm:preferredName "Business Partner"@en;
+   samm:description "The supplier of the given child item."@en;
+   samm:characteristic :BpnTrait;
+   samm:exampleValue "BPNL50096894aNXY".
+
+:createdOn a samm:Property;
+   samm:preferredName "Created On"@en;
+   samm:description "Timestamp when the relation between the parent part and the child part was created, e.g. when the given child part was assembled into the parent part."@en;
+   samm:characteristic samm-c:Timestamp;
+   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+
+:lastModifiedOn a samm:Property;
+   samm:preferredName "Last Modification Date"@en;
+   samm:description "Timestamp when the assembly relationship between parent part and child part was last modified."@en;
+   samm:characteristic samm-c:Timestamp;
+   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+
+:SetOfParentItemsCharacteristic a samm-c:Set;
+   samm:preferredName "Set of Parent Items"@en;
+   samm:description "Set of parent items the given child object is assembled in (one structural level up)."@en;
+   samm:dataType :ParentData.
+
+:BpnTrait a samm-c:Trait;
+   samm:preferredName "BPN Business Partner Number Trait"@en;
+   samm-c:baseCharacteristic :BpnCharacteristic;
+   samm-c:constraint :BpnConstraint.
+
+:ParentData a samm:Entity;
+   samm:preferredName "Parent Data"@en;
+   samm:description "Catena-X ID and meta data of the parent item."@en;
+   samm:properties (:quantity :catenaXId :createdOn [samm:property :lastModifiedOn; samm:optional true]).
+
+:BpnCharacteristic a samm:Characteristic;
+   samm:preferredName "BPN Characteristic"@en;
+   samm:dataType xsd:string.
+
+:BpnConstraint a samm-c:RegularExpressionConstraint;
+   samm:preferredName "BPN Constraint"@en;
+   samm:description "Business Partner Number Regular Expression allowing only BPNL which stands for a legal entity."@en;
+   samm:value "^(BPNL)([0-9]{8})([a-zA-Z0-9]{4})$".
+
+:quantity a samm:Property;
+   samm:preferredName "Quantity"@en;
+   samm:description "Quantity of which the child part is assembled into the parent part. In general it is '1' for serialized parts."@en;
+   samm:characteristic :QuantityCharacteristic.
+
+:QuantityCharacteristic a samm-c:Quantifiable;
+   samm:description "Describes the quantity in which the child part is assembled in the parent object by providing a quantity value and the measurement unit in which the quantity is measured."@en;
+   samm:dataType :Quantity.
+
+:Quantity a samm:Entity;
+   samm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en;
+   samm:properties (:quantityNumber :measurementUnit).
+
+:quantityNumber a samm:Property;
+   samm:preferredName "Quantity Number"@en;
+   samm:description "The number of objects related to the measurement unit"@en;
+   samm:characteristic :NumberOfObjects;
+   samm:exampleValue "2.5"^^xsd:double.
+
+:measurementUnit a samm:Property;
+   samm:description "Unit of Measurement for the quantity of serialized objects"@en;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/2.0.0/appendix/unitcatalog.html>;
+   samm:characteristic samm-c:UnitReference;
+   samm:exampleValue "unit:litre"^^samm:curie.
+
+:NumberOfObjects a samm:Characteristic;
+   samm:description "Quantifiable number of objects in reference to the measurementUnit"@en;
+   samm:dataType xsd:double.

@@ -1,0 +1,188 @@
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.single_level_bom_as_specified:2.0.0#>.
+
+:SingleLevelBomAsSpecified a samm:Aspect;
+    samm:preferredName "Single Level BOM as Specified"@en;
+    samm:description "The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This \"top-down\" view is in contrast to the \"bottom-up\" view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place."@en;
+    samm:properties (:assetId :childItems :manufacturerId);
+    samm:operations ();
+    samm:events ().
+:assetId a samm:Property;
+    samm:preferredName "assetID"@en;
+    samm:description "A unique reference to an asset which could be registered within Catena-X DataSpace"@en;
+    samm:characteristic :assetIdTrait;
+    samm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d".
+:manufacturerId a samm:Property;
+    samm:preferredName "Manufacturer ID"@en;
+    samm:description "The ID of the initial issuer of the single level BoMAsSpecified"@en;
+    samm:characteristic samm-c:Text;
+    samm:exampleValue "BPNL1234567890LR".
+:assetIdTrait a samm-c:Trait;
+    samm-c:baseCharacteristic samm-c:Text;
+    samm-c:constraint :Uuidv4RegularExpression.
+:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint;
+    samm:preferredName "Regular Expression for the assetID"@en;
+    samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."@en;
+    samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
+:childassetId a samm:Property;
+    samm:preferredName "Child assetId"@en;
+    samm:description "Describes the Catena-X ID of the child part"@en;
+    samm:characteristic samm-c:Text;
+    samm:exampleValue "urn:uuid:218b26f4-4a0b-4a7f-b2c1-d248927718bf ".
+:lastModifiedOn a samm:Property;
+    samm:preferredName "Last Modified On"@en;
+    samm:description "The time the item was modified the last time"@en;
+    samm:characteristic samm-c:Timestamp;
+    samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+:createdOn a samm:Property;
+    samm:preferredName "Created On"@en;
+    samm:description "The time the item was created on"@en;
+    samm:characteristic samm-c:Timestamp;
+    samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+:measurementUnit a samm:Property;
+    samm:preferredName "Measurement Unit"@en;
+    samm:description "Unit of measurement for the quantity of serialized objects."@en;
+    samm:characteristic samm-c:UnitReference;
+    samm:exampleValue "unit:kW"^^samm:curie.
+:quantityNumber a samm:Property;
+    samm:preferredName "Quantity Number"@en;
+    samm:description "The number of objects related to the measurement unit."@en;
+    samm:characteristic :NumberOfObjects;
+    samm:exampleValue "350"^^xsd:double.
+:NumberOfObjects a samm:Characteristic;
+    samm:preferredName "Number of Objects"@en;
+    samm:description "Quantifiable number of objects in reference to the measurementUnit."@en;
+    samm:dataType xsd:double.
+:key a samm:Property;
+    samm:preferredName "Key"@en;
+    samm:description "Key within the classification."@en;
+    samm:characteristic samm-c:Text;
+    samm:exampleValue "BMW:PartFamily".
+:value a samm:Property;
+    samm:preferredName "Value"@en;
+    samm:description "Value within the classification."@en;
+    samm:characteristic samm-c:Text;
+    samm:exampleValue "STEEWHL".
+:childItems a samm:Property;
+    samm:preferredName "Child Items"@en;
+    samm:description "The child Items of the observed parent item"@en;
+    samm:characteristic :ChildItemCharacteristic.
+:ChildItemCharacteristic a samm-c:Set;
+    samm:preferredName "Child Item Characteristic"@en;
+    samm:description "The characteristic of the child item property"@en;
+    samm:dataType :ChildItemEntity.
+:ChildItemEntity a samm:Entity;
+    samm:preferredName "Child Item Entity"@en;
+    samm:description "Encapsulates the properties describing the child item"@en;
+    samm:properties (:childItemCategory :item :childItemCategory :item :childassetId).
+:item a samm:Property;
+    samm:preferredName "Item"@en;
+    samm:description "The description of the part in the primary language of the production facility of the product owner."@en;
+    samm:characteristic :ItemCharacteristic.
+:ownerItemId a samm:Property;
+    samm:preferredName "Owner Item ID"@en;
+    samm:description "This is the key field of the component which usually keeps the part numbers used in after-sales, e.g. when repairing broken parts and searching for a replacement. This ownerPartId itself isn't usually bound to one part version, with the assumption that all part versions with the same ownerPartId are mutually interchangeable."@en;
+    samm:characteristic :assetIdTrait;
+    samm:exampleValue "urn:uuid:b4741433-92bb-4027-9a02-bbc64a58d193".
+:ItemCharacteristic a samm-c:Set;
+    samm:preferredName "Item Characteristic"@en;
+    samm:description "Characteristic of the item."@en;
+    samm:dataType :ItemEntity.
+:ItemEntity a samm:Entity;
+    samm:preferredName "Item Entity"@en;
+    samm:description "Entity encapsulating the properies describing a item"@en;
+    samm:properties (:ownerItemId [
+  samm:property :itemVersion;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :itemQuantity;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :itemDescription;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :itemClassification;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :lastModifiedOn;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :createdOn;
+  samm:optional "true"^^xsd:boolean
+] :ownerItemId [
+  samm:property :itemVersion;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :itemQuantity;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :itemDescription;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :itemClassification;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :lastModifiedOn;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :createdOn;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :itemPositioning;
+  samm:optional "true"^^xsd:boolean
+]).
+:itemVersion a samm:Property;
+    samm:preferredName "Item Version"@en;
+    samm:description "This is the version of the item. The engineering will at times supercede an older item version by a newer one, which might have different material aspects, physical dimensions etc., still maintaining compatibility."@en;
+    samm:characteristic samm-c:Text;
+    samm:exampleValue "05".
+:itemQuantity a samm:Property;
+    samm:preferredName "Item Quantity"@en;
+    samm:description "This is the quantity how often this item is in the item."@en;
+    samm:characteristic :ItemQuantityCharacteristic.
+:itemDescription a samm:Property;
+    samm:preferredName "Item Description"@en;
+    samm:description "The description of the item in the primary language of the production facility of the product owner."@en;
+    samm:characteristic samm-c:Text;
+    samm:exampleValue "The steering wheel is nice and round".
+:itemClassification a samm:Property;
+    samm:preferredName "Item Classification"@en;
+    samm:description "The item classification."@en;
+    samm:characteristic :ItemClassificationCharacteristic.
+:ItemQuantityCharacteristic a samm:Characteristic;
+    samm:preferredName "Item Quantity Characteristic"@en;
+    samm:description "The characteristic of the item quantity."@en;
+    samm:dataType :ItemQuantityEntity.
+:ItemQuantityEntity a samm:Entity;
+    samm:preferredName "Item Quantity Entity"@en;
+    samm:description "The entity encapsulating the properties describing the quantity of a item."@en;
+    samm:properties (:measurementUnit :quantityNumber :measurementUnit :quantityNumber).
+:ItemClassificationCharacteristic a samm-c:Set;
+    samm:preferredName "Item Classification Characteristic"@en;
+    samm:description "The characteristic of the item classification."@en;
+    samm:dataType :ItemClassificationEntity.
+:ItemClassificationEntity a samm:Entity;
+    samm:preferredName "Item Classification Entity"@en;
+    samm:description "The entity encapsulating the properties of the item classification."@en;
+    samm:properties (:key :value).
+:childItemCategory a samm:Property;
+    samm:preferredName "Child Item Category"@en;
+    samm:description "The BomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This \"top-down\" view is in contrast to the \"bottom-up\" view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place."@en;
+    samm:characteristic samm-c:Text;
+    samm:exampleValue "e.g. vehicle, winter wheels, bicycle rack".
+:itemPositioning a samm:Property;
+    samm:preferredName "Item Positioning"@en;
+    samm:description "Some parts are intended to be used on either the left or right side, e.g. mirrors, hence this entity describes on which side a part is to be used"@en;
+    samm:characteristic :ItemPositioningCharacteristic;
+    samm:exampleValue "left".
+:ItemPositioningCharacteristic a samm-c:Enumeration;
+    samm:preferredName "Item Positioning Characteristic"@en;
+    samm:description "Describes the characteristic of the left or right mark entity with its possible values (left or right)"@en;
+    samm:dataType xsd:string;
+    samm-c:values ("left" "right").
