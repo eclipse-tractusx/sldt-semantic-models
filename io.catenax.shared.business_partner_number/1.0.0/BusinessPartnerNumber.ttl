@@ -1,0 +1,86 @@
+#######################################################################
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
+
+:BusinessPartnerNumber a samm:Aspect;
+    samm:preferredName "Shared Aspect for any business partner number"@en;
+    samm:description "This is a shared aspect for BPN with a regex."@en;
+    samm:properties (:bpnlProperty :bpnsProperty :bpnaProperty);
+    samm:operations ();
+    samm:events ().
+:bpnlProperty a samm:Property;
+    samm:preferredName "Business Partner Number Legal Entity Property"@en;
+    samm:description "Property based on a BPNL."@en;
+    samm:characteristic :BpnlTrait;
+    samm:exampleValue "BPNL0123456789ZZ".
+:BpnlTrait a samm-c:Trait;
+    samm:preferredName "BPNl Trait"@en;
+    samm:description "Trait to ensure data format for BPNL."@en;
+    samm-c:baseCharacteristic :BpnlCharacteristic;
+    samm-c:constraint :BpnlRegularExpression.
+:BpnlCharacteristic a samm:Characteristic;
+    samm:preferredName "Business Partner Number Legal Entity"@en;
+    samm:description "BPNL (Business Partner Number Legal Entity) represents the legal entity of an organization (e.g. enterprise, university, association, …) and contains its legal name (incl. legal form, if registered), registered address and tax number. The registered address is the official, legal correspondence address which has to be supplied to governmental and tax authorities and is the address which is used in any legal or court documents. BPNL is on corporate level and is unique for this legal entity."@en;
+    samm:dataType xsd:string;
+    samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
+:BpnlRegularExpression a samm-c:RegularExpressionConstraint;
+    samm:preferredName "BPNL Regular Expression"@en;
+    samm:description "The provided regular expression ensures that the BPNL is composed of prefix 'BPNL', 10 digits and two uppercase letters."@en;
+    samm:value "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$".  
+:bpnaProperty a samm:Property;
+    samm:preferredName "Business Partner Number Address Property"@en;
+    samm:description "Property based on a BPNA."@en;
+    samm:characteristic :BpnaTrait;
+    samm:exampleValue "BPNA0123456789ZZ".
+:BpnaTrait a samm-c:Trait;
+    samm:preferredName "BPNA Trait"@en;
+    samm:description "Trait to ensure data format for BPNA."@en;
+    samm-c:baseCharacteristic :BpnaCharacteristic;
+    samm-c:constraint :BpnaRegularExpression.
+:BpnaCharacteristic a samm:Characteristic;
+    samm:preferredName "Business Partner Number Site"@en;
+    samm:description "BPNA (Business Partner Number Address) contains the legal name (incl. legal form, if registered) and additional organization information about site, e.g. Plant xxx, Branch office yyy of an organization with its corresponding, most commonly physical, address. A BPNA is always linked to a BPNL via relationship 'belongs to legal entity' and should be linked to a BPNS via relationship 'belongs to site'.The BPNA is on operational level (e.g. shipping or pick-up address)."@en;
+    samm:dataType xsd:string;
+    samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
+:BpnaRegularExpression a samm-c:RegularExpressionConstraint;
+    samm:preferredName "BPNA Regular Expression"@en;
+    samm:description "The provided regular expression ensures that the BPNA is composed of prefix 'BPNA', 10 digits and two uppercase letters."@en;
+    samm:value "^BPNA[0-9]{8}[a-zA-Z0-9]{4}$".
+:bpnsProperty a samm:Property;
+    samm:preferredName "Business Partner Number Site Property"@en;
+    samm:description "Property based on a BPNS."@en;
+    samm:characteristic :BpnsTrait;
+    samm:exampleValue "BPNS0123456789ZZ".
+:BpnsTrait a samm-c:Trait;
+    samm:preferredName "BPNS Trait"@en;
+    samm:description "Trait to ensure data format for BPNS."@en;
+    samm-c:baseCharacteristic :BpnsCharacteristic;
+    samm-c:constraint :BpnsRegularExpression.
+:BpnsCharacteristic a samm:Characteristic;
+    samm:preferredName "Business Partner Number Site"@en;
+    samm:description "BPNS (Business Partner Number Site) represents a site which can be a production plant. A site can also be e.g. an office or a warehouse. An information related to a site is e.g. needed for reporting issues (How many sites does e.g. Beispiel AG have?), status of operation (out of operations due to environmental disaster), for certificates on site level (e.g. environment certificates) or for internal regulations on site level, (e.g. security topics, Corona rules,...). Several addresses (= BPNA with different streets and different gates) can belong to one site. A BPNS should be always linked to one BPNL via relationship 'belongs to legal entity'."@en;
+    samm:dataType xsd:string;
+    samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
+:BpnsRegularExpression a samm-c:RegularExpressionConstraint;
+    samm:preferredName "BPNS Regular Expression"@en;
+    samm:description "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two uppercase letters."@en;
+    samm:value "^BPNS[0-9]{8}[a-zA-Z0-9]{4}$".
