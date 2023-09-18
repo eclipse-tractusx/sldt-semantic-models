@@ -1,0 +1,141 @@
+#######################################################################
+# Copyright (c) 2022,2023 BASF SE
+# Copyright (c) 2022,2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022,2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022,2023 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022,2023 Henkel AG & Co. KGaA
+# Copyright (c) 2022,2023 Mercedes Benz AG
+# Copyright (c) 2022,2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022,2023 SAP SE
+# Copyright (c) 2022,2023 Siemens AG
+# Copyright (c) 2022,2023 T-Systems International GmbH
+# Copyright (c) 2022,2023 ZF Friedrichshafen AG
+# Copyright (c) 2022,2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:org.eclipse.digitaltwin:1.0.0#> .
+
+:QualityMessageContent a samm:Aspect ;
+   samm:preferredName "Quality Message Content"@en ;
+   samm:description "Aspect model describing the shared message content for Quality Notifications, such as Quality Alerts and Quality Notifications. "@en ;
+   samm:properties ( :content ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:content a samm:Property ;
+   samm:preferredName "Content"@en ;
+   samm:description "Contains standardized attributes for message content common across several use cases."@en ;
+   samm:characteristic :ContentCharacteristic .
+
+:ContentCharacteristic a samm:Characteristic ;
+   samm:preferredName "Content Characteristic"@en ;
+   samm:description "Characteristic describing the common shared aspect Message Content."@en ;
+   samm:dataType :MessageContentEntity .
+
+:MessageContentEntity a samm:Entity ;
+   samm:preferredName "Message Content Entity"@en ;
+   samm:description "The Catena-X Message Content contains standardized attributes that integrate the content and required serial number of items in need of a quality investigation or quality alert."@en ;
+   samm:properties ( :notificationId :status :severity [ samm:property :information; samm:optional true ] :listofAffectedItems ) .
+
+:notificationId a samm:Property ;
+   samm:preferredName "Notification ID"@en ;
+   samm:description "A message can have several notifications, which are exchanged between the supply chain partners. Each notification shall be identifiable, and thus, has an unique notification id. This notification id is automatically generated for each notification that is sent. Every time a HTTP Post is send a new notification ID is generated. \n\nA UUIDv4 to uniquely identify an individual quality notification message. In case of an initial sending of a message the notificationId has to be a newly generated UUIDv4."@en ;
+   samm:characteristic :IdTrait ;
+   samm:exampleValue "c2801472-5f87-41a7-9a25-b0939c4e0dff" .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "It describes the status of the quality notification.\n\nThe following status options are possible: \nSENT - This status means that the notification has been sent out. This status is shown on the sender side (and not on the receiver side).\n\nRECEIVED -  This status means that the notification has been received by the receiver. The status is shown on sender and receiver side.\n\nACKNOWLEDGED - Defines that a user has confirmed that the notification has been received. This does NOT mean that the user accepted the notification in the sense of an admission of guilt or the like. However, it means that the notification gets processed by the user (or the organization behind).\n\n\nACCEPTED - The status expresses that the received agrees on the quality investigation/alert. Recommendations, counter actions, and the like can be conveyed in the payload field information.\n\nDECLINED - The status expresses that the received does not agree on the quality investigation/alert. Recommendations, counter actions, and the like can be conveyed in the payload field information.\n\nCLOSED - This status is set by the initiator of the notification either to regularly close the notification (i.e., after the receiver has set the status to ACCEPTED or DECLINED) or to abort the processing of the notification (e.g., because the notification is not relevant anymore). "@en ;
+   samm:characteristic :StatusEnumeration ;
+   samm:exampleValue "SENT" .
+
+:severity a samm:Property ;
+   samm:preferredName "Severity"@en ;
+   samm:description "The severity of the quality notification describes its criticality. The severity is set by the initiator of a quality notification.\n\nThe following entries are supported and allowed:\n\nMINOR - This is the case if the quality issue(s) is/are not affecting any functionalities of the serialized parts/batch e.g., aesthetical issue. \n\nMAJOR - This is the case if the quality issue(s) is/are so critical that the functionality of the serialized parts/batch is partially not given. This is also the case if the serialized part / batch is no longer functional, but the missing functionality\n\n(a) can be compensated by other parts of a superordinate system or\n(b) has a relatively low significance / benefit\n\nCRITICAL - This is the case if the quality issue(s) is/are so critical that the basic functionality of the serialized parts/batch is no longer given.\n\nLIFE-THREATENING - This is the case if the quality issue(s) is/are so critical that it even endangers human lives e.g., the airbag or break is not working."@en ;
+   samm:characteristic :SeverityEnumeration ;
+   samm:exampleValue "MINOR" .
+
+:information a samm:Property ;
+   samm:preferredName "information"@en ;
+   samm:description "A text that e.g. describes the quality alert or the quality investigation. Recommendations or counter actions can be added by the receiver when ACCECPTED or DECLINED the notification. The length is capped at 1000 characters."@en ;
+   samm:characteristic :InformationTrait ;
+   samm:exampleValue "Gear boxes loose oil while driving." .
+
+:listofAffectedItems a samm:Property ;
+   samm:preferredName "List of Affected Items"@en ;
+   samm:description "Items are added by the initiator (i.e., sender) of a notification. Once the notification is not in the status CREATED (e.g., it has been sent) the array cannot be changed."@en ;
+   samm:characteristic :AffectedItemsList .
+
+:IdTrait a samm-c:Trait ;
+   samm:preferredName "ID (Identifier) Trait"@en ;
+   samm:description "Trait for defining the UuidCharacteristic to be a UUIDv4 compliant property."@en ;
+   samm-c:baseCharacteristic :Uuidv4Characteristic ;
+   samm-c:constraint :Uuidv4RegularExpression .
+
+:StatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Status Enumeration"@en ;
+   samm:description "A characteristic that describes all possible status options required by the notifications. This is done via an enumeration. "@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "SENT" "RECEIVED" "ACKNOWLEDGED" "ACCEPTED" "DECLINED" "CLOSED" ) .
+
+:SeverityEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Severity Enumeration"@en ;
+   samm:description "A characteristic that describes all possible severity options required by the notifications. This is done via an enumeration. "@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "MINOR" "MAJOR" "CRITICAL" "LIFE-THREATENING" ) .
+
+:InformationTrait a samm-c:Trait ;
+   samm:preferredName "Information Trait"@en ;
+   samm:description "Constraint to limit the characters by 1000."@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :TextConstraint .
+
+:AffectedItemsList a samm-c:List ;
+   samm:preferredName "Affected Items List"@en ;
+   samm:description "Characteristic that encapsulates the list of all affected items. "@en ;
+   samm:dataType :ItemEntity .
+
+:Uuidv4Characteristic a samm:Characteristic ;
+   samm:preferredName "Status Enumeration"@en ;
+   samm:description "A characteristic that describes all possible status options required by the notifications. This is done via an enumeration. "@en ;
+   samm:dataType xsd:string .
+
+:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Catena-X Id Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   samm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" .
+
+:TextConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "Text Constraint"@en ;
+   samm:description "Limits the text."@en ;
+   samm-c:maxValue "1000"^^xsd:nonNegativeInteger .
+
+:ItemEntity a samm:Entity ;
+   samm:preferredName "Item Entity"@en ;
+   samm:description "The affected item integrate all affected items identified for the use in an quality alert or investigation. "@en ;
+   samm:properties ( :item ) .
+
+:item a samm:Property ;
+   samm:preferredName "Item"@en ;
+   samm:description "A Unique ID to indentify a serialized part or a batch.\nSee also https://confluence.catena-x.net/x/f6uAAQ\n\nThis is one element in the array.\n\nAn item is added by the initiator (i.e., sender) of a notification. Once the notification is not in the status CREATED (e.g., it has been sent) it cannot be changed nor deleted."@en ;
+   samm:see <https://confluence.catena-x.net/x/f6uAAQ> ;
+   samm:characteristic :IdTrait ;
+   samm:exampleValue "urn:uuid:7e8d4d20-90cc-48f7-b41e-8cc50d96f485" .
