@@ -1,0 +1,49 @@
+#######################################################################
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.shared.uuid:1.0.0#>.
+
+:Uuid a samm:Aspect;
+    samm:preferredName "Shared Aspect for UUIDs v4"@en;
+    samm:description "This is a shared aspect for UUIDs with a regex."@en;
+    samm:properties (:uuidV4Property);
+    samm:operations ();
+    samm:events ().
+:uuidV4Property a samm:Property;
+    samm:preferredName "UUID v4 Property"@en;
+    samm:description "Property based on a UUID v4."@en;
+    samm:characteristic :UuidV4Trait;
+    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
+:UuidV4Trait a samm-c:Trait;
+    samm:preferredName "Trait for UUIDs v4"@en;
+    samm:description "Trait to ensure UUID v4 data format."@en;
+    samm-c:baseCharacteristic :Uuidv4Characteristic;
+    samm-c:constraint :Uuidv4RegularExpression.
+:Uuidv4Characteristic a samm:Characteristic;
+    samm:preferredName "UUID v4"@en;
+    samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+    samm:dataType xsd:string;
+    samm:see <https://tools.ietf.org/html/rfc4122>.
+:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint;
+    samm:preferredName "UUID v4 Regular Expression"@en;
+    samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+    samm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+    samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
