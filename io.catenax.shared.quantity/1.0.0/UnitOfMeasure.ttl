@@ -1,0 +1,275 @@
+#######################################################################
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 BMW AG
+# Copyright (c) 2023 BASF Coatings GmbH
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 CGI Deutschland B.V. & Co. KG
+# Copyright (c) 2023 SAP Deutschland SE & Co.KG
+# Copyright (c) 2023 T-Systems International GmbH
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML and Fraunhofer ISST)
+# Copyright (c) 2023 Mercedes Benz AG
+# Copyright (c) 2023 SupplyOn AG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.shared.quantity:1.0.0#>.
+
+:Quantity a samm:Aspect;
+    samm:preferredName "Quantity with Unit of Measure"@en;
+    samm:description "The aspect may be reused whenever any kind of Quantity and / or unit of measure is used. One can use all defined units via the item unit or differenciate via mass, miscellaneous, countable, linear, area and volume units."@en;
+    samm:properties (:unitOfMeasureTwo :massProperty :linearProperty :areaProperty :volumeProperty :countProperty :miscProperty :itemQuantityProperty);
+    samm:operations ();
+    samm:events ().
+:unitOfMeasureTwo a samm:Property;
+    samm:preferredName "Unit of Measure"@en;
+    samm:description "Unit of measure commonly used in demand and supply communication of items."@en;
+    samm:characteristic :UomTrait;
+    samm:exampleValue "unit:piece"^^samm:curie.
+:UomTrait a samm-c:Trait;
+    samm-c:baseCharacteristic samm-c:UnitReference;
+    samm-c:constraint :CommonUnitsRegex.
+:CommonUnitsRegex a samm-c:RegularExpressionConstraint;
+    samm:preferredName "Regular Expressions for common units"@en;
+    samm:description "TBD."@en;
+    samm:value "^unit\\:(piece|count|pair|page|kilowattHour|kilogram|gram|tonneMetricTon|tonUsOrShortTonUkorus|ounceAvoirdupois|pound|centimetre|metre|kilometre|inch|foot|yard|squareCentimetre|squareMetre|squareInch|squareFoot|squareYard|cubicCentimetre|cubicMetre|cubicInch|cubicFoot|cubicYard|litre|millilitre|hectolitre)$".
+:dimensionValue a samm:Property;
+    samm:preferredName "Dimension Value"@en;
+    samm:description "The value associated with the unit."@en;
+    samm:characteristic :DimensionValueCharacteristic;
+    samm:exampleValue "20.5"^^xsd:float.
+:DimensionValueCharacteristic a samm-c:Quantifiable;
+    samm:preferredName "Dimension Value Characteristic"@en;
+    samm:description "The value associated with the unit expressed as float."@en;
+    samm:dataType xsd:float.
+:massProperty a samm:Property;
+    samm:preferredName "Mass related property"@en;
+    samm:description "This property defines unit and value for mass related properties."@en;
+    samm:characteristic :MassCharacteristic.
+:MassCharacteristic a samm:Characteristic;
+    samm:preferredName "Mass Characteristic"@en;
+    samm:description "Characteristic for mass measurements of an item."@en;
+    samm:dataType :MassEntity.
+:MassEntity a samm:Entity;
+    samm:preferredName "Mass Entity"@en;
+    samm:description "Entity for mass measurements of an item with an unit and value."@en;
+    samm:properties ([
+  samm:property :dimensionValue;
+  samm:payloadName "value"
+] [
+  samm:property :massUnit;
+  samm:payloadName "unit"
+]).
+:massUnit a samm:Property;
+    samm:preferredName "Mass Unit"@en;
+    samm:description "The unit of a mass related attribute."@en;
+    samm:characteristic :MassUnitEnumeration;
+    samm:exampleValue "unit:kilogram";
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>.
+:MassUnitEnumeration a samm-c:Enumeration;
+    samm:preferredName "Mass Unit Enumeration"@en;
+    samm:description "Enumeration for mass units."@en;
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>;
+    samm:dataType xsd:string;
+    samm-c:values ("unit:gram" "unit:kilogram" "unit:tonneMetricTon" "unit:tonUsOrShortTonUkorus" "unit:ounceAvoirdupois" "unit:pound").
+:linearProperty a samm:Property;
+    samm:preferredName "Linear property"@en;
+    samm:description "This property defines unit and value for linear properties."@en;
+    samm:characteristic :LinearCharacteristic.
+:LinearCharacteristic a samm:Characteristic;
+    samm:preferredName "Linear Characteristic"@en;
+    samm:description "Characteristic for linear measurements of an item."@en;
+    samm:dataType :LinearEntity.
+:LinearEntity a samm:Entity;
+    samm:preferredName "Linear Entity"@en;
+    samm:description "Entity for linear measurements of an item with an unit and value."@en;
+    samm:properties ([
+  samm:property :dimensionValue;
+  samm:payloadName "value"
+] [
+  samm:property :linearUnit;
+  samm:payloadName "unit"
+]).
+:linearUnit a samm:Property;
+    samm:preferredName "Linear Unit"@en;
+    samm:description "The unit of a linear attribute."@en;
+    samm:characteristic :LinearUnitEnumeration;
+    samm:exampleValue "unit:millimetre";
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>.
+:LinearUnitEnumeration a samm-c:Enumeration;
+    samm:preferredName "Linear Unit Enumeration"@en;
+    samm:description "The unit of a linear attribute that may be used for height, width, length and diameter."@en;
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>;
+    samm:dataType xsd:string;
+    samm-c:values ("unit:millimetre" "unit:centimetre" "unit:metre" "unit:kilometre" "unit:inch" "unit:foot" "unit:yard").
+:areaProperty a samm:Property;
+    samm:preferredName "Area related property"@en;
+    samm:description "This property defines unit and value for area related properties."@en;
+    samm:characteristic :AreaCharacteristic.
+:AreaCharacteristic a samm:Characteristic;
+    samm:preferredName "Area Characteristic"@en;
+    samm:description "Characteristic for area measurements of an item."@en;
+    samm:dataType :AreaEntity.
+:AreaEntity a samm:Entity;
+    samm:preferredName "Area Entity"@en;
+    samm:description "Entity for area measurements of an item with an unit and value."@en;
+    samm:properties ([
+  samm:property :dimensionValue;
+  samm:payloadName "value"
+] [
+  samm:property :areaUnit;
+  samm:payloadName "unit"
+]).
+:areaUnit a samm:Property;
+    samm:preferredName "Area Unit"@en;
+    samm:description "The unit of a area related attribute."@en;
+    samm:characteristic :AreaUnitEnumeration;
+    samm:exampleValue "unit:litre";
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>.
+:AreaUnitEnumeration a samm-c:Enumeration;
+    samm:preferredName "Area Unit Enumeration"@en;
+    samm:description "The unit of an area attribute."@en;
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>;
+    samm:dataType xsd:string;
+    samm-c:values ("unit:squareCentimetre" "unit:squareMetre" "unit:squareInch" "unit:squareFoot" "unit:squareYard").
+:volumeProperty a samm:Property;
+    samm:preferredName "Volume related property"@en;
+    samm:description "This property defines unit and value for volume related properties."@en;
+    samm:characteristic :VolumeCharacteristic.
+:VolumeCharacteristic a samm:Characteristic;
+    samm:preferredName "Volume Characteristic"@en;
+    samm:description "Characteristic for volume measurements of an item."@en;
+    samm:dataType :VolumeEntity.
+:VolumeEntity a samm:Entity;
+    samm:preferredName "Volume Entity"@en;
+    samm:description "Entity for volume measurements of an item with an unit and value."@en;
+    samm:properties ([
+  samm:property :dimensionValue;
+  samm:payloadName "value"
+] [
+  samm:property :volumeUnit;
+  samm:payloadName "unit"
+]).
+:volumeUnit a samm:Property;
+    samm:preferredName "Volume Unit"@en;
+    samm:description "The unit of a volume related attribute."@en;
+    samm:characteristic :VolumeUnitEnumeration;
+    samm:exampleValue "unit:litre";
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>.
+:VolumeUnitEnumeration a samm-c:Enumeration;
+    samm:preferredName "Volume Unit Enumeration"@en;
+    samm:description "Enumeration for volume units."@en;
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>;
+    samm:dataType xsd:string;
+    samm-c:values ("unit:cubicMetre" "unit:litre" "unit:millilitre" "unit:cubicCentimetre" "unit:cubicInch" "unit:cubicFoot" "unit:cubicYard" "unit:hectolitre").
+:countProperty a samm:Property;
+    samm:preferredName "Countable property"@en;
+    samm:description "This property defines unit and value for countable properties."@en;
+    samm:characteristic :CountQuantityCharacteristic.
+:CountQuantityCharacteristic a samm:Characteristic;
+    samm:preferredName "Count Quantity Characteristic"@en;
+    samm:description "Characteristic for countable measurements of an item."@en;
+    samm:dataType :CountEntity.
+:CountEntity a samm:Entity;
+    samm:preferredName "Count Entity"@en;
+    samm:description "Entity for countable measurements of an item with an unit and a value."@en;
+    samm:properties ([
+  samm:property :dimensionValue;
+  samm:payloadName "value"
+] [
+  samm:property :countUnit;
+  samm:payloadName "unit"
+]).
+:countUnit a samm:Property;
+    samm:preferredName "Count Unit"@en;
+    samm:description "The unit of a countable attribute."@en;
+    samm:characteristic :CountUnitEnumeration;
+    samm:exampleValue "unit:piece";
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>.
+:CountUnitEnumeration a samm-c:Enumeration;
+    samm:preferredName "Count Unit Enumeration"@en;
+    samm:description "TODO: MISC OR SET? kilowatthour is bad here - Enumeration for count units."@en;
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>;
+    samm:dataType xsd:string;
+    samm-c:values ("unit:piece" "unit:count" "unit:pair" "unit:page" "unit:kilowattHour").
+
+:miscProperty a samm:Property;
+    samm:preferredName "Miscellaneous unit property"@en;
+    samm:description "This property defines unit and value for miscellaneous properties."@en;
+    samm:characteristic :MiscQuantityCharacteristic.
+:MiscQuantityCharacteristic a samm:Characteristic;
+    samm:preferredName "Miscellaneous Quantity Characteristic"@en;
+    samm:description "Characteristic for miscellaneous measurements of an item."@en;
+    samm:dataType :MiscEntity.
+:MiscEntity a samm:Entity;
+    samm:preferredName "Miscellaneous Entity"@en;
+    samm:description "Entity for miscellaneous measurements of an item with an unit and a value."@en;
+    samm:properties ([
+  samm:property :dimensionValue;
+  samm:payloadName "value"
+] [
+  samm:property :miscUnit;
+  samm:payloadName "unit"
+]).
+:miscUnit a samm:Property;
+    samm:preferredName "Misc Unit"@en;
+    samm:description "The unit of a miscellaneous attribute."@en;
+    samm:characteristic :MiscUnitEnumeration;
+    samm:exampleValue "unit:kilowattHour";
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>.
+:MiscUnitEnumeration a samm-c:Enumeration;
+    samm:preferredName "Count Unit Enumeration"@en;
+    samm:description "Enumeration for miscellaneous units."@en;
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>;
+    samm:dataType xsd:string;
+    samm-c:values ("unit:kilowattHour").
+
+:itemQuantityProperty a samm:Property;
+    samm:preferredName "Item Quantity property"@en;
+    samm:description "This property defines common units and the value for items. Items may be measured as mass, countable, miscellaneous, linear, area or volume."@en;
+    samm:characteristic :ItemQuantityCharacteristic.
+:ItemQuantityCharacteristic a samm:Characteristic;
+    samm:preferredName "Item Quantity Characteristic"@en;
+    samm:description "Characteristic for measurements of an item (mass, count, linear, area, volume, misc)."@en;
+    samm:dataType :ItemQuantityEntity.
+:ItemQuantityEntity a samm:Entity;
+    samm:preferredName "Item Quantity Entity"@en;
+    samm:description "Entity for common measurements of an item (mass, count, linear, area, volume, misc) with an unit and a value."@en;
+    samm:properties ([
+  samm:property :dimensionValue;
+  samm:payloadName "value"
+] [
+  samm:property :itemUnit;
+  samm:payloadName "unit"
+]).
+:itemUnit a samm:Property;
+    samm:preferredName "Item Unit"@en;
+    samm:description "The unit of an item. Common units may be related to mass, count, linear, area, volume or misc."@en;
+    samm:characteristic :ItemUnitEnumeration;
+    samm:exampleValue "unit:piece";
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>.
+:ItemUnitEnumeration a samm-c:Enumeration;
+    samm:preferredName "Item Unit Enumeration"@en;
+    samm:description "Enumeration for common item units."@en;
+    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html>;
+    samm:dataType xsd:string;
+    samm-c:values ("unit:piece" "unit:set" "unit:pair" "unit:page" "unit:kilowattHour" "unit:gram" "unit:kilogram" "unit:tonneMetricTon" "unit:tonUsOrShortTonUkorus" "unit:ounceAvoirdupois" "unit:pound" "unit:metre" "unit:centimetre" "unit:kilometre" "unit:inch" "unit:foot" "unit:yard" "unit:squareCentimetre" "unit:squareMetre" "unit:squareInch" "unit:squareFoot" "unit:squareYard" "unit:cubicCentimetre" "unit:cubicMetre" "unit:cubicInch" "unit:cubicFoot" "unit:cubicYard" "unit:litre" "unit:millilitre" "unit:hectolitre").
