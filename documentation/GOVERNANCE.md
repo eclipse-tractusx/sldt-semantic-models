@@ -13,7 +13,7 @@ The following page introduces this process, the involved roles, and the states i
 | Modeling Team | Regular meeting round to discuss and moderate the modeling activities. |
 | Use Case | Application or scenario were the need for the model creation or update arises. In general, it is assumed that a use case consists of at least one data provider and one data consumer |
 
-### Modeling State 1 (MS1) Request for Model
+### Modeling Stage 1 (MS1) Request for Model
 
 When there is a requirement for a new or modified Aspect model, a domain expert from that use case initiates the modeling process by creating a new issue on GitHub (Tab: Issues -> Button: New Issue or [this link](https://github.com/eclipse-tractusx/sldt-semantic-models/issues/new/choose)). 
 Depending on the type of request (new model, model update, model deprecation), one may use different templates for the issue. 
