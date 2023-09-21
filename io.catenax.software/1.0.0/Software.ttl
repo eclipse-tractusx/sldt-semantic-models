@@ -1,0 +1,147 @@
+######################################################################
+# Copyright (c) 2022, 2023 BASF SE
+# Copyright (c) 2022, 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022, 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022, 2023 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022, 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2022, 2023 Mercedes Benz AG
+# Copyright (c) 2022, 2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022, 2023 SAP SE
+# Copyright (c) 2022, 2023 Siemens AG
+# Copyright (c) 2022, 2023 T-Systems International GmbH
+# Copyright (c) 2022, 2023 ZF Friedrichshafen AG
+# Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.sofware:1.0.0#>.
+
+:Software a samm:Aspect;
+   samm:preferredName "Software"@en;
+   samm:description "This aspect model describes information about one or more software of a part (e.g. software of an ECU)."@en;
+   samm:properties (:catenaXId :software);
+   samm:operations ();
+   samm:events ().
+
+:catenaXId a samm:Property;
+   samm:preferredName "Catena-X ID"@en;
+   samm:description "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace."@en;
+   samm:characteristic :CatenaXIdTraitCharacteristic;
+   samm:exampleValue "urn:uuid:454ffa8e-f88d-4ad1-be45-06981756aeb1".
+
+:software a samm:Property;
+   samm:preferredName "Software"@en;
+   samm:description "Describes the sofware components with the most important data(e.g. name, version,..)."@en;
+   samm:characteristic :SetOfSoftwareCharacteristic.
+
+:CatenaXIdTraitCharacteristic a samm-c:Trait;
+   samm:description "Trait to ensure UUID v4 data format"@en;
+   samm-c:baseCharacteristic :Uuidv4Characteristic;
+   samm-c:constraint undefined:Uuidv4RegularExpression.
+
+:SetOfSoftwareCharacteristic a samm-c:Set;
+   samm:preferredName "Set of Software"@en;
+   samm:description "Set of software that lists all software used by a hardware."@en;
+   samm:dataType :SoftwareData.
+
+:Uuidv4Characteristic a samm:Characteristic;
+   samm:preferredName "UUID v4 Characteristic"@en;
+   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en;
+   samm:see <https://tools.ietf.org/html/rfc4122>;
+   samm:dataType xsd:string.
+
+undefined:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint;
+   samm:preferredName "Catena-X Id Regular Expression"@en;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122>;
+   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)".
+
+:SoftwareData a samm:Entity;
+   samm:preferredName "Software Data"@en;
+   samm:description "All relevant metadata of a software that refers to one or more parts."@en;
+   samm:properties (:name :version [ samm:property :validityPeriod; samm:optional true ] [ samm:property :softwarePartNumber; samm:optional true ]).
+
+:name a samm:Property;
+   samm:preferredName "Name"@en;
+   samm:description "The name of the software."@en;
+   samm:characteristic :NameCharacteristic;
+   samm:exampleValue "ECU Software XY12345".
+
+:version a samm:Property;
+   samm:preferredName "Version"@en;
+   samm:description "The version of the software."@en;
+   samm:characteristic :VersionTrait.
+
+:validityPeriod a samm:Property;
+   samm:preferredName "Validity Period"@en;
+   samm:description "The period of time during which the software is valid. If no validity period is given the software is considered valid at any point in time."@en;
+   samm:characteristic :ValidityPeriodCharacteristic.
+
+:softwarePartNumber a samm:Property;
+   samm:preferredName "Software Part Number"@en;
+   samm:description "The part number of the software."@en;
+   samm:characteristic :SoftwarePartNumberCharacteristic;
+   samm:exampleValue "SW12345678".
+
+:NameCharacteristic a samm:Characteristic;
+   samm:preferredName "Name Characteristic"@en;
+   samm:description "Describes the name of the corresponding software."@en;
+   samm:dataType xsd:string.
+
+:VersionTrait a samm-c:Trait;
+   samm:preferredName "Version Trait"@en;
+   samm-c:baseCharacteristic :VersionCharacteristic;
+   samm-c:constraint :VersionRegularExpression.
+
+:ValidityPeriodCharacteristic a samm:Characteristic;
+   samm:preferredName "Validity Period Characteristic"@en;
+   samm:description "Characteristic for a validity period defined by an (optional) start and an (optional) end timestamp."@en;
+   samm:dataType :ValidityPeriodEntity.
+
+:SoftwarePartNumberCharacteristic a samm:Characteristic;
+   samm:preferredName "Software Part Number Characteristic"@en;
+   samm:description "Characteristic for a software part number."@en;
+   samm:dataType xsd:string.
+
+:VersionCharacteristic a samm:Characteristic;
+   samm:preferredName "Version Characteristic"@en;
+   samm:description "Describes the version of the corresponding software."@en;
+   samm:dataType xsd:string.
+
+:VersionRegularExpression a samm-c:RegularExpressionConstraint;
+   samm:preferredName "Version Regular Expression"@en;
+   samm:description "Version Regular Expression allowing only a predefined version numbering structure."@en;
+   samm:value "^([0-9]{1,2})\\.([0-9]{1,2})\\.([0-9]{1,3})$".
+
+:ValidityPeriodEntity a samm:Entity;
+   samm:preferredName "Validity Period Entity"@en;
+   samm:description "If a validity period only has a start that means that the period is valid from the start date without a (yet) defined enddate and vice versa."@en;
+   samm:properties ([ samm:property :validFrom; samm:optional true ] [ samm:property :validTo; samm:optional true ]).
+
+:validFrom a samm:Property;
+   samm:preferredName "Valid from"@en;
+   samm:description "Start date of validity period"@en;
+   samm:characteristic samm-c:Timestamp;
+   samm:exampleValue "2023-03-21T08:17:29.187+01:00"^^xsd:dateTime.
+
+:validTo a samm:Property;
+   samm:preferredName "Valid to"@en;
+   samm:description "End date of validity period"@en;
+   samm:characteristic samm-c:Timestamp;
+   samm:exampleValue "2024-07-01T16:10:00.000+01:00"^^xsd:dateTime.
