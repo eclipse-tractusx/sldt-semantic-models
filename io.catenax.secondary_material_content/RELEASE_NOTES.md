@@ -1,15 +1,18 @@
 # Changelog
+
 All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [1.1.0] - 2022-04-01
+## [1.0.0] - 2023-10-02
+
 ### Added
+
 - initial model
-- some additions of properties
+- name change from material for recycling
 
 ### Changed
+
 n/a
 
 ### Removed
-
