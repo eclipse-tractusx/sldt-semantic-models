@@ -8,8 +8,12 @@ All notable changes to this model will be documented in this file.
 - added loadFactor as optional property in LinkedDemandSeries entity
 - added B7 and SEC to the enum list of unit of measure for load information
 - added deltaProductionResult as optional property in Capacity entity
+- added unitOfMeasureIsOmitted as mandatory property in aspect model header
 
 ### Changed
+- made linkedDemandSeries property optional
+- made capacities property optional
+- unitOfMeasure uses enums of shared aspect quantity now
 - migrated from BAMM to SAMM namespace
 
 ### Removed
