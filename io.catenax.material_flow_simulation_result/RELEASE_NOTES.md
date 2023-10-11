@@ -2,7 +2,7 @@
 
 All notable changes to this model will be documented in this file.
 
-## [2.0.0]
+## [2.0.0] 2023-10-16
 
 ### Added
 
