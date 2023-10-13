@@ -1,0 +1,584 @@
+#######################################################################
+ # Copyright (c) 2023 Fraunhofer Institute of Optronics, System Technology and Image Exploitation (IOSB)
+ # Copyright (c) 2023 Contributors to the Eclipse Foundation
+ #
+ # See the NOTICE file(s) distributed with this work for additional
+ # information regarding copyright ownership.
+ #
+ # This work is made available under the terms of the
+ # Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+ # which is available at
+ # https://creativecommons.org/licenses/by/4.0/legalcode.
+ #
+ # SPDX-License-Identifier: CC-BY-4.0
+ #######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.request_for_quotation:1.0.0#> .
+
+:RequestForQuotation a samm:Aspect ;
+   samm:preferredName "Request For Quotation"@en ;
+   samm:description "The request for quotation represents the data structure to configure a manufacturing request and send this to a supplier receive a quotation"@en ;
+   samm:properties ( :senderBpn :recipientBpn :context :messageId :sentDateTime :version :requestForQuotationSource :requestForQuotationId :requestForQuotationName :requestForQuotationDateTime :cadFileType :cadFile :partMaterials :billOfMaterial :manufacturingDomains :manufacturingMethods :postProcesses :billOfProcess :generalTolerance :additionalQualityRequirements :testPartRequired :quantity :lastDeliveryDate :firstDeliveryDate :additionalComments :additionalFiles :senderName :senderAdress :senderCompanyName :senderEMail :senderPhoneNumber :senderAccountAdress :senderDeliveryAdress :deliveryRequirements ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:senderBpn a samm:Property ;
+   samm:preferredName "sender BPN"@en ;
+   samm:description "CX-Header: BPN identification of sender partner"@en ;
+   samm:characteristic :BpnTrait ;
+   samm:exampleValue "BPNL50096894aNXY" .
+
+:recipientBpn a samm:Property ;
+   samm:preferredName "recipient BPN"@en ;
+   samm:description "CX-Header: BPN identification of recipient partner"@en ;
+   samm:characteristic :BpnTrait ;
+   samm:exampleValue "BPNL50096894aNXY" .
+
+:context a samm:Property ;
+   samm:preferredName "context "@en ;
+   samm:description "CX-Header: description of use case context"@en ;
+   samm:characteristic :ContextCharacteristic ;
+   samm:exampleValue "manufacturing as a service" .
+
+:messageId a samm:Property ;
+   samm:preferredName "message Id"@en ;
+   samm:description "CX-Header: identitifier used by RFQ protocol"@en ;
+   samm:characteristic :CatenaXIdTraitCharacteristic .
+
+:sentDateTime a samm:Property ;
+   samm:preferredName "sent date time"@en ;
+   samm:description "CX-Header: time stamp, when message is sent. The value MUST be formatted according to the ISO 8601 standard."@en ;
+   samm:characteristic :TimeStamp .
+
+:version a samm:Property ;
+   samm:preferredName "version"@en ;
+   samm:description "CX-Header: version of RFQ data structure"@en ;
+   samm:characteristic :VersionCharacteristic ;
+   samm:exampleValue "1.0.1" .
+
+:requestForQuotationSource a samm:Property ;
+   samm:preferredName "source"@en ;
+   samm:description "RFQ-Identification: digital adress of the sender (e.g.token, IP adress, link, user account)"@en ;
+   samm:characteristic :SourceCharacteristic ;
+   samm:exampleValue "https://maasportal.mendixcloud.com/" .
+
+:requestForQuotationId a samm:Property ;
+   samm:preferredName "Id"@en ;
+   samm:description "RFQ-Identification: internal identifier in user account"@en ;
+   samm:characteristic :IdCharacteristic ;
+   samm:exampleValue "Drehteil_02_0815" .
+
+:requestForQuotationName a samm:Property ;
+   samm:preferredName "name"@en ;
+   samm:description "RFQ-Identification: name for the request for user account managment (usually name of the part to be manufactured)"@en ;
+   samm:characteristic :NameCharacteristic ;
+   samm:exampleValue "Drehteil" .
+
+:requestForQuotationDateTime a samm:Property ;
+   samm:preferredName "date Time"@en ;
+   samm:description "RFQ-Identification: date and time of the request in user account"@en ;
+   samm:characteristic :DateTimeCharacteristic .
+
+:cadFileType a samm:Property ;
+   samm:preferredName "cad file type"@en ;
+   samm:description "RFQ-Configuration: file format"@en ;
+   samm:characteristic :CADFileTypeCharacteristic ;
+   samm:exampleValue "STEP, stl, jt" .
+
+:cadFile a samm:Property ;
+   samm:preferredName "cad file"@en ;
+   samm:description "RFQ-Configuration: CAD file as geometry definition, e.g. step file"@en ;
+   samm:characteristic :FileCharacteristic .
+
+:partMaterials a samm:Property ;
+   samm:preferredName "part materials"@en ;
+   samm:description "RFQ-Configuration: material of parts to be manufactured"@en ;
+   samm:characteristic :SetOfMaterialCharacteristic .
+
+:billOfMaterial a samm:Property ;
+   samm:preferredName "bill of material"@en ;
+   samm:description "RFQ-Configuration: reference to the single level bill of material as built"@en ;
+   samm:characteristic :BillOfMaterialCharacteristic .
+
+:manufacturingDomains a samm:Property ;
+   samm:preferredName "manufacturing domains"@en ;
+   samm:description "RFQ-Configuration: domain of required process to manufacture the part (might be different per part)"@en ;
+   samm:characteristic :SetOfManufacturingDomainCharacteristic .
+
+:manufacturingMethods a samm:Property ;
+   samm:preferredName "manufacturing methods"@en ;
+   samm:description "RFQ-Configuration: method how the part should be manufactured, related to manufacturing domain"@en ;
+   samm:characteristic :SetOfManufacturingMethodCharacteristic .
+
+:postProcesses a samm:Property ;
+   samm:preferredName "post processes"@en ;
+   samm:description "RFQ-Configuration: after manufacturing typically post processes are necessary, depending on the manufacturing method"@en ;
+   samm:characteristic :SetOfPostProcessCharacteristic .
+
+:billOfProcess a samm:Property ;
+   samm:preferredName "bill of process"@en ;
+   samm:description "RFQ-Configuration: list of processes to manufacture the part(s)"@en ;
+   samm:characteristic :BillOfProcessCharacteristic .
+
+:generalTolerance a samm:Property ;
+   samm:preferredName "general tolerance"@en ;
+   samm:description "RFQ-Configuration: selection of defined tolerance classes"@en ;
+   samm:characteristic :GeneralToleranceCharacteristic ;
+   samm:exampleValue "ISO 2768-1 (m), Rough DIN ISO 2768 cL, Medium DIN ISO 2768 mK, Fine DIN ISO 2768 fH" .
+
+:additionalQualityRequirements a samm:Property ;
+   samm:preferredName "additional quality requirements"@en ;
+   samm:description "RFQ-Configuration: specific requirements to guarantee quality"@en ;
+   samm:characteristic :AdditionalQualityRequirementsCharacteristic ;
+   samm:exampleValue "premium quality check, standard quality check" .
+
+:testPartRequired a samm:Property ;
+   samm:preferredName "test part required"@en ;
+   samm:description "RFQ-Configuration: makes only sens for batches"@en ;
+   samm:characteristic :TestPartRequiredCharacteristic ;
+   samm:exampleValue false .
+
+:quantity a samm:Property ;
+   samm:preferredName "Quantity"@en ;
+   samm:description "Quantity of which the child item is assembled into the parent item. In general it is '1' for serialized parts."@en ;
+   samm:characteristic :QuantityCharacteristic .
+
+:lastDeliveryDate a samm:Property ;
+   samm:preferredName "last delivery date"@en ;
+   samm:description "RFQ-Configuration: Date of required and last acceptable delivery"@en ;
+   samm:characteristic :DateCharacteristic .
+
+:firstDeliveryDate a samm:Property ;
+   samm:preferredName "first delivery date"@en ;
+   samm:description "RFQ-Configuration: Date of desired, first, but not must delivery"@en ;
+   samm:characteristic :DateCharacteristic .
+
+:additionalComments a samm:Property ;
+   samm:preferredName "additional comments"@en ;
+   samm:description "RFQ-Configuration: placeholder for any kind of additional comments"@en ;
+   samm:characteristic :CommentCharacteristic .
+
+:additionalFiles a samm:Property ;
+   samm:preferredName "additionalFiles"@en ;
+   samm:description "RFQ-Configuration: in case there are additional documents or files to share"@en ;
+   samm:characteristic :SetOfFilesCharacteristic .
+
+:senderName a samm:Property ;
+   samm:preferredName "sender name"@en ;
+   samm:description "RFQ-Contact: Name of the sender"@en ;
+   samm:characteristic :SenderNameCharacteristic ;
+   samm:exampleValue "John Doe" .
+
+:senderAdress a samm:Property ;
+   samm:preferredName "sender adress"@en ;
+   samm:description "RFQ-Contact: BPDM/ or fill in by the customer"@en ;
+   samm:characteristic :SenderAdressCharacteristic ;
+   samm:exampleValue "Sunstreet 1, 5555 Sunstate" .
+
+:senderCompanyName a samm:Property ;
+   samm:preferredName "sender company name"@en ;
+   samm:description "RFQ-Contact: BPDM/ or fill in by the customer"@en ;
+   samm:characteristic :SenderCompanyNameCharacteristic ;
+   samm:exampleValue "ManufactureEnterprise" .
+
+:senderEMail a samm:Property ;
+   samm:preferredName "sender eMail"@en ;
+   samm:description "RFQ-Contact: BPDM/ or fill in by the customer"@en ;
+   samm:characteristic :SenderEMailCharacteristic ;
+   samm:exampleValue "johndoe@sunny.com" .
+
+:senderPhoneNumber a samm:Property ;
+   samm:preferredName "sender phone number"@en ;
+   samm:description "RFQ-Contact: BPDM/ or fill in by the customer"@en ;
+   samm:characteristic :SenderPhoneNumberCharacteristic ;
+   samm:exampleValue "555 123456" .
+
+:senderAccountAdress a samm:Property ;
+   samm:preferredName "sender account adress"@en ;
+   samm:description "RFQ-Contact: BPDM/ or fill in by the customer"@en ;
+   samm:characteristic :SenderAccountAdressCharacteristic ;
+   samm:exampleValue "Accountstreet 1, 1234 Accountstate" .
+
+:senderDeliveryAdress a samm:Property ;
+   samm:preferredName "sender delivery adress"@en ;
+   samm:description "RFQ-Contact: BPDM/ or fill in by the customer"@en ;
+   samm:characteristic :SenderDeliveryAdressCharacteristic ;
+   samm:exampleValue "Mystreet 1, 1234 Mystate" .
+
+:deliveryRequirements a samm:Property ;
+   samm:preferredName "delivery requirements"@en ;
+   samm:description "RFQ-Contact: filled by customer"@en ;
+   samm:characteristic :DeliveryRequirementsCharacteristic ;
+   samm:exampleValue "no plastic for packaging" .
+
+:BpnTrait a samm-c:Trait ;
+   samm:preferredName "BPN Business Partner Number Trait"@en ;
+   samm-c:baseCharacteristic :BpnCharacteristic ;
+   samm-c:constraint :BpnConstraint .
+
+:ContextCharacteristic a samm:Characteristic ;
+   samm:preferredName "context characteristic"@en ;
+   samm:dataType xsd:string .
+
+:CatenaXIdTraitCharacteristic a samm-c:Trait ;
+   samm:description "Trait to ensure UUID v4 data format"@en ;
+   samm-c:baseCharacteristic :Uuidv4Characteristic ;
+   samm-c:constraint :Uuidv4RegularExpression .
+
+:TimeStamp a samm:Characteristic ;
+   samm:preferredName "time stamp"@en ;
+   samm:dataType xsd:dateTime .
+
+:VersionCharacteristic a samm:Characteristic ;
+   samm:preferredName "version characteristic"@en ;
+   samm:dataType xsd:string .
+
+:SourceCharacteristic a samm:Characteristic ;
+   samm:preferredName "source characteristic"@en ;
+   samm:dataType xsd:string .
+
+:IdCharacteristic a samm:Characteristic ;
+   samm:preferredName "Id charachteristic"@en ;
+   samm:dataType xsd:string .
+
+:NameCharacteristic a samm:Characteristic ;
+   samm:preferredName "Name Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:DateTimeCharacteristic a samm:Characteristic ;
+   samm:preferredName "date time characteristic"@en ;
+   samm:dataType xsd:dateTime .
+
+:CADFileTypeCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:FileCharacteristic a samm:Characteristic ;
+   samm:preferredName "file characteristic"@en ;
+   samm:dataType :File .
+
+:SetOfMaterialCharacteristic a samm:Characteristic ;
+   samm:description "material list with further information (partID, partName, partMaterialID, partMaterialGroup, partQuantity) for every part"@en ;
+   samm:dataType :MaterialObject .
+
+:BillOfMaterialCharacteristic a samm:Characteristic ;
+   samm:preferredName "bill of material Characteristic"@en ;
+   samm:dataType :SingleLevelBomAsBuiltReference .
+
+:SetOfManufacturingDomainCharacteristic a samm:Characteristic ;
+   samm:preferredName "set of manufacturing domain characteristic"@en ;
+   samm:dataType :ManufacturingDomain .
+
+:SetOfManufacturingMethodCharacteristic a samm:Characteristic ;
+   samm:preferredName "set of manufacturing mehtod charachteristic"@en ;
+   samm:dataType :ManufacturingMehtod .
+
+:SetOfPostProcessCharacteristic a samm:Characteristic ;
+   samm:preferredName "set of post process characteristic"@en ;
+   samm:dataType :PostProcessObject .
+
+:BillOfProcessCharacteristic a samm:Characteristic ;
+   samm:preferredName "bill of process characteristic"@en ;
+   samm:dataType :BillOfProcessReference .
+
+:GeneralToleranceCharacteristic a samm:Characteristic ;
+   samm:preferredName "general tolerance characteristic"@en ;
+   samm:dataType xsd:string .
+
+:AdditionalQualityRequirementsCharacteristic a samm:Characteristic ;
+   samm:preferredName "additional quality requirements charakteristic"@en ;
+   samm:dataType xsd:string .
+
+:TestPartRequiredCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:boolean .
+
+:QuantityCharacteristic a samm-c:Quantifiable ;
+   samm:description "Describes the quantity in which the child item is assembled in the given parent item by providing a quantity value and the measurement unit in which the quantity is measured."@en ;
+   samm:dataType :Quantity .
+
+:DateCharacteristic a samm:Characteristic ;
+   samm:preferredName "date characteristic"@en ;
+   samm:dataType xsd:date .
+
+:CommentCharacteristic a samm:Characteristic ;
+   samm:preferredName "comment characteristic"@en ;
+   samm:dataType rdf:langString .
+
+:SetOfFilesCharacteristic a samm:Characteristic ;
+   samm:preferredName "set of files characteristic"@en ;
+   samm:dataType :File .
+
+:SenderNameCharacteristic a samm:Characteristic ;
+   samm:preferredName "sender name characteristic"@en ;
+   samm:dataType xsd:string .
+
+:SenderAdressCharacteristic a samm:Characteristic ;
+   samm:preferredName "sender adress characteristic"@en ;
+   samm:dataType xsd:string .
+
+:SenderCompanyNameCharacteristic a samm:Characteristic ;
+   samm:preferredName "sender company name charactersitic"@en ;
+   samm:dataType xsd:string .
+
+:SenderEMailCharacteristic a samm:Characteristic ;
+   samm:preferredName "sender eMail characteristic"@en ;
+   samm:dataType xsd:string .
+
+:SenderPhoneNumberCharacteristic a samm:Characteristic ;
+   samm:preferredName "sender phone number characteristic"@en ;
+   samm:dataType xsd:string .
+
+:SenderAccountAdressCharacteristic a samm:Characteristic ;
+   samm:preferredName "sender account adress characteristic"@en ;
+   samm:dataType xsd:string .
+
+:SenderDeliveryAdressCharacteristic a samm:Characteristic ;
+   samm:preferredName "sender delivery adress characteristic"@en ;
+   samm:dataType xsd:string .
+
+:DeliveryRequirementsCharacteristic a samm:Characteristic ;
+   samm:preferredName "delivery requirements characteristic"@en ;
+   samm:dataType xsd:string .
+
+:BpnCharacteristic a samm:Characteristic ;
+   samm:preferredName "BPN Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:BpnConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "BPN Constraint"@en ;
+   samm:description "Business Partner Number Regular Expression allowing only BPNL which stands for a legal entity."@en ;
+   samm:value "^(BPNL)([0-9]{8})([a-zA-Z0-9]{4})$" .
+
+:Uuidv4Characteristic a samm:Characteristic ;
+   samm:preferredName "UUID v4 Characteristic"@en ;
+   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
+   samm:see <https://tools.ietf.org/html/rfc4122> ;
+   samm:dataType xsd:string .
+
+:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Catena-X Id Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
+
+:File a samm:Entity ;
+   samm:preferredName "file"@en ;
+   samm:description "file document"@en ;
+   samm:properties ( ) .
+
+:MaterialObject a samm:Entity ;
+   samm:preferredName "material object"@en ;
+   samm:description "object with all informations about material of a part to be manufactured"@en ;
+   samm:properties ( :partId :partName :materialIds :materialGroup :quantityPartInCAD ) .
+
+:SingleLevelBomAsBuiltReference a samm:Entity ;
+   samm:preferredName "Single Level Bill of Material as Built reference"@en ;
+   samm:description "The single-level bill of material represents one sub-level of an assembly and does not include any lower-level subassemblies. The as-built lifecycle references all child items as manufactured by the manufacturer referencing only child items in an as built lifecycle themselves, e.g. serial parts or batches."@en ;
+   samm:properties ( :childItems :catenaXId ) .
+
+:ManufacturingDomain a samm:Entity ;
+   samm:preferredName "manufacturing domain"@en ;
+   samm:properties ( :manufacturingDomain :partId :partName ) .
+
+:ManufacturingMehtod a samm:Entity ;
+   samm:preferredName "manufacturing method"@en ;
+   samm:description "how part has to be manufactured"@en ;
+   samm:properties ( :manufacturingMethod :partId :partName ) .
+
+:PostProcessObject a samm:Entity ;
+   samm:preferredName "post process object"@en ;
+   samm:properties ( :postProcessGroup :postProcessType :partId :partName :postProcessProperty ) .
+
+:BillOfProcessReference a samm:Entity ;
+   samm:preferredName "bill of process reference"@en ;
+   samm:description "reference to the bill of process model"@en ;
+   samm:properties ( ) .
+
+:Quantity a samm:Entity ;
+   samm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en ;
+   samm:properties ( :quantityNumber :measurementUnit ) .
+
+:partId a samm:Property ;
+   samm:preferredName "part Id"@en ;
+   samm:description "identifier of the part from CAD File"@en ;
+   samm:characteristic :PartIdCharacteristic ;
+   samm:exampleValue "Drehteil" .
+
+:partName a samm:Property ;
+   samm:preferredName "part name"@en ;
+   samm:description "name of the part in CAD file. In case the CAD file has only one part, this could also be the file name."@en ;
+   samm:characteristic :PartNameCharacteristic ;
+   samm:exampleValue "Drehteil" .
+
+:materialIds a samm:Property ;
+   samm:preferredName "mmaterial Id"@en ;
+   samm:description "material definition with additional detail elements (name, density, chemical name,...)"@en ;
+   samm:characteristic :SetMaterialIdCharacteristic .
+
+:materialGroup a samm:Property ;
+   samm:preferredName "material group"@en ;
+   samm:description "definition of material group for preselection"@en ;
+   samm:characteristic :PartMaterialGroupCharacteristic ;
+   samm:exampleValue "aluminum, steel, ..." .
+
+:quantityPartInCAD a samm:Property ;
+   samm:preferredName "quantity part in CAD"@en ;
+   samm:description "quantity number of this part in CAD file (in this case usually integer)"@en ;
+   samm:characteristic :QuantityPartInCADCharacteristic ;
+   samm:exampleValue 1 .
+
+:childItems a samm:Property ;
+   samm:preferredName "Child Items"@en ;
+   samm:description "Set of child items, of which the given parent item is assembled by (one structural level down)."@en ;
+   samm:characteristic :SetOfChildItemsCharacteristic .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X ID"@en ;
+   samm:description "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace."@en ;
+   samm:characteristic :CatenaXIdTraitCharacteristic ;
+   samm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d" .
+
+:manufacturingDomain a samm:Property ;
+   samm:preferredName "manufacturing domain"@en ;
+   samm:description "in case there are parts to be manufactured with different processes (subtractive manufacturing, additive manufacturing, assembly,...)"@en ;
+   samm:characteristic :ManufacturingDomainCharacteristic ;
+   samm:exampleValue "additive manufacturing" .
+
+:manufacturingMethod a samm:Property ;
+   samm:preferredName "manufacturing mehtod"@en ;
+   samm:characteristic :PartManufacturingMethodCharacteristic ;
+   samm:exampleValue "milling, powder bed fusion, welding,..." .
+
+:postProcessGroup a samm:Property ;
+   samm:preferredName "post process group"@en ;
+   samm:description "process group is depending on the defined manufactruing method and defines the general treatment"@en ;
+   samm:characteristic :PostProcessGroupCharacteristic ;
+   samm:exampleValue "heat treatment, surface treatment, surface finishing..." .
+
+:postProcessType a samm:Property ;
+   samm:preferredName "post process type"@en ;
+   samm:description "specific process out of the process group"@en ;
+   samm:characteristic :PostProcessTypeCharacteristic ;
+   samm:exampleValue "stress releaving, sandblasting, colouring" .
+
+:postProcessProperty a samm:Property ;
+   samm:preferredName "post process property"@en ;
+   samm:description "additional property based on the post process type "@en ;
+   samm:characteristic :PostProcessPropertyCharacteristic ;
+   samm:exampleValue "black (for colouring)" .
+
+:quantityNumber a samm:Property ;
+   samm:preferredName "Quantity Number"@en ;
+   samm:description "The number of objects related to the measurement unit"@en ;
+   samm:characteristic :NumberOfObjects ;
+   samm:exampleValue "2.5"^^xsd:double .
+
+:measurementUnit a samm:Property ;
+   samm:description "Unit of Measurement for the quantity of serialized objects"@en ;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/2.0.0/appendix/unitcatalog.html> ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "unit:litre"^^samm:curie .
+
+:PartIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "part Id Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:PartNameCharacteristic a samm:Characteristic ;
+   samm:preferredName "part name characteristic"@en ;
+   samm:dataType xsd:string .
+
+:SetMaterialIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "material Id characteristic"@en ;
+   samm:description "set of elements to detail material Ids "@en ;
+   samm:dataType :MaterialId .
+
+:PartMaterialGroupCharacteristic a samm:Characteristic ;
+   samm:preferredName "part material group characteristic"@en ;
+   samm:dataType xsd:string .
+
+:QuantityPartInCADCharacteristic a samm:Characteristic ;
+   samm:preferredName "quantity part in CAD characteristic"@en ;
+   samm:dataType xsd:integer .
+
+:SetOfChildItemsCharacteristic a samm-c:Set ;
+   samm:preferredName "Set of Child Items"@en ;
+   samm:description "Set of child items the parent item is assembled by (one structural level down)."@en ;
+   samm:dataType :ChildData .
+
+:ManufacturingDomainCharacteristic a samm:Characteristic ;
+   samm:preferredName "manufacturing domain characteristic"@en ;
+   samm:dataType xsd:string .
+
+:PartManufacturingMethodCharacteristic a samm:Characteristic ;
+   samm:preferredName "part manufacturing mehtod characteristic"@en ;
+   samm:dataType xsd:string .
+
+:PostProcessGroupCharacteristic a samm:Characteristic ;
+   samm:preferredName "post process group characteristic"@en ;
+   samm:dataType xsd:string .
+
+:PostProcessTypeCharacteristic a samm:Characteristic ;
+   samm:preferredName "post process type characteristic"@en ;
+   samm:dataType xsd:string .
+
+:PostProcessPropertyCharacteristic a samm:Characteristic ;
+   samm:preferredName "post process property characteristic"@en ;
+   samm:dataType xsd:string .
+
+:NumberOfObjects a samm:Characteristic ;
+   samm:description "Quantifiable number of objects in reference to the measurementUnit"@en ;
+   samm:dataType xsd:double .
+
+:MaterialId a samm:Entity ;
+   samm:preferredName "material Id "@en ;
+   samm:description "the material Id is a detailed element to describe the material and has a value and a type, like value=2.7, type=desity g/m3 or value=AlMgMn, type=chemical "@en ;
+   samm:properties ( :value :type ) .
+
+:ChildData a samm:Entity ;
+   samm:preferredName "Child Data"@en ;
+   samm:description "Catena-X ID and meta data of the assembled child item."@en ;
+   samm:properties ( :createdOn :quantity [ samm:property :lastModifiedOn; samm:optional true ] :catenaXId [ samm:property :businessPartner; samm:optional true ] ) .
+
+:value a samm:Property ;
+   samm:preferredName "value"@en ;
+   samm:description "value to detail the part material Id"@en ;
+   samm:characteristic :PartMaterialIdElementValueCharacteristic ;
+   samm:exampleValue "2.7" .
+
+:type a samm:Property ;
+   samm:preferredName "type"@en ;
+   samm:description "value type to detail the part material Id"@en ;
+   samm:characteristic :PartMaterialIdElementTypeCharacteristic ;
+   samm:exampleValue "density g/cm3" .
+
+:createdOn a samm:Property ;
+   samm:preferredName "Created On"@en ;
+   samm:description "Timestamp when the relation between the parent item and the child item was created, e.g. when the serialized child part was assembled into the given part."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime .
+
+:lastModifiedOn a samm:Property ;
+   samm:preferredName "Last Modification Date"@en ;
+   samm:description "Timestamp when the assembly relationship between parent item and child item was last modified."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime .
+
+:businessPartner a samm:Property ;
+   samm:preferredName "Business Partner"@en ;
+   samm:description "The supplier of the given child item."@en ;
+   samm:characteristic :BpnTrait ;
+   samm:exampleValue "BPNL50096894aNXY" .
+
+:PartMaterialIdElementValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "part material Id element value"@en ;
+   samm:dataType xsd:string .
+
+:PartMaterialIdElementTypeCharacteristic a samm:Characteristic ;
+   samm:preferredName "part material Id element type characteristic"@en ;
+   samm:dataType xsd:string .
