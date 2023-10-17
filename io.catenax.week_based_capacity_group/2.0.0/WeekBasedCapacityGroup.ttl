@@ -29,7 +29,9 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.week_based_capacity_group:2.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
 @prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
 
 :WeekBasedCapacityGroup a samm:Aspect ;
    samm:preferredName "Week-Based Capacity Group"@en ;
@@ -41,7 +43,7 @@
 :capacityGroupId a samm:Property ;
    samm:preferredName "Capacity Group ID"@en ;
    samm:description "The Capacity Group ID uniquely identifies the capacity group within the business relationship between a supplier and its customer."@en ;
-   samm:characteristic :UUIDv4IdTrait ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110" .
 
 :name a samm:Property ;
@@ -53,19 +55,19 @@
 :supplierLocations a samm:Property ;
    samm:preferredName "Supplier Locations"@en ;
    samm:description "Set of BPNS indicating the supplier sites that will be fulfilling the demands associated with this capacity group."@en ;
-   samm:characteristic :BPNSSetTrait ;
+   samm:characteristic :SupplierLocationsCharacteristic ;
    samm:exampleValue "BPNS8888888888XX" .
 
 :customer a samm:Property ;
    samm:preferredName "Customer"@en ;
    samm:description "The Business Partner Number (BPNL) of the party requesting materials from a supplier."@en ;
-   samm:characteristic :BPNLTrait ;
+   samm:characteristic ext-number:BpnlTrait ;
    samm:exampleValue "BPNL8888888888XX" .
 
 :supplier a samm:Property ;
    samm:preferredName "Supplier"@en ;
    samm:description "The Business Partner Number (BPNL) of the party providing materials to a customer."@en ;
-   samm:characteristic :BPNLTrait ;
+   samm:characteristic ext-number:BpnlTrait ;
    samm:exampleValue "BPNL6666666666YY" .
 
 :unitOfMeasure a samm:Property ;
@@ -102,28 +104,16 @@
    samm:characteristic samm-c:Boolean ;
    samm:exampleValue false .
 
-:UUIDv4IdTrait a samm-c:Trait ;
-   samm:preferredName "UUIDv4 Trait"@en ;
-   samm:description "Trait to ensure data format for UUIDv4."@en ;
-   samm-c:baseCharacteristic :UUIDv4 ;
-   samm-c:constraint :UUIDv4RegularExpression .
-
 :CapacityGroupName a samm:Characteristic ;
    samm:preferredName "Capacity Group Name"@en ;
    samm:description "The name of a capacity group, used to distinguish it from other capacity groups."@en ;
    samm:dataType xsd:string .
 
-:BPNSSetTrait a samm-c:Trait ;
-   samm:preferredName "BPNS Set Trait"@en ;
-   samm:description "Trait to ensure data format for BPNS set."@en ;
-   samm-c:baseCharacteristic :BPNSSet ;
-   samm-c:constraint :BPNSRegularExpression .
-
-:BPNLTrait a samm-c:Trait ;
-   samm:preferredName "BPNL Trait"@en ;
-   samm:description "Trait to ensure data format for BPNL."@en ;
-   samm-c:baseCharacteristic :BPNL ;
-   samm-c:constraint :BPNLRegularExpression .
+:SupplierLocationsCharacteristic a samm-c:Set ;
+   samm:preferredName "Supplier Locations Characteristic"@en ;
+   samm:description "Contains a set of locations the supplier fulfills a demand request from."@en ;
+   samm:dataType xsd:string ;
+   samm-c:elementCharacteristic :BPNSTrait .
 
 :LinkedDemandSeriesSet a samm-c:Set ;
    samm:preferredName "Linked Demand Series Set"@en ;
@@ -146,36 +136,11 @@
    samm:dataType xsd:string ;
    samm-c:elementCharacteristic :UUIDv4IdTrait .
 
-:UUIDv4 a samm:Characteristic ;
-   samm:preferredName "UUIDv4"@en ;
-   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
-   samm:see <http://handle.itu.int/11.1002/1000/11746> ;
-   samm:dataType xsd:string .
-
-:UUIDv4RegularExpression a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "UUIDv4 Regular Expression"@en ;
-   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."@en ;
-   samm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" .
-
-:BPNSSet a samm-c:Set ;
-   samm:preferredName "Business Partner Number Site Set"@en ;
-   samm:description "Contains a set of BPNS. Each BPNS represents a site which can be a production plant inside one location."@en ;
-   samm:dataType xsd:string .
-
-:BPNSRegularExpression a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "BPNS Regular Expression"@en ;
-   samm:description "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two uppercase letters."@en ;
-   samm:value "^BPNS[0-9]{8}[a-zA-Z0-9]{4}$" .
-
-:BPNL a samm:Characteristic ;
-   samm:preferredName "Business Partner Number Legal Entity"@en ;
-   samm:description "BPNL represents the legal entity of an organization participating in Catena-X."@en ;
-   samm:dataType xsd:string .
-
-:BPNLRegularExpression a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "BPNL Regular Expression"@en ;
-   samm:description "The provided regular expression ensures that the BPNL is composed of prefix 'BPNL', 10 digits and two uppercase letters."@en ;
-   samm:value "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$" .
+:BPNSTrait a samm-c:Trait ;
+   samm:preferredName "BPNS Trait"@en ;
+   samm:description "Trait to ensure data format for BPNS."@en ;
+   samm-c:baseCharacteristic ext-number:BpnsCharacteristic ;
+   samm-c:constraint ext-number:BpnsRegularExpression .
 
 :LinkedDemandSeries a samm:Entity ;
    samm:preferredName "Linked Demand Series"@en ;
@@ -186,6 +151,12 @@
    samm:preferredName "Capacity"@en ;
    samm:description "A supplier's realistically planned output per calendar week and material for a specific customer in a specific unit of measure, considering all positive or negative impacts on this capacity."@en ;
    samm:properties ( :pointInTime :actualCapacity :maximumCapacity [ samm:property :deltaProductionResult; samm:optional true ] ) .
+
+:UUIDv4IdTrait a samm-c:Trait ;
+   samm:preferredName "UUIDv4 Trait"@en ;
+   samm:description "Trait to ensure data format for UUIDv4."@en ;
+   samm-c:baseCharacteristic ext-uuid:Uuidv4Characteristic ;
+   samm-c:constraint ext-uuid:Uuidv4RegularExpression .
 
 :materialNumberCustomer a samm:Property ;
    samm:preferredName "Customer Material Number"@en ;
@@ -202,7 +173,7 @@
 :customerLocation a samm:Property ;
    samm:preferredName "Customer Location"@en ;
    samm:description "The BPNS number of the site at which the customer needs the specified material for the referenced demand series."@en ;
-   samm:characteristic :BPNSTrait ;
+   samm:characteristic ext-number:BpnsTrait ;
    samm:exampleValue "BPNS8888888888XX" .
 
 :demandCategory a samm:Property ;
@@ -245,12 +216,6 @@
    samm:description "The material number is a multi-character string, usually assigned by an ERP system."@en ;
    samm:dataType xsd:string .
 
-:BPNSTrait a samm-c:Trait ;
-   samm:preferredName "BPNS Trait"@en ;
-   samm:description "Trait to ensure data format for BPNS."@en ;
-   samm-c:baseCharacteristic :BPNS ;
-   samm-c:constraint :BPNSRegularExpression .
-
 :DemandCategory a samm-c:Enumeration ;
    samm:preferredName "Demand Category"@en ;
    samm:description "The classification of demands used to prioritize or allocate capacities."@en ;
@@ -270,18 +235,13 @@
 
 :QuantityTrait a samm-c:Trait ;
    samm-c:baseCharacteristic :Quantity ;
-   samm-c:constraint :QuantityRange ;
-   samm-c:constraint :QuantityFixedPoint .
+   samm-c:constraint :QuantityFixedPoint ;
+   samm-c:constraint :QuantityRange .
 
 :DeltaProductionResultCharacteristic a samm:Characteristic ;
    samm:preferredName "Delta Production Result Characteristic"@en ;
    samm:description "Describes data type of a delta production result information."@en ;
    samm:dataType xsd:decimal .
-
-:BPNS a samm:Characteristic ;
-   samm:preferredName "Business Partner Number Site"@en ;
-   samm:description "BPNS represents a site which can be a production plant inside one location."@en ;
-   samm:dataType xsd:string .
 
 :DemandCategoryType a samm:Entity ;
    samm:preferredName "Demand Category Type"@en ;
@@ -325,6 +285,12 @@
    samm:description "Quantity of weekly actual or maximum capacity."@en ;
    samm:dataType xsd:decimal .
 
+:QuantityFixedPoint a samm-c:FixedPointConstraint ;
+   samm:preferredName "Quantity Fixed Point"@en ;
+   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
+   samm-c:integer "15"^^xsd:positiveInteger ;
+   samm-c:scale "1000"^^xsd:positiveInteger .
+
 :QuantityRange a samm-c:RangeConstraint ;
    samm:preferredName "Quantity Range"@en ;
    samm:description "Constraint to ensure a non-negative value for quantities."@en ;
@@ -332,12 +298,6 @@
    samm-c:maxValue "999999999999999999.999"^^xsd:decimal ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:AT_MOST .
-
-:QuantityFixedPoint a samm-c:FixedPointConstraint ;
-   samm:preferredName "Quantity Fixed Point"@en ;
-   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
-   samm-c:integer "15"^^xsd:positiveInteger ;
-   samm-c:scale "1000"^^xsd:positiveInteger .
 
 :demandCategoryCode a samm:Property ;
    samm:preferredName "Demand Category Code"@en ;
@@ -355,3 +315,4 @@
    samm:preferredName "Demand Category Code"@en ;
    samm:description "The code identifying a demand category."@en ;
    samm:dataType xsd:string .
+
