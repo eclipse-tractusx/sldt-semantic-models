@@ -1,0 +1,109 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML)
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 Mercedes Benz AG
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 Siemens AG
+# Copyright (c) 2023 SupplyOn AG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.id_based_request_for_update:1.0.0#> .
+
+:IdBasedRequestForUpdate a samm:Aspect ;
+   samm:preferredName "ID Based Request For Update"@en ;
+   samm:description "The requirements for a request for update from another Catena-X Partner of a specific entity.\nIf within the payload, no specific object type is defined (Payload empty), than an update of all objects within the sender reciever relation is requested)."@en ;
+   samm:properties ( [ samm:property :weekBasedMaterialDemand; samm:optional true ] [ samm:property :weekBasedCapacityGroup; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:weekBasedMaterialDemand a samm:Property ;
+   samm:preferredName "Week Based Material Demand List"@en ;
+   samm:description "Material demands the supplier requests an update for.\nIf within the array, no specific ID (array empty), than an update of all IDs is requested)."@en ;
+   samm:characteristic :WeekBasedMaterialDemandCharacteristic .
+
+:weekBasedCapacityGroup a samm:Property ;
+   samm:preferredName "Week Based Capacity Group List"@en ;
+   samm:description "Capacity groups the customer requests an update for.\nIf within the array, no specific ID (array empty), than an update of all IDs is requested)."@en ;
+   samm:characteristic :WeekBasedCapacityGroupCharacteristic .
+
+:WeekBasedMaterialDemandCharacteristic a samm-c:Set ;
+   samm:preferredName "Week Based Material Demand Characteristic"@en ;
+   samm:description "A list of material demand UUIDs without duplicates an update is requested for."@en ;
+   samm:dataType :WeekBasedMaterialDemandEntity .
+
+:WeekBasedCapacityGroupCharacteristic a samm-c:Set ;
+   samm:preferredName "Week Based Capacity Group Characteristic"@en ;
+   samm:description "A list of capacity group UUIDs without duplicates an update is requested for."@en ;
+   samm:dataType :WeekBasedCapacityGroupEntity .
+
+:WeekBasedMaterialDemandEntity a samm:Entity ;
+   samm:preferredName "Week Based Material Demand Entity"@en ;
+   samm:description "Encapsulates the information that is necessary for an update request."@en ;
+   samm:properties ( :materialDemandId [ samm:property :changedAt; samm:optional true ] ) .
+
+:WeekBasedCapacityGroupEntity a samm:Entity ;
+   samm:preferredName "Week Based Capacity Group Entity"@en ;
+   samm:description "Encapsulates the information that is necessary for an update request."@en ;
+   samm:properties ( :capacityGroupId [ samm:property :changedAt; samm:optional true ] ) .
+
+:materialDemandId a samm:Property ;
+   samm:preferredName "Material Demand ID"@en ;
+   samm:description "The Material Demand ID uniquely identifies the material demand the supplier requests an update for within the business relationship between the customer and its supplier."@en ;
+   samm:characteristic :UUIDv4IdTrait ;
+   samm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c3456" .
+
+:changedAt a samm:Property ;
+   samm:preferredName "Changed At"@en ;
+   samm:description "Point in time of the last update known to the requesting business partner. If the requested entity has been changed more recently, the requested party should resend the data. If the changedAt property is not given, the latest entity should be send without precondition."@en ;
+   samm:characteristic :Timestamp ;
+   samm:exampleValue "2023-03-10T12:27:11.320Z"^^xsd:dateTime .
+
+:capacityGroupId a samm:Property ;
+   samm:preferredName "Capacity Group ID"@en ;
+   samm:description "The Capacity Group ID uniquely identifies the capacity group the supplier requests an update for within the business relationship between the supplier and its customer."@en ;
+   samm:characteristic :UUIDv4IdTrait ;
+   samm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110" .
+
+:UUIDv4IdTrait a samm-c:Trait ;
+   samm:preferredName "UUIDv4 Trait"@en ;
+   samm:description "Trait to ensure data format for UUIDv4."@en ;
+   samm-c:baseCharacteristic :UUIDv4 ;
+   samm-c:constraint :UUIDv4RegularExpression .
+
+:Timestamp a samm:Characteristic ;
+   samm:preferredName "Timestamp"@en ;
+   samm:description "Describes a Property which contains the date and time with an optional timezone."@en ;
+   samm:dataType xsd:dateTime .
+
+:UUIDv4 a samm:Characteristic ;
+   samm:preferredName "UUIDv4"@en ;
+   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
+   samm:dataType xsd:string .
+
+:UUIDv4RegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "UUIDv4 Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."@en ;
+   samm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" .
+

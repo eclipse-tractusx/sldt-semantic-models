@@ -13,7 +13,7 @@ The following page introduces this process, the involved roles, and the states i
 | Modeling Team | Regular meeting round to discuss and moderate the modeling activities. |
 | Use Case | Application or scenario were the need for the model creation or update arises. In general, it is assumed that a use case consists of at least one data provider and one data consumer |
 
-### Modeling State 1 (MS1) Request for Model
+### Modeling Stage 1 (MS1) Request for Model
 
 When there is a requirement for a new or modified Aspect model, a domain expert from that use case initiates the modeling process by creating a new issue on GitHub (Tab: Issues -> Button: New Issue or [this link](https://github.com/eclipse-tractusx/sldt-semantic-models/issues/new/choose)). 
 Depending on the type of request (new model, model update, model deprecation), one may use different templates for the issue. 
@@ -66,7 +66,10 @@ A model with can only reach status "STANDARDIZED" if it is "RELEASED" beforehand
 A model with status "STANDARDIZED" can only be moved to status "DEPRECATED" if the corresponding standard is "DEPRECATED" as well.
 
 ## Retiring a model
-Once a model gets the status "DEPRECATED" it should not be used anymore by new use cases. Existing applications should look for a way to migrate to an alternative version or model. In alignment with the overall release cycles of Tractus-X, the modeling team tags the current main branch with the corresponding Tractus-X release and publishes modeling release notes. These release notes contain a hint about all model versions that changed the status to "DEPRECATED" since the previous Tractus-X release. The modeling team will delete these models two Tractus-X releases cycles later. So use cases are advised to react to the deprecation of models within the next release cycle.
+Once a model gets the status "DEPRECATED" it should not be used anymore by new use cases. Existing applications should look for a way to migrate to an alternative version or model. In alignment with the overall release cycles of Tractus-X, the modeling team tags the current main branch with the corresponding Tractus-X release and publishes modeling release notes. These release notes contain a hint about all model versions that changed the status to "DEPRECATED" since the previous Tractus-X release. The modeling team will delete these models two Tractus-X releases cycles later (independent of major or minor version change). So use cases are advised to react to the deprecation of models within the next release cycle.
+
+For clarification of the deprecation strategy the following example: A model *A* was released with version 1.0.0 in Tractus-X v2.0.0. In v2.1.0 of Tractus-X a new version 2.0.0 of model *A* was released and version 1.0.0 of model *A* was deprecated. In v3.0.0 of Tractus-X both version 1.0.0 and 2.0.0 of model *A* are still present in the repository. 
+In the curse of the development cycle towards v3.1.0 of Tractus-X version 1.0.0 of model *A* is deleted so that version 1.0.0 of model *A* is not present in the repository anymore and only version 2.0.0 of model *A* is present when Tractus-X v3.1.0 is released. 
 
 ## Versioning
 The semantic modeling in Tractus-X follows [Semantic Versioning](https://semver.org/). Since the version is included in the Aspect Model's URI
