@@ -1,0 +1,106 @@
+---
+openapi: 3.0.3
+info:
+  title: Shared Aspect for UUIDs v4
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/uuid:
+    get:
+      tags:
+      - Uuid
+      operationId: getUuid
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/Uuid'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    Uuid:
+      description: This is a shared aspect for UUIDs with a regex.
+      type: object
+      properties:
+        uuidV4Property:
+          description: Property based on a UUID v4.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+      required:
+      - uuidV4Property
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Uuid:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      description: The request was successful.
+  requestBodies:
+    Uuid:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Uuid'

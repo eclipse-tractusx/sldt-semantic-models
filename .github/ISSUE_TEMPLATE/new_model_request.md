@@ -22,3 +22,4 @@ labels: creation
 - [ ] The proposal references a Catena-X use case
 - [ ] Relevant standards are mentioned/linked
 - [ ] A first draft of the data structure is provided in an example
+- [ ] A modeling steward has been assigned
