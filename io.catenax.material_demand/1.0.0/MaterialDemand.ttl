@@ -1,28 +1,3 @@
-#######################################################################
-# Copyright (c) 2023 BASF SE
-# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
-# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML and Fraunhofer ISST)
-# Copyright (c) 2023 Henkel AG & Co. KGaA
-# Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
-# Copyright (c) 2023 Mercedes Benz AG
-# Copyright (c) 2023 SAP SE
-# Copyright (c) 2023 SupplyOn AG
-# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
-# Copyright (c) 2023 Volkswagen AG
-# Copyright (c) 2023 ZF Friedrichshafen AG
-# Copyright (c) 2023 Contributors to the Eclipse Foundation
-#
-# See the NOTICE file(s) distributed with this work for additional
-# information regarding copyright ownership.
-#
-# This work is made available under the terms of the
-# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
-# which is available at
-# https://creativecommons.org/licenses/by/4.0/legalcode.
-#
-# SPDX-License-Identifier: CC-BY-4.0
-#######################################################################
-
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
@@ -108,7 +83,7 @@
 
 :unitOfMeasureIsOmitted a samm:Property ;
    samm:preferredName "Unit Of Measure Is Omitted"@en ;
-   samm:description "Explicit indicator of wether the unit of measure is left out of the payload intentionally. If \"true\" it means the sending application sends demand values without unit of measure intentionally and the unit of measure MUST NOT be contained in the payload. If \"false\" a unit of measure MUST be supplied."@en ;
+   samm:description "Explicit indicator of whether the unit of measure is left out of the payload intentionally. If \"true\" it means the sending application sends demand values without unit of measure intentionally and the unit of measure MUST NOT be contained in the payload. If \"false\" a unit of measure MUST be supplied."@en ;
    samm:characteristic samm-c:Boolean ;
    samm:exampleValue false .
 
@@ -180,7 +155,7 @@
 :demandCategory a samm:Property ;
    samm:preferredName "Demand Category"@en ;
    samm:description "Type of demand for this demand series."@en ;
-   samm:characteristic :DemandCategory .
+   samm:characteristic :DemandCategoryCharacteristic .
 
 :demands a samm:Property ;
    samm:preferredName "Demands"@en ;
@@ -204,8 +179,8 @@
    samm:description "The name describing the demand rate."@en ;
    samm:characteristic :DemandRateNameCharacteristic .
 
-:DemandCategory a samm-c:Enumeration ;
-   samm:preferredName "Demand Category"@en ;
+:DemandCategoryCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Demand Category Characteristic"@en ;
    samm:description "The classification of demands used for prioritization or allocation."@en ;
    samm:dataType :DemandCategoryType ;
    samm-c:values ( :DemandCategoryDefault :DemandCategoryAfterSales :DemandCategorySeries :DemandCategoryPhaseInPeriod :DemandCategorySingleOrder :DemandCategorySmallSeries :DemandCategoryExtraordinaryDemand :DemandCategoryPhaseOutPeriod ) .
@@ -270,7 +245,7 @@
 :demandCategoryCode a samm:Property ;
    samm:preferredName "Demand Category Code"@en ;
    samm:description "The code identifying a demand category."@en ;
-   samm:characteristic :DemandCategoryCode ;
+   samm:characteristic :DemandCategoryCodeCharacteristic ;
    samm:exampleValue "0001" .
 
 :demandCategoryName a samm:Property ;
@@ -287,31 +262,37 @@
 
 :pointInTime a samm:Property ;
    samm:preferredName "Point in Time"@en ;
-   samm:description "Defines the start of the demand rate as a point in time. The point in time must be interpereted according to the demand rate."@en ;
+   samm:description "Defines the start of the demand rate as a point in time. The point in time must be interpreted according to the demand rate."@en ;
    samm:characteristic :PointInTimeCharacteristic ;
    samm:exampleValue "2023-10-09"^^xsd:date .
 
-:DemandCategoryCode a samm-c:Code ;
-   samm:preferredName "Demand Category Code"@en ;
+:DemandCategoryCodeCharacteristic a samm-c:Code ;
+   samm:preferredName "Demand Category Code Characteristic"@en ;
    samm:description "The code identifying a demand category."@en ;
    samm:dataType xsd:string .
 
 :QuantityTrait a samm-c:Trait ;
    samm-c:baseCharacteristic :Quantity ;
-   samm-c:constraint :QuantityRange ;
-   samm-c:constraint :QuantityFixedPoint .
+   samm-c:constraint :QuantityFixedPoint ;
+   samm-c:constraint :QuantityRange .
 
 :PointInTimeCharacteristic a samm:Characteristic ;
    samm:preferredName "Point in Time Characteristic"@en ;
    samm:description "- If demand rate is \"calendar week\": An ISO calendar week in which a given demand is needed. Must be given as date of the Monday in the week. (ISO-8601-1:2019)\n- If demand rate is \"day\": An ISO day on which a given demand is needed. Must be given as single day (consider the time zone of the customer's location). (ISO-8601)"@en ;
-   samm:see <https://www.iso.org/iso-8601-date-and-time-format.html> ;
    samm:see <https://www.iso.org/standard/70907.html> ;
+   samm:see <https://www.iso.org/iso-8601-date-and-time-format.html> ;
    samm:dataType xsd:date .
 
 :Quantity a samm:Characteristic ;
    samm:preferredName "Quantity"@en ;
    samm:description "Quantities of demands."@en ;
    samm:dataType xsd:decimal .
+
+:QuantityFixedPoint a samm-c:FixedPointConstraint ;
+   samm:preferredName "Quantity Fixed Point"@en ;
+   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
+   samm-c:integer "15"^^xsd:positiveInteger ;
+   samm-c:scale "1000"^^xsd:positiveInteger .
 
 :QuantityRange a samm-c:RangeConstraint ;
    samm:preferredName "Quantity Range"@en ;
@@ -320,10 +301,4 @@
    samm-c:maxValue "999999999999999999.999"^^xsd:decimal ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:AT_MOST .
-
-:QuantityFixedPoint a samm-c:FixedPointConstraint ;
-   samm:preferredName "Quantity Fixed Point"@en ;
-   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
-   samm-c:integer "15"^^xsd:positiveInteger ;
-   samm-c:scale "1000"^^xsd:positiveInteger .
 
