@@ -1,0 +1,114 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Aspect to describe a reference to a file which contains time series data.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.time_series_reference_1.0.0_DecimalSeperator" : {
+        "type" : "string",
+        "description" : "Indicates whether a dot or comma is used to separate the decimal place in the source file.",
+        "enum" : [ "comma", "dot" ]
+      },
+      "urn_samm_io.catenax.time_series_reference_1.0.0_ResourcePath" : {
+        "type" : "string",
+        "format" : "uri",
+        "description" : "The path of a resource."
+      },
+      "urn_samm_io.catenax.time_series_reference_1.0.0_FileExtension" : {
+        "type" : "string",
+        "description" : "Indicates whether csv, none or txt is used as file extension.",
+        "enum" : [ "csv", "none", "txt", "dat", "data" ]
+      },
+      "urn_samm_io.catenax.time_series_reference_1.0.0_Delimiter" : {
+        "type" : "string",
+        "description" : "Indicates whether a semicolon, comma or tab is used as a deliniter between datapoints.",
+        "enum" : [ "semicolon", "comma", "tab" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "description" : "Describes a Property containing a reference to one of the units in the Unit Catalog."
+      },
+      "urn_samm_io.catenax.time_series_reference_1.0.0_UnitEntity" : {
+        "description" : "The unit of a column.",
+        "type" : "object",
+        "properties" : {
+          "unit" : {
+            "description" : "The unit of a column.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference"
+          }
+        },
+        "required" : [ "unit" ]
+      },
+      "urn_samm_io.catenax.time_series_reference_1.0.0_UnitsListCharacteristic" : {
+        "description" : "Lists the unit for each datapoint.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_UnitEntity"
+        }
+      },
+      "urn_samm_io.catenax.time_series_reference_1.0.0_VariableListCharacteristic" : {
+        "description" : "Lists the name for each datapoint.",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        }
+      },
+      "urn_samm_io.catenax.time_series_reference_1.0.0_TimeColumnChoice" : {
+        "type" : "string",
+        "description" : "Specifies the name of the time colums variable.",
+        "enum" : [ "Time", "TIME", "time", "t" ]
+      },
+      "urn_samm_io.catenax.time_series_reference_1.0.0_PayloadEntity" : {
+        "description" : "Contains the information about variable names and their units as well as the name of the time column.",
+        "type" : "object",
+        "properties" : {
+          "units" : {
+            "description" : "Lists the unit for each datapoint.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_UnitsListCharacteristic"
+          },
+          "variableNames" : {
+            "description" : "Lists the name for each datapoint.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_VariableListCharacteristic"
+          },
+          "timeColumnName" : {
+            "description" : "Specifies the name of the Variable Names entry which contains the time column.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_TimeColumnChoice"
+          }
+        },
+        "required" : [ "units", "variableNames", "timeColumnName" ]
+      },
+      "urn_samm_io.catenax.time_series_reference_1.0.0_PayloadCharacteristic" : {
+        "description" : "Contains the information about variable names and their units as well as the name of the time column.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_PayloadEntity"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "decimalSeperator" : {
+      "description" : "Indicates whether a dot or comma is used to separate the decimal place in the source file.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_DecimalSeperator"
+    },
+    "sourceFile" : {
+      "description" : "Contains the URI to the referenced time series file.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_ResourcePath"
+    },
+    "fileExtension" : {
+      "description" : "Indicates whether csv, none or txt is used as file extension.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_FileExtension"
+    },
+    "delimiter" : {
+      "description" : "Indicates whether a semicolon, comma or tab is used as a deliniter between datapoints.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_Delimiter"
+    },
+    "payload" : {
+      "description" : "Contains the information about variable names and their units as well as the name of the time column.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.time_series_reference_1.0.0_PayloadCharacteristic"
+    }
+  },
+  "required" : [ "decimalSeperator", "sourceFile", "fileExtension", "delimiter", "payload" ]
+}
