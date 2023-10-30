@@ -21,6 +21,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.request_for_quotation:1.0.0#> .
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
 
 :RequestForQuotation a samm:Aspect ;
    samm:preferredName "Request For Quotation"@en ;
@@ -226,7 +227,7 @@
 :messageId a samm:Property ;
    samm:preferredName "message Id"@en ;
    samm:description "CX-Header: identifier used by RFQ protocol"@en ;
-   samm:characteristic :CatenaXIdTraitCharacteristic .
+   samm:characteristic ext-uuid:UuidV4Trait .
 
 :sentDateTime a samm:Property ;
    samm:preferredName "sent date time"@en ;
@@ -340,11 +341,6 @@
    samm:description "description of use case context"@en ;
    samm:dataType xsd:string .
 
-:CatenaXIdTraitCharacteristic a samm-c:Trait ;
-   samm:description "Trait to ensure UUID v4 data format"@en ;
-   samm-c:baseCharacteristic :Uuidv4Characteristic ;
-   samm-c:constraint :Uuidv4RegularExpression .
-
 :TimeStamp a samm:Characteristic ;
    samm:preferredName "time stamp"@en ;
    samm:description "time stamp, when message is sent"@en ;
@@ -369,18 +365,6 @@
    samm:preferredName "Single Level Bill of Material as Built reference"@en ;
    samm:description "The single-level bill of material represents one sub-level of an assembly and does not include any lower-level subassemblies. The as-built lifecycle references all child items as manufactured by the manufacturer referencing only child items in an as built lifecycle themselves, e.g. serial parts or batches."@en ;
    samm:properties ( :childItems :catenaXId ) .
-
-:Uuidv4Characteristic a samm:Characteristic ;
-   samm:preferredName "UUID v4 Characteristic"@en ;
-   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
-   samm:see <https://tools.ietf.org/html/rfc4122> ;
-   samm:dataType xsd:string .
-
-:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "Catena-X Id Regular Expression"@en ;
-   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
-   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
-   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
 
 :partId a samm:Property ;
    samm:preferredName "part Id"@en ;
@@ -452,7 +436,7 @@
 :catenaXId a samm:Property ;
    samm:preferredName "Catena-X ID"@en ;
    samm:description "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace."@en ;
-   samm:characteristic :CatenaXIdTraitCharacteristic ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d" .
 
 :PartIdCharacteristic a samm:Characteristic ;
@@ -653,3 +637,4 @@
    samm:preferredName " type characteristic"@en ;
    samm:description "value type to detail the part material item"@en ;
    samm:dataType xsd:string .
+
