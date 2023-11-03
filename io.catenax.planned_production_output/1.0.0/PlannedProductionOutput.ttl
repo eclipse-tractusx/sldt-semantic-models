@@ -1,20 +1,3 @@
-#######################################################################
-# Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
-# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
-# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
-# Copyright (c) 2023 Volkswagen AG
-# Copyright (c) 2023 Contributors to the Eclipse Foundation
-#
-# See the NOTICE file(s) distributed with this work for additional
-# information regarding copyright ownership.
-#
-# This work is made available under the terms of the
-# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
-# which is available at
-# https://creativecommons.org/licenses/by/4.0/legalcode.
-#
-# SPDX-License-Identifier: CC-BY-4.0
-#######################################################################
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
@@ -31,7 +14,7 @@
     samm:preferredName "Planned Production Output of a Supplier"@en;
     samm:description "This aspect represents the remaining and planned production outputs of a supplier allocated to a customer. An allocated planned production output is described by a quantity, the site of the supplier and the date with time at which a production of a certain material for a certain customer is planned to be finished. The allocated planned production outputs may be linked to customer order position they have been scheduled for."@en;
     samm:properties (:positions :materialNumberCustomer [
-  samm:property :materialNumberCatenaX;
+  samm:property :materialGlobalAssetId;
   samm:optional "true"^^xsd:boolean
 ] [
   samm:property :materialNumberSupplier;
@@ -41,34 +24,29 @@
     samm:events ().
 :positions a samm:Property;
     samm:preferredName "Positions"@en;
-    samm:description "The positions refer to positions within an order of the given product (see material number supplier, materialNumber customer and material number Catena-X) for which the production outputs are transferred. The positions can be differentiated by the order position reference. If no order position reference is given, then there is only one position containing all planned production outputs of the product."@en;
+    samm:description "The positions refer to positions within an order of the given product (see material number supplier, materialNumber customer and material global Asset Id) for which the production outputs are transferred. The positions can be differentiated by the order position reference. If no order position reference is given, then there is only one position containing all planned production outputs of the product."@en;
     samm:characteristic :PositionsCollection.
 :materialNumberCustomer a samm:Property;
     samm:preferredName "Customer Material Number"@en;
     samm:description "Material identifier as assigned by the customer. This material number identifies the material (as planned) in the customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the material number supplier should be set in this field, too."@en;
-    samm:characteristic :MaterialNumber;
+    samm:characteristic :MaterialNumberCharacteristic;
     samm:exampleValue "MNR-7307-AU340474.002".
-:materialNumberCatenaX a samm:Property;
-    samm:preferredName "Material UUID Used in Catena-X"@en;
-    samm:description "Material identifier used uniquely within Catena-X to identify the material (e.g. PartAsPlanned)."@en;
-    samm:characteristic ext-uuid:UuidV4Trait;
-    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
 :materialNumberSupplier a samm:Property;
     samm:preferredName "Supplier Material Number"@en;
     samm:description "Material identifier as assigned by the supplier. This material number identifies the material (as planned) in the supplier's database."@en;
-    samm:characteristic :MaterialNumber;
+    samm:characteristic :MaterialNumberCharacteristic;
     samm:exampleValue "MNR-8101-ID146955.001".
 :PositionsCollection a samm-c:Collection;
     samm:preferredName "Positions Collection"@en;
     samm:description "If any production for the customer is planned, then there is at least one position. If the supplier does differentiate the planned production according to the order positions (an OrderPositionReference is set), then multiple positions can be given. Among the positions, there could be only one position without an OrderPositionReference to either report the planned production independently of orders or to report internal stock orders planned for the customer."@en;
     samm:dataType :Position.
-:MaterialNumber a samm:Characteristic;
+:MaterialNumberCharacteristic a samm:Characteristic;
     samm:preferredName "Material Number"@en;
     samm:description "The material number is a multi-character string, usually assigned by an ERP system."@en;
     samm:dataType xsd:string.
 :Position a samm:Entity;
     samm:preferredName "Position"@en;
-    samm:description "The Position can be planned for production at several sites. A position may be anonymous or may reference an position within an order."@en;
+    samm:description "The Position can be planned for production at several sites. A position may be anonymous or may reference a position within an order."@en;
     samm:properties ([
   samm:property :orderPositionReference;
   samm:optional "true"^^xsd:boolean
@@ -83,7 +61,7 @@
     samm:characteristic :DateTimeStamp;
     samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:date.
 :allocatedPlannedProductionOutputs a samm:Property;
-    samm:preferredName "Planned and Allocated Production Outpus"@en;
+    samm:preferredName "Planned and Allocated Production Outputs"@en;
     samm:description "Planned Production Outputs already allocated to the customer."@en;
     samm:characteristic :AllocatedPlannedProductionOutputCollection.
 :OrderPositionReferenceCharacteristic a samm:Characteristic;
@@ -152,3 +130,8 @@
     samm:preferredName "Quantity Characteristic"@en;
     samm:description "Describes the quantity and the unit of measure with which the planned and allocated production output is measured."@en;
     samm:dataType ext-quantity:ItemQuantityEntity.
+:materialGlobalAssetId a samm:Property;
+    samm:preferredName "Material Number UUID of the Customer's Twin"@en;
+    samm:description "Material identifier used uniquely to identify the Material (e.g. PartAsPlanned)."@en;
+    samm:characteristic ext-uuid:UuidV4Trait;
+    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
