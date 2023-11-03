@@ -18,3 +18,4 @@ labels: update
 - [ ] The potential update will be either 
   - [ ] backward compatible or 
   - [ ] a (chain of) migration strategy(-ies) from all non-deprecated previous versions to the new model will be developed
+- [ ] A modeling steward has been assigned

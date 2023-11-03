@@ -1,0 +1,249 @@
+---
+openapi: 3.0.3
+info:
+  title: SingleLevelUsageAsBuilt
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/single-level-usage-as-built:
+    get:
+      tags:
+      - SingleLevelUsageAsBuilt
+      operationId: getSingleLevelUsageAsBuilt
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/SingleLevelUsageAsBuilt'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleLevelUsageAsBuilt'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.single_level_usage_as_built_2.0.0_CatenaXIdTraitCharacteristic:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_io.catenax.single_level_usage_as_built_2.0.0_NumberOfObjects:
+      type: number
+      description: Quantifiable number of objects in reference to the measurementUnit
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: Describes a Property containing a reference to one of the units
+        in the Unit Catalog.
+    urn_samm_io.catenax.single_level_usage_as_built_2.0.0_QuantityCharacteristic:
+      description: Describes the quantity in which the child part is assembled in
+        the parent object by providing a quantity value and the measurement unit in
+        which the quantity is measured.
+      type: object
+      properties:
+        quantityNumber:
+          description: The number of objects related to the measurement unit
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_usage_as_built_2.0.0_NumberOfObjects'
+        measurementUnit:
+          description: Unit of Measurement for the quantity of serialized objects
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference'
+      required:
+      - quantityNumber
+      - measurementUnit
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.single_level_usage_as_built_2.0.0_ParentData:
+      description: Catena-X ID and meta data of the parent item.
+      type: object
+      properties:
+        quantity:
+          description: Quantity of which the child part is assembled into the parent
+            part. In general it is '1' for serialized parts.
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_usage_as_built_2.0.0_QuantityCharacteristic'
+        catenaXId:
+          description: "The Catena-X ID of the given part (e.g. the assembly), valid\
+            \ for the Catena-X dataspace."
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_usage_as_built_2.0.0_CatenaXIdTraitCharacteristic'
+        createdOn:
+          description: "Timestamp when the relation between the parent part and the\
+            \ child part was created, e.g. when the given child part was assembled\
+            \ into the parent part."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        lastModifiedOn:
+          description: Timestamp when the assembly relationship between parent part
+            and child part was last modified.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+      required:
+      - quantity
+      - catenaXId
+      - createdOn
+    urn_samm_io.catenax.single_level_usage_as_built_2.0.0_SetOfParentItemsCharacteristic:
+      description: Set of parent items the given child object is assembled in (one
+        structural level up).
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.single_level_usage_as_built_2.0.0_ParentData'
+      uniqueItems: true
+    urn_samm_io.catenax.single_level_usage_as_built_2.0.0_BpnTrait:
+      type: string
+      description: Business Partner Number Regular Expression allowing only BPNL which
+        stands for a legal entity.
+      pattern: "^(BPNL)([0-9]{8})([a-zA-Z0-9]{4})$"
+    urn_samm_io.catenax.single_level_usage_as_built_2.0.0_Customer:
+      description: "A customer and their related items, if known."
+      type: object
+      properties:
+        parentItems:
+          description: |-
+            Set of parent items, in which the given child object is assembled in (one structural level up).
+
+            For serialized items the list should contain only one parent item.
+            As different subsets of a batch might be used by a customer in different items this is a list.
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_usage_as_built_2.0.0_SetOfParentItemsCharacteristic'
+        businessPartner:
+          description: The supplier of the given child item.
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_usage_as_built_2.0.0_BpnTrait'
+        createdOn:
+          description: "Timestamp when the relation between the parent part and the\
+            \ child part was created, e.g. when the given child part was assembled\
+            \ into the parent part."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        lastModifiedOn:
+          description: Timestamp when the assembly relationship between parent part
+            and child part was last modified.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+      required:
+      - businessPartner
+      - createdOn
+    urn_samm_io.catenax.single_level_usage_as_built_2.0.0_ListOfCustomersCharacteristic:
+      description: A list of customers and their related parent items.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.single_level_usage_as_built_2.0.0_Customer'
+    SingleLevelUsageAsBuilt:
+      description: "The aspect provides the information in which parent part(s)/product(s)\
+        \ the given item is assembled in. Could be a 1:1 relationship in terms of\
+        \ a e.g. a brake component or 1:n for e.g. coatings. The given item as well\
+        \ as the parent item must refer to an object from as-built lifecycle phase,\
+        \ i.e. a batch or a serialized part."
+      type: object
+      properties:
+        catenaXId:
+          description: "The Catena-X ID of the given part (e.g. the assembly), valid\
+            \ for the Catena-X dataspace."
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_usage_as_built_2.0.0_CatenaXIdTraitCharacteristic'
+        customers:
+          description: |-
+            A list of all customers of this item. If the parent items in which this item is assembled into are known, they should be listed as well.
+
+            For serialized items the list should contain only one customer with one parent item.
+            As different subsets of a batch might be sold to different customers this is a list.
+          $ref: '#/components/schemas/urn_samm_io.catenax.single_level_usage_as_built_2.0.0_ListOfCustomersCharacteristic'
+      required:
+      - catenaXId
+      - customers
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    SingleLevelUsageAsBuilt:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    SingleLevelUsageAsBuilt:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SingleLevelUsageAsBuilt'
