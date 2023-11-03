@@ -12,6 +12,7 @@ All notable changes to this model will be documented in this file.
 - positions for customer side stock MAY NOT contain order position references
 - added property direction to indicate OUTBOUND (formerly known as product stock) and INBOUND (material stock)
 - replaced property locationId of either type BPNS or BPNA by properties stockLocationBPNS and stockLocationBPNA
+- renamed Characteristic for MaterialNumber to MaterialNumberCharacteristic 
 
 ## [1.0.0] - 2023-06-05
 ### Added
