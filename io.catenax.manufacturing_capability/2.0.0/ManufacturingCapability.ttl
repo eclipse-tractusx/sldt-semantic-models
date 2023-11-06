@@ -1,0 +1,176 @@
+#######################################################################
+# Copyright (c) 2023 Fraunhofer Institute of Optronics, System Technology and Image Exploitation (IOSB)
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.manufacturing_capability:2.0.0#> .
+
+:ManufacturingCapability a samm:Aspect ;
+   samm:preferredName "Manufacturing Capability Aspect Model"@en ;
+   samm:description "An aspect model representing manufacturing capabilities, based on the concepts for products, processes, resources and capabilities, as well as their relations to each other."@en ;
+   samm:properties ( :processSet :resourceSet :productSet :capabilitySet :capabilityConstraintSet ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:processSet a samm:Property ;
+   samm:preferredName "Process Set"@en ;
+   samm:description "Set of production-relevant activities at any level of granularity that might affect materials and is performed by resources."@en ;
+   samm:see <https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/CapabilitiesSkillsServices.pdf?__blob=publicationFile&v=1> ;
+   samm:characteristic :ProcessSetCharacteristic .
+
+:resourceSet a samm:Property ;
+   samm:preferredName "Resource Set"@en ;
+   samm:description "Set of entities capable of performing functions specified as capabilities."@en ;
+   samm:see <https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/CapabilitiesSkillsServices.pdf?__blob=publicationFile&v=1> ;
+   samm:characteristic :ResourceSetCharacteristic .
+
+:productSet a samm:Property ;
+   samm:preferredName "Product Set"@en ;
+   samm:description "Set of physical objects being used as an input or created as an output of a production process."@en ;
+   samm:see <https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/CapabilitiesSkillsServices.pdf?__blob=publicationFile&v=1> ;
+   samm:characteristic :ProductSetCharacteristic .
+
+:capabilitySet a samm:Property ;
+   samm:preferredName "Capability Set"@en ;
+   samm:description "Set of implementation-independent specifications of functions in industrial production to achieve an effect in the physical or virtual world."@en ;
+   samm:see <https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/CapabilitiesSkillsServices.pdf?__blob=publicationFile&v=1> ;
+   samm:characteristic :CapabilitySetCharacteristic .
+
+:capabilityConstraintSet a samm:Property ;
+   samm:preferredName "Capability Constraint Set"@en ;
+   samm:description "Set of conditions imposed on capabilities which further detail their applicability."@en ;
+   samm:characteristic :CapabilityConstraintSetCharacteristic .
+
+:ProcessSetCharacteristic a samm-c:Set ;
+   samm:preferredName "Process Set Characteristic"@en ;
+   samm:description "Characteristic for a set of process representations."@en ;
+   samm:dataType :ProcessEntity .
+
+:ResourceSetCharacteristic a samm-c:Set ;
+   samm:preferredName "Resource Set Characteristic"@en ;
+   samm:description "Characteristic for a set of resource representations."@en ;
+   samm:dataType :ResourceEntity .
+
+:ProductSetCharacteristic a samm-c:Set ;
+   samm:preferredName "Product Set Characteristic"@en ;
+   samm:description "Characteristic for a set of product representations."@en ;
+   samm:dataType :ProductEntity .
+
+:CapabilitySetCharacteristic a samm-c:Set ;
+   samm:preferredName "Capability Set Characteristic"@en ;
+   samm:description "Characteristic for a set of capability representations."@en ;
+   samm:dataType :CapabilityEntity .
+
+:CapabilityConstraintSetCharacteristic a samm-c:Set ;
+   samm:preferredName "Capability Constraint Set Characteristic"@en ;
+   samm:description "Characteristic for a set of capability constraint representations."@en ;
+   samm:dataType :CapabilityConstraintEntity .
+
+:ProcessEntity a samm:Entity ;
+   samm:extends :ElementAbstractEntity ;
+   samm:preferredName "Process Entity"@en ;
+   samm:description "Element containing the samm properties of a process."@en ;
+   samm:properties ( :hasInput :hasOutput :requires ) .
+
+:ResourceEntity a samm:Entity ;
+   samm:extends :ElementAbstractEntity ;
+   samm:preferredName "Resource Entity"@en ;
+   samm:description "Element containing the samm properties of a resource."@en ;
+   samm:properties ( :provides ) .
+
+:ProductEntity a samm:Entity ;
+   samm:extends :ElementAbstractEntity ;
+   samm:preferredName "Product Entity"@en ;
+   samm:description "Element containing the samm properties of a product."@en ;
+   samm:properties ( :productLabel ) .
+
+:CapabilityEntity a samm:Entity ;
+   samm:extends :ElementAbstractEntity ;
+   samm:preferredName "Capability Entity"@en ;
+   samm:description "Element containing the samm properties of a capability."@en ;
+   samm:properties ( :capabilityLabel ) .
+
+:CapabilityConstraintEntity a samm:Entity ;
+   samm:preferredName "Capability Constraint Entity"@en ;
+   samm:description "Element containing the samm properties of a capability constraint."@en ;
+   samm:properties ( :references ) .
+
+:ElementAbstractEntity a samm:AbstractEntity ;
+   samm:preferredName "Element Abstract Entity"@en ;
+   samm:description "Abstract Entity containing the samm properties every process, resource, product and capability entity shall contain."@en ;
+   samm:properties ( :propertySet ) .
+
+:hasInput a samm:Property ;
+   samm:preferredName "Has Input"@en ;
+   samm:description "Relation between a process and its input products."@en ;
+   samm:characteristic :ProductSetCharacteristic .
+
+:hasOutput a samm:Property ;
+   samm:preferredName "Has Output"@en ;
+   samm:description "Relation between a process and its output products."@en ;
+   samm:characteristic :ProductSetCharacteristic .
+
+:requires a samm:Property ;
+   samm:preferredName "Requires"@en ;
+   samm:description "Relation between a process and capabilities it requires."@en ;
+   samm:characteristic :CapabilitySetCharacteristic .
+
+:provides a samm:Property ;
+   samm:preferredName "Provides"@en ;
+   samm:description "Relation between a resource and capabilities it provides."@en ;
+   samm:characteristic :CapabilitySetCharacteristic .
+
+:productLabel a samm:Property ;
+   samm:preferredName "Product Label"@en ;
+   samm:description "Human readable label of a product, e.g. the name."@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "wheel suspension"@en .
+
+:capabilityLabel a samm:Property ;
+   samm:preferredName "Capability Label"@en ;
+   samm:description "Human readable label of a capability"@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "drilling"@en .
+
+:references a samm:Property ;
+   samm:preferredName "References"@en ;
+   samm:description "Relation between a capability constraint and its properties."@en ;
+   samm:characteristic :PropertySetCharacteristic .
+
+:propertySet a samm:Property ;
+   samm:preferredName "Property Set"@en ;
+   samm:description "Set of qualities or characteristics inherent in or ascribed to process, resource, product or capability entities."@en ;
+   samm:characteristic :PropertySetCharacteristic .
+
+:PropertySetCharacteristic a samm-c:Set ;
+   samm:preferredName "Property Set Characteristic"@en ;
+   samm:description "Characteristic for a set of property representations."@en ;
+   samm:dataType :PropertyEntity .
+
+:PropertyEntity a samm:Entity ;
+   samm:preferredName "Property Entity"@en ;
+   samm:description "Element containing the samm properties of a property."@en ;
+   samm:properties ( :propertyLabel ) .
+
+:propertyLabel a samm:Property ;
+   samm:preferredName "Property Label"@en ;
+   samm:description "Human readable label of a property."@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "diameter"@en .
