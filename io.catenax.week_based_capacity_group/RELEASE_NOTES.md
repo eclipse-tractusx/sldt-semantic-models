@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [2.0.0] - 2023-10-13
+## [2.0.0] - 2023-11-07
 
 ### Added
 - linkedCapacityGroups added as optional property in aspect model header
