@@ -1,0 +1,186 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.iot_sensor_data:1.0.0#> .
+
+:IotSensorData a samm:Aspect ;
+   samm:preferredName "IoT Sensor Data"@en ;
+   samm:description "The data collected by an IoT Sensor Device."@en ;
+   samm:properties ( [ samm:property :sensorLocation; samm:optional true ] [ samm:property :batteryLevel; samm:optional true ] [ samm:property :fillingLevel; samm:optional true ] :timestamp [ samm:property :transmissionMethod; samm:optional true ] [ samm:property :sensorData; samm:optional true ] :catenaXId ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:sensorLocation a samm:Property ;
+   samm:preferredName "Sensor Location"@en ;
+   samm:description "Geodata, geographic data or geospatial data, refers to data and information that has explicit or implicit association with a location relative to Earth."@en ;
+   samm:characteristic :GeoDataCharacteristic .
+
+:batteryLevel a samm:Property ;
+   samm:preferredName "Battery Level"@en ;
+   samm:description "The battery level displays how much charge of the battery has been left."@en ;
+   samm:characteristic :BatteryLevelCharacteristic ;
+   samm:exampleValue "50"^^xsd:decimal .
+
+:fillingLevel a samm:Property ;
+   samm:preferredName "Filling Level"@en ;
+   samm:description "Volume percentage of a liquid or solid filling material in a container or vessel."@en ;
+   samm:see <https://www.giessereilexikon.com/en/foundry-lexicon/Encyclopedia/show/filling-level-4695/?cHash=25ad834655406130e927973c5b7d5f8b> ;
+   samm:characteristic :FillingLevelCharacteristic .
+
+:timestamp a samm:Property ;
+   samm:preferredName "Timestamp "@en ;
+   samm:description "The timestamp of the latest sensor reading."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-02-05T15:48:54"^^xsd:dateTime .
+
+:transmissionMethod a samm:Property ;
+   samm:preferredName "Transmission Method"@en ;
+   samm:description "The method under which the sensing data is transmitted from the source to the remote node."@en ;
+   samm:characteristic :TransmissionMethodCharacteristic ;
+   samm:exampleValue "LoRaWAN" .
+
+:sensorData a samm:Property ;
+   samm:preferredName "sensor data"@en ;
+   samm:characteristic :SensorDataCharacteristic .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X Identifier"@en ;
+   samm:description "The fully anonymous Catena-X ID of the asset, valid for the Catena-X dataspace."@en ;
+   samm:characteristic :CatenaXIdTrait ;
+   samm:exampleValue "urn:uuid:ed85f17e-29dd-473c-9cb8-d7ad1dc44d2f" .
+
+:GeoDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Geo Data Characteristic"@en ;
+   samm:description "Characteristic to describe the related Geo data."@en ;
+   samm:dataType :GeoDataEntity .
+
+:BatteryLevelCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Battery Level Characteristic"@en ;
+   samm:description "Characteristic to describe the property battery level."@en ;
+   samm:dataType xsd:decimal ;
+   samm-c:unit unit:percent .
+
+:FillingLevelCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Filling Level Characteristic"@en ;
+   samm:description "Characteristic that describes the property filling level."@en ;
+   samm:dataType xsd:decimal ;
+   samm-c:unit unit:percent .
+
+:TransmissionMethodCharacteristic a samm:Characteristic ;
+   samm:preferredName "Transmission Method Characteristic"@en ;
+   samm:description "Characteristic that describes the property transmission method."@en ;
+   samm:dataType xsd:string .
+
+:SensorDataCharacteristic a samm-c:List ;
+   samm:preferredName "Sensor data Characteristic"@en ;
+   samm:dataType :SensorDataEntity .
+
+:CatenaXIdTrait a samm-c:Trait ;
+   samm:preferredName "Catena-X Id Trait"@en ;
+   samm:description "Trait to ensure UUID v4 data format."@en ;
+   samm-c:baseCharacteristic :UUIDv4 ;
+   samm-c:constraint :Constraint1 .
+
+:GeoDataEntity a samm:Entity ;
+   samm:preferredName "Geo Data Entity"@en ;
+   samm:description "Encapsulates the Geo Data relevant attributes."@en ;
+   samm:properties ( [ samm:property :latitude; samm:optional true ] [ samm:property :longitude; samm:optional true ] [ samm:property :altitude; samm:optional true ] ) .
+
+:SensorDataEntity a samm:Entity ;
+   samm:preferredName "Sensor Data Entity"@en ;
+   samm:description "Encapsulates all sensor data properties."@en ;
+   samm:properties ( :sensorType :sensorValue :sensorUnit ) .
+
+:UUIDv4 a samm:Characteristic ;
+   samm:preferredName "UUIDv4"@en ;
+   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
+   samm:dataType xsd:string .
+
+:Constraint1 a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Catena-X Id Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
+
+:latitude a samm:Property ;
+   samm:preferredName "Latitude"@en ;
+   samm:description "The angle between zenith and a plane parallel to the equator."@en ;
+   samm:see <https://www.wikidata.org/wiki/Q34027> ;
+   samm:characteristic :LatitudeCharacteristic ;
+   samm:exampleValue "4807.03"^^xsd:decimal .
+
+:longitude a samm:Property ;
+   samm:preferredName "Longitude"@en ;
+   samm:description "Geographic coordinate that specifies the east-west position of a point on the Earth's surface."@en ;
+   samm:see <https://www.wikidata.org/wiki/Q36477> ;
+   samm:characteristic :LongitudeCharacteristic ;
+   samm:exampleValue "01131.02"^^xsd:decimal .
+
+:altitude a samm:Property ;
+   samm:preferredName "Altitude"@en ;
+   samm:description "Antenna Altitude above/below mean-sea-level (geoid)."@en ;
+   samm:see <http://www.nmea.de/nmea0183datensaetze.html#gga> ;
+   samm:characteristic :AltitudeCharacteristic ;
+   samm:exampleValue "280.20"^^xsd:decimal .
+
+:sensorType a samm:Property ;
+   samm:preferredName "Sensor Type"@en ;
+   samm:description "Characteristic describing the number of Analog sensor."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "temperature" .
+
+:sensorValue a samm:Property ;
+   samm:preferredName "Sensor Value"@en ;
+   samm:description "The value of the sensor. "@en ;
+   samm:characteristic :AnalogSensorValueCharacteristic ;
+   samm:exampleValue "2.55"^^xsd:float .
+
+:sensorUnit a samm:Property ;
+   samm:preferredName "Sensor Unit"@en ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "Celsius"^^samm:curie .
+
+:LatitudeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Latitude Characteristic"@en ;
+   samm:description "Characteristic describing the property latitude."@en ;
+   samm:see <https://www.iso.org/standard/39242.html> ;
+   samm:dataType xsd:decimal .
+
+:LongitudeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Longitude Characteristic"@en ;
+   samm:description "Characteristic describing the property longitude."@en ;
+   samm:see <https://www.iso.org/standard/39242.html> ;
+   samm:dataType xsd:decimal .
+
+:AltitudeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Altitude Characteristic"@en ;
+   samm:description "Characteristic describing the property altitude."@en ;
+   samm:see <http://www.nmea.de/nmea0183datensaetze.html#gga> ;
+   samm:dataType xsd:decimal .
+
+:AnalogSensorValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "Analog Sensor Value Characteristic"@en ;
+   samm:description "Characteristic describing the property analog sensor value. "@en ;
+   samm:dataType xsd:float .
+
