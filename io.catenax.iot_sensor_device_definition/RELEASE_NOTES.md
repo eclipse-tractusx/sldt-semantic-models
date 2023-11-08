@@ -8,7 +8,8 @@ All notable changes to this model will be documented in this file.
 - initial model
 
 ### Changed
-n/a
+## [2.0.0] - 2023-11-08
+* Converted BAMM to SAMM
 
 ### Removed
 
