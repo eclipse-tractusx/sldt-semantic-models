@@ -27,14 +27,9 @@
 :IotSensorData a samm:Aspect ;
    samm:preferredName "IoT Sensor Data"@en ;
    samm:description "The data collected by an IoT Sensor Device."@en ;
-   samm:properties ( [ samm:property :sensorLocation; samm:optional true ] [ samm:property :batteryLevel; samm:optional true ] [ samm:property :fillingLevel; samm:optional true ] :timestamp [ samm:property :transmissionMethod; samm:optional true ] [ samm:property :sensorData; samm:optional true ] :catenaXId ) ;
+   samm:properties ( [ samm:property :batteryLevel; samm:optional true ] [ samm:property :fillingLevel; samm:optional true ] :timestamp [ samm:property :transmissionMethod; samm:optional true ] [ samm:property :sensorData; samm:optional true ] :catenaXId ) ;
    samm:operations ( ) ;
    samm:events ( ) .
-
-:sensorLocation a samm:Property ;
-   samm:preferredName "Sensor Location"@en ;
-   samm:description "Geodata, geographic data or geospatial data, refers to data and information that has explicit or implicit association with a location relative to Earth."@en ;
-   samm:characteristic :GeoDataCharacteristic .
 
 :batteryLevel a samm:Property ;
    samm:preferredName "Battery Level"@en ;
@@ -70,11 +65,6 @@
    samm:characteristic :CatenaXIdTrait ;
    samm:exampleValue "urn:uuid:ed85f17e-29dd-473c-9cb8-d7ad1dc44d2f" .
 
-:GeoDataCharacteristic a samm:Characteristic ;
-   samm:preferredName "Geo Data Characteristic"@en ;
-   samm:description "Characteristic to describe the related Geo data."@en ;
-   samm:dataType :GeoDataEntity .
-
 :BatteryLevelCharacteristic a samm-c:Measurement ;
    samm:preferredName "Battery Level Characteristic"@en ;
    samm:description "Characteristic to describe the property battery level."@en ;
@@ -102,15 +92,10 @@
    samm-c:baseCharacteristic :UUIDv4 ;
    samm-c:constraint :Constraint1 .
 
-:GeoDataEntity a samm:Entity ;
-   samm:preferredName "Geo Data Entity"@en ;
-   samm:description "Encapsulates the Geo Data relevant attributes."@en ;
-   samm:properties ( [ samm:property :latitude; samm:optional true ] [ samm:property :longitude; samm:optional true ] [ samm:property :altitude; samm:optional true ] ) .
-
 :SensorDataEntity a samm:Entity ;
    samm:preferredName "Sensor Data Entity"@en ;
    samm:description "Encapsulates all sensor data properties."@en ;
-   samm:properties ( :sensorType :sensorValue :sensorUnit ) .
+   samm:properties ( :sensorType :sensorValue :sensorUnit :sensorLocation ) .
 
 :UUIDv4 a samm:Characteristic ;
    samm:preferredName "UUIDv4"@en ;
@@ -122,6 +107,43 @@
    samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
    samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
    samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
+
+:sensorType a samm:Property ;
+   samm:preferredName "Sensor Type"@en ;
+   samm:description "Characteristic describing the number of Analog sensor."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "temperature" .
+
+:sensorValue a samm:Property ;
+   samm:preferredName "Sensor Value"@en ;
+   samm:description "The value of the sensor. "@en ;
+   samm:characteristic :AnalogSensorValueCharacteristic ;
+   samm:exampleValue "2.55"^^xsd:float .
+
+:sensorUnit a samm:Property ;
+   samm:preferredName "Sensor Unit"@en ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "Celsius"^^samm:curie .
+
+:sensorLocation a samm:Property ;
+   samm:preferredName "Sensor Location"@en ;
+   samm:description "Geodata, geographic data or geospatial data, refers to data and information that has explicit or implicit association with a location relative to Earth."@en ;
+   samm:characteristic :GeoDataCharacteristic .
+
+:AnalogSensorValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "Analog Sensor Value Characteristic"@en ;
+   samm:description "Characteristic describing the property analog sensor value. "@en ;
+   samm:dataType xsd:float .
+
+:GeoDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Geo Data Characteristic"@en ;
+   samm:description "Characteristic to describe the related Geo data."@en ;
+   samm:dataType :GeoDataEntity .
+
+:GeoDataEntity a samm:Entity ;
+   samm:preferredName "Geo Data Entity"@en ;
+   samm:description "Encapsulates the Geo Data relevant attributes."@en ;
+   samm:properties ( [ samm:property :latitude; samm:optional true ] [ samm:property :longitude; samm:optional true ] [ samm:property :altitude; samm:optional true ] ) .
 
 :latitude a samm:Property ;
    samm:preferredName "Latitude"@en ;
@@ -144,23 +166,6 @@
    samm:characteristic :AltitudeCharacteristic ;
    samm:exampleValue "280.20"^^xsd:decimal .
 
-:sensorType a samm:Property ;
-   samm:preferredName "Sensor Type"@en ;
-   samm:description "Characteristic describing the number of Analog sensor."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "temperature" .
-
-:sensorValue a samm:Property ;
-   samm:preferredName "Sensor Value"@en ;
-   samm:description "The value of the sensor. "@en ;
-   samm:characteristic :AnalogSensorValueCharacteristic ;
-   samm:exampleValue "2.55"^^xsd:float .
-
-:sensorUnit a samm:Property ;
-   samm:preferredName "Sensor Unit"@en ;
-   samm:characteristic samm-c:UnitReference ;
-   samm:exampleValue "Celsius"^^samm:curie .
-
 :LatitudeCharacteristic a samm:Characteristic ;
    samm:preferredName "Latitude Characteristic"@en ;
    samm:description "Characteristic describing the property latitude."@en ;
@@ -178,9 +183,4 @@
    samm:description "Characteristic describing the property altitude."@en ;
    samm:see <http://www.nmea.de/nmea0183datensaetze.html#gga> ;
    samm:dataType xsd:decimal .
-
-:AnalogSensorValueCharacteristic a samm:Characteristic ;
-   samm:preferredName "Analog Sensor Value Characteristic"@en ;
-   samm:description "Characteristic describing the property analog sensor value. "@en ;
-   samm:dataType xsd:float .
 
