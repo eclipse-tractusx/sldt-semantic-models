@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2023-10-25
+## [2.0.0] - 2023-11-07
 ### Added
 - Upgarde from BAMM model to SAMM model
 - new features: Article Number, VIN, OE number
