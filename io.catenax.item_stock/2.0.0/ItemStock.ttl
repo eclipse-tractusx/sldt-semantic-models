@@ -48,11 +48,21 @@
     samm:description "Material identifier as assigned by customer. This material number identifies the material (as planned) in customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the materialNumberSupplier should be set in this field, too."@en;
     samm:characteristic :MaterialNumberCharacteristic;
     samm:exampleValue "MNR-7307-AU340474.002".
+:materialGlobalAssetId a samm:Property;
+    samm:preferredName "Material Number UUID of the Customer's Twin"@en;
+    samm:description "Material identifier used uniquely to identify the Material (e.g. PartAsPlanned)."@en;
+    samm:characteristic ext-uuid:UuidV4Trait;
+    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
 :materialNumberSupplier a samm:Property;
     samm:preferredName "Supplier Material Number"@en;
     samm:description "Material identifier as assigned by supplier. This material number identifies the material (as planned) in supplier's database."@en;
     samm:characteristic :MaterialNumberCharacteristic;
     samm:exampleValue "MNR-8101-ID146955.001".
+:direction a samm:Property;
+    samm:preferredName "Direction of Stock"@en;
+    samm:description "Direction of the stock from data provider perspective."@en;
+    samm:characteristic :DirectionCharacteristic;
+    samm:exampleValue "OUTBOUND".
 :PositionsCollection a samm-c:Collection;
     samm:preferredName "Positions Collection"@en;
     samm:description "If any stock is available, then there is at least one position. \n\nIn case of a supplier's stock for a customer, the supplier can  differentiate the stock according to the order positions of his customer. In this case multiple positions can be given. There could also be only one position without an OrderPositionReference indicating an anonymous stock which is allocated to the customer.\n\nIn case of a customer's stock delivered by a supplier, there is exactly one position without order position references."@en;
@@ -61,6 +71,11 @@
     samm:preferredName "Material Number"@en;
     samm:description "The material number is a multi-character string, usually assigned by an ERP system."@en;
     samm:dataType xsd:string.
+:DirectionCharacteristic a samm-c:Enumeration;
+    samm:preferredName "Direction of Stock Characteristic"@en;
+    samm:description "If a supplier provides stock information to a customer, use \"OUTBOUND\".\nIf a customer provides stock information to a supplier, use \"INBOUND\"."@en;
+    samm:dataType xsd:string;
+    samm-c:values ("INBOUND" "OUTBOUND").
 :Position a samm:Entity;
     samm:preferredName "Position"@en;
     samm:description "The Position can be located at several stocks. \nIn case of a supplier's stock for a customer, a position may be either anonymous or reference a position within a customer order. \nIn case of a customer's stock for a supplier, the order position reference MUST NOT be set."@en;
@@ -76,7 +91,7 @@
     samm:preferredName "Lasted Updated on Date"@en;
     samm:description "Date and time at which the position has been updated by the supplier's systems. Date and time are set according to a timezone."@en;
     samm:characteristic :DateTimeStamp;
-    samm:exampleValue "2023-04-01T14:23:00"^^xsd:date.
+    samm:exampleValue "2023-04-01T14:23:00"^^xsd:dateTime.
 :allocatedStocks a samm:Property;
     samm:preferredName "Allocated Stocks"@en;
     samm:description "Stocks that have been already allocated to the customer or delivered by a specific supplier. An allocated stock always refers to a stock location."@en;
@@ -88,7 +103,7 @@
 :DateTimeStamp a samm:Characteristic;
     samm:preferredName "Date Time Stamp Characteristic"@en;
     samm:description "The Date with the the timezone of the involved site."@en;
-    samm:dataType xsd:date;
+    samm:dataType xsd:dateTime;
     samm:see <https://www.iso.org/iso-8601-date-and-time-format.html>.
 :AllocatedStockCollection a samm-c:Collection;
     samm:preferredName "Allocated Stock Collection"@en;
@@ -139,7 +154,7 @@
     samm:preferredName "BPNA of Stock Location"@en;
     samm:description "BPNA identifying the address the stock is located at. One stock has always one location."@en;
     samm:characteristic ext-number:BpnaTrait;
-    samm:exampleValue "BPNA1234567890";
+    samm:exampleValue "BPNA1234567890ZZ";
     samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
 :OrderIdCharacteristic a samm:Characteristic;
     samm:preferredName "Order ID Characteristic"@en;
@@ -157,18 +172,3 @@
     samm:preferredName "Is Blocked Characteristic"@en;
     samm:description "Boolean characteristic indicating whether a stock is blocked (true) or not (false)."@en;
     samm:dataType xsd:boolean.
-:materialGlobalAssetId a samm:Property;
-    samm:preferredName "Material Number UUID of the Customer's Twin"@en;
-    samm:description "Material identifier used uniquely to identify the Material (e.g. PartAsPlanned)."@en;
-    samm:characteristic ext-uuid:UuidV4Trait;
-    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
-:direction a samm:Property;
-    samm:preferredName "Direction of Stock"@en;
-    samm:description "Direction of the stock from data provider perspective."@en;
-    samm:characteristic :DirectionCharacteristic;
-    samm:exampleValue "OUTBOUND".
-:DirectionCharacteristic a samm-c:Enumeration;
-    samm:preferredName "Direction of Stock Characteristic"@en;
-    samm:description "If a supplier provides stock information to a customer, use \"OUTBOUND\".\nIf a customer provides stock information to a supplier, use \"INBOUND\"."@en;
-    samm:dataType xsd:string;
-    samm-c:values ("INBOUND" "OUTBOUND").

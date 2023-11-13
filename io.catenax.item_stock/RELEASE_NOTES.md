@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [2.0.0] - 2023-10-09
+## [2.0.0] - 2023-11-13
 - updated model to also cover customer side
 - renamed product stock to item stock (aspect)
 - renamed materialNumberCatena-X to materialGlobalAssetId for agnostic digital twin usage.
