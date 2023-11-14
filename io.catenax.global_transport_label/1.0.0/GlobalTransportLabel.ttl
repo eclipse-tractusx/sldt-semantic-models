@@ -1,0 +1,386 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2023 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 Mercedes Benz AG
+# Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 Siemens AG
+# Copyright (c) 2023 T-Systems International GmbH
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.transport_unit:1.0.0#> .
+@prefix ext-business_partner_number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
+@prefix ext-address_characteristic: <urn:samm:io.catenax.shared.address_characteristic:3.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#> .
+
+:GlobalTransportLabel a samm:Aspect ;
+   samm:preferredName "Global Transport Label"@en ;
+   samm:description "This aspect represents the information included on a global transport label of a transport unit. A transport unit is one or more oder items of a delivery united to one unit that is not altered during the whole transport.  "@en ;
+   samm:properties ( :shipFrom :shipTo :labelType :customerReference1 [ samm:property :customerSpecificRouting; samm:optional true ] :logisticsReference :contentDescription :packageId :customerReference2 :optionalInformation :customerReference3 ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:shipFrom a samm:Property ;
+   samm:preferredName "Ship From"@en ;
+   samm:description "Information about the sender of the transport unit. "@en ;
+   samm:characteristic :ShipFromCharacteristic .
+
+:shipTo a samm:Property ;
+   samm:preferredName "Ship To"@en ;
+   samm:description "Information about the recipient of the transport unit. "@en ;
+   samm:characteristic :ShipToCharacteristic .
+
+:labelType a samm:Property ;
+   samm:preferredName "Label Type"@en ;
+   samm:description "Describes the Label Type according to VDA 4994"@en ;
+   samm:characteristic :LabelTypeCharacteristic ;
+   samm:exampleValue "M" .
+
+:customerReference1 a samm:Property ;
+   samm:preferredName "Customer Reference 1 "@en ;
+   samm:description "Reference information from the customer."@en ;
+   samm:characteristic :CustomerReference1Characteristic .
+
+:customerSpecificRouting a samm:Property ;
+   samm:preferredName "Customer Specific Routing"@en ;
+   samm:description "Information on customer specific routing. This information is supplied as part of the call-off and does not need to be interpreted by the supplier."@en ;
+   samm:characteristic :CustomerSpecificRoutingCharacteristic ;
+   samm:exampleValue "Route 66" .
+
+:logisticsReference a samm:Property ;
+   samm:preferredName "Logistics Reference"@en ;
+   samm:description "Information of the transport unit that is relevant for the logstics."@en ;
+   samm:characteristic :LogisticsReferenceCharcteristic .
+
+:contentDescription a samm:Property ;
+   samm:preferredName "Content Description"@en ;
+   samm:characteristic :ContentDescriptionCharacteristic .
+
+:packageId a samm:Property ;
+   samm:preferredName "Package ID"@en ;
+   samm:description "Information for identification of the transport unit."@en ;
+   samm:characteristic :PackageIdCharacteristic .
+
+:customerReference2 a samm:Property ;
+   samm:characteristic :Characteristic6 .
+
+:optionalInformation a samm:Property ;
+   samm:description "Supplier specific information for supplier's use only."@en ;
+   samm:characteristic :Characteristic9 .
+
+:customerReference3 a samm:Property ;
+   samm:description "Additional, customer specific information for customer's use only"@en ;
+   samm:characteristic :Characteristic10 .
+
+:ShipFromCharacteristic a samm:Characteristic ;
+   samm:preferredName "Ship From Characteristic"@en ;
+   samm:description "Information about the sender of the transport unit"@en ;
+   samm:dataType :ShipFromEntity .
+
+:ShipToCharacteristic a samm:Characteristic ;
+   samm:preferredName "Ship To Characteristic"@en ;
+   samm:description "Characteristic for the information about the recipient of the transport unit. "@en ;
+   samm:dataType :ShipToEntity .
+
+:LabelTypeCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Label Type Characteristic"@en ;
+   samm:description "Describes the label type according to VDA 4994.\n6J = Master (M)\n5J = Mixed (MIX)\n1J = Single (S)"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "M" "MIX" "S" ) .
+
+:CustomerReference1Characteristic a samm:Characteristic ;
+   samm:preferredName "Customer Reference 1 Characteristic"@en ;
+   samm:description "Characteristic for Customer Reference information."@en ;
+   samm:dataType :CustomerReference1Entity .
+
+:CustomerSpecificRoutingCharacteristic a samm:Characteristic ;
+   samm:preferredName "Customer Specific Routing Characteristic"@en ;
+   samm:description "Characteristic to describe the customer specific routing information."@en ;
+   samm:dataType xsd:string .
+
+:LogisticsReferenceCharcteristic a samm:Characteristic ;
+   samm:preferredName "Logistics Reference Charcteristic"@en ;
+   samm:description "Characteristic to describe logstics information."@en ;
+   samm:dataType :LogisticsReferenceEntity .
+
+:ContentDescriptionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Customer Part Number Characteristic"@en ;
+   samm:description "Number that the customer uses to identify the delivered part."@en ;
+   samm:dataType :ContentDescriptionEntity .
+
+:PackageIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "Package ID Characteristic"@en ;
+   samm:description "Characteristic to describes the Package ID."@en ;
+   samm:dataType :PackageIdEntity .
+
+:Characteristic6 a samm:Characteristic ;
+   samm:dataType :Entity2 .
+
+:Characteristic9 a samm:Characteristic .
+
+:Characteristic10 a samm:Characteristic .
+
+:ShipFromEntity a samm:Entity ;
+   samm:preferredName "Ship From Entity"@en ;
+   samm:description "Encapsulation for information related to the goods sender."@en ;
+   samm:properties ( :address :businessPartner :supplierId ) .
+
+:ShipToEntity a samm:Entity ;
+   samm:preferredName "Ship To Entity"@en ;
+   samm:description "Encapsulation for information related to the goods recipient."@en ;
+   samm:properties ( :unloadingPoint :internalDestination :address :businessPartner ) .
+
+:CustomerReference1Entity a samm:Entity ;
+   samm:preferredName "Customer Reference 1 Entity"@en ;
+   samm:description "Encapsulation of Customer References."@en ;
+   samm:properties ( :deliveryNoteNumber :supplierNumber ) .
+
+:LogisticsReferenceEntity a samm:Entity ;
+   samm:preferredName "Logistics Reference Entity"@en ;
+   samm:description "Logistics information about estimated time of arrival, quantity and weight. "@en ;
+   samm:properties ( :expectedTimeOfArrival :quantity :netWeight :grossWeight ) .
+
+:ContentDescriptionEntity a samm:Entity ;
+   samm:preferredName "Content Description Entity"@en ;
+   samm:properties ( :customerPartNumber :customerPartDescription :safetyRelevantPart :catenaXId ) .
+
+:PackageIdEntity a samm:Entity ;
+   samm:preferredName "Package ID Entity"@en ;
+   samm:description "Entity for the package ID that comprises the elements of the ID. "@en ;
+   samm:properties ( :licensePlate :dataIdentifier ) .
+
+:Entity2 a samm:Entity ;
+   samm:properties ( :packagingTypeCode :dateInformation :batchNumber :numberOfInnerPackageItems :engineeringChangeId :hardwareRevision :softwareRevision ) .
+
+:address a samm:Property ;
+   samm:preferredName "address"@en ;
+   samm:description "This is an shared aspect used for the Characteristic :PostalAddress to reference address data"@en ;
+   samm:characteristic :ext-address_characteristic:addressCharacteristic .
+
+:businessPartner a samm:Property ;
+   samm:preferredName "business Partner"@en ;
+   samm:description "This is a shared aspect for any BPN with a regex. For the ShipFromEntity a BPNS and for the ShipToEntity a BPNA."@en ;
+   samm:characteristic :ext-business_partner_number:businessPartnerNumber ;
+   samm:exampleValue "BPNL0123456789ZZ" .
+
+:supplierId a samm:Property ;
+   samm:preferredName "Supplier ID"@en ;
+   samm:description "? wo ist genau der Unterschied zwischen Supplier ID und Supplier Number? Kann man den hier beschreiben?\nID number from the supplier."@en ;
+   samm:characteristic :SupplierIdCharacteristic .
+
+:unloadingPoint a samm:Property ;
+   samm:preferredName "Unloading Point"@en ;
+   samm:description "Unloading point where the means of transport is being unloaded."@en ;
+   samm:characteristic :UnloadingPointCharacteristic ;
+   samm:exampleValue "013/RAMP" .
+
+:internalDestination a samm:Property ;
+   samm:preferredName "Internal Destination"@en ;
+   samm:description "Additional Internal destination at recipients' side after unloading (warehouse / storage)."@en ;
+   samm:characteristic :InternalDestinationCharacteristic ;
+   samm:exampleValue "15/WH4" .
+
+:deliveryNoteNumber a samm:Property ;
+   samm:preferredName "Delivery Note Number"@en ;
+   samm:description "Associated delivery note number, assigned by sender."@en ;
+   samm:characteristic :DeliveryNoteNumberCharaceristic ;
+   samm:exampleValue "12345678" .
+
+:supplierNumber a samm:Property ;
+   samm:preferredName "Supplier Number"@en ;
+   samm:description "Supplier number assigned to the seller by the customer. This supplier number may differ from ship-from's identifier, depending on the numbering concept applied by the customer."@en ;
+   samm:characteristic :SupplierNumberCharacteristic ;
+   samm:exampleValue "987654321" .
+
+:expectedTimeOfArrival a samm:Property ;
+   samm:preferredName "ExpectedTime Of Arrival"@en ;
+   samm:description "Expected/request delivery time of the goods at the customer's premises."@en ;
+   samm:characteristic :EstimatedTimeOfArrivalCharacteristic ;
+   samm:exampleValue "2023-10-27"^^xsd:dateTime .
+
+:quantity a samm:Property ;
+   samm:preferredName "quantity"@en ;
+   samm:description "Number of parts contained in package; on Master Labels: total number of parts in loading unit."@en ;
+   samm:characteristic :ext-quantity:QuantityCharacteristic .
+
+:netWeight a samm:Property ;
+   samm:preferredName "Net Weight"@en ;
+   samm:description "Net weight of the loading unit or inner packaging item."@en ;
+   samm:characteristic :NetWeight ;
+   samm:exampleValue "700"^^xsd:double .
+
+:grossWeight a samm:Property ;
+   samm:preferredName "Gross Weight"@en ;
+   samm:description "Gross weight of the loading unit or inner packaging item."@en ;
+   samm:characteristic :GrossWeight ;
+   samm:exampleValue "850"^^xsd:double .
+
+:customerPartNumber a samm:Property ;
+   samm:preferredName "Customer Part Number"@en ;
+   samm:description "Number that the customer uses to identify the delivered part."@en .
+
+:customerPartDescription a samm:Property ;
+   samm:preferredName "Customer Part Description"@en ;
+   samm:description "Name of the part as assigned by the customer."@en ;
+   samm:characteristic :CustomerPartDescriptionCharacteristic .
+
+:safetyRelevantPart a samm:Property ;
+   samm:preferredName "Safety-relevant part"@en ;
+   samm:description "Describes, wether the part is safety-relevant or not. "@en ;
+   samm:characteristic :SafetyRelevantPartCharacteristic .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X ID "@en ;
+   samm:description "Catena-X ID of partType / delivered goods."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait;
+   samm:exampleValue "c2801472-5f87-41a7-9a25-b0939c4e0dff" .
+
+:licensePlate a samm:Property ;
+   samm:preferredName "License Plate"@en ;
+   samm:description "Globally unique package ID of the package /\nloading unit"@en ;
+   samm:characteristic :LicensePlateTrait .
+
+:dataIdentifier a samm:Property ;
+   samm:preferredName "Data Identifier"@en ;
+   samm:description "The data identifier (DI) is a classifying characteristic and precedes the actual barcode content. The data identifier classifies the packages into Single, Homogeneous Master, Mixed Master.\nIdentifiers are based on ISO 17367"@en ;
+   samm:characteristic :DataIdentifierCharacteristic ;
+   samm:exampleValue "1J" .
+
+:packagingTypeCode a samm:Property ;
+   samm:preferredName "Packaging Type Code"@en ;
+   samm:characteristic :Characteristic8 .
+
+:dateInformation a samm:Property ;
+   samm:preferredName "Date Information"@en ;
+   samm:description "On Master and Mixed Labels attached to loading units: Package type, ship-ping date, number of inner packages\nThe following applies to inner packages and simplified loading units:\n- If there is an expiry date, it must be printed. The expiry date must be preceded by the letter \"E\".\n- If there is no expiry date, and if the shipping date is known at the time of printing the label, the shipping date should be printed. The shipping date must be preceded by the letter \"S\".\n- If none of the above dates are known or apply, the production date should be printed. The production date must be preceded by the letter \"P\"."@en ;
+   samm:characteristic :Date .
+
+:batchNumber a samm:Property ;
+   samm:preferredName "?Produktionsbatch oder transprotbatch"@en .
+
+:numberOfInnerPackageItems a samm:Property .
+
+:engineeringChangeId a samm:Property .
+
+:hardwareRevision a samm:Property .
+
+:softwareRevision a samm:Property .
+
+:SupplierIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "Supplier ID Characteristic"@en ;
+   samm:description "Characteristic to give information on the ID of the supplier."@en ;
+   samm:dataType xsd:string .
+
+:UnloadingPointCharacteristic a samm:Characteristic ;
+   samm:preferredName "Unloading Point Characteristic"@en ;
+   samm:description "Characteristic to describe the unloading point."@en ;
+   samm:dataType xsd:string .
+
+:InternalDestinationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Internal Destination Characteristic"@en ;
+   samm:description "Characteristic to describe the internal destination."@en ;
+   samm:dataType xsd:string .
+
+:DeliveryNoteNumberCharaceristic a samm:Characteristic ;
+   samm:preferredName "Delivery Note Number Characeristic"@en ;
+   samm:description "Characteristic to describe the delivery note number, issued by sender."@en ;
+   samm:dataType xsd:string .
+
+:SupplierNumberCharacteristic a samm:Characteristic ;
+   samm:preferredName "Supplier Number Characteristic"@en ;
+   samm:description "Characteristic to describe the supplier number of the sender assigned by customer."@en ;
+   samm:dataType xsd:string .
+
+:EstimatedTimeOfArrivalCharacteristic a samm:Characteristic ;
+   samm:preferredName "Estimated Time Of Arrival Characteristic"@en ;
+   samm:description "Characteristic to describe the time of arrival."@en ;
+   samm:dataType xsd:dateTime .
+
+:QuantityCharacteristic a samm:Characteristic ;
+   samm:preferredName "Quantity Characteristic"@en ;
+   samm:description "Characteristic to describe the quantity per loading unit (Master label) or per pack (Single label)."@en ;
+   samm:dataType :Quantity .
+
+:NetWeight a samm:Characteristic ;
+   samm:preferredName "Net Weight"@en ;
+   samm:description "Net weight of the loading unit or inner packaging item in kilogram."@en ;
+   samm:dataType xsd:double .
+
+:GrossWeight a samm:Characteristic ;
+   samm:preferredName "Gross Weight"@en ;
+   samm:description "Gross weight of the loading unit or inner packaging item in kilogram."@en ;
+   samm:dataType xsd:double .
+
+:CustomerPartDescriptionCharacteristic a samm:Characteristic ;
+   samm:preferredName "customer Part Description Characteristic"@en ;
+   samm:description "Name of the part as assigned by the customer."@en ;
+   samm:dataType xsd:string .
+
+:SafetyRelevantPartCharacteristic a samm:Characteristic ;
+   samm:preferredName "Safety-relevant part Characteristic"@en ;
+   samm:description "Describes, wether the part is safety-relevant or not. If true, the part is safety-relevant. If false, the part is not safety-relevant."@en ;
+   samm:dataType xsd:boolean .
+
+:LicensePlateTrait a samm-c:Trait ;
+   samm:preferredName "License Plate Trait"@en ;
+   samm:description "Trait for License Plate"@en ;
+   samm-c:baseCharacteristic :LicensePlateCharacteristic ;
+   samm-c:constraint :LicensePlateRegEx .
+
+:DataIdentifierCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Data Identifier Characteristic"@en ;
+   samm:description "Characteristic that describes the data identifier. Possible values are:\nJ - Unique package ID of a bundle in the empty packages process\n1J - Unique package ID of inner packaging (Single Label)\n3J - Unique package ID of JIS loading unit with compartments\n4J - Unique package ID of JIS loading unit with 1...n JIS packages\n5J - Unique package ID of mixed loading unit with intermediate packaging level (mixed master)\n6J - Unique package ID of loading unit or intermediate packaging containing identical parts (Mas-ter Label for homogeneous loading unit)"@en ;
+   samm-c:values ( "J" "1J" "3J" "4J" "5J" "6J" ) .
+
+:Characteristic8 a samm:Characteristic .
+
+:Date a samm:Characteristic ;
+   samm:preferredName "Date"@en ;
+   samm:dataType :Entity1 .
+
+:LicensePlateCharacteristic a samm:Characteristic ;
+   samm:preferredName "License Plate Characteristic"@en ;
+   samm:description "Characteristic that describes the license plate."@en ;
+   samm:dataType xsd:string .
+
+:LicensePlateRegEx a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "License Plate RegEx"@en ;
+   samm:description "Regular Expression to ensure the correct format of the License Plate"@en ;
+   samm:value "siehe VDA4994" .
+
+:Entity1 a samm:Entity ;
+   samm:properties ( :dateType :date ) .
+
+:dateType a samm:Property ;
+   samm:preferredName "Date Type"@en ;
+   samm:description "Expery (E)\nShipment (S)\nProduction (P) \nin that order of priority "@en .
+
+:date a samm:Property .
+
+:NumberOfObjects a samm:Characteristic ;
+   samm:preferredName "Number Of Objects"@en ;
+   samm:description "Quantifiable number of objects in reference to the measurementUnit"@en ;
+   samm:dataType xsd:double .
