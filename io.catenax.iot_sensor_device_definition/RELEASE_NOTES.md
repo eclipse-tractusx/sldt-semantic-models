@@ -2,11 +2,12 @@
 All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
-## [2.0.0] - 2023-11-13
+## [2.0.0] - 2023-11-20
 ### Added
 N/A
 ### Changed
 * Converted BAMM to SAMM
+* Changed to use shared aspects for the UUID and BPNL.
 ### Removed
 N/A
 
