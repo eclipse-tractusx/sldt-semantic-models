@@ -23,6 +23,8 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.iot_sensor_device_definition:2.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
 
 :IotSensorDeviceDefinition a samm:Aspect ;
    samm:preferredName "IoT Sensor Device Definition"@en ;
@@ -34,7 +36,7 @@
 :catenaXId a samm:Property ;
    samm:preferredName "Catena-X Identifier"@en ;
    samm:description "The fully anonymous Catena-X ID of the serialized part, valid for the Catena-X dataspace."@en ;
-   samm:characteristic :CatenaXIdTrait ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:7a6a8376-1783-4926-9be0-5d946622b2e2" .
 
 :manufacturer a samm:Property ;
@@ -59,14 +61,8 @@
 :ownerID a samm:Property ;
    samm:preferredName "IoT Sensor Device Owner"@en ;
    samm:description "The Catena-X BPNL of the device owner."@en ;
-   samm:characteristic :OwnerIDCharacteristic ;
+   samm:characteristic ext-number:BpnlTrait ;
    samm:exampleValue "BPNL00000003ABCD" .
-
-:CatenaXIdTrait a samm-c:Trait ;
-   samm:preferredName "Catena-X ID Trait"@en ;
-   samm:description "Trait to ensure data format for Catena-X ID"@en ;
-   samm-c:baseCharacteristic :UUIDv4 ;
-   samm-c:constraint :UUIDv4RegularExpression .
 
 :ManufacturerCharacteristic a samm:Characteristic ;
    samm:preferredName "IoT Device Manufacturer Name"@en ;
@@ -83,20 +79,3 @@
    samm:preferredName "IoT Device Serial Number"@en ;
    samm:description "Describes the characteristic of the property serial number."@en ;
    samm:dataType xsd:string .
-
-:OwnerIDCharacteristic a samm:Characteristic ;
-   samm:preferredName "IoT Device Owner Characteristic"@en ;
-   samm:description "Describes the Characteristic of the property ownerID."@en ;
-   samm:dataType xsd:string .
-
-:UUIDv4 a samm:Characteristic ;
-   samm:preferredName "UUIDv4"@en ;
-   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
-   samm:dataType xsd:string .
-
-:UUIDv4RegularExpression a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "Catena-X Id Regular Expression"@en ;
-   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
-   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
-   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
-
