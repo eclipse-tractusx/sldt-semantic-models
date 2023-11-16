@@ -1,3 +1,20 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -5,7 +22,8 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <urn:samm:org.eclipse.examples:2.0.0#> .
+@prefix : <urn:samm:io.catenax.iot_sensor_data:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
 
 :IotSensorData a samm:Aspect ;
    samm:preferredName "Iot Sensor Data"@en ;
@@ -17,7 +35,7 @@
 :catenaXId a samm:Property ;
    samm:preferredName "Catena-X Identifier"@en ;
    samm:description "The fully anonymous Catena-X ID of the asset, valid for the Catena-X dataspace."@en ;
-   samm:characteristic :CatenaXIdTrait ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:ed85f17e-29dd-473c-9cb8-d7ad1dc44d2f" .
 
 :sensorRuntimeData a samm:Property ;
@@ -25,26 +43,10 @@
    samm:description "The information collected by a Sensor device at an instance in time."@en ;
    samm:characteristic :SensorRuntimeDataCharacteristics .
 
-:CatenaXIdTrait a samm-c:Trait ;
-   samm:preferredName "Catena-X Id Trait"@en ;
-   samm:description "Trait to ensure UUID v4 data format."@en ;
-   samm-c:baseCharacteristic :UUIDv4 ;
-   samm-c:constraint :CatenaXIdRegularExpression .
-
 :SensorRuntimeDataCharacteristics a samm-c:List ;
    samm:preferredName "Sensor Runtime Data Characteristics"@en ;
    samm:description "Characteristic describing the list of the Sensor Runtime Data property."@en ;
    samm:dataType :SensorRuntimeDataEntity .
-
-:UUIDv4 a samm:Characteristic ;
-   samm:preferredName "UUIDv4"@en ;
-   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
-   samm:dataType xsd:string .
-
-:CatenaXIdRegularExpression a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "Catena-X Id Regular Expression"@en ;
-   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
-   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
 
 :SensorRuntimeDataEntity a samm:Entity ;
    samm:preferredName "Sensor Runtime Data Entity"@en ;
