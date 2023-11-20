@@ -31,12 +31,13 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:samm:io.catenax.part_as_planned:2.0.0#>.
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#>.
 
 :PartAsPlanned a samm:Aspect;
    samm:preferredName "Part as Planned"@en;
    samm:description "A Part as Planned represents an item in the Catena-X Bill of Material(BOM) in As-Planned lifecycle status in a specific version. "@en;
-   samm:properties(:catenaXId :partTypeInformation [ samm:property :validityPeriod; samm:optional true ] [ samm:property :partSitesInformation; samm:optional true ]);
+   samm:properties(:catenaXId :partTypeInformation [ samm:property :partSitesInformation; samm:optional true ]);
    samm:operations();
    samm:events().
 
@@ -51,11 +52,6 @@
    samm:description "The part type from which the serialized part has been instantiated"@en;
    samm:characteristic :PartTypeInformationCharacteristic.
 
-:validityPeriod a samm:Property;
-   samm:preferredName "Validity Period"@en;
-   samm:description "The period of time during which the Part is offered by the manufacturer and can be purchased by customers."@en;
-   samm:characteristic :ValidityPeriodCharacteristic.
-
 :partSitesInformation a samm:Property;
    samm:preferredName "Part Sites Information"@en;
    samm:description "A site is a delimited geographical area where a legal entity does business(geographical address with geo coordinates).A site always has a primary physical address. It is possible that further physical addresses are specified for the site. P.O. box details are only possible in addition to the physical address. A site has a 1:n relation to addresses, means at least 1 address is necessary and multiple addresses are possible."@en;
@@ -67,13 +63,9 @@
    samm:description "The characteristics of the part type"@en;
    samm:dataType :PartTypeInformationEntity.
 
-:ValidityPeriodCharacteristic a samm:Characteristic;
-   samm:preferredName "Validity Period Characteristic"@en;
-   samm:description "Characteristic to define a continuous validity period."@en;
-   samm:dataType :ValidityPeriodEntity.
-
 :PartSitesInformationCharacteristic a samm-c:Set;
-   samm:description "Sites Characteristic"@en;
+   samm:preferredName "Part Sites Information Characteristic"@en;
+   samm:description "The characteristic of the part site information that represents a set of possible site to a repective part. "@en;
    samm:dataType :PartSitesInformationEntity.
 
 :PartTypeInformationEntity a samm:Entity;
@@ -81,14 +73,9 @@
    samm:description "Encapsulation for data related to the part type"@en;
    samm:properties(:manufacturerPartId :nameAtManufacturer :classification).
 
-:ValidityPeriodEntity a samm:Entity;
-   samm:preferredName "Validity Period Entity"@en;
-   samm:description "Defines a continuous validity period."@en;
-   samm:properties([ samm:property :validFrom; samm:optional true ] [ samm:property :validTo; samm:optional true ]).
-
 :PartSitesInformationEntity a samm:Entity;
    samm:preferredName "Part Sites Information Entity"@en;
-   samm:description "Part Sites Information Entity"@en;
+   samm:description "Describes the ID, function and validity date of a site for the associated part in the AsPlanned context."@en;
    samm:properties(:catenaXsiteId :function [ samm:property :functionValidFrom; samm:optional true ] [ samm:property :functionValidUntil; samm:optional true ]).
 
 :manufacturerPartId a samm:Property;
@@ -109,22 +96,10 @@
    samm:characteristic :ClassificationEnumerationCharacteristic;
    samm:exampleValue "software".
 
-:validFrom a samm:Property;
-   samm:preferredName "Valid from"@en;
-   samm:description "Start date of validity period"@en;
-   samm:characteristic samm-c:Timestamp;
-   samm:exampleValue "2023-03-06T14:50:23.230+01:00"^^xsd:dateTime.
-
-:validTo a samm:Property;
-   samm:preferredName "Valid to"@en;
-   samm:description "End date of validity period"@en;
-   samm:characteristic samm-c:Timestamp;
-   samm:exampleValue "2023-08-06T14:50:23.230+01:00"^^xsd:dateTime.
-
 :catenaXsiteId a samm:Property;
    samm:preferredName "Catena-X site identifier"@en;
    samm:description "The identifier of the site according to Catena-X BPDM. The catenaXsiteId must be a valid Catena-X BPN. The BPN is a unique, unchangeable identifier for Business Partners / company locations from foundation to closure, regardless of the different business relationships / structures between or within the Business Partners or company locations."@en;
-   samm:characteristic :BpnCharacteristic;
+   samm:characteristic ext-number:BpnsCharacteristic;
    samm:exampleValue "BPNS1234567890ZZ".
 
 :function a samm:Property;
@@ -160,12 +135,7 @@
    samm:dataType xsd:string;
    samm-c:values("product" "raw material" "software" "assembly" "tool" "component").
 
-:BpnCharacteristic a samm:Characteristic;
-   samm:preferredName "BPN Characteristic"@en;
-   samm:description "A string of 16 characters:\nPrefix: 3 digits\t\t\t\t\nClassification: 1 digit\nIdentifier: 10 digits"@en;
-   samm:dataType xsd:string.
-
 :FunctionCharacteristic a samm-c:Enumeration;
-   samm:description "Function Characteristic"@en;
+   samm:description "Describes the characteristics of the function for a site related to the respective part"@en;
    samm:dataType xsd:string;
-   samm-c:values("production").
+   samm-c:values("production" "warehouse" "spare part warehouse").
