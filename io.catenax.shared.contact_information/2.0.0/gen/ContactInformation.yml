@@ -1,0 +1,128 @@
+---
+openapi: 3.0.3
+info:
+  title: Contact information
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/contact-information:
+    get:
+      tags:
+      - ContactInformation
+      operationId: getContactInformation
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/ContactInformation'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_bamm_io.catenax.shared.contact_information_2.0.0_WebsiteCharacteristic:
+      type: string
+      format: uri
+      description: Address of the website
+    urn_bamm_io.catenax.shared.contact_information_2.0.0_PhoneNumberTrait:
+      type: string
+      description: "Constraint to allow only numbers, whitespaces and an optional\
+        \ leading + sign."
+      pattern: "^[+]?[0-9 ]+$"
+    urn_bamm_io.catenax.shared.contact_information_2.0.0_EMailTrait:
+      type: string
+      description: Regular expression for mail address as defined in W3C (see https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address)
+      pattern: "^[a-zA-Z0-9.!#$%&’*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+    urn_bamm_io.catenax.shared.contact_information_2.0.0_ContactCharacteristic:
+      description: Characteristic describing information on how to contact an organization
+      type: object
+      properties:
+        website:
+          description: Website of the contact.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_2.0.0_WebsiteCharacteristic'
+        phoneNumber:
+          description: Phone number with country and area code
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_2.0.0_PhoneNumberTrait'
+        email:
+          description: An email address
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_2.0.0_EMailTrait'
+        faxNumber:
+          description: Fax number with country and area code
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_2.0.0_PhoneNumberTrait'
+    ContactInformation:
+      description: Entity encapsulating the contact details
+      type: object
+      properties:
+        contactProperty:
+          description: Property describing contact information for an organization
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.contact_information_2.0.0_ContactCharacteristic'
+      required:
+      - contactProperty
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ContactInformation:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContactInformation'
+      description: The request was successful.
+  requestBodies:
+    ContactInformation:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContactInformation'

@@ -1,0 +1,140 @@
+#######################################################################
+# Copyright (c) 2022,2023 BASF SE
+# Copyright (c) 2022,2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022,2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022,2023 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022,2023 Henkel AG & Co. KGaA
+# Copyright (c) 2022,2023 Mercedes Benz AG
+# Copyright (c) 2022,2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022,2023 SAP SE
+# Copyright (c) 2022,2023 Siemens AG
+# Copyright (c) 2022,2023 T-Systems International GmbH
+# Copyright (c) 2022,2023 ZF Friedrichshafen AG
+# Copyright (c) 2022,2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#> .
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#> .
+
+:SingleLevelBomAsBuilt a bamm:Aspect ;
+   bamm:preferredName "Single Level Bill of Material as Built"@en ;
+   bamm:description "The single-level bill of material represents one sub-level of an assembly and does not include any lower-level subassemblies. The as-built lifecycle references all child items as manufactured by the manufacturer referencing only child items in an as built lifecycle themselves, e.g. serial parts or batches."@en ;
+   bamm:properties ( :catenaXId :childItems ) ;
+   bamm:operations ( ) ;
+   bamm:events ( ) .
+
+:catenaXId a bamm:Property ;
+   bamm:preferredName "Catena-X ID"@en ;
+   bamm:description "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace."@en ;
+   bamm:characteristic :CatenaXIdTraitCharacteristic ;
+   bamm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d" .
+
+:childItems a bamm:Property ;
+   bamm:preferredName "Child Items"@en ;
+   bamm:description "Set of child items, of which the given parent item is assembled by (one structural level down)."@en ;
+   bamm:characteristic :SetOfChildItemsCharacteristic .
+
+:CatenaXIdTraitCharacteristic a bamm-c:Trait ;
+   bamm:description "Trait to ensure UUID v4 data format"@en ;
+   bamm-c:baseCharacteristic :Uuidv4Characteristic ;
+   bamm-c:constraint :Uuidv4RegularExpression .
+
+:SetOfChildItemsCharacteristic a bamm-c:Set ;
+   bamm:preferredName "Set of Child Items"@en ;
+   bamm:description "Set of child items the parent item is assembled by (one structural level down)."@en ;
+   bamm:dataType :ChildData .
+
+:Uuidv4Characteristic a bamm:Characteristic ;
+   bamm:preferredName "UUID v4 Characteristic"@en ;
+   bamm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
+   bamm:see <https://tools.ietf.org/html/rfc4122> ;
+   bamm:dataType xsd:string .
+
+:Uuidv4RegularExpression a bamm-c:RegularExpressionConstraint ;
+   bamm:preferredName "Catena-X Id Regular Expression"@en ;
+   bamm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
+   bamm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   bamm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
+
+:ChildData a bamm:Entity ;
+   bamm:preferredName "Child Data"@en ;
+   bamm:description "Catena-X ID and meta data of the assembled child item."@en ;
+   bamm:properties ( :createdOn :quantity [ bamm:property :lastModifiedOn; bamm:optional true ] :catenaXId [ bamm:property :businessPartner; bamm:optional true ] ) .
+
+:createdOn a bamm:Property ;
+   bamm:preferredName "Created On"@en ;
+   bamm:description "Timestamp when the relation between the parent item and the child item was created, e.g. when the serialized child part was assembled into the given part."@en ;
+   bamm:characteristic bamm-c:Timestamp ;
+   bamm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime .
+
+:quantity a bamm:Property ;
+   bamm:preferredName "Quantity"@en ;
+   bamm:description "Quantity of which the child item is assembled into the parent item. In general it is '1' for serialized parts."@en ;
+   bamm:characteristic :QuantityCharacteristic .
+
+:lastModifiedOn a bamm:Property ;
+   bamm:preferredName "Last Modification Date"@en ;
+   bamm:description "Timestamp when the assembly relationship between parent item and child item was last modified."@en ;
+   bamm:characteristic bamm-c:Timestamp ;
+   bamm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime .
+
+:businessPartner a bamm:Property ;
+   bamm:preferredName "Business Partner"@en ;
+   bamm:description "The supplier of the given child item."@en ;
+   bamm:characteristic :BpnTrait ;
+   bamm:exampleValue "BPNL50096894aNXY" .
+
+:QuantityCharacteristic a bamm-c:Quantifiable ;
+   bamm:description "Describes the quantity in which the child item is assembled in the given parent item by providing a quantity value and the measurement unit in which the quantity is measured."@en ;
+   bamm:dataType :Quantity .
+
+:BpnTrait a bamm-c:Trait ;
+   bamm:preferredName "BPN Business Partner Number Trait"@en ;
+   bamm-c:baseCharacteristic :BpnCharacteristic ;
+   bamm-c:constraint :BpnConstraint .
+
+:Quantity a bamm:Entity ;
+   bamm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en ;
+   bamm:properties ( :quantityNumber :measurementUnit ) .
+
+:BpnCharacteristic a bamm:Characteristic ;
+   bamm:preferredName "BPN Characteristic"@en ;
+   bamm:dataType xsd:string .
+
+:BpnConstraint a bamm-c:RegularExpressionConstraint ;
+   bamm:preferredName "BPN Constraint"@en ;
+   bamm:description "Business Partner Number Regular Expression allowing only BPNL which stands for a legal entity."@en ;
+   bamm:value "^(BPNL)([0-9]{8})([a-zA-Z0-9]{4})$" .
+
+:quantityNumber a bamm:Property ;
+   bamm:preferredName "Quantity Number"@en ;
+   bamm:description "The number of objects related to the measurement unit"@en ;
+   bamm:characteristic :NumberOfObjects ;
+   bamm:exampleValue "2.5"^^xsd:double .
+
+:measurementUnit a bamm:Property ;
+   bamm:description "Unit of Measurement for the quantity of serialized objects"@en ;
+   bamm:see <https://eclipse-esmf.github.io/samm-specification/2.0.0/appendix/unitcatalog.html> ;
+   bamm:characteristic bamm-c:UnitReference ;
+   bamm:exampleValue "unit:litre"^^bamm:curie .
+
+:NumberOfObjects a bamm:Characteristic ;
+   bamm:description "Quantifiable number of objects in reference to the measurementUnit"@en ;
+   bamm:dataType xsd:double .
+

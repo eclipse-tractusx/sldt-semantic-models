@@ -1,0 +1,772 @@
+---
+openapi: 3.0.3
+info:
+  title: Sealant Pass
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/sealant-pass:
+    get:
+      tags:
+      - SealantPass
+      operationId: getSealantPass
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/SealantPass'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_DocumentTitleTrait:
+      type: string
+      description: Maximum title characters set to 60.
+      maxLength: 60
+      minLength: 0
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_LocateEntity:
+      description: Entity encapsulating the details from the documents title and location.
+      type: object
+      properties:
+        documentTitle:
+          description: The header or title of the document.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_DocumentTitleTrait'
+        documentLocation:
+          description: Location or link of and to the document.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - documentTitle
+      - documentLocation
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_LocateCharacteristic:
+      description: Connects the title and location of the document.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_LocateEntity'
+      uniqueItems: true
+    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Language:
+      type: string
+      description: "Describes a Property containing a language according to ISO 639-1,\
+        \ for example \"de\"."
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_DocumentVersionCharacteristic:
+      type: string
+      description: Refers to the version of the safety data sheet (SDS) document.
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ProvisioningCountryTrait:
+      type: string
+      description: Length of the text is capped to three letters based on the ISO
+        3166 standard.
+      maxLength: 3
+      minLength: 3
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_OtherInformationEntity:
+      description: Entity encapsulating the required information.
+      type: object
+      properties:
+        indicationChanges:
+          description: "in the case of a revised safety data sheet (SDS), a clear\
+            \ indication of where changes have been made to the previous version of\
+            \ the safety data sheet (SDS)."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        authorSDS:
+          description: safety data sheet (SDS) author changing the document.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - indicationChanges
+      - authorSDS
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_OtherInformationCharacteristic:
+      description: "Describes additional information, in a set of values."
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_OtherInformationEntity'
+      uniqueItems: true
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_SpecificsSDSEntity:
+      description: Entity encapsulating the details from the safety data sheet (SDS)
+        documentation.
+      type: object
+      properties:
+        documentLanguage:
+          description: Language of the safety data sheet (SDS) document.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Language'
+        documentVersion:
+          description: Version of the document.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_DocumentVersionCharacteristic'
+        provisioningCountry:
+          description: The country from where the documentation is issued from.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ProvisioningCountryTrait'
+        documentLocation:
+          description: Location or link of and to the document.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        otherInformation:
+          description: Additional information relevant to the safety data sheet (SDS)
+            document.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_OtherInformationCharacteristic'
+        manufactureId:
+          description: Unique BPN number.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - documentLanguage
+      - documentVersion
+      - provisioningCountry
+      - documentLocation
+      - otherInformation
+      - manufactureId
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_SpecificsSDSCharacteristic:
+      description: "Connects the safety data sheet (SDS) version, language, and country."
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_SpecificsSDSEntity'
+      uniqueItems: true
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_Document:
+      description: Set of documents containing the description of chemical substances
+        and mixture components.
+      type: object
+      properties:
+        declarationOfConformity:
+          description: Declaration of conformity (CE) is describing a regulatory requirement
+            from the EU.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_LocateCharacteristic'
+        removalProcedure:
+          description: The documents explain the removal and possible recycling options
+            of the product.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_LocateCharacteristic'
+        dueDiligence:
+          description: Report on supply chain due diligence policies. Link to document
+            or website on its supply chain due diligence policies.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_LocateCharacteristic'
+        technicalDocumentation:
+          description: "Technical documentation refers to documents that explain the\
+            \ use, functionality, creation, or architecture of the product."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_LocateCharacteristic'
+        safetyDataSheet:
+          description: "A link to the full seafty data sheet of the material. A link\
+            \ to a SDS might be provided for several countries and possibly multiple\
+            \ languages for each country. The table includes: version, country name,\
+            \ language of the document and the link to the document. The documents\
+            \ should preferably be provided as PDF or Word document."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_SpecificsSDSCharacteristic'
+        sustainabilityReport:
+          description: Link to public website or document. Reporting in accordance
+            with the new European Sustainability Reporting Standards (ESRS) including
+            the new ESG reporting standards.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_LocateCharacteristic'
+      required:
+      - safetyDataSheet
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_CuringTime:
+      type: number
+      description: Time in seconds needed for the curing of the substance or mixture.
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_PerformanceCharacteristic:
+      description: Set of measures linked to the performance and durability of the
+        mixtures and substances.
+      type: object
+      properties:
+        curingTime:
+          description: "Cure time is the time that determines how long it will take\
+            \ for the material to fully cure. A number of chemical reactions occur\
+            \ during this time, for the material to harden. It can take a long time\
+            \ for a material to fully cure."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_CuringTime'
+      required:
+      - curingTime
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ReachRegistrationTrait:
+      type: string
+      description: Describes the regex expression for the Reach Registration number.
+        Constraints the value to two digits followed by an - followed by ten digits
+        followed by an - followed by two digits followed by an - and four digits.
+      pattern: "^\\d{2}-\\d{10}-\\d{2}-\\d{4}$"
+    urn_bamm_io.catenax.serial_part_typization_2.0.0_KeyCharacteristic:
+      type: string
+      description: |-
+        The key characteristic of a local identifier. A specific subset of keys is predefined, but additionally any other custom key is allowed. Predefined keys (to be used when applicable):
+        - "manufacturerId" - The Business Partner Number (BPN) of the manufacturer. Value: BPN-Nummer
+        - "partInstanceId" - The identifier of the manufacturer for the serialized instance of the part, e.g. the serial number
+        - "batchId" - The identifier of the batch, to which the serialzed part belongs
+        - "van" - The anonymized vehicle identification number (VIN). Value: anonymized VIN according to OEM anonymization rules. Note: If the key "van" is available, "partInstanceId" must also be available and hold the identical value.
+    urn_bamm_io.catenax.serial_part_typization_2.0.0_ValueCharacteristic:
+      type: string
+      description: The value of an identifier.
+    urn_bamm_io.catenax.serial_part_typization_2.0.0_KeyValueList:
+      description: "A list of key value pairs for local identifiers, which are composed\
+        \ of a key and a corresponding value."
+      type: object
+      properties:
+        key:
+          description: 'The key of a local identifier. '
+          $ref: '#/components/schemas/urn_bamm_io.catenax.serial_part_typization_2.0.0_KeyCharacteristic'
+        value:
+          description: The value of an identifier.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.serial_part_typization_2.0.0_ValueCharacteristic'
+      required:
+      - key
+      - value
+    urn_bamm_io.catenax.serial_part_typization_2.0.0_LocalIdentifierCharacteristic:
+      description: "A single serialized part may have multiple attributes, that uniquely\
+        \ identify a that part in a specific dataspace (e.g. the manufacturer`s dataspace)"
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.serial_part_typization_2.0.0_KeyValueList'
+      uniqueItems: true
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_CasNumberTrait:
+      type: string
+      description: Describes the Regex expression for the CAS number. Constraints
+        the value to four digits followed by an - followed by two digits followed
+        by an - and one digit.
+      pattern: "^\\d{4}-\\d{2}-\\d$"
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_EcNumberTrait:
+      type: string
+      description: Describes the regex expression for the EC number. Constraints the
+        value to three digits followed by an - followed by three digits followed by
+        an - and one digit.
+      pattern: "^\\d{3}-\\d{3}-\\d$"
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_IndexNumberTrait:
+      type: string
+      description: Describes the regex expression for the Index number. Constraints
+        the value to three digits followed by an - followed by three digits followed
+        by an - followed by two digits followed by an - and one digit.
+      pattern: "^\\d{3}-\\d{3}-\\d{2}-\\d$"
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ProductIdentificationCharacteristic:
+      description: Set of information to identify the product.
+      type: object
+      properties:
+        tradeName:
+          description: Trade name given to the chemical substance or mixture as part
+            of the product identification.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        productCode:
+          description: Product Code given to the Substance/mixture as part of the
+            product identification.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        reachRegistration:
+          description: A REACH registration number is an 18-digit number assigned
+            by the European Chemicals Agency (ECHA).
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ReachRegistrationTrait'
+        localIdentifiers:
+          description: "A local identifier enables identification of a part in a specific\
+            \ data space, but is not unique in Catena-X data space. Multiple local\
+            \ identifiers may exist."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.serial_part_typization_2.0.0_LocalIdentifierCharacteristic'
+        substanceName:
+          description: Name given to the substance.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        casNumber:
+          description: A CAS registry number is a unique identification number assigned
+            by the Chemical Abstracts Service (CAS).
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_CasNumberTrait'
+        ecNumber:
+          description: "The European Commission number (EC number), is the code assigned\
+            \ to chemical substances that are commercially available within the European\
+            \ Union."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_EcNumberTrait'
+        indexNumber:
+          description: The index number is used as an identifier.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_IndexNumberTrait'
+      required:
+      - tradeName
+      - productCode
+      - reachRegistration
+      - localIdentifiers
+      - casNumber
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ApplicationCharacteristic:
+      description: Set of information referring to the application of the substance
+        and mixture.
+      type: object
+      properties:
+        usage:
+          description: Brief description of the identified uses of the substance or
+            mixture relevant for the recipient(s).
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        recommendedUse:
+          description: Recommended restrictions on use
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - usage
+      - recommendedUse
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_UsageTrait:
+      type: string
+      description: "Constraint to allow only numbers, blanks and an optional leading\
+        \ + sign."
+      pattern: "^[+]?[0-9 ]+$"
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_SupplierCharacteristic:
+      description: Set of information to identify the supplier.
+      type: object
+      properties:
+        emergencyNumber:
+          description: Suppliers emergency telephone number for information services.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_UsageTrait'
+        supplierId:
+          description: BPNL of the supplier.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - emergencyNumber
+      - supplierId
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ChemicalPercentageTrait:
+      type: string
+      description: Describes chemical distribution in percentage. It can include a
+        percentage range. Either 10% or 5.5%-6% . Allowed are decimal values with
+        a dot as separator. Mandatory are no spaces between the values and the percentage
+        character.
+      pattern: "^\\d{1,2}(\\.\\d{0,2})?%(-\\d{1,2}(\\.\\d{0,2})?%)?$"
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_IngredientsEntity:
+      description: Entity encapsulating the ingredients.
+      type: object
+      properties:
+        chemicalName:
+          description: Name of the chemical.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        chemicalPercentage:
+          description: "Describes chemical distribution in percentage. It can include\
+            \ a percentage range. Either 10% or 5,5%-6% . Allowed are decimal values\
+            \ with a \",\" separator. Mandatory are no spaces between the values and\
+            \ the percentage character."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ChemicalPercentageTrait'
+      required:
+      - chemicalName
+      - chemicalPercentage
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ListOfIngredients:
+      description: Describes the amount of each individual chemical.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_IngredientsEntity'
+      uniqueItems: true
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_HazardsIdentification:
+      description: Set of information to identify the hazards.
+      type: object
+      properties:
+        classificationGHS:
+          description: The classification of the substance or the mixture which results
+            from the application of the classification criteria in Regulation (EC)
+            No 1272/2008 shall be given.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        possibleHazards:
+          description: A description of the various toxicological (health) effects
+            and the available data used to identify those effects (SDS Section 11.1).
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        hazardousIngredients:
+          description: Ingredients classified as hazardous (SDS Section 12.1).
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ListOfIngredients'
+      required:
+      - classificationGHS
+      - possibleHazards
+      - hazardousIngredients
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ChemicalCompositionEntity:
+      description: Entity encapsulating the chemical composition and nature.
+      type: object
+      properties:
+        composition:
+          description: Describes the chemical identity of the ingredient(s) of the
+            substance or mixture.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ListOfIngredients'
+        chemicalNature:
+          description: Chemical nature of the mixture or substance.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - composition
+      - chemicalNature
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ChemicalComposition:
+      description: Characteristic combining the chemical composition for a mixture
+        and a substance.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ChemicalCompositionEntity'
+      uniqueItems: true
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ProductComposition:
+      description: Set of information displaying the product composition.
+      type: object
+      properties:
+        substance:
+          description: Property to describes a substance.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ChemicalComposition'
+        mixture:
+          description: Property to describes the mixture.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ChemicalComposition'
+      required:
+      - substance
+      - mixture
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_SafetyMeasureCharacteristic:
+      description: Set of information referring to safety measures.
+      type: object
+      properties:
+        firstAid:
+          description: First aid instructions are provided by relevant routes of exposure
+            (SDS Section 4.1).
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        fireExtinguisher:
+          description: "Suitable extinguishing media,  for fighting a fire caused\
+            \ by the substance or mixture, or arising in its vicinity (SDS Section\
+            \ 5.1)."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        personalPrecaution:
+          description: "Information about the appropriate response to spills, leaks,\
+            \ or releases, to prevent or minimize the adverse effects on persons,\
+            \ property and the environment (SDS Section 6.1)."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        technicalMeasures:
+          description: Information is provided concerning protective measures for
+            safe handling and recommended technical measures (SDS Section 7.1).
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        exposureLimit:
+          description: Information about the applicable exposure limits of the substances
+            and mixtures (SDS Section 8.1).
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ListOfIngredients'
+      required:
+      - firstAid
+      - fireExtinguisher
+      - personalPrecaution
+      - technicalMeasures
+      - exposureLimit
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_PhysicalState:
+      type: string
+      description: "Enumeration with three physical states: gas, liquid and solid."
+      enum:
+      - gas
+      - liquid
+      - solid
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_PhCharacteristic:
+      type: number
+      description: Provides a range or a pH value.
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_Degree:
+      type: number
+      description: The temperature in its phase.
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_Density:
+      type: number
+      description: Describes the density of the product.
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ProductProperties:
+      description: Set of information describing the physical and chemical properties.
+      type: object
+      properties:
+        physicalState:
+          description: "Describes the physical state (gas, liquid or solid) at standard\
+            \ conditions of temperature and pressure."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_PhysicalState'
+        colour:
+          description: The colour of the substance or mixture as supplied is indicated.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        odour:
+          description: A qualitative description of the odour is shown if it is well-known
+            or described in the literature.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        pH:
+          description: "The pH of the substance or mixture as supplied, or where the\
+            \ product is a solid, the pH of an aqueous liquid or solution at a given\
+            \ concentration, shall be indicated."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_PhCharacteristic'
+        phaseTransition:
+          description: Phase Transition temperature from liquid to gas.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_Degree'
+        flashPoint:
+          description: "For mixtures, a value for the mixture shall be indicated,\
+            \ if available. Otherwise, the flash point of the substance with the lowest\
+            \ flash point shall be indicated."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_Degree'
+        density:
+          description: Density and relative density shall generally be indicated at
+            standard conditions of temperature and pressure.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_Density'
+        reactivity:
+          description: Reactivity hazards of the substance or mixtures.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - physicalState
+      - colour
+      - pH
+      - phaseTransition
+      - density
+      - reactivity
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ProductDisposal:
+      description: Set of information describing the proper disposal of the product.
+      type: object
+      properties:
+        wasteManagement:
+          description: Waste management of the substance or mixture and/or its container
+            to assist in the determination of safe and environmentally preferred waste
+            management options.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        wasteInformation:
+          description: Waste treatment-relevant information.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - wasteManagement
+      - wasteInformation
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_TransportInformation:
+      description: Set of information describing the transport information.
+      type: object
+      properties:
+        unNumber:
+          description: "The UN number or the ID number (i.e. the four-figure identification\
+            \ number of the substance, mixture or article preceded by the letters\
+            \ ‘UN’ or ‘ID’) from the UN Model Regulations, IMDG, ADR, RID, ADN or\
+            \ ICAO TI shall be provided."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        shippingName:
+          description: A proper shipping name.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        dgClass:
+          description: The transport hazard class (and subsidiary risks) assigned
+            to the substances or mixtures on the basis of the predominant hazard that
+            they present according to the UN Model Regulations shall be provided.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+        dgPack:
+          description: "The packing group number from the UN Model Regulations shall\
+            \ be provided, if applicable, as required by the UN Model Regulations,\
+            \ ADR, RID and ADN."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - unNumber
+      - shippingName
+      - dgClass
+      - dgPack
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_RegulatoryInformationCharacteristic:
+      description: Set of information regarding the regulations.
+      type: object
+      properties:
+        limitations:
+          description: "Information shall be provided regarding relevant Union safety,\
+            \ health and environmental provisions including the prohibitions and restrictions."
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - limitations
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_Co2Total:
+      type: number
+      description: Describes the amount of kg of the CO2 equivalent.
+    urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardsUsedEnumerationCharacteristic:
+      type: string
+      description: Characteristic for defining the enumeration of valid accounting
+        standards used for product carbon footprint calculation as specified by the
+        WBCSD (World Business Council for Sustainable Development) Pathfinder initiative.
+      enum:
+      - GHG Protocol Product standard
+      - ISO Standard 14067
+      - ISO Standard 14044
+    urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardEntity:
+      description: Entity for defining an accounting standard used for product carbon
+        footprint calculation as specified by the WBCSD (World Business Council for
+        Sustainable Development) Pathfinder initiative.
+      type: object
+      properties:
+        crossSectoralStandard:
+          description: Discloses a cross-sectoral standard applied for calculating
+            or allocating GHG (Greenhouse Gas) emissions as specified by the WBCSD
+            (World Business Council for Sustainable Development) Pathfinder initiative.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardsUsedEnumerationCharacteristic'
+      required:
+      - crossSectoralStandard
+    urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardsUsedListCharacteristic:
+      description: Characteristic for defining the list of valid accounting standards
+        used for product carbon footprint calculation as specified by the WBCSD (World
+        Business Council for Sustainable Development) Pathfinder initiative.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardEntity'
+    urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRuleOperator:
+      type: string
+      description: Enumeration of PCR (Product Category Rule) operators as specified
+        by the WBCSD (World Business Council for Sustainable Development) Pathfinder
+        initiative.
+      enum:
+      - PEF
+      - EPD International
+      - Other
+    urn_bamm_io.catenax.pcf_3.0.0_RuleNamesTrait:
+      description: Constraint for defining a non-empty set of non-empty rule names
+        as specified by the WBCSD (World Business Council for Sustainable Development)
+        Pathfinder initiative.
+      type: array
+      items:
+        type: string
+        description: String that contains at least one character.
+      uniqueItems: true
+      minItems: 1
+    urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRulesEntity:
+      description: Entity for defining the set of values for the product or sector
+        specific rules of a product carbon footprint as specified by the WBCSD (World
+        Business Council for Sustainable Development) Pathfinder initiative.
+      type: object
+      properties:
+        operator:
+          description: Operator of PCR (Product Category Rule)/ PSR (Product Specific
+            Rule) as specified by the WBCSD (World Business Council for Sustainable
+            Development) Pathfinder initiative.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRuleOperator'
+        ruleNames:
+          description: Product-specific or sector-specific set of rules used for calculating
+            or allocating GHG (Greenhouse Gas) emissions applied from the specified
+            operator. Property defined by the WBCSD (World Business Council for Sustainable
+            Development) Pathfinder initiative.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_RuleNamesTrait'
+        otherOperatorName:
+          description: Other operator of PCR (Product Category Rule)/ PSR (Product
+            Specific Rule) as specified by the WBCSD (World Business Council for Sustainable
+            Development) Pathfinder initiative.
+          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Text'
+      required:
+      - operator
+      - ruleNames
+    urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRuleSet:
+      description: Characteristic for defining the set of product or sector specific
+        rules of a product carbon footprint as specified by the WBCSD (World Business
+        Council for Sustainable Development) Pathfinder initiative.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRulesEntity'
+      uniqueItems: true
+    urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_CarbonFootprint:
+      description: Set of information needed for the carbon footprint ecodesign regulations.
+      type: object
+      properties:
+        co2FootprintTotal:
+          description: "The total carbon footprint, calculated as kg of carbon dioxide\
+            \ equivalent."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_Co2Total'
+        crossSectoralStandardsUsed:
+          description: Discloses the cross-sectoral standards applied for calculating
+            or allocating GHG (Greenhouse Gas) emissions as specified by the WBCSD
+            (World Business Council for Sustainable Development) Pathfinder initiative.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_CrossSectoralStandardsUsedListCharacteristic'
+        productOrSectorSpecificRules:
+          description: "Product or sector specific rules applied for calculating or\
+            \ allocating GHG (Greenhouse Gas) emissions, e.g. PCRs (Product Category\
+            \ Rules), including operators or pubishers and according rule names. Specified\
+            \ by the WBCSD (World Business Council for Sustainable Development) Pathfinder\
+            \ initiative."
+          $ref: '#/components/schemas/urn_bamm_io.catenax.pcf_3.0.0_ProductOrSectorSpecificRuleSet'
+      required:
+      - co2FootprintTotal
+      - crossSectoralStandardsUsed
+      - productOrSectorSpecificRules
+    SealantPass:
+      description: The Sealant Passport represents the needs from manufacturers of
+        chemical substance and mixtures. It describes data required by the safety
+        data sheet (SDS) - which is based on the REACH Regulation No 1907/2006 in
+        the format of a DPP.
+      type: object
+      properties:
+        documents:
+          description: Set of documents containing the description of components.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_Document'
+        performanceProperties:
+          description: Describes the performance and durability of a substance or
+            mixture.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_PerformanceCharacteristic'
+        productIdentification:
+          description: Identification of the substance/mixture and of the company/undertaking.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ProductIdentificationCharacteristic'
+        application:
+          description: Relevant identified uses of the substance or mixture and uses
+            advised against.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ApplicationCharacteristic'
+        supplier:
+          description: Supplier of the mixture or substance.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_SupplierCharacteristic'
+        hazardsIdentification:
+          description: Describes the hazards of the substance or mixture and the appropriate
+            warning information associated with those hazards.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_HazardsIdentification'
+        productComposition:
+          description: Information on the ingredients.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ProductComposition'
+        safetyMeasure:
+          description: Describes measures related to the safe handling of the mixtures
+            and substances.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_SafetyMeasureCharacteristic'
+        productProperties:
+          description: Describes the physical and chemical properties of the substance
+            or mixture.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ProductProperties'
+        productDisposal:
+          description: Describes the proper disposal of the product.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_ProductDisposal'
+        transportInformation:
+          description: Describes transport relevant information.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_TransportInformation'
+        regulatoryInformation:
+          description: Describes the regulatory data points.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_RegulatoryInformationCharacteristic'
+        carbonFootprint:
+          description: Describes the carbon footprint of the substance or mixture
+            based on the Ecodesign.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.sealant.sealant_pass_1.0.0_CarbonFootprint'
+      required:
+      - documents
+      - performanceProperties
+      - productIdentification
+      - application
+      - supplier
+      - hazardsIdentification
+      - productComposition
+      - safetyMeasure
+      - productProperties
+      - productDisposal
+      - transportInformation
+      - regulatoryInformation
+      - carbonFootprint
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    SealantPass:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SealantPass'
+      description: The request was successful.
+  requestBodies:
+    SealantPass:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SealantPass'

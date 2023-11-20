@@ -1,0 +1,124 @@
+---
+openapi: 3.0.3
+info:
+  title: physical dimensions
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/physical-dimensions:
+    get:
+      tags:
+      - PhysicalDimensions
+      operationId: getPhysicalDimensions
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/PhysicalDimensions'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_bamm_io.catenax.shared.physical_dimension_2.0.0_KilogramCharacteristic:
+      type: number
+      description: a measurement value given in the unit kilogram
+    urn_bamm_io.catenax.shared.physical_dimension_2.0.0_MillimetreCharacteristic:
+      type: number
+      description: a measurement for a lenght given in the unit millimetre
+    urn_bamm_io.catenax.shared.physical_dimension_2.0.0_PhysicalDimensionsCharacteristic:
+      description: Describes the physical dimensions of then entity.
+      type: object
+      properties:
+        weight:
+          description: Weight of the item
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_KilogramCharacteristic'
+        diameter:
+          description: Diameter of the item.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_MillimetreCharacteristic'
+        height:
+          description: Height of the item.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_MillimetreCharacteristic'
+        width:
+          description: Width of the item.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_MillimetreCharacteristic'
+        length:
+          description: Length of the item.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_MillimetreCharacteristic'
+    PhysicalDimensions:
+      description: Describes the physical dimensions of then entity.
+      type: object
+      properties:
+        physicalDimensionsProperty:
+          description: Describes the physical dimensions of then entity.
+          $ref: '#/components/schemas/urn_bamm_io.catenax.shared.physical_dimension_2.0.0_PhysicalDimensionsCharacteristic'
+      required:
+      - physicalDimensionsProperty
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    PhysicalDimensions:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PhysicalDimensions'
+      description: The request was successful.
+  requestBodies:
+    PhysicalDimensions:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PhysicalDimensions'

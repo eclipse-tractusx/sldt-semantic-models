@@ -1,0 +1,154 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML)
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 Mercedes Benz AG
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 SupplyOn AG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.id_based_comment:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
+
+:IdBasedComment a samm:Aspect ;
+   samm:preferredName "Id Based Comment"@en ;
+   samm:description "Aspect model for an exchange of comment belonging to a entity."@en ;
+   samm:properties ( :commentId :objectId [ samm:property :author; samm:optional true ] [ samm:property :postedAt; samm:optional true ] [ samm:property :changedAt; samm:optional true ] [ samm:property :commentText; samm:optional true ] [ samm:property :commentType; samm:optional true ] [ samm:property :requestDelete; samm:optional true ] [ samm:property :listOfReferenceDates; samm:optional true ] :objectType :customer :supplier ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:commentId a samm:Property ;
+   samm:preferredName "Comment ID"@en ;
+   samm:description "The Comment ID uniquely identifies the entity within the business relationship between a customer and its supplier."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "f5c151e4-30b5-4456-94fd-2a7b559b6121" .
+
+:objectId a samm:Property ;
+   samm:preferredName "Object ID"@en ;
+   samm:description "The ID of the object to which the comment belongs."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "dfeb1334-497e-4dab-97c1-4e6f4e1c0320" .
+
+:author a samm:Property ;
+   samm:preferredName "Author"@en ;
+   samm:description "The E-Mail address of the creator who wrote the comment. In case comment creator wants to stay anonymous, show BPNL in app which is sent the comment along."@en ;
+   samm:characteristic :AuthorCharacteristic ;
+   samm:exampleValue "someone@company.com" .
+
+:postedAt a samm:Property ;
+   samm:preferredName "Posted at"@en ;
+   samm:description "Point in time when the comment was created."@en ;
+   samm:characteristic :Timestamp ;
+   samm:exampleValue "2023-03-10T12:27:11.320Z"^^xsd:dateTimeStamp .
+
+:changedAt a samm:Property ;
+   samm:preferredName "Changed at"@en ;
+   samm:description "Point in time when the comment was last changed."@en ;
+   samm:characteristic :Timestamp ;
+   samm:exampleValue "2023-03-10T12:27:11.320Z"^^xsd:dateTimeStamp .
+
+:commentText a samm:Property ;
+   samm:preferredName "Comment Text"@en ;
+   samm:description "Text up to 5.000 characters in format \"UTF-8\" will be shared."@en ;
+   samm:characteristic :CommentTrait ;
+   samm:exampleValue "Hello, this is a comment!" .
+
+:commentType a samm:Property ;
+   samm:preferredName "Comment Type"@en ;
+   samm:description "Type of a comment to indicate a priority."@en ;
+   samm:characteristic :CommentTypeCharacteristic .
+
+:requestDelete a samm:Property ;
+   samm:preferredName "Request Delete"@en ;
+   samm:description "Indicates that the deletion of the comment is requested by sender incl. all of it's history."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:listOfReferenceDates a samm:Property ;
+   samm:preferredName "List Of Reference Dates"@en ;
+   samm:description "Point in time the comment belongs to."@en ;
+   samm:characteristic :ListOfReferenceDatesCharacteristic ;
+   samm:exampleValue "2023-11-05"^^xsd:date .
+
+:objectType a samm:Property ;
+   samm:preferredName "Object Type"@en ;
+   samm:description "Aspect Model which the comment refers to. The value MUST consist of the Catena-X aspect model unique identifier of the referenced data model without a version."@en ;
+   samm:characteristic :ObjectTypeCharacteristic ;
+   samm:exampleValue "urn:samm:io.catenax.week_based_capacity_group" .
+
+:customer a samm:Property ;
+   samm:preferredName "Customer"@en ;
+   samm:description "The Business Partner Number Legal Entity (BPNL) of the party requesting materials from a supplier."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL8888888888XX" .
+
+:supplier a samm:Property ;
+   samm:preferredName "Supplier"@en ;
+   samm:description "The Business Partner Number Legal Entity (BPNL) of the party providing materials to a customer."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL6666666666YY" .
+
+:AuthorCharacteristic a samm:Characteristic ;
+   samm:preferredName "Author Characteristic"@en ;
+   samm:description "Characteristic for an E-Mail or a BPNL"@en ;
+   samm:dataType xsd:string .
+
+:Timestamp a samm:Characteristic ;
+   samm:preferredName "Timestamp"@en ;
+   samm:description "Point in time."@en ;
+   samm:dataType xsd:dateTimeStamp .
+
+:CommentTrait a samm-c:Trait ;
+   samm:preferredName "Comment Trait"@en ;
+   samm:description "Trait for a text."@en ;
+   samm-c:baseCharacteristic :CommentTextCharacteristic ;
+   samm-c:constraint :TextRegularExpression .
+
+:CommentTypeCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Comment Type Characteristic"@en ;
+   samm:description "The classification of a comment."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "information" "warning" "default" "actionRequired" ) .
+
+:ListOfReferenceDatesCharacteristic a samm-c:Set ;
+   samm:preferredName "List Of Reference Dates Characteristic"@en ;
+   samm:description "Point in time."@en ;
+   samm:dataType xsd:date .
+
+:ObjectTypeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Object Type Characteristic"@en ;
+   samm:description "Defining a string value for the objectType."@en ;
+   samm:dataType xsd:string .
+
+:CommentTextCharacteristic a samm:Characteristic ;
+   samm:preferredName "Comment Text Characteristic"@en ;
+   samm:description "Type of the text being exchanged between partners belonging to a UUID entity."@en ;
+   samm:dataType xsd:string .
+
+:TextRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Text Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the text of a comment is limited to the maximum length of 5.000 characters."@en ;
+   samm:value "^[\\s\\S]{0,5000}$" .
+

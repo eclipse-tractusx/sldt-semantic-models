@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 #######################################################################
 # Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
 # Copyright (c) 2023 Contributors to the Eclipse Foundation
@@ -30,11 +30,11 @@
 
 
 # Adjust if SAMM CLI version changes
-JARNAME=bamm-cli-2.1.3.jar
+JARNAME=samm-cli-2.3.2.jar
 SAMMFOLDER=.SAMMCLI/
 SAMMCLI=$SAMMFOLDER$JARNAME
-# Adjust if BAMM CLI version changes
-SAMMCLIURL=https://github.com/eclipse-esmf/esmf-sdk/releases/download/v2.1.3/bamm-cli-2.1.3.jar
+# Adjust if SAMM CLI version changes
+SAMMCLIURL=https://github.com/eclipse-esmf/esmf-sdk/releases/download/v2.3.2/samm-cli-2.3.2.jar
 
 CATENAXCSS=$SAMMFOLDER/catena-template.css
 CATENAXCUSTOMCSSURL=https://raw.githubusercontent.com/eclipse-tractusx/sldt-semantic-hub/main/backend/src/main/resources/catena-template.css

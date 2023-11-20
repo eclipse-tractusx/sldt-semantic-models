@@ -1,0 +1,89 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2023 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 Mercedes Benz AG
+# Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 Siemens AG
+# Copyright (c) 2023 T-Systems International GmbH
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#> .
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:bamm:io.catenax.traction_battery_code:1.0.0#> .
+
+:TractionBatteryCode a bamm:Aspect ;
+   bamm:preferredName "Traction Battery Code"@en ;
+   bamm:description "The traction battery code is an identification code for any automotive traction battery, ultracapacitor and other reachargeble energy storage device. It allows to carry information as required by the National Standard of the People's Republic of China according to GB/T 34014-2017 published by the Standardization Administration of China (SAC)."@en ;
+   bamm:see <https://std.samr.gov.cn/gb/search/gbDetailed?id=71F772D818B4D3A7E05397BE0A0AB82A> ;
+   bamm:properties ( :tractionBatteryCode [ bamm:property :subcomponents; bamm:optional true ] :productType ) ;
+   bamm:operations ( ) ;
+   bamm:events ( ) .
+
+:tractionBatteryCode a bamm:Property ;
+   bamm:preferredName "Traction Battery Code"@en ;
+   bamm:description "Traction Battery Code identifying a single traction battery component like a pack, module or cell. "@en ;
+   bamm:characteristic :TractionBatteryCodeTrait ;
+   bamm:exampleValue "X12MCPM27KLPCLX2M2382320" .
+
+:subcomponents a bamm:Property ;
+   bamm:preferredName "Subcomponents"@en ;
+   bamm:description "Subcomponents of the component, if applicable. The relationship between traction battery codes are as follows:\n\nIf this traction battery code is given for a cell subcomponents are not required. \nIf this traction battery code is given for a battery module a list of cells are required to be registered as subcomponents.\nIf this traction battery code is given for a battery pack a list of modules are required to be registered as subcomponents (containing each a list of cell subcomponents respectively)."@en ;
+   bamm:characteristic :ComponentList .
+
+:productType a bamm:Property ;
+   bamm:preferredName "Product Type"@en ;
+   bamm:description "The type of the battery component, e.g. a pack, a module or a cell."@en ;
+   bamm:characteristic :ComponentTypeCharacterstic ;
+   bamm:exampleValue "pack" .
+
+:TractionBatteryCodeTrait a bamm-c:Trait ;
+   bamm-c:baseCharacteristic :TractionBatteryCodeCharacteristic;
+   bamm-c:constraint :TractionBatteryCodeRegularExpression .
+
+:ComponentList a bamm-c:List ;
+   bamm:preferredName "List of Components"@en ;
+   bamm:description "A list of battery components like modules or cells."@en ;
+   bamm:dataType :TractionBatteryComponent .
+
+:ComponentTypeCharacterstic a bamm-c:Enumeration ;
+   bamm:preferredName "Component Type Characterstic"@en ;
+   bamm:dataType xsd:string ;
+   bamm-c:values ( "pack" "module" "cell" ) .
+
+:TractionBatteryCodeCharacteristic a bamm-c:Code ;
+   bamm:preferredName "Batery Code Characteristic"@en ;
+   bamm:description "A code identifying a traction battery component like a pack, module or cell."@en ;
+   bamm:dataType xsd:string .
+
+:TractionBatteryCodeRegularExpression a bamm-c:RegularExpressionConstraint ;
+   bamm:preferredName "Traction Battery Code Regular Expression"@en ;
+   bamm:description "The traction battery code as required by the National Standard of the People's Republic of China according to GB/T 34014-2017 published by the Standardization Administration of China (SAC). It can have a length of either 24 or 18 characters."@en ;
+   bamm:see <https://std.samr.gov.cn/gb/search/gbDetailed?id=71F772D818B4D3A7E05397BE0A0AB82A> ;
+   bamm:value "(^[A-Z0-9]{3}[PMC]{1}[A-GZ]{1}[A-Z0-9]{2}[A-Z0-9]{7}[1-9A-GH-NPR-Y]{1}[1-9A-C]{1}[0-9A-GH-NPR-Y]{1}[0-9]{7}$)|(^[A-Z0-9]{3}[PMC]{1}[A-GZ]{1}[A-Z0-9]{2}[1-9A-GH-NPR-Y]{1}[1-9A-C]{1}[0-9A-GH-NPR-Y]{1}[0-9]{7}[R]{1}[PMC]{1}$)" .
+
+:TractionBatteryComponent a bamm:Entity ;
+   bamm:preferredName "Battery Component"@en ;
+   bamm:description "A battery component like a cell or a module."@en ;
+   bamm:properties ( :tractionBatteryCode [ bamm:property :subcomponents; bamm:optional true ] :productType ) .
+
