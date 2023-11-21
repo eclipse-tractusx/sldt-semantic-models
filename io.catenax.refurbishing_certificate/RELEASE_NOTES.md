@@ -10,7 +10,6 @@ All notable changes to this model will be documented in this file.
 
 ### Changed
 
-
 ### Removed
 
 ## [1.0.0] - 2022-03-30
