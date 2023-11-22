@@ -1,0 +1,178 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.iot_sensor_data:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
+
+:IotSensorData a samm:Aspect ;
+   samm:preferredName "Iot Sensor Data"@en ;
+   samm:description "The data collected by an IoT Sensor Device."@en ;
+   samm:properties ( :catenaXId :sensorRuntimeData ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X Identifier"@en ;
+   samm:description "The fully anonymous Catena-X ID of the asset, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:ed85f17e-29dd-473c-9cb8-d7ad1dc44d2f" .
+
+:sensorRuntimeData a samm:Property ;
+   samm:preferredName "Sensor Runtime Data"@en ;
+   samm:description "The information collected by a Sensor device at an instance in time."@en ;
+   samm:characteristic :SensorRuntimeDataCharacteristics .
+
+:SensorRuntimeDataCharacteristics a samm-c:List ;
+   samm:preferredName "Sensor Runtime Data Characteristics"@en ;
+   samm:description "Characteristic describing the list of the Sensor Runtime Data property."@en ;
+   samm:dataType :SensorRuntimeDataEntity .
+
+:SensorRuntimeDataEntity a samm:Entity ;
+   samm:preferredName "Sensor Runtime Data Entity"@en ;
+   samm:description "Encapsulates the Sensor Data relevant attributes."@en ;
+   samm:properties ( :sensorGeoLocation :batteryLevel :timestamp :sensorData :transmissionMethod ) .
+
+:sensorGeoLocation a samm:Property ;
+   samm:preferredName "Sensor Geo Location"@en ;
+   samm:description "Geodata, geographic data or geospatial data, refers to data and information that has explicit or implicit association with a location relative to Earth."@en ;
+   samm:characteristic :SensorGeoLocationCharacteristics .
+
+:batteryLevel a samm:Property ;
+   samm:preferredName "Battery Level"@en ;
+   samm:description "The battery level displays how much charge of the battery has been left."@en ;
+   samm:characteristic :BatteryLevelCharacteristic ;
+   samm:exampleValue "50.00"^^xsd:decimal .
+
+:timestamp a samm:Property ;
+   samm:preferredName "Timestamp"@en ;
+   samm:description "The timestamp of the latest sensor reading."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-02-04T14:48:54"^^xsd:dateTime .
+
+:sensorData a samm:Property ;
+   samm:preferredName "Sensor Data"@en ;
+   samm:description "The data collected by an IoT Sensor Device."@en ;
+   samm:characteristic :SensorDataCharacteristics .
+
+:transmissionMethod a samm:Property ;
+   samm:preferredName "Transmission Method"@en ;
+   samm:description "The method under which the sensing data is transmitted from the source to the remote node."@en ;
+   samm:characteristic :TransmissionMethodCharacteristic ;
+   samm:exampleValue "LoRaWAN" .
+
+:SensorGeoLocationCharacteristics a samm:Characteristic ;
+   samm:preferredName "Sensor Geo Location Characteristics"@en ;
+   samm:description "Characteristic to describe the related Geo data."@en ;
+   samm:dataType :SensorGeoLocationEntity .
+
+:BatteryLevelCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Battery Level Characteristic"@en ;
+   samm:description "Characteristic to describe the property battery level."@en ;
+   samm:dataType xsd:decimal ;
+   samm-c:unit unit:percent .
+
+:SensorDataCharacteristics a samm-c:List ;
+   samm:preferredName "Sensor Data Characteristics"@en ;
+   samm:description "Characteristic to describe the related Sensor data."@en ;
+   samm:dataType :SensorDataEntity .
+
+:TransmissionMethodCharacteristic a samm:Characteristic ;
+   samm:preferredName "Transmission Method Characteristic"@en ;
+   samm:description "Characteristic that describes the property transmission method."@en ;
+   samm:dataType xsd:string .
+
+:SensorGeoLocationEntity a samm:Entity ;
+   samm:preferredName "Sensor Geo Location Entity"@en ;
+   samm:description "Encapsulates the Geo Data relevant attributes."@en ;
+   samm:properties ( :latitude :longitude :altitude :geoDataTimestamp ) .
+
+:SensorDataEntity a samm:Entity ;
+   samm:preferredName "Sensor Data Entity"@en ;
+   samm:description "Encapsulates the Sensor Data relevant attributes."@en ;
+   samm:properties ( :sensorType :sensorValue :sensorUnit ) .
+
+:latitude a samm:Property ;
+   samm:preferredName "Latitude"@en ;
+   samm:description "The angle between zenith and a plane parallel to the equator."@en ;
+   samm:characteristic :LatitudeCharacteristic ;
+   samm:exampleValue "40.20361"^^xsd:decimal .
+
+:longitude a samm:Property ;
+   samm:preferredName "Longitude"@en ;
+   samm:description "Geographic coordinate that specifies the east-west position of a point on the Earth's surface."@en ;
+   samm:characteristic :LongitudeCharacteristic ;
+   samm:exampleValue "11.3102"^^xsd:decimal .
+
+:altitude a samm:Property ;
+   samm:preferredName "Altitude"@en ;
+   samm:description "Antenna Altitude above/below mean-sea-level (geoid)."@en ;
+   samm:characteristic :AltitudeCharacteristic ;
+   samm:exampleValue "280.20"^^xsd:decimal .
+
+:geoDataTimestamp a samm:Property ;
+   samm:preferredName "Geo Data Timestamp"@en ;
+   samm:description "The timestamp of the latest sensor reading of the geo data."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-02-04T14:48:54"^^xsd:dateTime .
+
+:sensorType a samm:Property ;
+   samm:preferredName "Sensor Type"@en ;
+   samm:description "Different types of sensors that are commonly used in various applications, measuring one of the physical properties like Temperature, Pressure,  Resistance, Shock, Conduction, Heat Transfer etc."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Temperature" .
+
+:sensorValue a samm:Property ;
+   samm:preferredName "Sensor Value"@en ;
+   samm:description "The measured value of the sensor type."@en ;
+   samm:characteristic :SensorValueCharacteristics ;
+   samm:exampleValue "32.00"^^xsd:decimal .
+
+:sensorUnit a samm:Property ;
+   samm:preferredName "Sensor Unit"@en ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "unit:Celsius"^^samm:curie .
+
+:LatitudeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Latitude Characteristic"@en ;
+   samm:description "Characteristic describing the property latitude."@en ;
+   samm:see <https://www.iso.org/standard/75147.html> ;
+   samm:dataType xsd:decimal .
+
+:LongitudeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Longitude Characteristic"@en ;
+   samm:description "Characteristic describing the property longitude."@en ;
+   samm:see <https://www.iso.org/standard/75147.html> ;
+   samm:dataType xsd:decimal .
+
+:AltitudeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Altitude Characteristic"@en ;
+   samm:description "Characteristic describing the property altitude."@en ;
+   samm:see <https://www.iso.org/standard/75147.html> ;
+   samm:dataType xsd:decimal .
+
+:SensorValueCharacteristics a samm:Characteristic ;
+   samm:preferredName "Sensor Value Characteristic"@en ;
+   samm:description "Describes the property which contains a sensor value of data type decimal."@en ;
+   samm:dataType xsd:decimal .
+
