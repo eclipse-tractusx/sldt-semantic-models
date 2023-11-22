@@ -1,0 +1,89 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.asset_tracker_links:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
+
+:AssetTrackerLinks a samm:Aspect ;
+   samm:preferredName "Asset Tracker Links"@en ;
+   samm:description "Represent the link between Asset and IoT Device (tracker) with timestamps of pairing and unpairing."@en ;
+   samm:properties ( :catenaXId :childItems ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X Identifier"@en ;
+   samm:description "The Catena-X ID of the given asset, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:ed85f17e-29dd-473c-9cb8-d7ad1dc44d2f" .
+
+:childItems a samm:Property ;
+   samm:preferredName "Child Items"@en ;
+   samm:description "Set of child items, of which the given parent object consist of."@en ;
+   samm:characteristic :SetOfChildItemsCharacteristic .
+
+:SetOfChildItemsCharacteristic a samm-c:Set ;
+   samm:preferredName "Set of Child Items"@en ;
+   samm:description "Set of child items the parent item is linked to."@en ;
+   samm:dataType :ChildData .
+
+:ChildData a samm:Entity ;
+   samm:preferredName "Child Data"@en ;
+   samm:description "Catena-X ID and meta data of the child item."@en ;
+   samm:properties ( :paired :pairedOn :unpairedOn [ samm:property :historicalData; samm:optional true ] :catenaXId ) .
+
+:paired a samm:Property ;
+   samm:preferredName "paired"@en ;
+   samm:description "Currently paired when set to true."@en ;
+   samm:characteristic :PairedCharacteristic ;
+   samm:exampleValue false .
+
+:pairedOn a samm:Property ;
+   samm:preferredName "Paired On"@en ;
+   samm:description "Timestamp of pairing of an IoT Device to an Asset."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-02-03T14:48:54.709Z"^^xsd:dateTime .
+
+:unpairedOn a samm:Property ;
+   samm:preferredName "Unpaired On"@en ;
+   samm:description "Timestamp of the unpairing of an IoT Device from an Asset."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-02-04T14:48:54.709Z"^^xsd:dateTime .
+
+:historicalData a samm:Property ;
+   samm:preferredName "Historical Data"@en ;
+   samm:description "Describes the location where the historical sensor data can be found. "@en ;
+   samm:characteristic :ResourcePath ;
+   samm:exampleValue "https://mycompany.s3.amazonaws.com/historicalsensordata"^^xsd:anyURI .
+
+:PairedCharacteristic a samm:Characteristic ;
+   samm:preferredName "Paired Characteristic"@en ;
+   samm:description "Characteristic describing the property paired."@en ;
+   samm:dataType xsd:boolean .
+
+:ResourcePath a samm:Characteristic ;
+   samm:preferredName "Resource Path"@en ;
+   samm:description "The path of a resource."@en ;
+   samm:dataType xsd:anyURI .
+
