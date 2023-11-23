@@ -5,6 +5,11 @@ All notable changes to this model will be documented in this file.
 
 ## [2.0.0] - 2023-03-30
 ### Changed
+- samm:io version changed to SAMM 2.0.0
+- corrected typos and preffered names
+
+## [2.0.0] - 2023-03-30
+### Changed
 - bamm:io version changed to 2.0.0
 
 ## [1.0.0] - 2022-03-28
