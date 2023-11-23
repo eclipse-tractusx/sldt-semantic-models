@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2023-03-30
+## [3.0.0] - 2023-11-27
 ### Changed
 - samm:io version changed to SAMM 2.0.0
 - corrected typos and preffered names
