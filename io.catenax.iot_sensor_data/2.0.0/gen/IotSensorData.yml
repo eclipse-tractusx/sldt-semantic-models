@@ -1,0 +1,259 @@
+---
+openapi: 3.0.3
+info:
+  title: Iot Sensor Data
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/iot-sensor-data:
+    get:
+      tags:
+      - IotSensorData
+      operationId: getIotSensorData
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/IotSensorData'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/IotSensorData'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_LatitudeCharacteristic:
+      type: number
+      description: Characteristic describing the property latitude.
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_LongitudeCharacteristic:
+      type: number
+      description: Characteristic describing the property longitude.
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_AltitudeCharacteristic:
+      type: number
+      description: Characteristic describing the property altitude.
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorGeoLocationCharacteristics:
+      description: Characteristic to describe the related Geo data.
+      type: object
+      properties:
+        latitude:
+          description: The angle between zenith and a plane parallel to the equator.
+          $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_LatitudeCharacteristic'
+        longitude:
+          description: Geographic coordinate that specifies the east-west position
+            of a point on the Earth's surface.
+          $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_LongitudeCharacteristic'
+        altitude:
+          description: Antenna Altitude above/below mean-sea-level (geoid).
+          $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_AltitudeCharacteristic'
+        geoDataTimestamp:
+          description: The timestamp of the latest sensor reading of the geo data.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+      required:
+      - latitude
+      - longitude
+      - altitude
+      - geoDataTimestamp
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_BatteryLevelCharacteristic:
+      type: number
+      description: Characteristic to describe the property battery level.
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorValueCharacteristics:
+      type: number
+      description: Describes the property which contains a sensor value of data type
+        decimal.
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: Describes a Property containing a reference to one of the units
+        in the Unit Catalog.
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorDataEntity:
+      description: Encapsulates the Sensor Data relevant attributes.
+      type: object
+      properties:
+        sensorType:
+          description: "Different types of sensors that are commonly used in various\
+            \ applications, measuring one of the physical properties like Temperature,\
+            \ Pressure,  Resistance, Shock, Conduction, Heat Transfer etc."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        sensorValue:
+          description: The measured value of the sensor type.
+          $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorValueCharacteristics'
+        sensorUnit:
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference'
+      required:
+      - sensorType
+      - sensorValue
+      - sensorUnit
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorDataCharacteristics:
+      description: Characteristic to describe the related Sensor data.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorDataEntity'
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_TransmissionMethodCharacteristic:
+      type: string
+      description: Characteristic that describes the property transmission method.
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorRuntimeDataEntity:
+      description: Encapsulates the Sensor Data relevant attributes.
+      type: object
+      properties:
+        sensorGeoLocation:
+          description: "Geodata, geographic data or geospatial data, refers to data\
+            \ and information that has explicit or implicit association with a location\
+            \ relative to Earth."
+          $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorGeoLocationCharacteristics'
+        batteryLevel:
+          description: The battery level displays how much charge of the battery has
+            been left.
+          $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_BatteryLevelCharacteristic'
+        timestamp:
+          description: The timestamp of the latest sensor reading.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        sensorData:
+          description: The data collected by an IoT Sensor Device.
+          $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorDataCharacteristics'
+        transmissionMethod:
+          description: The method under which the sensing data is transmitted from
+            the source to the remote node.
+          $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_TransmissionMethodCharacteristic'
+      required:
+      - sensorGeoLocation
+      - batteryLevel
+      - timestamp
+      - sensorData
+      - transmissionMethod
+    urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorRuntimeDataCharacteristics:
+      description: Characteristic describing the list of the Sensor Runtime Data property.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorRuntimeDataEntity'
+    IotSensorData:
+      description: The data collected by an IoT Sensor Device.
+      type: object
+      properties:
+        catenaXId:
+          description: "The fully anonymous Catena-X ID of the asset, valid for the\
+            \ Catena-X dataspace."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        sensorRuntimeData:
+          description: The information collected by a Sensor device at an instance
+            in time.
+          $ref: '#/components/schemas/urn_samm_io.catenax.iot_sensor_data_2.0.0_SensorRuntimeDataCharacteristics'
+      required:
+      - catenaXId
+      - sensorRuntimeData
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    IotSensorData:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    IotSensorData:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IotSensorData'

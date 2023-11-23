@@ -1,0 +1,74 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Represent the link between Asset and IoT Device (tracker) with timestamps of pairing and unpairing.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_samm_io.catenax.asset_tracker_links_2.0.0_PairedCharacteristic" : {
+        "type" : "boolean",
+        "description" : "Characteristic describing the property paired."
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_io.catenax.asset_tracker_links_2.0.0_ResourcePath" : {
+        "type" : "string",
+        "format" : "uri",
+        "description" : "The path of a resource."
+      },
+      "urn_samm_io.catenax.asset_tracker_links_2.0.0_ChildData" : {
+        "description" : "Catena-X ID and meta data of the child item.",
+        "type" : "object",
+        "properties" : {
+          "paired" : {
+            "description" : "Currently paired when set to true.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.asset_tracker_links_2.0.0_PairedCharacteristic"
+          },
+          "pairedOn" : {
+            "description" : "Timestamp of pairing of an IoT Device to an Asset.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "unpairedOn" : {
+            "description" : "Timestamp of the unpairing of an IoT Device from an Asset.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "historicalData" : {
+            "description" : "Describes the location where the historical sensor data can be found. ",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.asset_tracker_links_2.0.0_ResourcePath"
+          },
+          "catenaXId" : {
+            "description" : "The Catena-X ID of the given asset, valid for the Catena-X dataspace.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait"
+          }
+        },
+        "required" : [ "paired", "pairedOn", "unpairedOn", "catenaXId" ]
+      },
+      "urn_samm_io.catenax.asset_tracker_links_2.0.0_SetOfChildItemsCharacteristic" : {
+        "description" : "Set of child items the parent item is linked to.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.asset_tracker_links_2.0.0_ChildData"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "catenaXId" : {
+      "description" : "The Catena-X ID of the given asset, valid for the Catena-X dataspace.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait"
+    },
+    "childItems" : {
+      "description" : "Set of child items, of which the given parent object consist of.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.asset_tracker_links_2.0.0_SetOfChildItemsCharacteristic"
+    }
+  },
+  "required" : [ "catenaXId", "childItems" ]
+}
