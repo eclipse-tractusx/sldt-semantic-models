@@ -1,0 +1,174 @@
+#######################################################################
+# Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
+# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.item_stock:1.0.0#>.
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#>.
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#>.
+
+:ItemStock a samm:Aspect;
+    samm:preferredName "Stock of Items"@en;
+    samm:description "This aspect represents the latest quantities of a partner's items that are on stock. The stock represent the build-to-order (BTO) stocks already available."@en;
+    samm:properties (:positions :materialNumberCustomer [
+  samm:property :materialGlobalAssetId;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :materialNumberSupplier;
+  samm:optional "true"^^xsd:boolean
+] :direction);
+    samm:operations ();
+    samm:events ().
+:positions a samm:Property;
+    samm:preferredName "Positions"@en;
+    samm:description "In case of a supplier's stocks for a customer, these stocks may reference the order position for that they have been produced. \nIn case of a customer's stock delivered by a supplier, there is exactly one position.\n\nIn case there is no item on stock, positions MUST be empty."@en;
+    samm:characteristic :PositionsCollection.
+:materialNumberCustomer a samm:Property;
+    samm:preferredName "Customer Material Number"@en;
+    samm:description "Material identifier as assigned by customer. This material number identifies the material (as planned) in customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the materialNumberSupplier should be set in this field, too."@en;
+    samm:characteristic :MaterialNumberCharacteristic;
+    samm:exampleValue "MNR-7307-AU340474.002".
+:materialGlobalAssetId a samm:Property;
+    samm:preferredName "Material Number UUID of the Customer's Twin"@en;
+    samm:description "Material identifier used uniquely to identify the Material (e.g. PartAsPlanned)."@en;
+    samm:characteristic ext-uuid:UuidV4Trait;
+    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
+:materialNumberSupplier a samm:Property;
+    samm:preferredName "Supplier Material Number"@en;
+    samm:description "Material identifier as assigned by supplier. This material number identifies the material (as planned) in supplier's database."@en;
+    samm:characteristic :MaterialNumberCharacteristic;
+    samm:exampleValue "MNR-8101-ID146955.001".
+:direction a samm:Property;
+    samm:preferredName "Direction of Stock"@en;
+    samm:description "Direction of the stock from data provider perspective."@en;
+    samm:characteristic :DirectionCharacteristic;
+    samm:exampleValue "OUTBOUND".
+:PositionsCollection a samm-c:Collection;
+    samm:preferredName "Positions Collection"@en;
+    samm:description "If any stock is available, then there is at least one position. \n\nIn case of a supplier's stock for a customer, the supplier can  differentiate the stock according to the order positions of his customer. In this case multiple positions can be given. There could also be only one position without an OrderPositionReference indicating an anonymous stock which is allocated to the customer.\n\nIn case of a customer's stock delivered by a supplier, there is exactly one position without order position references."@en;
+    samm:dataType :Position.
+:MaterialNumberCharacteristic a samm:Characteristic;
+    samm:preferredName "Material Number"@en;
+    samm:description "The material number is a multi-character string, usually assigned by an ERP system."@en;
+    samm:dataType xsd:string.
+:DirectionCharacteristic a samm-c:Enumeration;
+    samm:preferredName "Direction of Stock Characteristic"@en;
+    samm:description "If a supplier provides stock information to a customer, use \"OUTBOUND\".\nIf a customer provides stock information to a supplier, use \"INBOUND\"."@en;
+    samm:dataType xsd:string;
+    samm-c:values ("INBOUND" "OUTBOUND").
+:Position a samm:Entity;
+    samm:preferredName "Position"@en;
+    samm:description "The Position can be located at several stocks. \nIn case of a supplier's stock for a customer, a position may be either anonymous or reference a position within a customer order. \nIn case of a customer's stock for a supplier, the order position reference MUST NOT be set."@en;
+    samm:properties ([
+  samm:property :orderPositionReference;
+  samm:optional "true"^^xsd:boolean
+] :lastUpdatedOnDateTime :allocatedStocks).
+:orderPositionReference a samm:Property;
+    samm:preferredName "Order Position Reference"@en;
+    samm:description "The order position reference contains information to identify a position within an order."@en;
+    samm:characteristic :OrderPositionReferenceCharacteristic.
+:lastUpdatedOnDateTime a samm:Property;
+    samm:preferredName "Lasted Updated on Date"@en;
+    samm:description "Date and time at which the position has been updated by the supplier's systems. Date and time are set according to a timezone."@en;
+    samm:characteristic :DateTimeStamp;
+    samm:exampleValue "2023-04-01T14:23:00"^^xsd:dateTime.
+:allocatedStocks a samm:Property;
+    samm:preferredName "Allocated Stocks"@en;
+    samm:description "Stocks that have been already allocated to the customer or delivered by a specific supplier. An allocated stock always refers to a stock location."@en;
+    samm:characteristic :AllocatedStockCollection.
+:OrderPositionReferenceCharacteristic a samm:Characteristic;
+    samm:preferredName "Order Position Reference Characteristic"@en;
+    samm:description "The order position reference includes reference numbers for the order and the ID. As these information are meant for the customer, the customer reference numbers are mandatory."@en;
+    samm:dataType :OrderPositionReference.
+:DateTimeStamp a samm:Characteristic;
+    samm:preferredName "Date Time Stamp Characteristic"@en;
+    samm:description "The Date with the the timezone of the involved site."@en;
+    samm:dataType xsd:dateTime;
+    samm:see <https://www.iso.org/iso-8601-date-and-time-format.html>.
+:AllocatedStockCollection a samm-c:Collection;
+    samm:preferredName "Allocated Stock Collection"@en;
+    samm:description "Collection of allocated stocks that may relate to different stock locations. Per location there could be at maximum one blocked and one non blocked stock at the same time."@en;
+    samm:dataType :AllocatedStock.
+:OrderPositionReference a samm:Entity;
+    samm:preferredName "Reference to Order Position"@en;
+    samm:description "Encapsulates the references to identify a position within an order."@en;
+    samm:properties ([
+  samm:property :supplierOrderId;
+  samm:optional "true"^^xsd:boolean
+] :customerOrderId :customerOrderPositionId).
+:AllocatedStock a samm:Entity;
+    samm:preferredName "Stock Allocated to a Partner"@en;
+    samm:description "This is the quantity of items on stock at a location. A stock can either be\n- from a certain supplier and ready to be consumed by a customer or\n- from a supplier and ready to be shipped to a certain customer. \n\nIn case of stocks \"from a supplier ready to be shipped to a certain customer\", the stock may refer to an order position of a customer. This stock consists only of the good-finished items."@en;
+    samm:properties (:quantityOnAllocatedStock :stockLocationBPNS :isBlocked :stockLocationBPNA).
+:supplierOrderId a samm:Property;
+    samm:preferredName "Supplier Order ID"@en;
+    samm:description "This is the order number on the supplier side that is given by e.g., the supplier's enterprise resource planning system."@en;
+    samm:characteristic :OrderIdCharacteristic;
+    samm:exampleValue "M-Nbr-4711".
+:customerOrderId a samm:Property;
+    samm:preferredName "Customer Order ID"@en;
+    samm:description "This is the order number on the customer side that can be given by e.g., the customer's enterprise resource planning system."@en;
+    samm:characteristic :OrderIdCharacteristic;
+    samm:exampleValue "C-Nbr-4711".
+:customerOrderPositionId a samm:Property;
+    samm:preferredName "Customer Order Position ID"@en;
+    samm:description "This is an identifier for the position of an order defined by the customer. It's not a technical identifier, such as an UUID. This identifier is used within the business context when talking about the position."@en;
+    samm:characteristic :OrderPositionIdCharacteristic;
+    samm:exampleValue "PositionId-01".
+:quantityOnAllocatedStock a samm:Property;
+    samm:preferredName "Quantity on Allocated Stock"@en;
+    samm:description "This is the quantity of the material on stock. In case of stocks \"from a supplier ready to be shipped to a certain customer\", the stock may refer to an order position of a customer."@en;
+    samm:characteristic :QuantityCharacteristic.
+:stockLocationBPNS a samm:Property;
+    samm:preferredName "BPNS of Stock Location"@en;
+    samm:description "BPNS identifying the site the stock is located at. One stock has always one location."@en;
+    samm:characteristic ext-number:BpnsTrait;
+    samm:exampleValue "BPNS1234567890ZZ";
+    samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
+:isBlocked a samm:Property;
+    samm:preferredName "Is Blocked"@en;
+    samm:description "A set of finished items that are located on the blocked stock area, quarantine area, etc. waiting to be released.\n\nExample: Stock is in review and not released due to customer complaint regarding a recent batch."@en;
+    samm:characteristic :IsBlockedCharacteristic;
+    samm:exampleValue "false"^^xsd:boolean.
+:stockLocationBPNA a samm:Property;
+    samm:preferredName "BPNA of Stock Location"@en;
+    samm:description "BPNA identifying the address the stock is located at. One stock has always one location."@en;
+    samm:characteristic ext-number:BpnaTrait;
+    samm:exampleValue "BPNA1234567890ZZ";
+    samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
+:OrderIdCharacteristic a samm:Characteristic;
+    samm:preferredName "Order ID Characteristic"@en;
+    samm:description "This is a proprietary order ID, generated by either the supplier side or customer side."@en;
+    samm:dataType xsd:string.
+:OrderPositionIdCharacteristic a samm:Characteristic;
+    samm:preferredName "Position ID within Order"@en;
+    samm:description "The position ID is unique for an order and used within business context to refer to a position."@en;
+    samm:dataType xsd:string.
+:QuantityCharacteristic a samm-c:Quantifiable;
+    samm:preferredName "Quantity Characteristic"@en;
+    samm:description "Describes the quantity on stock of the item defined by a quantity value and the measurement unit in which the quantity is measured."@en;
+    samm:dataType ext-quantity:ItemQuantityEntity.
+:IsBlockedCharacteristic a samm:Characteristic;
+    samm:preferredName "Is Blocked Characteristic"@en;
+    samm:description "Boolean characteristic indicating whether a stock is blocked (true) or not (false)."@en;
+    samm:dataType xsd:boolean.

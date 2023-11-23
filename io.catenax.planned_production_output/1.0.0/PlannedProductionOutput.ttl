@@ -1,0 +1,171 @@
+#######################################################################
+# Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
+# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+#######################################################################
+# Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
+# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.planned_production_output:1.0.0#>.
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#>.
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#>.
+
+:PlannedProductionOutput a samm:Aspect;
+    samm:preferredName "Planned Production Output of a Supplier"@en;
+    samm:description "This aspect represents the remaining and planned production outputs of a supplier allocated to a customer. An allocated planned production output is described by a quantity, the site of the supplier and the date with time at which a production of a certain material for a certain customer is planned to be finished. The allocated planned production outputs may be linked to customer order position they have been scheduled for."@en;
+    samm:properties (:positions :materialNumberCustomer [
+  samm:property :materialGlobalAssetId;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :materialNumberSupplier;
+  samm:optional "true"^^xsd:boolean
+]);
+    samm:operations ();
+    samm:events ().
+:positions a samm:Property;
+    samm:preferredName "Positions"@en;
+    samm:description "The positions refer to positions within an order of the given product (see material number supplier, materialNumber customer and material global Asset Id) for which the production outputs are transferred. The positions can be differentiated by the order position reference. If no order position reference is given, then there is only one position containing all planned production outputs of the product."@en;
+    samm:characteristic :PositionsCollection.
+:materialNumberCustomer a samm:Property;
+    samm:preferredName "Customer Material Number"@en;
+    samm:description "Material identifier as assigned by the customer. This material number identifies the material (as planned) in the customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the material number supplier should be set in this field, too."@en;
+    samm:characteristic :MaterialNumberCharacteristic;
+    samm:exampleValue "MNR-7307-AU340474.002".
+:materialGlobalAssetId a samm:Property;
+    samm:preferredName "Material Number UUID of the Customer's Twin"@en;
+    samm:description "Material identifier used uniquely to identify the Material (e.g. PartAsPlanned)."@en;
+    samm:characteristic ext-uuid:UuidV4Trait;
+    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
+:materialNumberSupplier a samm:Property;
+    samm:preferredName "Supplier Material Number"@en;
+    samm:description "Material identifier as assigned by the supplier. This material number identifies the material (as planned) in the supplier's database."@en;
+    samm:characteristic :MaterialNumberCharacteristic;
+    samm:exampleValue "MNR-8101-ID146955.001".
+:PositionsCollection a samm-c:Collection;
+    samm:preferredName "Positions Collection"@en;
+    samm:description "If any production for the customer is planned, then there is at least one position. If the supplier does differentiate the planned production according to the order positions (an OrderPositionReference is set), then multiple positions can be given. Among the positions, there could be only one position without an OrderPositionReference to either report the planned production independently of orders or to report internal stock orders planned for the customer."@en;
+    samm:dataType :Position.
+:MaterialNumberCharacteristic a samm:Characteristic;
+    samm:preferredName "Material Number"@en;
+    samm:description "The material number is a multi-character string, usually assigned by an ERP system."@en;
+    samm:dataType xsd:string.
+:Position a samm:Entity;
+    samm:preferredName "Position"@en;
+    samm:description "The Position can be planned for production at several sites. A position may be anonymous or may reference a position within an order."@en;
+    samm:properties ([
+  samm:property :orderPositionReference;
+  samm:optional "true"^^xsd:boolean
+] :lastUpdatedOnDateTime :allocatedPlannedProductionOutputs).
+:orderPositionReference a samm:Property;
+    samm:preferredName "Order Position Reference"@en;
+    samm:description "The order position reference contains information to identify a position within an order."@en;
+    samm:characteristic :OrderPositionReferenceCharacteristic.
+:lastUpdatedOnDateTime a samm:Property;
+    samm:preferredName "Lasted Updated on Date"@en;
+    samm:description "Date and time at which the position has been updated by the supplier's systems. Date and time are set according to the timezone."@en;
+    samm:characteristic :DateTimeStamp;
+    samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:dateTime.
+:allocatedPlannedProductionOutputs a samm:Property;
+    samm:preferredName "Planned and Allocated Production Outputs"@en;
+    samm:description "Planned Production Outputs already allocated to the customer."@en;
+    samm:characteristic :AllocatedPlannedProductionOutputCollection.
+:OrderPositionReferenceCharacteristic a samm:Characteristic;
+    samm:preferredName "Order Position Reference Characteristic"@en;
+    samm:description "The order position reference includes reference numbers for the order and the position. As these information are meant for the customer, the customer reference numbers are mandatory."@en;
+    samm:dataType :OrderPositionReference.
+:DateTimeStamp a samm:Characteristic;
+    samm:preferredName "Date Time Stamp Characteristic"@en;
+    samm:description "The Date with the timezone."@en;
+    samm:dataType xsd:dateTime;
+    samm:see <https://www.iso.org/iso-8601-date-and-time-format.html>.
+:AllocatedPlannedProductionOutputCollection a samm-c:Collection;
+    samm:preferredName "Planned and Allocated Production Output Collection"@en;
+    samm:description "Collection of planned and allocated production outputs that may relate to different production locations and estimated time of completions."@en;
+    samm:dataType :AllocatedPlannedProductionOutput.
+:OrderPositionReference a samm:Entity;
+    samm:preferredName "Reference to Order Position"@en;
+    samm:description "Encapsulates the references to identify a position within an order."@en;
+    samm:properties ([
+  samm:property :supplierOrderId;
+  samm:optional "true"^^xsd:boolean
+] :customerOrderId :customerOrderPositionId).
+:AllocatedPlannedProductionOutput a samm:Entity;
+    samm:preferredName "Planned and Allocated Production Output"@en;
+    samm:description "Quantity, site of the supplier and date with time at which a production of a certain material for a certain customer is planned to be finished."@en;
+    samm:properties (:plannedProductionQuantity :productionSiteBpns :estimatedTimeOfCompletion).
+:supplierOrderId a samm:Property;
+    samm:preferredName "Supplier Order ID"@en;
+    samm:description "This is the order number on the supplier side that is given by e.g., the supplier's enterprise resource planning system."@en;
+    samm:characteristic :OrderIdCharacteristic;
+    samm:exampleValue "M-Nbr-4711".
+:customerOrderId a samm:Property;
+    samm:preferredName "Customer Order ID"@en;
+    samm:description "This is the order number on the customer side that can be given by e.g., the customer's enterprise resource planning system."@en;
+    samm:characteristic :OrderIdCharacteristic;
+    samm:exampleValue "C-Nbr-4711".
+:customerOrderPositionId a samm:Property;
+    samm:preferredName "Customer Order Position ID"@en;
+    samm:description "This is an identifier for the position of an order defined by the customer. It's not a technical identifier, such as an UUID. This identifier is used within the business context when talking about the position."@en;
+    samm:characteristic :OrderPositionIdCharacteristic;
+    samm:exampleValue "PositionId-01".
+:plannedProductionQuantity a samm:Property;
+    samm:preferredName "Planned Production Quantity"@en;
+    samm:description "Quantity of a product that a supplier plans to produce on a certain date and time for a specific customer (that means that it will be allocated to a specific customer's \"allocated item stock\").\nQuantities that have already been produced are put on stock or are considered for delivery. Therefore those quantities MUST NOT be considered in the allocated production output to build a consistent view on the supply situation. "@en;
+    samm:characteristic :QuantityCharacteristic.
+:productionSiteBpns a samm:Property;
+    samm:preferredName "BPNS of Supplier's Production Site"@en;
+    samm:description "One planned and allocated production output has always one site. The site is identified by the BPNS."@en;
+    samm:characteristic ext-number:BpnsTrait;
+    samm:exampleValue "BPNS0123456789ZZ";
+    samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf>.
+:estimatedTimeOfCompletion a samm:Property;
+    samm:preferredName "Estimated Time of Completion"@en;
+    samm:description "Date and time on which the planned and allocated production output is estimated to be completed. Date and time are set according to a timezone."@en;
+    samm:characteristic :DateTimeStamp;
+    samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:dateTime.
+:OrderIdCharacteristic a samm:Characteristic;
+    samm:preferredName "Order ID Characteristic"@en;
+    samm:description "This is a proprietary order ID, generated by either the supplier side or customer side."@en;
+    samm:dataType xsd:string.
+:OrderPositionIdCharacteristic a samm:Characteristic;
+    samm:preferredName "Position ID within Order"@en;
+    samm:description "The position ID is unique for an order and used within business context to refer to a position."@en;
+    samm:dataType xsd:string.
+:QuantityCharacteristic a samm-c:Quantifiable;
+    samm:preferredName "Quantity Characteristic"@en;
+    samm:description "Describes the quantity and the unit of measure with which the planned and allocated production output is measured."@en;
+    samm:dataType ext-quantity:ItemQuantityEntity.
