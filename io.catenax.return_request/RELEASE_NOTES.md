@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
+## [2.0.0] - 2023-11-27
+### Added
+- Upgrade from BAMM model to SAMM model
+- Update attributes
+
+### Changed
+
+
+### Removed
+
 ## [1.1.2] - 2023-01-30
 ### Added
 - 
