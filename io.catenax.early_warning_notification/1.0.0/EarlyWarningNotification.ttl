@@ -1,0 +1,136 @@
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:org.eclipse.examples:1.0.0#> .
+@prefix ext-header: <urn:samm:io.catenax.shared.message_header:1.0.0#> .
+
+:EarlyWarningNotification a samm:Aspect ;
+   samm:preferredName "EarlyWarningNotification"@en ;
+   samm:properties ( :content ext-header:header ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:content a samm:Property ;
+   samm:preferredName "Notification Content"@en ;
+   samm:description "This is the payload for the Early Warning notification."@en ;
+   samm:characteristic :EarlyWarningNotificationCharacteristic .
+
+:EarlyWarningNotificationCharacteristic a samm:Characteristic ;
+   samm:dataType :EarlyWarningNotificationPayload .
+
+:EarlyWarningNotificationPayload a samm:Entity ;
+   samm:properties ( :qualityTaskID :anomalyDescription [ samm:property :qualityAppFilter; samm:optional true ] [ samm:property :earlyWarningAttachmentLink; samm:optional true ] ) .
+
+:qualityTaskID a samm:Property ;
+   samm:preferredName "qualityTaskID"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BPN-811_2022_000001" .
+
+:anomalyDescription a samm:Property ;
+   samm:preferredName "anomalyDescription"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Some text describing the detected anomaly in the data" .
+
+:qualityAppFilter a samm:Property ;
+   samm:description "A filter to define the population of affected parts"@en ;
+   samm:characteristic :QualityAppFilterCharacteristic .
+
+:earlyWarningAttachmentLink a samm:Property ;
+   samm:preferredName "Link to additional Quality Data"@en ;
+   samm:description "This property provide a refernce to an EDC asset that will contain a zip file organized according to the specification CX-0092 and the model defined in io.catenax.quality_task_attachment:1.0.0. The zip file will contain additional data describing the early warning case."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "subprotocolBody: catalogEndpoint=https://test.com/catalog;dataset=79afc338-f7ea-4255-a17d-ba6faf40d2b5" .
+
+:QualityAppFilterCharacteristic a samm:Characteristic ;
+   samm:dataType :QualityAppFilter .
+
+:QualityAppFilter a samm:Entity ;
+   samm:preferredName "Affected Population FIlter"@en ;
+   samm:description "A set of filters and/or a list definieng the affected population"@en ;
+   samm:properties ( :populationFilter :uniqueIdentifiers ) .
+
+:populationFilter a samm:Property ;
+   samm:preferredName "Population Filter"@en ;
+   samm:description "Filters on the common early warning data set to specify a population"@en ;
+   samm:characteristic :FilterCharateristic .
+
+:uniqueIdentifiers a samm:Property ;
+   samm:preferredName "listOfSerialNumbers"@en ;
+   samm:characteristic :UniqueIdentifiersCharacteristic .
+
+:FilterCharateristic a samm-c:List ;
+   samm:dataType :PopulationFilter .
+
+:UniqueIdentifiersCharacteristic a samm-c:List ;
+   samm:preferredName "Serial Numbers"@en ;
+   samm:dataType :UniqueIdentifier .
+
+:PopulationFilter a samm:Entity ;
+   samm:properties ( :filters :aspectModel ) .
+
+:UniqueIdentifier a samm:Entity ;
+   samm:properties ( :anonymizedVIN :catenaXId :serialPartNumber ) .
+
+:filters a samm:Property ;
+   samm:preferredName "Filters"@en ;
+   samm:characteristic :ListOfFilters .
+
+:aspectModel a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:anonymizedVIN a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:catenaXId a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:serialPartNumber a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:ListOfFilters a samm-c:List ;
+   samm:dataType :Filter .
+
+:Filter a samm:Entity ;
+   samm:preferredName "Filter"@en ;
+   samm:properties ( :aspectProperty :from :to :type :valueList ) .
+
+:aspectProperty a samm:Property ;
+   samm:description "A property from the aspect model referenced by \"aspectModel\""@en ;
+   samm:characteristic samm-c:Text .
+
+:from a samm:Property ;
+   samm:preferredName "valueRangeFrom"@en ;
+   samm:characteristic :ValueRangeFromCharacteristic .
+
+:to a samm:Property ;
+   samm:preferredName "valueRangeTo"@en ;
+   samm:characteristic :ValueRangeToCharacteristic .
+
+:type a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:valueList a samm:Property ;
+   samm:characteristic :ValueListCharacteristic .
+
+:ValueRangeFromCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:ValueRangeToCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:ValueListCharacteristic a samm-c:List ;
+   samm:dataType :Value .
+
+:Value a samm:Entity ;
+   samm:properties ( :value ) .
+
+:value a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:Characteristic6 a samm:Characteristic ;
+   samm:dataType :Filter .
+
