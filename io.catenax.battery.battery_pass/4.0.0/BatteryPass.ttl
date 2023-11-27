@@ -12,7 +12,7 @@
    samm:preferredName "battery pass"@en ;
    samm:description "The battery pass describes information collected during the lifecycle of a battery"@en ;
    samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52020PC0798> ;
-   samm:properties ( :identification :material :circularity :generalInformation :sources ext-passport:metadata :performance :conformity :safety ) ;
+   samm:properties ( :identification :material :circularity :generalInformation [ samm:property :sources; samm:optional true ] :performance :conformity :safety ext-passport:metadata ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -67,57 +67,59 @@
    samm:dataType :Entity24 .
 
 :Entity1 a samm:Entity ;
-   samm:properties ( :batteryChemistry [ samm:property ext-passport:additionalCode; samm:optional true ] ext-passport:localIdentifier ext-passport:typology ) .
+   samm:properties ( :batteryCategory [ samm:property ext-passport:additionalCode; samm:optional true ] ext-passport:localIdentifier ext-passport:typology ) .
 
 :Entity2 a samm:Entity ;
-   samm:properties ( :hazardous :composition ext-passport:critical :materialSymbol ) .
+   samm:properties ( :activeMaterials [ samm:property :materialSymbol; samm:optional true ] :hazardousMaterials :otherMaterials ext-passport:critical ) .
 
 :Entity3 a samm:Entity ;
-   samm:properties ( ext-passport:carbonFootprint ext-passport:spareParts ext-passport:state :sustainabilityDocuments ) .
+   samm:properties ( :sustainabilityDocuments ext-passport:carbonFootprint ext-passport:spareParts [ samm:property ext-passport:state; samm:payloadName "status" ] ) .
 
 :Entity4 a samm:Entity ;
    samm:properties ( ext-passport:commercial ext-passport:manufacturer ) .
 
 :Entity5 a samm:Entity ;
-   samm:properties ( :lifetime :capacity :power :internalResistance :energyRoundTrip :negativeEvents :operatingEnvironment ) .
+   samm:properties ( :lifetime :maxCapacity :maxPower :internalResistance :roundTripEfficency :negativeEvents :operatingEnvironment :energy :stateOfChargeDefinition :nominalVoltage ) .
 
 :Entity20 a samm:Entity ;
    samm:properties ( [ samm:property :euDeclarationOfConformityId; samm:optional true ] :declarationOfConformity :resultOfTestReport :thirdPartyAussurance :dueDilligencePolicy ) .
 
 :Entity24 a samm:Entity ;
-   samm:properties ( :extinguishAgent :handlingMeasurement :meaningOfLabels ) .
+   samm:properties ( :extinguishAgent :safetyMeasurement :meaningOfLabels ) .
 
-:batteryChemistry a samm:Property ;
-   samm:characteristic :ChemistryEnumeration .
+:batteryCategory a samm:Property ;
+   samm:characteristic :CategoryEnumeration .
 
-:hazardous a samm:Property ;
-   samm:preferredName "hazardous"@en ;
+:activeMaterials a samm:Property ;
+   samm:preferredName "active Materials"@en ;
    samm:characteristic :Characteristic31 .
-
-:composition a samm:Property ;
-   samm:preferredName "composition"@en ;
-   samm:characteristic ext-passport:MaterialList .
 
 :materialSymbol a samm:Property ;
    samm:characteristic :Characteristic35List .
+
+:hazardousMaterials a samm:Property ;
+   samm:characteristic :Characteristic25 .
+
+:otherMaterials a samm:Property ;
+   samm:characteristic :EitherCompo .
 
 :sustainabilityDocuments a samm:Property ;
    samm:characteristic :Characteristic41 .
 
 :lifetime a samm:Property ;
    samm:preferredName "lifetime"@en ;
-   samm:characteristic :Characteristic12 .
+   samm:characteristic :Cycles .
 
-:capacity a samm:Property ;
+:maxCapacity a samm:Property ;
    samm:characteristic :Characteristic6 .
 
-:power a samm:Property ;
+:maxPower a samm:Property ;
    samm:characteristic :Characteristic13 .
 
 :internalResistance a samm:Property ;
    samm:characteristic :Characteristic16 .
 
-:energyRoundTrip a samm:Property ;
+:roundTripEfficency a samm:Property ;
    samm:characteristic :Characteristic26 .
 
 :negativeEvents a samm:Property ;
@@ -126,14 +128,23 @@
 :operatingEnvironment a samm:Property ;
    samm:characteristic :Characteristic43eit .
 
+:energy a samm:Property ;
+   samm:characteristic :Characteristic35 .
+
+:stateOfChargeDefinition a samm:Property ;
+   samm:characteristic :Characteristic43 .
+
+:nominalVoltage a samm:Property ;
+   samm:characteristic :Characteristic44 .
+
 :euDeclarationOfConformityId a samm:Property ;
    samm:characteristic :Characteristic36 .
 
 :declarationOfConformity a samm:Property ;
-   samm:characteristic :Characteristic37 .
+   samm:characteristic ext-passport:SourceList .
 
 :resultOfTestReport a samm:Property ;
-   samm:characteristic :Characteristic37 .
+   samm:characteristic ext-passport:SourceList .
 
 :thirdPartyAussurance a samm:Property ;
    samm:characteristic ext-passport:SourceList .
@@ -142,16 +153,16 @@
    samm:characteristic ext-passport:SourceList .
 
 :extinguishAgent a samm:Property ;
-   samm:characteristic ext-passport:SourceList .
+   samm:characteristic :Characteristic14 .
 
-:handlingMeasurement a samm:Property ;
+:safetyMeasurement a samm:Property ;
    samm:characteristic ext-passport:SourceList .
 
 :meaningOfLabels a samm:Property ;
    samm:characteristic ext-passport:SourceList .
 
-:ChemistryEnumeration a samm-c:Enumeration ;
-   samm:preferredName "Chemistry Enumeration"@en ;
+:CategoryEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Category Enumeration"@en ;
    samm:description "Enumeration with the values, portable battery; starting, lighting and ignition battery (SLI); light means of transport battery (LMT); electric vehicle battery (EV), industrial battery and incoporated battery."@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "SLI" "LMT" "EV" "industrial" "portable" "incoporated" ) .
@@ -162,11 +173,18 @@
 :Characteristic35List a samm-c:List ;
    samm:dataType :Entity22 .
 
+:Characteristic25 a samm:Characteristic ;
+   samm:dataType :Entity30 .
+
+:EitherCompo a samm-c:Either ;
+   samm-c:left ext-passport:NotApplicableEnumeration ;
+   samm-c:right :MaterialCompo .
+
 :Characteristic41 a samm:Characteristic ;
    samm:dataType :Entity26 .
 
-:Characteristic12 a samm:Characteristic ;
-   samm:dataType :Entity25 .
+:Cycles a samm:Characteristic ;
+   samm:dataType :Entity12 .
 
 :Characteristic6 a samm-c:SingleEntity ;
    samm:dataType :Entity6 .
@@ -184,53 +202,87 @@
    samm-c:left ext-passport:NotApplicableEnumeration ;
    samm-c:right ext-passport:SourceList .
 
+:Characteristic35 a samm:Characteristic ;
+   samm:dataType :Entity32 .
+
+:Characteristic43 a samm:Characteristic ;
+   samm:dataType :Entity34 .
+
+:Characteristic44 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:volt .
+
 :Characteristic36 a samm:Characteristic ;
    samm:dataType xsd:string .
 
-:Characteristic37 a samm:Characteristic ;
-   samm:dataType ext-passport:DocumentEntity .
+:Characteristic14 a samm:Characteristic ;
+   samm:dataType :Entity21 .
 
 :Entity18 a samm:Entity ;
-   samm:properties ( [ samm:property :voluntary; samm:optional true ] :nickel :lithium :cobalt :lead ) .
+   samm:properties ( :nickel :lithium :cobalt :lead ) .
 
 :Entity22 a samm:Entity ;
    samm:properties ( :property27 ) .
 
-:Entity26 a samm:Entity ;
-   samm:properties ( :seperateCollection :wastePrevention :impactOfSubstances :reUseCentres :littering ) .
+:Entity30 a samm:Entity ;
+   samm:properties ( :leadActive :cadmium :mercury ) .
 
-:Entity25 a samm:Entity ;
-   samm:properties ( :testReport :expectedCycles :expectedYears ) .
+:MaterialCompo a samm:Characteristic ;
+   samm:dataType :Entity29 .
+
+:Entity26 a samm:Entity ;
+   samm:properties ( :seperateCollection :wastePrevention :impactOfSubstances :reUseCentres :littering [ samm:property :euTaxonomyDisclosureStatement; samm:optional true ] [ samm:property :sustainabilityReport; samm:optional true ] ) .
+
+:Entity12 a samm:Entity ;
+   samm:properties ( :cycles :temperature :depthOfDischarge :expectedYears :testReport ) .
 
 :Entity6 a samm:Entity ;
    samm:properties ( :ratedCapacity :currentCapacity ) .
 
 :Entity7 a samm:Entity ;
-   samm:properties ( :capabilityAt80SoC :capabilityAt20SoC :ratedPower :currentPower ) .
+   samm:properties ( :ratedPower :currentPower ) .
 
 :Entity8 a samm:Entity ;
    samm:properties ( :ratedResistance :currentResistance ) .
 
 :Entity15 a samm:Entity ;
-   samm:properties ( :ratedRoundTrip :currentRoundTrip ) .
+   samm:properties ( :ratedRoundTripEfficency :currentRoundTripEfficency ) .
 
-:voluntary a samm:Property ;
-   samm:characteristic :Listdddd .
+:Entity32 a samm:Entity ;
+   samm:properties ( :ratedEnergy :currentEnergy ) .
+
+:Entity34 a samm:Entity ;
+   samm:properties ( :at0Percent :at100PercentRated ) .
+
+:Entity21 a samm:Entity ;
+   samm:properties ( :agentDocument :suitableExtinguishingMedia :fireClass ) .
 
 :nickel a samm:Property ;
-   samm:characteristic :Characteristic32 .
+   samm:characteristic :EitherApp .
 
 :lithium a samm:Property ;
-   samm:characteristic :Characteristic32 .
+   samm:characteristic :EitherApp .
 
 :cobalt a samm:Property ;
-   samm:characteristic :Characteristic32 .
+   samm:characteristic :EitherApp .
 
 :lead a samm:Property ;
-   samm:characteristic :Characteristic32 .
+   samm:characteristic :EitherApp .
 
 :property27 a samm:Property ;
    samm:characteristic :Characteristic35Either .
+
+:leadActive a samm:Property ;
+   samm:characteristic :Characteristic33 .
+
+:cadmium a samm:Property ;
+   samm:characteristic :Characteristic33 .
+
+:mercury a samm:Property ;
+   samm:characteristic :Characteristic33 .
+
+:Entity29 a samm:Entity ;
+   samm:properties ( [ samm:property :impactDocument; samm:optional true ] :criticalFlag ext-passport:substanceName ext-passport:substanceIdentification ext-passport:concentration ext-passport:location ext-passport:hazardClass ) .
 
 :seperateCollection a samm:Property ;
    samm:characteristic :Characteristic42 .
@@ -247,61 +299,103 @@
 :littering a samm:Property ;
    samm:characteristic ext-passport:SourceList .
 
-:testReport a samm:Property ;
+:euTaxonomyDisclosureStatement a samm:Property ;
    samm:characteristic ext-passport:SourceList .
 
-:expectedCycles a samm:Property ;
-   samm:characteristic :Characteristic39Eitherrr .
+:sustainabilityReport a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:cycles a samm:Property ;
+   samm:characteristic :Characteristic10 .
+
+:temperature a samm:Property ;
+   samm:characteristic :Characteristic8 .
+
+:depthOfDischarge a samm:Property ;
+   samm:characteristic :Characteristic29 .
 
 :expectedYears a samm:Property ;
    samm:characteristic :Characteristic40 .
+
+:testReport a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
 
 :ratedCapacity a samm:Property ;
    samm:characteristic :Characteristic7 .
 
 :currentCapacity a samm:Property ;
-   samm:characteristic :Characteristic15 .
-
-:capabilityAt80SoC a samm:Property ;
-   samm:characteristic :Characteristic18 .
-
-:capabilityAt20SoC a samm:Property ;
-   samm:characteristic :Characteristic18 .
+   samm:characteristic :Characteristic7 .
 
 :ratedPower a samm:Property ;
    samm:characteristic :Characteristic18 .
 
 :currentPower a samm:Property ;
-   samm:characteristic :Characteristic19 .
+   samm:characteristic :Characteristic18 .
 
 :ratedResistance a samm:Property ;
-   samm:characteristic :Characteristic22 .
+   samm:characteristic :Characteristic22List .
 
 :currentResistance a samm:Property ;
-   samm:characteristic :Characteristic24 .
+   samm:characteristic :Characteristic22List .
 
-:ratedRoundTrip a samm:Property ;
+:ratedRoundTripEfficency a samm:Property ;
    samm:characteristic :Characteristic27 .
 
-:currentRoundTrip a samm:Property ;
-   samm:characteristic :Characteristic28 .
+:currentRoundTripEfficency a samm:Property ;
+   samm:characteristic :Characteristic27 .
 
-:Listdddd a samm-c:List ;
-   samm:dataType :Entity19 .
+:ratedEnergy a samm:Property ;
+   samm:characteristic :Characteristic37 .
 
-:Characteristic32 a samm:Characteristic ;
-   samm:dataType :Entity19 .
+:currentEnergy a samm:Property ;
+   samm:characteristic :Characteristic37 .
+
+:at0Percent a samm:Property ;
+   samm:characteristic :Characteristic44 .
+
+:at100PercentRated a samm:Property ;
+   samm:description "= rated SOC"@en ;
+   samm:characteristic :Characteristic44 .
+
+:agentDocument a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:suitableExtinguishingMedia a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:fireClass a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:EitherApp a samm-c:Either ;
+   samm-c:left ext-passport:NotApplicableEnumeration ;
+   samm-c:right :Materialactive .
 
 :Characteristic35Either a samm-c:Either ;
-   samm-c:left :SymbolEnumeration ;
-   samm-c:right :Linmk .
+   samm-c:left :Linmk ;
+   samm-c:right :Characteristic35EitherTrait .
+
+:Characteristic33 a samm:Characteristic ;
+   samm:dataType :Entity31 .
+
+:impactDocument a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:criticalFlag a samm:Property ;
+   samm:characteristic samm-c:Boolean .
 
 :Characteristic42 a samm:Characteristic ;
    samm:dataType :Entity27 .
 
-:Characteristic39Eitherrr a samm-c:Either ;
-   samm-c:left ext-passport:NotApplicableEnumeration ;
-   samm-c:right :Cycles .
+:Characteristic10 a samm:Characteristic ;
+   samm:dataType xsd:positiveInteger .
+
+:Characteristic8 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:degreeCelsius .
+
+:Characteristic29 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:percent .
 
 :Characteristic40 a samm:Characteristic ;
    samm:dataType xsd:positiveInteger .
@@ -309,69 +403,54 @@
 :Characteristic7 a samm:Characteristic ;
    samm:dataType :Entity9 .
 
-:Characteristic15 a samm:Characteristic ;
-   samm:dataType :Entity10 .
-
 :Characteristic18 a samm:Characteristic ;
    samm:dataType :Entity11 .
 
-:Characteristic19 a samm:Characteristic ;
-   samm:dataType :Entity12 .
-
-:Characteristic22 a samm:Characteristic ;
+:Characteristic22List a samm-c:List ;
    samm:dataType :Entity13 .
-
-:Characteristic24 a samm:Characteristic ;
-   samm:dataType :Entity14 .
 
 :Characteristic27 a samm:Characteristic ;
    samm:dataType :Entity16 .
 
-:Characteristic28 a samm:Characteristic ;
-   samm:dataType :Entity17 .
+:Characteristic37 a samm:Characteristic ;
+   samm:dataType :Entity33 .
 
-:Entity19 a samm:Entity ;
-   samm:properties ( ext-passport:concentration ext-passport:substanceIdentification ext-passport:substanceUnit ext-passport:location ext-passport:substanceName ext-passport:recycled ext-passport:renewable :hazardousDocument ) .
-
-:SymbolEnumeration a samm-c:Enumeration ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "Pb" "Cd" ) .
+:Materialactive a samm:Characteristic ;
+   samm:dataType :Entity19 .
 
 :Linmk a samm:Characteristic ;
    samm:dataType xsd:string .
 
+:Characteristic35EitherTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :Constraint1rrr .
+
+:Entity31 a samm:Entity ;
+   samm:properties ( ext-passport:concentration ) .
+
 :Entity27 a samm:Entity ;
    samm:properties ( :seperateCollectionSymbol :seperateCollectionEndUser :seperateCollectionPreparation :seperateCollectionSystems ) .
 
-:Cycles a samm:Characteristic ;
-   samm:dataType xsd:positiveInteger .
-
 :Entity9 a samm:Entity ;
-   samm:properties ( :capacityValue :temperature :appliedDischargeRate :appliedChargeRate ) .
-
-:Entity10 a samm:Entity ;
-   samm:properties ( :currentFade :appliedChargeRate :appliedDischargeRate :temperature :capacityValue ) .
+   samm:properties ( :capacityValue :temperature ) .
 
 :Entity11 a samm:Entity ;
-   samm:properties ( :appliedChargeRate :appliedDischargeRate :temperature :powerValue ) .
-
-:Entity12 a samm:Entity ;
-   samm:properties ( :powerValue :appliedChargeRate :appliedDischargeRate :temperature :currentFade ) .
+   samm:properties ( :temperature :powerValue :capabilityAt20SoC :capabilityAt80SoC ) .
 
 :Entity13 a samm:Entity ;
-   samm:properties ( :resistanceValue :appliedChargeRate :appliedDischargeRate :temperature ) .
-
-:Entity14 a samm:Entity ;
-   samm:properties ( :resistanceValue :currentIncrease ) .
+   samm:properties ( :appliedChargeRate :appliedDischargeRate :temperature :norm ) .
 
 :Entity16 a samm:Entity ;
-   samm:properties ( :depthOfDischarge :efficiencyValue :appliedChargeRate :appliedDischargeRate :temperature ) .
+   samm:properties ( :depthOfDischarge :efficiencyValue :temperature :norm ) .
 
-:Entity17 a samm:Entity ;
-   samm:properties ( :depthOfDischarge :efficiencyFade :temperature :appliedDischargeRate :appliedChargeRate ) .
+:Entity33 a samm:Entity ;
+   samm:properties ( :temperature :energyValue :appliedDischargeRate ) .
 
-:hazardousDocument a samm:Property ;
-   samm:characteristic ext-passport:SourceList .
+:Entity19 a samm:Entity ;
+   samm:properties ( [ samm:property :impactDocument; samm:optional true ] ext-passport:location ext-passport:recycled [ samm:property ext-passport:renewable; samm:optional true ] ) .
+
+:Constraint1rrr a samm-c:RegularExpressionConstraint ;
+   samm:value "^(?:Pb|Cb)(?:, (?:Pb|Cb))?$ " .
 
 :seperateCollectionSymbol a samm:Property ;
    samm:characteristic :Characteristic3Either .
@@ -388,69 +467,73 @@
 :capacityValue a samm:Property ;
    samm:characteristic :Characteristic17 .
 
-:temperature a samm:Property ;
-   samm:characteristic :Characteristic8 .
-
-:appliedDischargeRate a samm:Property ;
-   samm:characteristic :Characteristic9 .
-
-:appliedChargeRate a samm:Property ;
-   samm:characteristic :Characteristic10 .
-
-:currentFade a samm:Property ;
-   samm:characteristic :VariancePercentage .
-
 :powerValue a samm:Property ;
    samm:characteristic :Characteristic20 .
 
-:resistanceValue a samm:Property ;
-   samm:characteristic :Characteristic23 .
+:capabilityAt20SoC a samm:Property ;
+   samm:characteristic :Characteristic20 .
 
-:currentIncrease a samm:Property ;
-   samm:characteristic :VariancePercentage .
+:capabilityAt80SoC a samm:Property ;
+   samm:characteristic :Characteristic20 .
 
-:depthOfDischarge a samm:Property ;
-   samm:characteristic :Characteristic29 .
+:appliedChargeRate a samm:Property ;
+   samm:characteristic :Chararrr .
+
+:appliedDischargeRate a samm:Property ;
+   samm:characteristic :Chararrr .
+
+:norm a samm:Property ;
+   samm:characteristic :Characteristic32 .
 
 :efficiencyValue a samm:Property ;
    samm:characteristic :Characteristic30 .
 
-:efficiencyFade a samm:Property ;
-   samm:characteristic :VariancePercentage .
+:energyValue a samm:Property ;
+   samm:characteristic :Characteristic39 .
 
 :Characteristic3Either a samm-c:Either ;
    samm-c:left :CollectionEnumeration ;
    samm-c:right :Linmk .
 
-:Characteristic17 a samm:Characteristic ;
-   samm:dataType xsd:double .
+:Characteristic17 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:ampereHour .
 
-:Characteristic8 a samm:Characteristic ;
-   samm:dataType xsd:double .
+:Characteristic20 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:watt .
 
-:Characteristic9 a samm:Characteristic ;
+:Chararrr a samm:Characteristic ;
+   samm:dataType :Entity10 .
+
+:Characteristic32 a samm:Characteristic ;
    samm:dataType xsd:string .
 
-:Characteristic10 a samm:Characteristic ;
-   samm:dataType xsd:string .
-
-:VariancePercentage a samm-c:Measurement ;
+:Characteristic30 a samm-c:Measurement ;
    samm:dataType xsd:double ;
    samm-c:unit unit:percent .
 
-:Characteristic20 a samm:Characteristic ;
-   samm:dataType xsd:double .
-
-:Characteristic23 a samm:Characteristic ;
-   samm:dataType xsd:double .
-
-:Characteristic29 a samm:Characteristic ;
-   samm:dataType xsd:double .
-
-:Characteristic30 a samm:Characteristic ;
-   samm:dataType xsd:double .
+:Characteristic39 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:wattHour .
 
 :CollectionEnumeration a samm-c:Enumeration ;
    samm:dataType xsd:string ;
    samm-c:values ( "separate collection symbol" ) .
+
+:Entity10 a samm:Entity ;
+   samm:properties ( :resistanceDC :cRate ) .
+
+:resistanceDC a samm:Property ;
+   samm:characteristic :Characteristic23 .
+
+:cRate a samm:Property ;
+   samm:characteristic :Characteristic9 .
+
+:Characteristic23 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:ohm .
+
+:Characteristic9 a samm:Characteristic ;
+   samm:dataType xsd:double .
 

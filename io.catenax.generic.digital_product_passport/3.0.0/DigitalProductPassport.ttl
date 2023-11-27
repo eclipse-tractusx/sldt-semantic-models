@@ -7,7 +7,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.generic.digital_product_passport:3.0.0#> .
 @prefix ext-address: <urn:samm:io.catenax.shared.address_characteristic:3.0.0#> .
-@prefix ext-contact: <urn:samm:io.catenax.shared.contact_information:2.0.0#> .
+@prefix ext-contact: <urn:samm:io.catenax.shared.contact_information:3.0.0#> .
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
 @prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#> .
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
@@ -70,7 +70,7 @@
 
 :handling a samm:Property ;
    samm:preferredName "handling"@en ;
-   samm:description "Properties connected with the handling of the produc"@en ;
+   samm:description "Properties connected with the handling of the product."@en ;
    samm:characteristic :HandlingCharacteristic .
 
 :MetadataCharacteristic a samm:Characteristic ;
@@ -136,7 +136,7 @@
 :SustainabilityEntity a samm:Entity ;
    samm:preferredName "Sustainability Entity"@en ;
    samm:description "Entity with the properties state, al list of different materials, a list of critical materials and the product carbon footprint."@en ;
-   samm:properties ( :state :material :critical [ samm:property :productEnvironmentalFootprint; samm:payloadName "PEF" ] ) .
+   samm:properties ( [ samm:property :state; samm:payloadName "status" ] :chemicalMaterial :critical [ samm:property :productEnvironmentalFootprint; samm:payloadName "PEF" ] ) .
 
 :CharacteristicsEntity a samm:Entity ;
    samm:preferredName "Characteristics Entity"@en ;
@@ -233,18 +233,18 @@
 
 :state a samm:Property ;
    samm:preferredName "State"@en ;
-   samm:description "The status of the product (first life or second life) to indicated, whether it is a used product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:\n(j) incorporation of used components."@en ;
+   samm:description "The status of the product (original, repurposed, re-used, remanufactured or waste) to indicated, whether it is a used product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:\n(j) incorporation of used components."@en ;
    samm:characteristic :StateEnumeration ;
    samm:exampleValue "first life" .
 
-:material a samm:Property ;
+:chemicalMaterial a samm:Property ;
    samm:preferredName "Material"@en ;
    samm:description "Information on different materials in the product."@en ;
    samm:characteristic :EitherMaterialCharacteristic .
 
 :critical a samm:Property ;
    samm:preferredName "Critical"@en ;
-   samm:description "A list of critical raw material names which are included at the level of the product. This attribute is complemented to the ESPR proposal by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(hb) use or content of critical raw materials.\nIn Annex II of the connected proposal Act of Critical Raw Materials, a list of critical raw materials can be found."@en ;
+   samm:description "A list of critical raw material names and their share which are included at the level of the product. This attribute is complemented to the ESPR proposal by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(hb) use or content of critical raw materials.\nIn Annex II of the connected proposal Act of Critical Raw Materials, a list of critical raw materials can be found."@en ;
    samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM:2023:0160:FIN> ;
    samm:characteristic :EitherCritical .
 
@@ -282,7 +282,7 @@
 
 :manufacturer a samm:Property ;
    samm:preferredName "Manufacturer"@en ;
-   samm:description "Manufacturing information of the product. In the CATENA-X use case, the BPNL and BPNS can be stated. These attributes are mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(g) information related to the manufacturer, such as its unique operator identifier and the information referred to in Article 21(7);\n(i) unique facility identifiers."@en ;
+   samm:description "Manufacturing information of the product. In the CATENA-X use case, the BPNL and BPNA can be stated. These attributes are mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(g) information related to the manufacturer, such as its unique operator identifier and the information referred to in Article 21(7);\n(i) unique facility identifiers."@en ;
    samm:characteristic :ManufacturerCharacteristic .
 
 :additionalCode a samm:Property ;
@@ -359,7 +359,7 @@
 
 :substanceOfConcern a samm:Property ;
    samm:preferredName "Concerning Substance"@en ;
-   samm:description "Information regarding substances of concern in the product. Attributes are among others substance names, ids, concentration, location. This is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number.\n(5) (b) the location of the substances of concern within the product.\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...].\n(5) (c) provide exemptions for substances of concern or information elements from the information requirements referred to in the first subparagraph."@en ;
+   samm:description "Information regarding substances of concern in the product. Attributes are among others substance names, ids, concentration, location and hazard class. This is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number.\n(5) (b) the location of the substances of concern within the product.\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...].\n(5) (c) provide exemptions for substances of concern or information elements from the information requirements referred to in the first subparagraph."@en ;
    samm:characteristic :SubstanceCharacteristic .
 
 :StatusEnumeration a samm-c:Enumeration ;
@@ -522,7 +522,7 @@
 :CriticalList a samm-c:List ;
    samm:preferredName "Critical List"@en ;
    samm:description "The list of critical raw materials in the product (CRM) which is specified by EU."@en ;
-   samm:dataType xsd:string .
+   samm:dataType :CriticalEntity .
 
 :ProductEnvironmentalFootprintEntity a samm:Entity ;
    samm:preferredName "Product Environmental Footprint Entity"@en ;
@@ -608,6 +608,11 @@
    samm:description "Information regarding recycled and/or renewable materials in the product. Attributes are among others material names, ids and percentage. These attributes are mentioned in the ESPR proposal from March 30th, 2022 Article 1:\n(1) (f) recycled content in products.\nAnd complemented by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(ha) use or content of sustainably sourced renewable materials."@en ;
    samm:properties ( [ samm:property :materialName; samm:payloadName "name" ] :recycled :renewable [ samm:property :materialValue; samm:payloadName "value" ] [ samm:property :substanceUnit; samm:payloadName "unit" ] [ samm:property :materialIdentification; samm:payloadName "id" ] ) .
 
+:CriticalEntity a samm:Entity ;
+   samm:preferredName "Critical Entity"@en ;
+   samm:description "Critical materials included on the level of the product with the values name and share."@en ;
+   samm:properties ( :criticalName :criticalValue ) .
+
 :environmentalFootprint a samm:Property ;
    samm:preferredName "Environmental Footprint"@en ;
    samm:description "The environmental footprint of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:\n(l) the environmental footprint of the product, expressed as a quantification, in accordance with the applicable delegated act, of a product?s life cycle environmental impacts, whether in relation to one or more environmental impact categories or an aggregated set of impact categories."@en ;
@@ -679,8 +684,8 @@
 
 :facilityIdentification a samm:Property ;
    samm:preferredName "Facility Identification"@en ;
-   samm:description "The facility identification, where the main manufacturing took place. In the CATENA-X use case, the BPNS can be stated. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(i) unique facility identifiers."@en ;
-   samm:characteristic :EitherLocation .
+   samm:description "The facility identification, where the main manufacturing took place. In the CATENA-X use case, the BPNA can be stated. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(i) unique facility identifiers."@en ;
+   samm:characteristic :EitherPlantLocation .
 
 :manufacturerIdentification a samm:Property ;
    samm:preferredName "Manufacturer Identification"@en ;
@@ -750,12 +755,13 @@
 :SubstanceEntity a samm:Entity ;
    samm:preferredName "Substance Entity"@en ;
    samm:description "Information regarding substances of concern in the product. Attributes are among others substance names, ids, concentration, location. This is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number.\n(5) (b) the location of the substances of concern within the product.\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...].\n(5) (c) provide exemptions for substances of concern or information elements from the information requirements referred to in the first subparagraph."@en ;
-   samm:properties ( [ samm:property :substanceName; samm:payloadName "name" ] :location [ samm:property :substanceUnit; samm:payloadName "unit" ] :concentration [ samm:property :substanceIdentification; samm:payloadName "id" ] :exemption ) .
+   samm:properties ( [ samm:property :substanceName; samm:payloadName "name" ] :location [ samm:property :substanceUnit; samm:payloadName "unit" ] :concentration [ samm:property :substanceIdentification; samm:payloadName "id" ] :exemption :hazardClass ) .
 
 :EitherBusiness a samm-c:Either ;
    samm:preferredName "Either Business"@en ;
+   samm:description "Either a complete business address and contact information (left) or an identifier (right) to reference this information."@en ;
    samm-c:left :BusinessAddress ;
-   samm-c:right :Idshort .
+   samm-c:right :BusinessId .
 
 :CodeTrait a samm-c:Trait ;
    samm:preferredName "Code Trait"@en ;
@@ -796,7 +802,20 @@
 :materialIdentification a samm:Property ;
    samm:preferredName "Material Identification"@en ;
    samm:description "The material identification, in accordance with the specification in the attribute list type."@en ;
-   samm:characteristic :IdList .
+   samm:characteristic :MaterialIdList .
+
+:criticalName a samm:Property ;
+   samm:preferredName "Critical Name"@en ;
+   samm:description "Name of the critical raw material."@en ;
+   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM:2023:0160:FIN> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Lithium" .
+
+:criticalValue a samm:Property ;
+   samm:preferredName "Critical Value"@en ;
+   samm:description "Share of the critical raw material on the level of the product."@en ;
+   samm:characteristic :Share ;
+   samm:exampleValue "0.87"^^xsd:float .
 
 :FootprintList a samm-c:List ;
    samm:preferredName "Footprint List"@en ;
@@ -844,10 +863,11 @@
    samm:description "The importer of the product, if different from the owner of the passport. In the Catena-X network, the BPNL is used for the identification of companies and the information stored for this like contact information and addresses.\nThis attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(j) information related to the importer, including the information referred to in Article 23(3) and its EORI number;\nArticle 23 states:\n(3) Importers shall indicate on the product their name, registered trade name or registered trade mark and the postal address and, where available, electronic means of communication, where they can be contacted or, where this is not possible, on the packaging, in a document accompanying the product or, where available, in a product passport. The contact details shall be clear, understandable and legible."@en ;
    samm:characteristic :EitherBusiness .
 
-:EitherLocation a samm-c:Either ;
-   samm:preferredName "Either Location"@en ;
+:EitherPlantLocation a samm-c:Either ;
+   samm:preferredName "Either Plant Location"@en ;
+   samm:description "Either the plant location as an ID (right) or a complete address (left)."@en ;
    samm-c:left ext-address:PostalAddress ;
-   samm-c:right ext-number:BpnsTrait .
+   samm-c:right :IdLocation .
 
 :CodeEnumeration a samm-c:Enumeration ;
    samm:preferredName "Code Enumeration"@en ;
@@ -911,7 +931,7 @@
 :substanceIdentification a samm:Property ;
    samm:preferredName "Substance Identification"@en ;
    samm:description "The substance identification, in accordance with the specification in the attribute for the list type. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:\n(5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number."@en ;
-   samm:characteristic :IdList .
+   samm:characteristic :MaterialIdList .
 
 :exemption a samm:Property ;
    samm:preferredName "Exemption"@en ;
@@ -919,11 +939,21 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "shall not apply to product x containing not more than 1,5 ml of liquid" .
 
-:BusinessAddress a samm:Characteristic ;
-   samm:dataType :Entity2 .
+:hazardClass a samm:Property ;
+   samm:description "The specification of the hazard class."@en ;
+   samm:see <https://echa.europa.eu/regulations/clp/classification> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Acute toxicity" .
 
-:Idshort a samm:Characteristic ;
-   samm:dataType :Entity155 .
+:BusinessAddress a samm:Characteristic ;
+   samm:preferredName "Business Address"@en ;
+   samm:description "Characteristic further defining a business address."@en ;
+   samm:dataType :BusinessEntity .
+
+:BusinessId a samm:Characteristic ;
+   samm:preferredName "Business Id"@en ;
+   samm:description "A identifier to refer to a business."@en ;
+   samm:dataType :BusinessIdEntity .
 
 :CodeConstraint a samm-c:RegularExpressionConstraint ;
    samm:preferredName "Code Constraint"@en ;
@@ -953,14 +983,14 @@
    samm:dataType xsd:string ;
    samm-c:values ( "unit:partPerMillion" "unit:percent" "unit:percentVolume" "unit:partPerThousand" "unit:partPerTrillionUs" "unit:partPerBillionUs" ) .
 
-:IdList a samm-c:List ;
-   samm:preferredName "Id List"@en ;
+:MaterialIdList a samm-c:List ;
+   samm:preferredName "Material Id List"@en ;
    samm:description "List of ids for the identification."@en ;
-   samm:dataType :IdEntity .
+   samm:dataType :MaterialIdEntity .
 
 :FootprintEntity a samm:Entity ;
    samm:preferredName "Footprint Entity"@en ;
-   samm:description "Footprint Entity for the carbon and environmental footprint with the total value, unit, impact category type, lifecycle, rulebook, performance class and the facility."@en ;
+   samm:description "Footprint Entity for the carbon and environmental footprint with the total value, unit, impact category type, lifecycle, rulebook, declaration, performance class and the facility."@en ;
    samm:properties ( [ samm:property :footprintValue; samm:payloadName "value" ] [ samm:property :footprintRulebook; samm:payloadName "rulebook" ] [ samm:property :footprintLifecycle; samm:payloadName "lifecycle" ] [ samm:property :footprintUnit; samm:payloadName "unit" ] [ samm:property :footprintType; samm:payloadName "type" ] [ samm:property :performanceClass; samm:optional true ] :manufacturingPlant :declaration ) .
 
 :EoriTrait a samm-c:Trait ;
@@ -968,6 +998,11 @@
    samm:description "Trait to limit the input to the specified format of an eori."@en ;
    samm-c:baseCharacteristic :IdentifierCharacteristic ;
    samm-c:constraint :EoriConstraint .
+
+:IdLocation a samm:Characteristic ;
+   samm:preferredName "Id Location"@en ;
+   samm:description "A short id for a manufacturing plant."@en ;
+   samm:dataType :LocationIdEntity .
 
 :ProducerList a samm-c:List ;
    samm:preferredName "Producer List"@en ;
@@ -980,21 +1015,25 @@
    samm-c:left :RangeCharacteristic ;
    samm-c:right :ConcentrationCharacteristic .
 
-:Entity2 a samm:Entity ;
+:BusinessEntity a samm:Entity ;
+   samm:preferredName "Business Entity"@en ;
+   samm:description "Entity with a company name, address and contact information."@en ;
    samm:properties ( :companyName ext-contact:contactProperty ext-address:address ) .
 
-:Entity155 a samm:Entity ;
+:BusinessIdEntity a samm:Entity ;
+   samm:preferredName "Business Id Entity"@en ;
+   samm:description "Business Id Entity encapsulating a business identifier and type."@en ;
    samm:properties ( :businessIdentifier :businessIdentifierType ) .
 
 :NameEntity a samm:Entity ;
    samm:preferredName "Name Entity"@en ;
    samm:description "Entity with the name and used list type."@en ;
-   samm:properties ( :name [ samm:property :listTypeName; samm:payloadName "type" ] ) .
+   samm:properties ( :chemicalName [ samm:property :listTypeName; samm:payloadName "type" ] ) .
 
-:IdEntity a samm:Entity ;
-   samm:preferredName "Id Entity"@en ;
+:MaterialIdEntity a samm:Entity ;
+   samm:preferredName "Material Id Entity"@en ;
    samm:description "Id Entity with identifier and list type."@en ;
-   samm:properties ( :id [ samm:property :listTypeId; samm:payloadName "type" ] ) .
+   samm:properties ( :materialid [ samm:property :listTypeId; samm:payloadName "type" ] ) .
 
 :footprintValue a samm:Property ;
    samm:preferredName "Footprint Value"@en ;
@@ -1027,19 +1066,31 @@
    samm:exampleValue "Climate Change" .
 
 :performanceClass a samm:Property ;
-   samm:characteristic samm-c:Text .
+   samm:preferredName "Performance Class"@en ;
+   samm:description "The performance classification of the footprint."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "A" .
 
 :manufacturingPlant a samm:Property ;
-   samm:characteristic :EitherLocation .
+   samm:preferredName "Manufacturing Plant"@en ;
+   samm:description "The manufacturing plant of the footprint in the specific lifecycle phase."@en ;
+   samm:characteristic :EitherPlantLocation .
 
 :declaration a samm:Property ;
    samm:preferredName "declaration"@en ;
-   samm:characteristic samm-c:Text .
+   samm:description "The footprint declaration in the format of a link "@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "www.alink.de" .
 
 :EoriConstraint a samm-c:RegularExpressionConstraint ;
    samm:preferredName "EORI Constraint"@en ;
    samm:description "Constraint with a pattern which ensures that the EORI number starts with two alphanumeric characters, followed by two alphabetic characters, and ends with 2 to 15 alphanumeric characters."@en ;
    samm:value "^[A-Z]{2}[A-Z0-9]{1,18}$" .
+
+:LocationIdEntity a samm:Entity ;
+   samm:preferredName "Location Id Entity"@en ;
+   samm:description "A short id for a manufacturing plant with the identifier itself and a type to describe it."@en ;
+   samm:properties ( :locationIdentifier :locationIdentifierType ) .
 
 :ProducerEntity a samm:Entity ;
    samm:preferredName "Producer Entity"@en ;
@@ -1064,16 +1115,18 @@
 
 :businessIdentifier a samm:Property ;
    samm:preferredName "Business Identifier"@en ;
-   samm:characteristic :EitherIdentifier .
+   samm:description "The identifier used for a company address."@en ;
+   samm:characteristic :EitherIdentifier ;
+   samm:exampleValue "BPNL1234567890AA" .
 
 :businessIdentifierType a samm:Property ;
    samm:preferredName "Business Identifier Type"@en ;
-   samm:description "The type of identifier used in combination with the business identifier. In case of catena-x, a value can be BPNL or BPNS."@en ;
+   samm:description "The type of identifier used in combination with the business identifier. In case of catena-x, a value can be BPNL or BPNA."@en ;
    samm:characteristic :BusinessType ;
    samm:exampleValue "BPNL" .
 
-:name a samm:Property ;
-   samm:preferredName "Name"@en ;
+:chemicalName a samm:Property ;
+   samm:preferredName "Chemical Name"@en ;
    samm:description "The name, in accordance with the specification in the attribute for the list type, which is present in the product."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "phenolphthalein" .
@@ -1084,8 +1137,8 @@
    samm:characteristic :ListTypeEnumerationName ;
    samm:exampleValue "CAS" .
 
-:id a samm:Property ;
-   samm:preferredName "Id"@en ;
+:materialid a samm:Property ;
+   samm:preferredName "Material Id"@en ;
    samm:description "The substance identification, in accordance with the specification in the attribute for the list type."@en ;
    samm:characteristic :IdentifierCharacteristic ;
    samm:exampleValue "201-004-7" .
@@ -1106,6 +1159,18 @@
    samm:description "Enumeration of the 19 impact categories in accordance to EN15804+A2."@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "Climate Change Total" "Climate Change Fossil" "Climate Change Biogenic Removals and Emissions" "Climate Change Land Use and Land Use Change" "Ozone Depletion" "Acidification" "Eutrophication Aquatic Freshwater" "Eutrophication Fresh Marine" "Eutrophication Terrestrial" "Photochemical Ozone Formation" "Abiotic Depletion- Minerals and Metals" "Fossil Fuels" "Water Use" "Particulate Matter Emissions" "Ionizing Radiation, Human Health" "Eco-Toxicity" "Human Toxicity, Cancer Effects" "Human Toxicity, Non-Cancer Effects" "Land Use Related Impacts/Soil Quality" ) .
+
+:locationIdentifier a samm:Property ;
+   samm:preferredName "Location Identifier"@en ;
+   samm:description "The identifier used for a location."@en ;
+   samm:characteristic :EitherLocationIdentifier ;
+   samm:exampleValue "BPNA1234567890AA" .
+
+:locationIdentifierType a samm:Property ;
+   samm:preferredName "location Identifier Type"@en ;
+   samm:description "The type of identifier used for a location. In the case of catena-x it is a BPNA."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BPNA" .
 
 :producerIdentification a samm:Property ;
    samm:preferredName "Producer Identification"@en ;
@@ -1130,6 +1195,7 @@
 
 :EitherIdentifier a samm-c:Either ;
    samm:preferredName "Either Identifier"@en ;
+   samm:description "Either a BPNL (left) or a non-restricted identifier, which can be further defines through the Business Identifier Type."@en ;
    samm-c:left ext-number:BpnlTrait ;
    samm-c:right :BusinessIdentifierCharacteristic .
 
@@ -1141,8 +1207,8 @@
 :ListTypeEnumerationName a samm-c:Enumeration ;
    samm:preferredName "List Type Enumeration Name"@en ;
    samm:description "Enumeration of different systems and organizations related to the identification and classification of chemical substances in the field of chemistry. The enumeration values are IUPAC, EC or CAS."@en ;
-   samm:see <https://www.cas.org/cas-data/cas-registry> ;
    samm:see <https://iupac.org/> ;
+   samm:see <https://www.cas.org/cas-data/cas-registry> ;
    samm:dataType xsd:string ;
    samm-c:values ( "IUPAC" "CAS" "EC" ) .
 
@@ -1152,6 +1218,12 @@
    samm:see <https://www.cas.org/cas-data/cas-registry> ;
    samm:dataType xsd:string ;
    samm-c:values ( "CAS" "EC" ) .
+
+:EitherLocationIdentifier a samm-c:Either ;
+   samm:preferredName "Either Location Identifier"@en ;
+   samm:description "Either a BPNA (left) or a non-restricted identifier, which can be further defines through the Location Identifier Type."@en ;
+   samm-c:left ext-number:BpnaTrait ;
+   samm-c:right :LocationIdentifierCharacteristic .
 
 :minConcentration a samm:Property ;
    samm:preferredName "Minimum Concentration"@en ;
@@ -1174,5 +1246,10 @@
 :BusinessIdentifierCharacteristic a samm:Characteristic ;
    samm:preferredName "Business Identifier Characteristic"@en ;
    samm:description "Business Identifier Characteristic which describes an identifier for a company."@en ;
+   samm:dataType xsd:string .
+
+:LocationIdentifierCharacteristic a samm:Characteristic ;
+   samm:preferredName "Location Identifier Characteristic"@en ;
+   samm:description "String for a location identifier."@en ;
    samm:dataType xsd:string .
 
