@@ -19,7 +19,6 @@ Sustainability
 - carbon footprint is separate and anymore a list
 - carbon and environmental footprint have new properties "performance class", "manufacturing plant" and "declaration"
 - renewable and recycled content are now identified trough a share
-- critical material is now a list with names and percentages
 
 Typology
 - class is now mandatory
@@ -32,7 +31,7 @@ Operation
 
 Handling
 - spare parts are now mandatory and the list of suppliers are connected to the spare parts
-- hazardClass added
+- hazardClass optional added
 
 
 ## [2.0.0] - 2023-08-28
