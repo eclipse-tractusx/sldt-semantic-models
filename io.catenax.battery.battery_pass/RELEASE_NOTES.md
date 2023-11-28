@@ -3,12 +3,23 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [4.0.0] - 2023-12-11
+### Added
+n/a
+
+### Changed
+- major changes in the structure and attributes according to the latest regulation
+- references to Digital Product Passport added
+
+### Removed
+n/a
+
 ## [3.0.1] - 2023-01-15
 ### Added
 n/a
 
 ### Changed
-- several smaller fixes according to technical commitee feedback
+- several smaller fixes according to technical committee feedback
 
 ### Removed
 n/a
