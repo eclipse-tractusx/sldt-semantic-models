@@ -2,17 +2,19 @@
 
 All notable changes to this model will be documented in this file.
 
-## [2.0.0] - 2023-11-27
+## [2.0.0] - 2023-11-29
 ### Added
-- n/a
+- add / integrate shared UUID characteristic and RegEx for the properties messageId and relatedMessageId
+- add / integrate shared BPN-L characteristic and RegEx for the properties senderBpn and receiverBpn
 
 ### Changed
 - fixed bug of missing connection between messageId property and the idTrait to link the UUIDv4 RegEx
 - fixed bug of missing connection between relatedMessageId property and the idTrait to link the UUIDv4 RegEx
-- fixed bug of missing connection between version property and the SemanticVersioningTrait to link the semVer RegEx 
+- fixed bug of missing connection between version property and the SemanticVersioningTrait to link the semVer RegEx
 
 ### Removed
-n/a
+- removed existing characteristic of the properties messageId and relatedMessageId and replaced it with content of shared aspect models (see added information)
+- removed existing characteristic of the properties senderBpn and reveiverBpn and replaced it with content of shared aspect models (see added information)
 
 ## [1.0.0] 2023-07-31
 
