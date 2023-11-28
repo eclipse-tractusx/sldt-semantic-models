@@ -25,6 +25,8 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:samm:io.catenax.shared.message_header:2.0.0#>.
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#>.
 
 :MessageHeaderAspect a samm:Aspect;
    samm:preferredName "Message Header Aspect"@en;
@@ -51,7 +53,7 @@
 :messageId a samm:Property;
    samm:preferredName "Message ID"@en;
    samm:description "Unique ID identifying the message. The purpose of the ID is to uniquely identify a single message, therefore it MUST not be reused."@en;
-   samm:characteristic :IdTrait;
+   samm:characteristic ext-uuid:UuidV4Trait;
    samm:exampleValue "3b4edc05-e214-47a1-b0c2-1d831cdd9ba9".
 
 :context a samm:Property;
@@ -69,13 +71,13 @@
 :senderBpn a samm:Property;
    samm:preferredName "Sender BPN"@en;
    samm:description "The Business Partner Number of the sending party. The value MUST be a valid BPN. BPNA and BPNS are not allowed. Applicable constraints are defined in the corresponding standard"@en;
-   samm:characteristic :BpnCharacteristic;
+   samm:characteristic ext-number:BpnlTrait;
    samm:exampleValue "BPNL7588787849VQ".
 
 :receiverBpn a samm:Property;
    samm:preferredName "Receiver BPN"@en;
    samm:description "The Business Partner Number of the receiving party. The value MUST be a valid BPN. BPNA and BPNS are not allowed. Applicable constraints are defined in the corresponding standard."@en;
-   samm:characteristic :BpnCharacteristic;
+   samm:characteristic ext-number:BpnlTrait;
    samm:exampleValue "BPNL6666787765VQ".
 
 :expectedResponseBy a samm:Property;
@@ -87,7 +89,7 @@
 :relatedMessageId a samm:Property;
    samm:preferredName "Related Message ID"@en;
    samm:description "Unique ID identifying a message somehow related to the current one"@en;
-   samm:characteristic :IdTrait;
+   samm:characteristic ext-uuid:UuidV4Trait;
    samm:exampleValue "d9452f24-3bf3-4134-b3eb-68858f1b2362".
 
 :version a samm:Property;
@@ -96,20 +98,9 @@
    samm:characteristic :SemanticVersioningTrait;
    samm:exampleValue "urn:samm:io.catenax.message_header:2.0.0".
 
-:IdTrait a samm-c:Trait;
-   samm:preferredName "ID (Identifier) Trait"@en;
-   samm:description "Trait for defining the UuidCharacteristic to be a UUIDv4 compliant property."@en;
-   samm-c:baseCharacteristic :UuidCharacteristic;
-   samm-c:constraint :UUIDv4.
-
 :ContextCharacteristic a samm:Characteristic;
    samm:preferredName "Context Characteristic"@en;
    samm:description "Defining a string value for the context"@en;
-   samm:dataType xsd:string.
-
-:BpnCharacteristic a samm:Characteristic;
-   samm:preferredName "BPN Characteristic"@en;
-   samm:description "Characteristic for defining BPN values"@en;
    samm:dataType xsd:string.
 
 :SemanticVersioningTrait a samm-c:Trait;
@@ -117,16 +108,6 @@
    samm:description "Trait for defining the Semantic Versioning Characteristic to be SemVer.org compliant."@en;
    samm-c:baseCharacteristic :VersionCharacteristic;
    samm-c:constraint :SemVer.
-
-:UuidCharacteristic a samm:Characteristic;
-   samm:preferredName "UUID Characteristic"@en;
-   samm:description "Structured Value for defining a property which requires an UUID"@en;
-   samm:dataType xsd:string.
-
-:UUIDv4 a samm-c:RegularExpressionConstraint;
-   samm:preferredName "UUID v4 Constraint"@en;
-   samm:description "Constraint for defining a UUID v4 identifier."@en;
-   samm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".
 
 :VersionCharacteristic a samm:Characteristic;
    samm:preferredName "Version Characteristic"@en;
