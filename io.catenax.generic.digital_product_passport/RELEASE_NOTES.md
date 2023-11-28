@@ -4,7 +4,7 @@ All notable changes to this model will be documented in this file.
 ## [3.0.0] - 2023-12-11
 ### Added
 General
-- Payload names are added where missing and needed
+- payload names are added where missing and needed
 - all company identifiers can now be a company name, full address and contact or a simple identifier with a type
 - all site identifiers can now be a name and full address or a simple identifier
 
@@ -16,8 +16,8 @@ Characteristics
 
 Sustainability
 - state has a more defined enumeration
-- Carbon footprint is separate and anymore a list
-- Carbon and environmental footprint have new properties "performance class", "manufacturing plant" and "declaration"
+- carbon footprint is separate and anymore a list
+- carbon and environmental footprint have new properties "performance class", "manufacturing plant" and "declaration"
 - renewable and recycled content are now identified trough a share
 - critical material is now a list with names and percentages
 
@@ -25,7 +25,7 @@ Typology
 - class is now mandatory
 
 Identification
-- A list of identifiers can be provided
+- a list of identifiers can be provided
 
 Operation
 - manufacturing date is mandatory
