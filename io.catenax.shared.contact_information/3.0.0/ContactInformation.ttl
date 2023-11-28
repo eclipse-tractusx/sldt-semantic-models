@@ -1,0 +1,96 @@
+#######################################################################
+# Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2023 T-Systems International GmbH
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.shared.contact_information:3.0.0#> .
+
+:ContactInformation a samm:Aspect ;
+   samm:preferredName "Contact Information"@en ;
+   samm:description "Entity encapsulating the contact details."@en ;
+   samm:see <https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/Spezifikation_Submodel-Templates.html> ;
+   samm:properties ( :contactProperty ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:contactProperty a samm:Property ;
+   samm:preferredName "Contact Property"@en ;
+   samm:description "Property describing contact information for an organization."@en ;
+   samm:characteristic :ContactCharacteristic .
+
+:ContactCharacteristic a samm:Characteristic ;
+   samm:preferredName "Contact Characteristic"@en ;
+   samm:description "Characteristic describing information on how to contact an organization."@en ;
+   samm:dataType :ContactEntity .
+
+:ContactEntity a samm:Entity ;
+   samm:preferredName "Contact Entity"@en ;
+   samm:description "Entity to bundle the properties for the information on how to contact an organization."@en ;
+   samm:properties ( [ samm:property :website; samm:optional true ] [ samm:property :phoneNumber; samm:optional true ] [ samm:property :email; samm:optional true ] [ samm:property :faxNumber; samm:optional true ] ) .
+
+:website a samm:Property ;
+   samm:preferredName "Website"@en ;
+   samm:description "Website of the contact."@en ;
+   samm:characteristic :WebsiteCharacteristic ;
+   samm:exampleValue "https://www.samsung.com"^^xsd:anyURI .
+
+:phoneNumber a samm:Property ;
+   samm:preferredName "Phone Number"@en ;
+   samm:description "Phone number with country and area code."@en ;
+   samm:characteristic :PhoneNumberTrait ;
+   samm:exampleValue "+49 89 1234567890" .
+
+:email a samm:Property ;
+   samm:preferredName "Email"@en ;
+   samm:description "An email address."@en ;
+   samm:characteristic :EMailTrait ;
+   samm:exampleValue "test.mail@example.com" .
+
+:faxNumber a samm:Property ;
+   samm:preferredName "Fax Number"@en ;
+   samm:description "Fax number with country and area code."@en ;
+   samm:characteristic :PhoneNumberTrait ;
+   samm:exampleValue "+49 89 0987654321" .
+
+:WebsiteCharacteristic a samm:Characteristic ;
+   samm:preferredName "Website Characteristic"@en ;
+   samm:description "Address of the website."@en ;
+   samm:dataType xsd:anyURI .
+
+:PhoneNumberTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :PhoneNumberConstraint .
+
+:EMailTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :EMailConstraint .
+
+:PhoneNumberConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "PhoneNumber Constraint"@en ;
+   samm:description "Constraint to allow only numbers, whitespaces and an optional leading + sign."@en ;
+   samm:value "^[+]?[0-9 ]+$" .
+
+:EMailConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Email Constraint"@en ;
+   samm:description "Regular expression for mail address as defined in W3C."@en ;
+   samm:see <https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address> ;
+   samm:value "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$" .
+
