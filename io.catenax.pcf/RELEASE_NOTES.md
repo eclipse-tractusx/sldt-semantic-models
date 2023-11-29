@@ -3,9 +3,12 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [5.0.0] 2023-09-18
-- added missing property "distributionStageAircraftGhgEmissions"
-- changed declaration of properties "productOrSectorSpecificRules" and "geographyRegionOrSubregion" from optional to mandatory
+## [5.0.0] 2023-12-11
+### Changed
+- adapted as aligned with and specified by the Catena-X use case team
+- changed descriptions (added comment for optional/ mandatory declarations)
+- changed some properties from optional to mandatory in order to comply with PCF Rulebook
+- added property "distributionStageAircraftGhgEmissions" 
 
 ## [4.0.1] 2023-07-03
 ### Changed
