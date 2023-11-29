@@ -1,0 +1,317 @@
+#######################################################################
+# Copyright (c) 2023 BASF SE
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML)
+# Copyright (c) 2023 Henkel AG & Co. KGaA
+# Copyright (c) 2023 Mercedes Benz AG
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 SupplyOn AG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.week_based_capacity_group:2.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
+
+:WeekBasedCapacityGroup a samm:Aspect ;
+   samm:preferredName "Week-Based Capacity Group"@en ;
+   samm:description "An entity made up of the weekly actual and maximum capacities for a specific customer in a given time period. A capacity group is used to compare demand and capacity data for one or several similar bundled materials in a defined unit of measure."@en ;
+   samm:properties ( :capacityGroupId :name [ samm:property :supplierLocations; samm:optional true ] :customer :supplier [ samm:property :unitOfMeasure; samm:optional true ] [ samm:property :linkedDemandSeries; samm:optional true ] [ samm:property :capacities; samm:optional true ] :changedAt [ samm:property :linkedCapacityGroups; samm:optional true ] :unitOfMeasureIsOmitted ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:capacityGroupId a samm:Property ;
+   samm:preferredName "Capacity Group ID"@en ;
+   samm:description "The Capacity Group ID uniquely identifies the capacity group within the business relationship between a supplier and its customer."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110" .
+
+:name a samm:Property ;
+   samm:preferredName "Capacity Group Name"@en ;
+   samm:description "Name of the capacity group."@en ;
+   samm:characteristic :CapacityGroupName ;
+   samm:exampleValue "Spark Plugs on drilling machine for car model XYZ" .
+
+:supplierLocations a samm:Property ;
+   samm:preferredName "Supplier Locations"@en ;
+   samm:description "Set of BPNS indicating the supplier sites that will be fulfilling the demands associated with this capacity group."@en ;
+   samm:characteristic :SupplierLocationsCharacteristic ;
+   samm:exampleValue "BPNS8888888888XX" .
+
+:customer a samm:Property ;
+   samm:preferredName "Customer"@en ;
+   samm:description "The Business Partner Number (BPNL) of the party requesting materials from a supplier."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL8888888888XX" .
+
+:supplier a samm:Property ;
+   samm:preferredName "Supplier"@en ;
+   samm:description "The Business Partner Number (BPNL) of the party providing materials to a customer."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL6666666666YY" .
+
+:unitOfMeasure a samm:Property ;
+   samm:preferredName "Unit of Measure"@en ;
+   samm:description "Unit of measurement for capacity quantities."@en ;
+   samm:characteristic ext-quantity:ItemUnitEnumeration ;
+   samm:exampleValue "unit:piece"^^samm:curie .
+
+:linkedDemandSeries a samm:Property ;
+   samm:preferredName "Linked Demand Series"@en ;
+   samm:description "Set of demand series assigned to this capacity group."@en ;
+   samm:characteristic :LinkedDemandSeriesSet .
+
+:capacities a samm:Property ;
+   samm:preferredName "Capacities"@en ;
+   samm:description "A time series with week-based granularity along a given time period containing the capacity values."@en ;
+   samm:characteristic :CapacityTimeSeries .
+
+:changedAt a samm:Property ;
+   samm:preferredName "Changed At"@en ;
+   samm:description "Point in time when the content (any property according to the data model) of the capacity group was changed, at the supplier, either by a human user or an automated process."@en ;
+   samm:characteristic :Timestamp ;
+   samm:exampleValue "2023-03-10T12:27:11.320Z"^^xsd:dateTimeStamp .
+
+:linkedCapacityGroups a samm:Property ;
+   samm:preferredName "Linked Capacity Groups"@en ;
+   samm:description "A set of capacity groups linked to this capacity group."@en ;
+   samm:characteristic :LinkedCapacityGroupsCharacteristic ;
+   samm:exampleValue "be4d8470-2de6-43d2-b5f8-2e5d3eebf3fd" .
+
+:unitOfMeasureIsOmitted a samm:Property ;
+   samm:preferredName "Unit Of Measure Is Omitted"@en ;
+   samm:description "Explicit indicator of whether the unit of measure is left out of the payload intentionally. If \"true\" it means the sending application sends demand values without unit of measure intentionally and the unit of measure MUST NOT be contained in the payload. If \"false\" a unit of measure MUST be supplied."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
+:CapacityGroupName a samm:Characteristic ;
+   samm:preferredName "Capacity Group Name"@en ;
+   samm:description "The name of a capacity group, used to distinguish it from other capacity groups."@en ;
+   samm:dataType xsd:string .
+
+:SupplierLocationsCharacteristic a samm-c:Set ;
+   samm:preferredName "Supplier Locations Characteristic"@en ;
+   samm:description "Contains a set of locations the supplier fulfills a demand request from."@en ;
+   samm:dataType xsd:string ;
+   samm-c:elementCharacteristic :BPNSTrait .
+
+:LinkedDemandSeriesSet a samm-c:Set ;
+   samm:preferredName "Linked Demand Series Set"@en ;
+   samm:description "A set of demand series assigned to a certain capacity group."@en ;
+   samm:dataType :LinkedDemandSeries .
+
+:CapacityTimeSeries a samm-c:SortedSet ;
+   samm:preferredName "Capacity Time Series"@en ;
+   samm:description "The weekly actual and maximum capacities in a given time period."@en ;
+   samm:dataType :Capacity .
+
+:Timestamp a samm:Characteristic ;
+   samm:preferredName "Timestamp"@en ;
+   samm:description "Point in time."@en ;
+   samm:dataType xsd:dateTimeStamp .
+
+:LinkedCapacityGroupsCharacteristic a samm-c:Set ;
+   samm:preferredName "Linked Capacity Groups Characteristic"@en ;
+   samm:description "Contains all capacity groups which are linked to the current one."@en ;
+   samm:dataType xsd:string ;
+   samm-c:elementCharacteristic :UUIDv4IdTrait .
+
+:BPNSTrait a samm-c:Trait ;
+   samm:preferredName "BPNS Trait"@en ;
+   samm:description "Trait to ensure data format for BPNS."@en ;
+   samm-c:baseCharacteristic ext-number:BpnsCharacteristic ;
+   samm-c:constraint ext-number:BpnsRegularExpression .
+
+:LinkedDemandSeries a samm:Entity ;
+   samm:preferredName "Linked Demand Series"@en ;
+   samm:description "Encapsulates information used to reference a specific demand series."@en ;
+   samm:properties ( :materialNumberCustomer [ samm:property :materialNumberSupplier; samm:optional true ] :customerLocation :demandCategory [ samm:property :loadFactor; samm:optional true ] ) .
+
+:Capacity a samm:Entity ;
+   samm:preferredName "Capacity"@en ;
+   samm:description "A supplier's realistically planned output per calendar week and material for a specific customer in a specific unit of measure, considering all positive or negative impacts on this capacity."@en ;
+   samm:properties ( :pointInTime :actualCapacity :maximumCapacity [ samm:property :deltaProductionResult; samm:optional true ] ) .
+
+:UUIDv4IdTrait a samm-c:Trait ;
+   samm:preferredName "UUIDv4 Trait"@en ;
+   samm:description "Trait to ensure data format for UUIDv4."@en ;
+   samm-c:baseCharacteristic ext-uuid:Uuidv4Characteristic ;
+   samm-c:constraint ext-uuid:Uuidv4RegularExpression .
+
+:materialNumberCustomer a samm:Property ;
+   samm:preferredName "Customer Material Number"@en ;
+   samm:description "Material identifier as assigned by customer. This material number identifies the material (as planned) in the customer's database."@en ;
+   samm:characteristic :MaterialNumber ;
+   samm:exampleValue "MNR-7307-AU340474.002" .
+
+:materialNumberSupplier a samm:Property ;
+   samm:preferredName "Supplier Material Number"@en ;
+   samm:description "Material identifier as assigned by supplier. This material number identifies the material (as planned) in the supplier's database. Used as informational field only, not for assigning demand series to capacity groups."@en ;
+   samm:characteristic :MaterialNumber ;
+   samm:exampleValue "MNR-8101-ID146955.001" .
+
+:customerLocation a samm:Property ;
+   samm:preferredName "Customer Location"@en ;
+   samm:description "The BPNS number of the site at which the customer needs the specified material for the referenced demand series."@en ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS8888888888XX" .
+
+:demandCategory a samm:Property ;
+   samm:preferredName "Demand Category"@en ;
+   samm:description "Type of demand of the referenced demand series."@en ;
+   samm:characteristic :DemandCategoryCharacteristic .
+
+:loadFactor a samm:Property ;
+   samm:preferredName "Load Factor"@en ;
+   samm:description "If existent, the load factor indicates that this material of the material demand collection takes a factor more or less intensity to produce."@en ;
+   samm:characteristic :LoadFactorCharacteristic ;
+   samm:exampleValue "3.5"^^xsd:decimal .
+
+:pointInTime a samm:Property ;
+   samm:preferredName "Point in Time"@en ;
+   samm:description "ISO Calendar Week of the given time series entry. Must be given as date of the monday in the week."@en ;
+   samm:characteristic :PointInTimeCharacteristic ;
+   samm:exampleValue "2022-08-01"^^xsd:date .
+
+:actualCapacity a samm:Property ;
+   samm:preferredName "Actual Capacity"@en ;
+   samm:description "The actual capacity is the realistically planned output per calendar week and material for a specific customer in a specific unit of measure, considering all positive or negative impacts on this capacity."@en ;
+   samm:characteristic :QuantityTrait ;
+   samm:exampleValue "1000"^^xsd:decimal .
+
+:maximumCapacity a samm:Property ;
+   samm:preferredName "Maximum Capacity"@en ;
+   samm:description "The supplier maximum capacity is the maximal available output per calendar week and material for a specific customer in a specific unit of measure. The maximum capacity thereby restricts the flexible capacity, as the flexible capacity is obtained from the difference of a suppliers maximum capacity minus actual capacity."@en ;
+   samm:characteristic :QuantityTrait ;
+   samm:exampleValue "2000"^^xsd:decimal .
+
+:deltaProductionResult a samm:Property ;
+   samm:preferredName "Delta Production Result"@en ;
+   samm:description "Delta related to the aggregated material demand after pre-/post production calculation the supplier wants to send to the customer. Can be positive and negative."@en ;
+   samm:characteristic :DeltaProductionResultCharacteristic ;
+   samm:exampleValue "400"^^xsd:decimal .
+
+:MaterialNumber a samm:Characteristic ;
+   samm:preferredName "Material Number"@en ;
+   samm:description "The material number is a multi-character string, usually assigned by an ERP system."@en ;
+   samm:dataType xsd:string .
+
+:DemandCategoryCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Demand Category Characteristic"@en ;
+   samm:description "The classification of demands used to prioritize or allocate capacities."@en ;
+   samm:dataType :DemandCategoryType ;
+   samm-c:values ( :DemandCategoryDefault :DemandCategoryAfterSales :DemandCategorySeries :DemandCategoryPhaseInPeriod :DemandCategorySingleOrder :DemandCategorySmallSeries :DemandCategoryExtraordinaryDemand :DemandCategoryPhaseOutPeriod ) .
+
+:LoadFactorCharacteristic a samm:Characteristic ;
+   samm:preferredName "Load Factor Characteristic"@en ;
+   samm:description "Describes the data type of the load factor."@en ;
+   samm:dataType xsd:decimal .
+
+:PointInTimeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Point in Time Characteristic"@en ;
+   samm:description "An ISO calendar week in which a given capacity will be provided. Must be given as date of the monday in the week."@en ;
+   samm:see <https://www.iso.org/standard/70907.html> ;
+   samm:dataType xsd:date .
+
+:QuantityTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :Quantity ;
+   samm-c:constraint :QuantityRange ;
+   samm-c:constraint :QuantityFixedPoint .
+
+:DeltaProductionResultCharacteristic a samm:Characteristic ;
+   samm:preferredName "Delta Production Result Characteristic"@en ;
+   samm:description "Describes data type of a delta production result information."@en ;
+   samm:dataType xsd:decimal .
+
+:DemandCategoryType a samm:Entity ;
+   samm:preferredName "Demand Category Type"@en ;
+   samm:description "Describes the type of a demand category."@en ;
+   samm:properties ( :demandCategoryCode [ samm:property :demandCategoryName; samm:notInPayload true ] ) .
+
+:DemandCategoryDefault a :DemandCategoryType ;
+   :demandCategoryCode "0001" ;
+   :demandCategoryName "Default"@en .
+
+:DemandCategoryAfterSales a :DemandCategoryType ;
+   :demandCategoryCode "A1S1" ;
+   :demandCategoryName "After-Sales"@en .
+
+:DemandCategorySeries a :DemandCategoryType ;
+   :demandCategoryCode "SR99" ;
+   :demandCategoryName "Series"@en .
+
+:DemandCategoryPhaseInPeriod a :DemandCategoryType ;
+   :demandCategoryCode "PI01" ;
+   :demandCategoryName "Phase-In Period"@en .
+
+:DemandCategorySingleOrder a :DemandCategoryType ;
+   :demandCategoryCode "OS01" ;
+   :demandCategoryName "Single Order"@en .
+
+:DemandCategorySmallSeries a :DemandCategoryType ;
+   :demandCategoryCode "OI01" ;
+   :demandCategoryName "Small Series"@en .
+
+:DemandCategoryExtraordinaryDemand a :DemandCategoryType ;
+   :demandCategoryCode "ED01" ;
+   :demandCategoryName "Extraordinary Demand"@en .
+
+:DemandCategoryPhaseOutPeriod a :DemandCategoryType ;
+   :demandCategoryCode "PO01" ;
+   :demandCategoryName "Phase-Out Period"@en .
+
+:Quantity a samm:Characteristic ;
+   samm:preferredName "Quantity"@en ;
+   samm:description "Quantity of weekly actual or maximum capacity."@en ;
+   samm:dataType xsd:decimal .
+
+:QuantityRange a samm-c:RangeConstraint ;
+   samm:preferredName "Quantity Range"@en ;
+   samm:description "Constraint to ensure a non-negative value for quantities."@en ;
+   samm-c:minValue "0"^^xsd:decimal ;
+   samm-c:maxValue "999999999999999999.999"^^xsd:decimal ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:AT_MOST .
+
+:QuantityFixedPoint a samm-c:FixedPointConstraint ;
+   samm:preferredName "Quantity Fixed Point"@en ;
+   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
+   samm-c:integer "15"^^xsd:positiveInteger ;
+   samm-c:scale "1000"^^xsd:positiveInteger .
+
+:demandCategoryCode a samm:Property ;
+   samm:preferredName "Demand Category Code"@en ;
+   samm:description "The code identifying a demand category."@en ;
+   samm:characteristic :DemandCategoryCodeCharacteristic ;
+   samm:exampleValue "0001" .
+
+:demandCategoryName a samm:Property ;
+   samm:preferredName "Demand Category Name"@en ;
+   samm:description "The name describing a demand category."@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "Default"@en .
+
+:DemandCategoryCodeCharacteristic a samm-c:Code ;
+   samm:preferredName "Demand Category Code Characteristic"@en ;
+   samm:description "The code identifying a demand category."@en ;
+   samm:dataType xsd:string .

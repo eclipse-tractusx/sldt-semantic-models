@@ -1,0 +1,310 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "This model refers to a part containing one or more different materials. It references the share on primary and secondary materials and relevant details.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_MaterialClass" : {
+        "type" : "string",
+        "description" : "Class according to the referenced standard the material belongs to. The IMDS recommendations and the IMDS rules are exclusively accessible within the IMDS portal to members of the IMDS association. In order to access the data one needs to be member of the association."
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_ReferencedStandard" : {
+        "type" : "string",
+        "description" : "Norm authority which governs the norm.",
+        "enum" : [ "AISI", "AS", "ASME", "DIN", "DIN EN", "EN", "JASO", "JIS", "GB", "ISO", "IS" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_MaterialNameStandardized" : {
+        "description" : "Material name according to standard.",
+        "type" : "object",
+        "properties" : {
+          "referencedStandard" : {
+            "description" : "Norm authority which governs norm.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_ReferencedStandard"
+          },
+          "referencedStandardID" : {
+            "description" : "Id of standard used by norming authority.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "materialNameStandardizedValue" : {
+            "description" : "Name of the material according to the norming authority and the referenced ID of the norm.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "referencedStandard", "referencedStandardID", "materialNameStandardizedValue" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_UnitOfMeasureKeyTrait" : {
+        "type" : "string",
+        "pattern" : "unit:(centigram|decagram|decigram|decitonne|grain|gram|hectogram|hundredPoundCwtOrHundredWeightUs|hundredWeightUk|kilogram|kilotonne|megagram|microgram|milligram|ounceAvoirdupois|pfund|pound|slug|stoneUk|tonAssay|tonUkOrLongTonUs|tonUsOrShortTonUkorus|tonneMetricTon|troyOunceOrApothecaryOunce)",
+        "description" : "Only allow mass related Units"
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_UnitOfMeasureValue" : {
+        "type" : "number",
+        "description" : "Net mass of material in defined unit."
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_UnitOfMeasure" : {
+        "description" : "Attribute to define the measure and actual mass of the material.",
+        "type" : "object",
+        "properties" : {
+          "unitOfMeasureKey" : {
+            "description" : "Unit of measure in which the mass of the material is measured.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_UnitOfMeasureKeyTrait"
+          },
+          "unitOfMeasureValue" : {
+            "description" : "Net mass of material in defined unit.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_UnitOfMeasureValue"
+          }
+        },
+        "required" : [ "unitOfMeasureKey", "unitOfMeasureValue" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_BioBasedClass" : {
+        "type" : "string",
+        "description" : "Information on bio-based material class.",
+        "enum" : [ "gen1", "gen2", "gen3" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean" : {
+        "type" : "boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_PercentageOfMaterialWeightTrait" : {
+        "type" : "number",
+        "description" : "Ensure that no percentage values is below zero or above 100.",
+        "maximum" : 1E+2,
+        "exclusiveMaximum" : false,
+        "minimum" : 0,
+        "exclusiveMinimum" : false
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_SecondaryBioBased" : {
+        "description" : "Secondary materials are recycled materials that can be used in manufacturing processes instead of or alongside virgin raw materials.",
+        "type" : "object",
+        "properties" : {
+          "isMassBalanced" : {
+            "description" : "Information whether mass-balancing was applied: Mass balance is one of several well-known chain of custody approaches that can be used to track the flow of materials through the value chain. The total quantity of the content in question is tracked through the production system and the allocation of this content is made to the end products based on verifiable accounting.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean"
+          },
+          "percentageOfMaterialWeight" : {
+            "description" : "Share of the full material weight in percentage.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_PercentageOfMaterialWeightTrait"
+          }
+        },
+        "required" : [ "isMassBalanced", "percentageOfMaterialWeight" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_PrimaryBioBased" : {
+        "description" : "Primary materials are raw materials that are used for the first time during the planned process.",
+        "type" : "object",
+        "properties" : {
+          "percentageOfMaterialWeight" : {
+            "description" : "Share of the full material weight in percentage.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_PercentageOfMaterialWeightTrait"
+          }
+        },
+        "required" : [ "percentageOfMaterialWeight" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_BioBased" : {
+        "description" : "Bio-based materials are materials of biological origin excluding material embedded in geological formations and/or fossilised.",
+        "type" : "object",
+        "properties" : {
+          "bioBasedClass" : {
+            "description" : "Information on bio-based material class.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_BioBasedClass"
+          },
+          "secondaryBioBased" : {
+            "description" : "Secondary materials are recycled materials that can be used in manufacturing processes instead of or alongside virgin raw materials.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_SecondaryBioBased"
+          },
+          "primaryBioBased" : {
+            "description" : "Primary materials are raw materials that are used for the first time during the planned process.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_PrimaryBioBased"
+          }
+        },
+        "required" : [ "bioBasedClass", "secondaryBioBased", "primaryBioBased" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_MechanicalRecycling" : {
+        "description" : "Materials that have undergone mechanical recycling.",
+        "type" : "object",
+        "properties" : {
+          "percentageOfMaterialWeight" : {
+            "description" : "Share of the full material weight in percentage.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_PercentageOfMaterialWeightTrait"
+          }
+        },
+        "required" : [ "percentageOfMaterialWeight" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_PreConsumer" : {
+        "description" : "Amount of material that is Pre-consumer material. Material diverted from the waste stream during a manufacturing process. Excluded is reutilization of materials such as rework, regrind or scrap generated in a process and capable of being reclaimed within the same process that generated it. Pre-consumer material can be used in form of recovered or recycled material as a substitute for primary material.",
+        "type" : "object",
+        "properties" : {
+          "mechanicalRecycling" : {
+            "description" : "Materials that have undergone mechanical recycling.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_MechanicalRecycling"
+          }
+        },
+        "required" : [ "mechanicalRecycling" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_ChemicalRecycling" : {
+        "description" : "Materials that have undergone chemical recycling.",
+        "type" : "object",
+        "properties" : {
+          "isMassBalanced" : {
+            "description" : "Information whether mass-balancing was applied: Mass balance is one of several well-known chain of custody approaches that can be used to track the flow of materials through the value chain. The total quantity of the content in question is tracked through the production system and the allocation of this content is made to the end products based on verifiable accounting.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean"
+          },
+          "percentageOfMaterialWeight" : {
+            "description" : "Share of the full material weight in percentage.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_PercentageOfMaterialWeightTrait"
+          }
+        },
+        "required" : [ "isMassBalanced", "percentageOfMaterialWeight" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_Boolean" : {
+        "type" : "boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_PostConsumer" : {
+        "description" : "Amount of material that is Post-consumer material. Material generated by households or by commercial, industrial and institutional facilities in their role as end-users of the product which can no longer be used for ist intended purpose. This includes returns of material from the distribution chain. Post-consumer material can be used in form of recovered or recycled material as a substitute for primary material.",
+        "type" : "object",
+        "properties" : {
+          "mechanicalRecycling" : {
+            "description" : "Materials that have undergone mechanical recycling.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_MechanicalRecycling"
+          },
+          "chemicalRecycling" : {
+            "description" : "Materials that have undergone chemical recycling.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_ChemicalRecycling"
+          },
+          "isPreviousIndustryAutomotive" : {
+            "description" : "Information if the material was previously used in automotive industry.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_Boolean"
+          }
+        },
+        "required" : [ "mechanicalRecycling", "chemicalRecycling", "isPreviousIndustryAutomotive" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_SecondaryInorganic" : {
+        "description" : "Secondary materials are recycled materials that can be used in manufacturing processes instead of or alongside virgin raw materials.",
+        "type" : "object",
+        "properties" : {
+          "preConsumer" : {
+            "description" : "Amount of material that is Pre-consumer material. Material diverted from the waste stream during a manufacturing process. Excluded is reutilization of materials such as rework, regrind or scrap generated in a process and capable of being reclaimed within the same process that generated it. Pre-consumer material can be used in form of recovered or recycled material as a substitute for primary material.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_PreConsumer"
+          },
+          "postConsumer" : {
+            "description" : "Amount of material that is Post-consumer material. Material generated by households or by commercial, industrial and institutional facilities in their role as end-users of the product which can no longer be used for ist intended purpose. This includes returns of material from the distribution chain. Post-consumer material can be used in form of recovered or recycled material as a substitute for primary material.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_PostConsumer"
+          }
+        },
+        "required" : [ "preConsumer", "postConsumer" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_PrimaryInorganic" : {
+        "description" : "Primary materials are raw materials that are used for the first time during the planned process.",
+        "type" : "object",
+        "properties" : {
+          "percentageOfMaterialWeight" : {
+            "description" : "Share of the full material weight in percentage.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_PercentageOfMaterialWeightTrait"
+          }
+        },
+        "required" : [ "percentageOfMaterialWeight" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_Inorganic" : {
+        "description" : "Material based on inorganic matter or fossil fuels.",
+        "type" : "object",
+        "properties" : {
+          "secondaryInorganic" : {
+            "description" : "Secondary materials are recycled materials that can be used in manufacturing processes instead of or alongside virgin raw materials.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_SecondaryInorganic"
+          },
+          "primaryInorganic" : {
+            "description" : "Primary materials are raw materials that are used for the first time during the planned process.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_PrimaryInorganic"
+          }
+        },
+        "required" : [ "secondaryInorganic", "primaryInorganic" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_ResourcePath" : {
+        "type" : "string",
+        "format" : "uri",
+        "description" : "The path of a resource."
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_CertificateEntity" : {
+        "description" : "If available, the name of a certificate verifying the recycling content can be included",
+        "type" : "object",
+        "properties" : {
+          "certificateName" : {
+            "description" : "If available, the name of a certificate verifying the recycling content can be included.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "certificateLink" : {
+            "description" : "The certificate can be referenced for example as a PDF file.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_ResourcePath"
+          }
+        },
+        "required" : [ "certificateName", "certificateLink" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_Certificate" : {
+        "description" : "If available, the name of a certificate verifying the recycling content can be included.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_CertificateEntity"
+        },
+        "uniqueItems" : true
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_SecondaryMaterialContentMaterialsEntity" : {
+        "description" : "List of relevant materials, which are built in this part and details on the share of primary and secondary material.",
+        "type" : "object",
+        "properties" : {
+          "materialClass" : {
+            "description" : "Material class according to VDA standard 231-106.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_MaterialClass"
+          },
+          "materialNameStandardized" : {
+            "description" : "Material name according to standard.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_MaterialNameStandardized"
+          },
+          "unitOfMeasure" : {
+            "description" : "Attribute to define the measure and actual mass of the material.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_UnitOfMeasure"
+          },
+          "bioBased" : {
+            "description" : "Bio-based materials are materials of biological origin excluding material embedded in geological formations and/or fossilised.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_BioBased"
+          },
+          "inorganic" : {
+            "description" : "Material based on inorganic matter or fossil fuels.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_Inorganic"
+          },
+          "certificate" : {
+            "description" : "If available, the name of a certificate verifying the recycling content can be included.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_Certificate"
+          },
+          "additionalInformation" : {
+            "description" : "This attribute can be used to add additional information on material level. \nFor example could this field contain information about how much material has been reutilised. Reutilization of materials such as rework, regrind, or scrap materials generated within the process and capable of being reused within the same process that generated it.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "materialClass", "materialNameStandardized", "unitOfMeasure", "bioBased", "inorganic" ]
+      },
+      "urn_samm_io.catenax.secondary_material_content_1.0.0_SecondaryMaterialContentMaterials" : {
+        "description" : "List of relevant materials, which are built in this part and details on the share of primary and secondary material.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_SecondaryMaterialContentMaterialsEntity"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "secondaryMaterialContent" : {
+      "description" : "List of relevant materials, which are built in this part and details on the share of primary and secondary material.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.secondary_material_content_1.0.0_SecondaryMaterialContentMaterials"
+    },
+    "orderNumber" : {
+      "description" : "Order number as provided by supplier.",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    }
+  },
+  "required" : [ "secondaryMaterialContent" ]
+}
