@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [2.0.1] 2023-01-04
+## [2.0.1] 2023-12-04
 ### Added
 - integration of the sites property and its childtree of the shared PartSiteInformationAsBuilt (1.0.0) aspect model as optional content
 - integration of the shared UUID characteristic and RegEx for the catenaXId property
