@@ -109,10 +109,10 @@
 :Delivery a samm:Entity;
     samm:preferredName "Planned and Allocated Delivery"@en;
     samm:description "Quantity, origin and destination, time of departure and arrival, tracking number and incoterms for a certain delivery."@en;
-    samm:properties (:deliveryQuantity :transitDates :transitLocations [
+    samm:properties (:deliveryQuantity :transitEvents :transitLocations [
   samm:property :trackingNumber;
   samm:optional "true"^^xsd:boolean
-] :status [
+] [
   samm:property :incoterm;
   samm:optional "true"^^xsd:boolean
 ]).
@@ -135,10 +135,10 @@
     samm:preferredName "Delivery Quantity"@en;
     samm:description "Amount of items of a delivery between a supplier and a customer."@en;
     samm:characteristic :QuantityCharacteristic.
-:transitDates a samm:Property;
-    samm:preferredName "Date of departure and arrival"@en;
+:transitEvents a samm:Property;
+    samm:preferredName "Date of departure or arrival"@en;
     samm:description "Transit dates provide date and time of departure and date and time of arrival for a specific delivery. Date and time are set according to the timezone."@en;
-    samm:characteristic :TransitDatesCharacteristic.
+    samm:characteristic :TransitEventsTrait.
 :transitLocations a samm:Property;
     samm:preferredName "Transit Locations"@en;
     samm:description "Physical locations of the origin and destination."@en;
@@ -148,16 +148,11 @@
     samm:description "Is a unique alphanumeric code assigned to a shipment by a logistics service provider, allowing it to be monitored and traced throughout its journey between origin and destination."@en;
     samm:characteristic :TrackingNumberCharacteristic;
     samm:exampleValue "1Z9829WDE02128".
-:status a samm:Property;
-    samm:preferredName "Status"@en;
-    samm:description "Status of the delivery."@en;
-    samm:characteristic :StatusEnumeration;
-    samm:exampleValue "planned".
 :incoterm a samm:Property;
     samm:preferredName "Incoterm"@en;
     samm:description "Incoterm which is assigned to a delivery."@en;
-    samm:characteristic samm-c:Text;
-    samm:exampleValue "DAP (Delivered at Place)";
+    samm:characteristic :IncotermEnumeration;
+    samm:exampleValue "DAP";
     samm:see <https://iccwbo.org/business-solutions/intoterms-rules/>.
 :OrderIdCharacteristic a samm:Characteristic;
     samm:preferredName "Order ID Characteristic"@en;
@@ -171,10 +166,9 @@
     samm:preferredName "Quantity Characteristic"@en;
     samm:description "Describes the quantity and the unit of measure with which the delivery is measured."@en;
     samm:dataType ext-quantity:ItemQuantityEntity.
-:TransitDatesCharacteristic a samm:Characteristic;
-    samm:preferredName "Transit dates"@en;
-    samm:description "Transit dates refers to the specific timeframes associated with the departure and arrival of products during their transportation from one location to another - from the supplier to the customer. "@en;
-    samm:dataType :TransitDates.
+:TransitEventsTrait a samm-c:Trait;
+    samm-c:baseCharacteristic :TransitEventsSet;
+    samm-c:constraint :TransitEventsContstraint.
 :TransitLocationsCharacteristic a samm:Characteristic;
     samm:preferredName "Transit Locations Characteristic"@en;
     samm:description "Transit locations includes origin and destination points in the transportation of goods. It refers to specific location of the source or production facility (origin) or the designated endpoint (destination)."@en;
@@ -183,25 +177,29 @@
     samm:preferredName "Tracking Number Characteristic"@en;
     samm:description "Alphanumeric string that is defined by the logistics service provider in order to track and identify the shipment."@en;
     samm:dataType xsd:string.
-:StatusEnumeration a samm-c:Enumeration;
-    samm:preferredName "Status Enumeration"@en;
-    samm:description "Status of the delivery can be one of three values: planned, in-transit or delivered."@en;
+:IncotermEnumeration a samm-c:Enumeration;
+    samm:preferredName "Incoterm enumeration"@en;
+    samm:description "All 12 possible values for the incoterms."@en;
     samm:dataType xsd:string;
-    samm-c:values ("planned" "in-transit" "delivered").
+    samm:see <https://impargo.de/blog/incoterms-einfach-erklaert>;
+    samm-c:values ("EXW" "FCA" "CPT" "CIP" "DAP" "DAT" "DPU" "DDP" "FAS" "FOB" "CFR" "CIF").
+:TransitEventsSet a samm-c:Set;
+    samm:preferredName "Transit events set"@en;
+    samm:description "Transit events refer to the specific timeframes associated with the departure or arrival of products during their transportation from one location to another - from the supplier to the customer.\n\nIf the set has two elements, following restrictions apply:\n- one element MUST describe the departure and another element MUST describe the arrival\n- if the set contains a planned departure, the set MUST NOT contain an actual arrival."@en;
+    samm:dataType :TransitEvent.
+:TransitEventsContstraint a samm-c:LengthConstraint;
+    samm:preferredName "Transit events constraint"@en;
+    samm:description "The TransitEventsSet MUST contain either 1 or 2 TransitEvents."@en;
+    samm-c:minValue "1"^^xsd:nonNegativeInteger;
+    samm-c:maxValue "2"^^xsd:nonNegativeInteger.
 :TransitLocations a samm:Entity;
     samm:preferredName "Transit Locations"@en;
     samm:description "Transit locations describes the specific location where products undergo the process of being transported from the source or production facility (origin) to the designated endpoint location (destination)."@en;
     samm:properties (:origin :destination).
-:timeOfDeparture a samm:Property;
-    samm:preferredName "Time of Departure"@en;
-    samm:description "Time of Departure signifies the time and date when the products leave (or will leave) the origin location of a delivery (i.e. supplier's production site)."@en;
-    samm:characteristic :DateTimeStamp;
-    samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:dateTime.
-:timeOfArrival a samm:Property;
-    samm:preferredName "Time of Arrival"@en;
-    samm:description "Time of arrival signifies the time and date when the products arrive (or will arrive) at the destination of a delivery (i.e. customer's facility)."@en;
-    samm:characteristic :DateTimeStamp;
-    samm:exampleValue "2023-04-05T08:00:00+01:00"^^xsd:dateTime.
+:TransitEvent a samm:Entity;
+    samm:preferredName "Transit event"@en;
+    samm:description "Entity for specifying the departure or arrival time and date."@en;
+    samm:properties (:dateTimeOfEvent :eventType :status).
 :origin a samm:Property;
     samm:preferredName "Origin"@en;
     samm:description "Origin refers to the starting point or the location from which the items are being shipped to the customer. "@en;
@@ -210,10 +208,34 @@
     samm:preferredName "Destination"@en;
     samm:description "Destination refers to the final endpoint or intended location where the items are meant to arrive (i.e. customer factory)."@en;
     samm:characteristic :LocationCharacteristic.
+:dateTimeOfEvent a samm:Property;
+    samm:preferredName "Time of Event"@en;
+    samm:description "Time of Event signifies the time and date when the products leave (or will leave) the origin location of a delivery (i.e. supplier's production site) or when the products arrive (or will arrive) at the destination location of the delivery (i.e. customer's production site)."@en;
+    samm:characteristic :DateTimeStamp;
+    samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:dateTime.
+:eventType a samm:Property;
+    samm:preferredName "Event Type"@en;
+    samm:description "Event type describes wether the mentioned timeOfEvent refers to a departure or arrival."@en;
+    samm:characteristic :EventTypeEnumeration;
+    samm:exampleValue "departure".
+:status a samm:Property;
+    samm:preferredName "Status"@en;
+    samm:description "Status of the delivery."@en;
+    samm:characteristic :StatusEnumeration;
+    samm:exampleValue "planned".
 :LocationCharacteristic a samm:Characteristic;
     samm:preferredName "Location Characteristic"@en;
     samm:description "Location characteristic describes a particular location of a business partner. It MUST include the information of the site and it MAY include the exact address."@en;
     samm:dataType :Location.
+:EventTypeEnumeration a samm-c:Enumeration;
+    samm:preferredName "Event Type Enumeration"@en;
+    samm:dataType xsd:string;
+    samm-c:values ("departure" "arrival").
+:StatusEnumeration a samm-c:Enumeration;
+    samm:preferredName "Status Enumeration"@en;
+    samm:description "Status of the delivery can be one of two values: planned or actual."@en;
+    samm:dataType xsd:string;
+    samm-c:values ("planned" "actual").
 :Location a samm:Entity;
     samm:preferredName "Location"@en;
     samm:description "Location refers to a specific place that can be identified with two parameters - business partner number site (BPNS) and business partner number address (BPNA). Location MUST include BPNS and it MAY include BPNA. "@en;
@@ -221,7 +243,5 @@
   samm:property ext-number:bpnaProperty;
   samm:optional "true"^^xsd:boolean
 ] ext-number:bpnsProperty).
-:TransitDates a samm:Entity;
-    samm:preferredName "Transit dates"@en;
-    samm:description "Entity for measurement of departure and arrival time and date."@en;
-    samm:properties (:timeOfDeparture :timeOfArrival).
+:Characteristic1 a samm:Characteristic;
+    samm:dataType xsd:string.
