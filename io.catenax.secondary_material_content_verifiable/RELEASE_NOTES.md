@@ -3,10 +3,10 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [1.0.0] - 2023-10-04
+## [2.0.0] - 2023-12-04
 ### Added
 - initial model
-- name change from material for recycling
+- reference to shared aspect
 
 ### Changed
 n/a
