@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [3.0.0] - 2023-12-11
+## [3.0.0] - 2023-12-04
 ### Added
 General
 - payload names are added where missing and needed
@@ -16,12 +16,8 @@ Characteristics
 
 Sustainability
 - state has a more defined enumeration
-- carbon footprint is separate and anymore a list
 - carbon and environmental footprint have new properties "performance class", "manufacturing plant" and "declaration"
 - renewable and recycled content are now identified trough a share
-
-Typology
-- class is now mandatory
 
 Identification
 - a list of identifiers can be provided
@@ -30,7 +26,7 @@ Operation
 - manufacturing date is mandatory
 
 Handling
-- spare parts are now mandatory and the list of suppliers are connected to the spare parts
+- spare part producers changed to spare part sources
 - hazardClass optional added
 
 

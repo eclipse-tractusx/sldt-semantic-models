@@ -152,7 +152,7 @@
 :TypologyEntity a samm:Entity ;
    samm:preferredName "Typology Entity"@en ;
    samm:description "Entity describing attributes such class and different names of the product."@en ;
-   samm:properties ( :longName :class :shortName ) .
+   samm:properties ( :longName [ samm:property :class; samm:optional true ] :shortName ) .
 
 :SustainabilityEntity a samm:Entity ;
    samm:preferredName "Sustainability Entity"@en ;
@@ -231,8 +231,9 @@
 
 :passportIdentifier a samm:Property ;
    samm:preferredName "passportIdentifier"@en ;
-   samm:description "The identifier of the passport."@en ;
-   samm:characteristic :IdentificationEither .
+   samm:description "The identifier of the product passport, which could be a uuidv4."@en ;
+   samm:characteristic :IdentificationEither ;
+   samm:exampleValue "urn:uuid:550e8400-e29b-41d4-a716-446655440000" .
 
 :longName a samm:Property ;
    samm:preferredName "Long Name"@en ;
@@ -256,7 +257,7 @@
    samm:preferredName "State"@en ;
    samm:description "The status of the product (original, repurposed, re-used, remanufactured or waste) to indicated, whether it is a used product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:\n(j) incorporation of used components."@en ;
    samm:characteristic :StateEnumeration ;
-   samm:exampleValue "first life" .
+   samm:exampleValue "original" .
 
 :chemicalMaterial a samm:Property ;
    samm:preferredName "Material"@en ;
@@ -466,7 +467,7 @@
    samm:description "A list of additional codes."@en ;
    samm:dataType :CodeEntity .
 
-:LocalIdentifierList a samm:Characteristic ;
+:LocalIdentifierList a samm-c:List ;
    samm:preferredName "Local Identifier List"@en ;
    samm:description "Local Identifier List for the product."@en ;
    samm:dataType :IdentifierEntity .
@@ -500,7 +501,7 @@
 :EitherSparePart a samm-c:Either ;
    samm:preferredName "Either Spare Part"@en ;
    samm:description "Either spare parts and optional spare part producers (left) or the string value \"not applicable\" (right)."@en ;
-   samm-c:left :SparePartList ;
+   samm-c:left :SparePart ;
    samm-c:right :NotApplicableEnumeration .
 
 :SubstanceCharacteristic a samm-c:Either ;
@@ -595,10 +596,10 @@
    samm:description "Entity for type with unit and data type."@en ;
    samm:properties ( [ samm:property :typeUnit; samm:optional true ] :dataType ) .
 
-:SparePartList a samm:Characteristic ;
-   samm:preferredName "Spare Part List"@en ;
-   samm:description "Characteristic describing producers and spare parts."@en ;
-   samm:dataType :PartEntity .
+:SparePart a samm:Characteristic ;
+   samm:preferredName "Spare Part"@en ;
+   samm:description "Characteristic describing sources and spare parts."@en ;
+   samm:dataType :SparePartEntity .
 
 :SubstanceList a samm-c:List ;
    samm:preferredName "Substance List"@en ;
@@ -637,7 +638,7 @@
 :carbonFootprint a samm:Property ;
    samm:preferredName "Carbon Footprint"@en ;
    samm:description "The carbon footprint of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:\n(m) the carbon footprint of the product."@en ;
-   samm:characteristic :Footprint .
+   samm:characteristic :FootprintList .
 
 :lifeUnit a samm:Property ;
    samm:preferredName "Life Unit"@en ;
@@ -763,10 +764,10 @@
    samm:characteristic :DataTypeEnumeration ;
    samm:exampleValue "xsd:integer" .
 
-:PartEntity a samm:Entity ;
-   samm:preferredName "Part Entity"@en ;
+:SparePartEntity a samm:Entity ;
+   samm:preferredName "Spare Part Entity"@en ;
    samm:description "Information regarding  possible spare parts. This is mentioned in the ESPR proposal from March 30th, 2022 Annex I:\n(b) ease of repair and maintenance as expressed through: characteristics, availability and delivery time of spare parts, modularity, compatibility with commonly available spare parts, availability of repair and maintenance instructions, number of materials and components used, use of standard components, use of component and material coding standards for the identification of components and materials, number and complexity of processes and tools needed,  ease of non-destructive disassembly and re-assembly, conditions for access to product data, conditions for access to or use of hardware and software needed;\n(c) the Global Trade Identification Number as provided for in standard ISO/IEC 15459-6 or equivalent of products or their parts."@en ;
-   samm:properties ( [ samm:property :partName; samm:payloadName "name" ] [ samm:property :partNumber; samm:payloadName "number" ] [ samm:property :sparePartProducer; samm:payloadName "producer" ] ) .
+   samm:properties ( [ samm:property :sparePartSources; samm:payloadName "producer" ] :sparePart ) .
 
 :SubstanceEntity a samm:Entity ;
    samm:preferredName "Substance Entity"@en ;
@@ -823,11 +824,6 @@
 :FootprintList a samm-c:List ;
    samm:preferredName "Footprint List"@en ;
    samm:description "Footprint List for the environmental footprint."@en ;
-   samm:dataType :FootprintEntity .
-
-:Footprint a samm:Characteristic ;
-   samm:preferredName "Footprint"@en ;
-   samm:description "Footprint of the carbon footprint."@en ;
    samm:dataType :FootprintEntity .
 
 :LifeEnumeration a samm-c:Enumeration ;
@@ -898,22 +894,15 @@
    samm:dataType xsd:string ;
    samm-c:values ( "array" "object" "xsd:string" "xsd:integer" "xsd:boolean" "xsd:double" "xsd:float" "xsd:byte" ) .
 
-:partName a samm:Property ;
-   samm:preferredName "Part Name"@en ;
-   samm:description "The name of the spare part. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:\n(b) ease of repair and maintenance as expressed through: characteristics, availability and delivery time of spare parts, modularity, compatibility with commonly available spare parts, availability of repair and maintenance instructions, number of materials and components used, use of standard components, use of component and material coding standards for the identification of components and materials, number and complexity of processes and tools needed,  ease of non-destructive disassembly and re-assembly, conditions for access to product data, conditions for access to or use of hardware and software needed."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Aluminum Housing" .
+:sparePartSources a samm:Property ;
+   samm:preferredName "Spare Part Sources"@en ;
+   samm:description "Sources of possible spare parts."@en ;
+   samm:characteristic :SourcesList .
 
-:partNumber a samm:Property ;
-   samm:preferredName "part number"@en ;
-   samm:description "The part number to identify the spare part. It could be a also for example a GTIN. GTIN stands for Global Trade Item Number. It is a unique and internationally recognized identifier used to identify products in the global marketplace. GTINs are typically encoded in barcodes and are used by retailers, manufacturers, and suppliers to track and manage their products throughout the supply chain. Valid inputs are all GTIN versions (GTIN-8, GTIN-12, GTIN-13, and GTIN-14).This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(c) the Global Trade Identification Number as provided for in standard ISO/IEC 15459-6 or equivalent of products or their parts."@en ;
-   samm:characteristic :IdentifierCharacteristic ;
-   samm:exampleValue "12345678" .
-
-:sparePartProducer a samm:Property ;
-   samm:preferredName "Spare Part Producer"@en ;
-   samm:description "Producer of possible spare parts."@en ;
-   samm:characteristic :ProducerList .
+:sparePart a samm:Property ;
+   samm:preferredName "Spare Part"@en ;
+   samm:description "Possible spare parts of the product."@en ;
+   samm:characteristic :PartList .
 
 :substanceName a samm:Property ;
    samm:preferredName "Substance Name"@en ;
@@ -944,6 +933,7 @@
 
 :hazardClass a samm:Property ;
    samm:description "The specification of the hazard class."@en ;
+   samm:see <https://echa.europa.eu/et/support/mixture-classification/hazard-class-table> ;
    samm:see <https://echa.europa.eu/regulations/clp/classification> ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Acute toxicity" .
@@ -953,7 +943,7 @@
    samm:description "Characteristic further defining a business address."@en ;
    samm:dataType :BusinessEntity .
 
-:BusinessId a samm:Characteristic ;
+:BusinessId a samm-c:List ;
    samm:preferredName "Business Id"@en ;
    samm:description "A identifier to refer to a business."@en ;
    samm:dataType :BusinessIdEntity .
@@ -1007,10 +997,15 @@
    samm:description "A short id for a manufacturing plant."@en ;
    samm:dataType :LocationIdEntity .
 
-:ProducerList a samm-c:List ;
-   samm:preferredName "Producer List"@en ;
-   samm:description "List of possible spare part producer."@en ;
-   samm:dataType :ProducerEntity .
+:SourcesList a samm-c:List ;
+   samm:preferredName "Sources List"@en ;
+   samm:description "List of possible spare part sources."@en ;
+   samm:dataType :SourcesEntity .
+
+:PartList a samm-c:List ;
+   samm:preferredName "Part List"@en ;
+   samm:description "A list of possible spare parts of the product."@en ;
+   samm:dataType :PartsEntity .
 
 :EitherConcentration a samm-c:Either ;
    samm:preferredName "Either Concentration"@en ;
@@ -1095,10 +1090,15 @@
    samm:description "A short id for a manufacturing plant with the identifier itself and a type to describe it."@en ;
    samm:properties ( :locationIdentifier :locationIdentifierType ) .
 
-:ProducerEntity a samm:Entity ;
-   samm:preferredName "Producer Entity"@en ;
-   samm:description "Entity for a possible spare part producer."@en ;
-   samm:properties ( [ samm:property :producerIdentification; samm:payloadName "id" ] ) .
+:SourcesEntity a samm:Entity ;
+   samm:preferredName "Sources Entity"@en ;
+   samm:description "Entity for a possible spare part sources."@en ;
+   samm:properties ( [ samm:property :sourcesIdentification; samm:payloadName "id" ] ) .
+
+:PartsEntity a samm:Entity ;
+   samm:preferredName "Parts Entity"@en ;
+   samm:description "Possible spare parts of the product with identifiers and names."@en ;
+   samm:properties ( :partNumber :partName ) .
 
 :RangeCharacteristic a samm-c:List ;
    samm:preferredName "Range Characteristic"@en ;
@@ -1113,8 +1113,7 @@
 :companyName a samm:Property ;
    samm:preferredName "Company Name"@en ;
    samm:description "Company name, registered trade name or registered trade mark."@en ;
-   samm:characteristic :CompanyList ;
-   samm:exampleValue "Company A" .
+   samm:characteristic :CompanyList .
 
 :businessIdentifier a samm:Property ;
    samm:preferredName "Business Identifier"@en ;
@@ -1175,11 +1174,22 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "BPNA" .
 
-:producerIdentification a samm:Property ;
-   samm:preferredName "Producer Identification"@en ;
+:sourcesIdentification a samm:Property ;
+   samm:preferredName "Sources Identification"@en ;
    samm:description "The identifier of a spare part producer of the product. In the Catena-X network, the BPNL is used for the identification of companies and the information stored for this like contact information and addresses."@en ;
-   samm:characteristic :EitherBusiness ;
-   samm:exampleValue "BPNL1234567890ZZ" .
+   samm:characteristic :EitherBusiness .
+
+:partNumber a samm:Property ;
+   samm:preferredName "part number"@en ;
+   samm:description "The part number to identify the spare part. It could be a also for example a GTIN. GTIN stands for Global Trade Item Number. It is a unique and internationally recognized identifier used to identify products in the global marketplace. GTINs are typically encoded in barcodes and are used by retailers, manufacturers, and suppliers to track and manage their products throughout the supply chain. Valid inputs are all GTIN versions (GTIN-8, GTIN-12, GTIN-13, and GTIN-14).This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(c) the Global Trade Identification Number as provided for in standard ISO/IEC 15459-6 or equivalent of products or their parts."@en ;
+   samm:characteristic :IdentifierCharacteristic ;
+   samm:exampleValue "12345678" .
+
+:partName a samm:Property ;
+   samm:preferredName "Part Name"@en ;
+   samm:description "The name of the spare part. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:\n(b) ease of repair and maintenance as expressed through: characteristics, availability and delivery time of spare parts, modularity, compatibility with commonly available spare parts, availability of repair and maintenance instructions, number of materials and components used, use of standard components, use of component and material coding standards for the identification of components and materials, number and complexity of processes and tools needed,  ease of non-destructive disassembly and re-assembly, conditions for access to product data, conditions for access to or use of hardware and software needed."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Aluminum Housing" .
 
 :RangeEntity a samm:Entity ;
    samm:preferredName "Range Entity"@en ;
@@ -1210,8 +1220,8 @@
 :ListTypeEnumerationName a samm-c:Enumeration ;
    samm:preferredName "List Type Enumeration Name"@en ;
    samm:description "Enumeration of different systems and organizations related to the identification and classification of chemical substances in the field of chemistry. The enumeration values are IUPAC, EC or CAS."@en ;
-   samm:see <https://iupac.org/> ;
    samm:see <https://www.cas.org/cas-data/cas-registry> ;
+   samm:see <https://iupac.org/> ;
    samm:dataType xsd:string ;
    samm-c:values ( "IUPAC" "CAS" "EC" ) .
 
@@ -1255,4 +1265,7 @@
    samm:preferredName "Location Identifier Characteristic"@en ;
    samm:description "String for a location identifier."@en ;
    samm:dataType xsd:string .
+
+:Characteristic1 a samm:Characteristic ;
+   samm:dataType :PartsEntity .
 
