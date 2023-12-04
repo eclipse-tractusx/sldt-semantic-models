@@ -2,7 +2,7 @@
 
 All notable changes to this model will be documented in this file.
 
-## [2.0.0] - 2023-11-29
+## [2.0.0] - 2023-12-04
 ### Added
 - add / integrate shared UUID characteristic and RegEx for the properties messageId and relatedMessageId
 - add / integrate shared BPN-L characteristic and RegEx for the properties senderBpn and receiverBpn
