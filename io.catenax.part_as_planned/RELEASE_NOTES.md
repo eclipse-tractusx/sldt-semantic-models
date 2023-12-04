@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [2.0.0] - 2023-11-27
+## [2.0.0] - 2023-12-04
 ### Added
 - added all relevant part site information of the PartSiteInforamtionAsPlanned aspect model, that will be deprecated
 
