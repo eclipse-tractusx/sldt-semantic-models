@@ -25,6 +25,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.pcf:5.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
 
 :Pcf a samm:Aspect ;
    samm:preferredName "Product (Carbon) Footprint"@en ;
@@ -38,7 +39,7 @@
    samm:preferredName "Product Footprint Identifier"@en ;
    samm:description "Mandatory: The product footprint identifier as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:characteristic :IdTrait ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "3893bb5d-da16-4dc1-9185-11d97476c254" .
 
 :specVersion a samm:Property ;
@@ -58,7 +59,7 @@
    samm:preferredName "Previous PCF (Product Carbon Footprint) Identifiers"@en ;
    samm:description "Optional: Set of preceding PCF (Product Carbon Footprint) identifiers without duplicates as specified in the Catena-X PCF Rulebook in accordance with the WBCSD (World Business Council for Sustainable Development) Pathfinder framework and the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD/ PACT initiative. Declared as \"optional\" in WBCSD, needs to be covered by application."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:characteristic :PrecedingPfIdsTrait .
+   samm:characteristic :PrecedingPfIdsCharacteristic .
 
 :version a samm:Property ;
    samm:preferredName "Product (Carbon) Footprint Version"@en ;
@@ -111,9 +112,10 @@
 
 :companyIds a samm:Property ;
    samm:preferredName "Company IDs"@en ;
-   samm:description "Mandatory: Non-empty set of Uniform Resource Names (URN). Each value is supposed to uniquely identify the product (carbon) footprint data owner as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
+   samm:description "Mandatory: Non-empty set of Uniform Resource Names (URN) representing company identifiers. Each value is supposed to uniquely identify the product (carbon) footprint data owner as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:characteristic :CompanyIdsTrait .
+   samm:characteristic :IdsTrait ;
+   samm:exampleValue "urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619"^^xsd:anyURI .
 
 :productDescription a samm:Property ;
    samm:preferredName "Product Description"@en ;
@@ -126,7 +128,8 @@
    samm:preferredName "Product IDs"@en ;
    samm:description "Mandatory: Non-empty set of product identifiers. Each value is supposed to uniquely identify the product as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:characteristic :ProductIdsTrait .
+   samm:characteristic :IdsTrait ;
+   samm:exampleValue "urn:gtin:4712345060507"^^xsd:anyURI .
 
 :productCategoryCpc a samm:Property ;
    samm:preferredName "Product Category"@en ;
@@ -154,21 +157,17 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "This PCF (Product Carbon Footprint) is for information purposes only. It is based upon the standards mentioned above." .
 
-:IdTrait a samm-c:Trait ;
-   samm:preferredName "ID (Identifier) Trait"@en ;
-   samm:description "Trait for defining a PCF (Product Carbon Footprint) identifier as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm-c:baseCharacteristic :PfId ;
-   samm-c:constraint :UUIDv4 .
-
 :PartialFullPcfCharacteristic a samm-c:Enumeration ;
    samm:preferredName "Partial Or Full PCF (Product Carbon Footprint) Characteristic"@en ;
    samm:description "Characteristic for defining an indicator for partial or full PCF (Product Carbon Footprint) declaration as specified in the Catena-X PCF Rulebook."@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "Cradle-to-gate" "Cradle-to-grave" ) .
 
-:PrecedingPfIdsTrait a samm-c:Trait ;
-   samm-c:baseCharacteristic :PrecedingPfIdsCharacteristic ;
-   samm-c:constraint :PrecedingPfIdsConstraint .
+:PrecedingPfIdsCharacteristic a samm-c:List ;
+   samm:preferredName "Previous PCF (Product Carbon Footprint) Identifiers Characteristic"@en ;
+   samm:description "Caracteristic for defining a non-empty set of product (carbon) footprint identifiers as specified in the Catena-X PCF Rulebook in accordance with the WBCSD (World Business Council for Sustainable Development) Pathfinder framework and the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD/ PACT initiative."@en ;
+   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
+   samm:dataType :PrecedingPfId .
 
 :ProductFootprintVersion a samm:Characteristic ;
    samm:preferredName "Product (Carbon) Footprint Version Characteristic"@en ;
@@ -187,79 +186,16 @@
    samm-c:baseCharacteristic samm-c:Text ;
    samm-c:constraint :NonEmptyString .
 
-:CompanyIdsTrait a samm-c:Trait ;
-   samm-c:baseCharacteristic :CompanyIdSet ;
-   samm-c:constraint :CompanyIdSetConstraint .
-
-:ProductIdsTrait a samm-c:Trait ;
-   samm:preferredName "Product IDs Trait"@en ;
-   samm:description "Trait for defining a non-empty set of product identifiers as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm-c:baseCharacteristic :ProductIdSet ;
-   samm-c:constraint :ProductIdSetConstraint .
+:IdsTrait a samm-c:Trait ;
+   samm:preferredName "IDs Trait"@en ;
+   samm:description "Trait for URIs (Uniform Resource Identifiers)."@en ;
+   samm-c:baseCharacteristic :IdSet ;
+   samm-c:constraint :NonEmptySetConstraint .
 
 :CarbonFootprint a samm-c:SingleEntity ;
    samm:preferredName "PCF (Product Carbon Footprint) Characteristic"@en ;
    samm:description "Characteristic for defining a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
    samm:dataType :PcfEntity .
-
-:PfId a samm:Characteristic ;
-   samm:preferredName "Product (Carbon) Footprint Identifier"@en ;
-   samm:description "Characteristic for defining a product (carbon) footprint identifier as specified in the Catena-X PCF Rulebook in accordance with the WBCSD (World Business Council for Sustainable Development) Pathfinder framework and the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD/ PACT initiative. Must be a UUID v4."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:dataType xsd:string .
-
-:UUIDv4 a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "UUID v4 Constraint"@en ;
-   samm:description "Constraint for defining a UUID v4 identifier."@en ;
-   samm:value "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" .
-
-:PrecedingPfIdsCharacteristic a samm-c:Set ;
-   samm:preferredName "Previous PCF (Product Carbon Footprint) Identifiers Characteristic"@en ;
-   samm:description "Caracteristic for defining a non-empty set of product (carbon) footprint identifiers as specified in the Catena-X PCF Rulebook in accordance with the WBCSD (World Business Council for Sustainable Development) Pathfinder framework and the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:dataType :PrecedingPfId .
-
-:PrecedingPfIdsConstraint a samm-c:LengthConstraint ;
-   samm:preferredName "Preceding PfIds Constraint"@en ;
-   samm:description "Constraint for defining a non-empty set of product (carbon) footprint identifiers as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm-c:minValue "1"^^xsd:nonNegativeInteger .
-
-:NonEmptyString a samm-c:LengthConstraint ;
-   samm:preferredName "Non Empty String Constraint"@en ;
-   samm:description "Constraint for ensuring that a string has at least one character."@en ;
-   samm-c:minValue "1"^^xsd:nonNegativeInteger .
-
-:CompanyIdSet a samm-c:Set ;
-   samm:preferredName "Company IDs Characteristic"@en ;
-   samm:description "Characteristic for defining a set of company ids in context of a product (carbon) footprint as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:dataType :CompanyId .
-
-:CompanyIdSetConstraint a samm-c:LengthConstraint ;
-   samm:preferredName "Company ID Set Constraint"@en ;
-   samm:description "Constraint for defining a non-empty set of company identifiers as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm-c:minValue "1"^^xsd:nonNegativeInteger .
-
-:ProductIdSet a samm-c:Set ;
-   samm:preferredName "Product IDs Characteristic"@en ;
-   samm:description "Characteristic for defining a set of product identifiers as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:dataType :ProductId .
-
-:ProductIdSetConstraint a samm-c:LengthConstraint ;
-   samm:preferredName "Product ID Set Constraint"@en ;
-   samm:description "Constraint for defining a non-empty set of product identifiers as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm-c:minValue "1"^^xsd:nonNegativeInteger .
-
-:PcfEntity a samm:Entity ;
-   samm:preferredName "PCF (Product Carbon Footprint) Entity"@en ;
-   samm:description "Entity for defining a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:properties ( [ samm:property :declaredUnit; samm:payloadName "declaredUnit" ] [ samm:property :unitaryProductAmount; samm:payloadName "unitaryProductAmount" ] [ samm:property :productMassPerDeclaredUnit; samm:payloadName "productMassPerDeclaredUnit" ] [ samm:property :exemptedEmissionsPercent; samm:payloadName "exemptedEmissionsPercent" ] [ samm:property :exemptedEmissionsDescription; samm:optional true; samm:payloadName "exemptedEmissionsDescription" ] [ samm:property :boundaryProcessesDescription; samm:optional true; samm:payloadName "boundaryProcessesDescription" ] [ samm:property :geographyCountrySubdivision; samm:optional true; samm:payloadName "geographyCountrySubdivision" ] [ samm:property :geographyCountry; samm:optional true; samm:payloadName "geographyCountry" ] [ samm:property :geographyRegionOrSubregion; samm:payloadName "geographyRegionOrSubregion" ] [ samm:property :referencePeriodStart; samm:payloadName "referencePeriodStart" ] [ samm:property :referencePeriodEnd; samm:payloadName "referencePeriodEnd" ] [ samm:property :crossSectoralStandardsUsed; samm:payloadName "crossSectoralStandardsUsed" ] [ samm:property :productOrSectorSpecificRules; samm:payloadName "productOrSectorSpecificRules" ] [ samm:property :characterizationFactors; samm:payloadName "extWBCSD_characterizationFactors" ] [ samm:property :allocationRulesDescription; samm:optional true; samm:payloadName "extWBCSD_allocationRulesDescription" ] [ samm:property :allocationWasteIncineration; samm:payloadName "extTFS_allocationWasteIncineration" ] [ samm:property :primaryDataShare; samm:optional true; samm:payloadName "primaryDataShare" ] [ samm:property :secondaryEmissionFactorSources; samm:payloadName "secondaryEmissionFactorSources" ] [ samm:property :dqi; samm:optional true; samm:payloadName "dataQualityRating" ] [ samm:property :packagingEmissionsIncluded; samm:payloadName "extWBCSD_packagingEmissionsIncluded" ] [ samm:property :pcfExcludingBiogenic; samm:payloadName "pcfExcludingBiogenic" ] [ samm:property :pcfIncludingBiogenic; samm:optional true; samm:payloadName "pcfIncludingBiogenic" ] [ samm:property :fossilGhgEmissions; samm:optional true; samm:payloadName "fossilGhgEmissions" ] [ samm:property :biogenicCarbonEmissionsOtherThanCO2; samm:optional true; samm:payloadName "biogenicCarbonEmissionsOtherThanCO2" ] [ samm:property :biogenicCarbonWithdrawal; samm:optional true; samm:payloadName "biogenicCarbonWithdrawal" ] [ samm:property :dlucGhgEmissions; samm:optional true; samm:payloadName "dlucGhgEmissions" ] [ samm:property :luGhgEmissions; samm:optional true; samm:payloadName "extTFS_luGhgEmissions" ] [ samm:property :aircraftGhgEmissions; samm:optional true; samm:payloadName "aircraftGhgEmissions" ] [ samm:property :packagingGhgEmissions; samm:payloadName "extWBCSD_packagingGhgEmissions" ] [ samm:property :distributionStagePcfExcludingBiogenic; samm:optional true; samm:payloadName "distributionStagePcfExcludingBiogenic" ] [ samm:property :distributionStagePcfIncludingBiogenic; samm:optional true; samm:payloadName "distributionStagePcfIncludingBiogenic" ] [ samm:property :distributionStageFossilGhgEmissions; samm:optional true; samm:payloadName "distributionStageFossilGhgEmissions" ] [ samm:property :distributionStageBiogenicCarbonEmissionsOtherThanCO2; samm:optional true; samm:payloadName "distributionStageBiogenicCarbonEmissionsOtherThanCO2" ] [ samm:property :distributionStageBiogenicCarbonWithdrawal; samm:optional true; samm:payloadName "distributionStageBiogenicCarbonWithdrawal" ] [ samm:property :distributionStageDlucGhgEmissions; samm:optional true; samm:payloadName "extTFS_distributionStageDlucGhgEmissions" ] [ samm:property :distributionStageLuGhgEmissions; samm:optional true; samm:payloadName "extTFS_distributionStageLuGhgEmissions" ] [ samm:property :carbonContentTotal; samm:optional true; samm:payloadName "carbonContentTotal" ] [ samm:property :fossilCarbonContent; samm:optional true; samm:payloadName "extWBCSD_fossilCarbonContent" ] [ samm:property :biogenicCarbonContent; samm:optional true; samm:payloadName "carbonContentBiogenic" ] [ samm:property :distributionStageAircraftGhgEmissions; samm:optional true; samm:payloadName "distributionStageAircraftGhgEmissions" ] ) .
 
 :PrecedingPfId a samm:Entity ;
    samm:preferredName "Preceding PCF (Product Carbon Footprint) Identifier Entity"@en ;
@@ -267,17 +203,26 @@
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
    samm:properties ( :id ) .
 
-:CompanyId a samm:Entity ;
-   samm:preferredName "Company Identifier"@en ;
-   samm:description "Company identifier in context of a product (carbon) footprint which must be declared as URN (Uniform Resource Name) as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:properties ( :companyId ) .
+:NonEmptyString a samm-c:LengthConstraint ;
+   samm:preferredName "Non Empty String Constraint"@en ;
+   samm:description "Constraint for ensuring that a string has at least one character."@en ;
+   samm-c:minValue "1"^^xsd:nonNegativeInteger .
 
-:ProductId a samm:Entity ;
-   samm:preferredName "Product Identifier"@en ;
-   samm:description "Identifier of a product in context of a product (carbon) footprint as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
+:IdSet a samm-c:List ;
+   samm:preferredName "ID Set Characteristic"@en ;
+   samm:description "Characteristic for defining a set of URIs (Uniform Resource Identifiers)."@en ;
+   samm:dataType xsd:anyURI .
+
+:NonEmptySetConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "Non Empty Set Constraint"@en ;
+   samm:description "Constraint for defining a non-empty set of URIs (Uniform Resource Identifieres)."@en ;
+   samm-c:minValue "1"^^xsd:nonNegativeInteger .
+
+:PcfEntity a samm:Entity ;
+   samm:preferredName "PCF (Product Carbon Footprint) Entity"@en ;
+   samm:description "Entity for defining a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:properties ( :productId ) .
+   samm:properties ( [ samm:property :declaredUnit; samm:payloadName "declaredUnit" ] [ samm:property :unitaryProductAmount; samm:payloadName "unitaryProductAmount" ] [ samm:property :productMassPerDeclaredUnit; samm:payloadName "productMassPerDeclaredUnit" ] [ samm:property :exemptedEmissionsPercent; samm:payloadName "exemptedEmissionsPercent" ] [ samm:property :exemptedEmissionsDescription; samm:optional true; samm:payloadName "exemptedEmissionsDescription" ] [ samm:property :boundaryProcessesDescription; samm:optional true; samm:payloadName "boundaryProcessesDescription" ] [ samm:property :geographyCountrySubdivision; samm:optional true; samm:payloadName "geographyCountrySubdivision" ] [ samm:property :geographyCountry; samm:optional true; samm:payloadName "geographyCountry" ] [ samm:property :geographyRegionOrSubregion; samm:payloadName "geographyRegionOrSubregion" ] [ samm:property :referencePeriodStart; samm:payloadName "referencePeriodStart" ] [ samm:property :referencePeriodEnd; samm:payloadName "referencePeriodEnd" ] [ samm:property :crossSectoralStandardsUsed; samm:payloadName "crossSectoralStandardsUsed" ] [ samm:property :productOrSectorSpecificRules; samm:payloadName "productOrSectorSpecificRules" ] [ samm:property :characterizationFactors; samm:payloadName "extWBCSD_characterizationFactors" ] [ samm:property :allocationRulesDescription; samm:optional true; samm:payloadName "extWBCSD_allocationRulesDescription" ] [ samm:property :allocationWasteIncineration; samm:payloadName "extTFS_allocationWasteIncineration" ] [ samm:property :primaryDataShare; samm:optional true; samm:payloadName "primaryDataShare" ] [ samm:property :secondaryEmissionFactorSources; samm:payloadName "secondaryEmissionFactorSources" ] [ samm:property :dqi; samm:optional true; samm:payloadName "dataQualityRating" ] [ samm:property :packagingEmissionsIncluded; samm:payloadName "extWBCSD_packagingEmissionsIncluded" ] [ samm:property :pcfExcludingBiogenic; samm:payloadName "pcfExcludingBiogenic" ] [ samm:property :pcfIncludingBiogenic; samm:optional true; samm:payloadName "pcfIncludingBiogenic" ] [ samm:property :fossilGhgEmissions; samm:optional true; samm:payloadName "fossilGhgEmissions" ] [ samm:property :biogenicCarbonEmissionsOtherThanCO2; samm:optional true; samm:payloadName "biogenicCarbonEmissionsOtherThanCO2" ] [ samm:property :biogenicCarbonWithdrawal; samm:optional true; samm:payloadName "biogenicCarbonWithdrawal" ] [ samm:property :dlucGhgEmissions; samm:optional true; samm:payloadName "dlucGhgEmissions" ] [ samm:property :luGhgEmissions; samm:optional true; samm:payloadName "extTFS_luGhgEmissions" ] [ samm:property :aircraftGhgEmissions; samm:optional true; samm:payloadName "aircraftGhgEmissions" ] [ samm:property :packagingGhgEmissions; samm:payloadName "extWBCSD_packagingGhgEmissions" ] [ samm:property :distributionStagePcfExcludingBiogenic; samm:optional true; samm:payloadName "distributionStagePcfExcludingBiogenic" ] [ samm:property :distributionStagePcfIncludingBiogenic; samm:optional true; samm:payloadName "distributionStagePcfIncludingBiogenic" ] [ samm:property :distributionStageFossilGhgEmissions; samm:optional true; samm:payloadName "distributionStageFossilGhgEmissions" ] [ samm:property :distributionStageBiogenicCarbonEmissionsOtherThanCO2; samm:optional true; samm:payloadName "distributionStageBiogenicCarbonEmissionsOtherThanCO2" ] [ samm:property :distributionStageBiogenicCarbonWithdrawal; samm:optional true; samm:payloadName "distributionStageBiogenicCarbonWithdrawal" ] [ samm:property :distributionStageDlucGhgEmissions; samm:optional true; samm:payloadName "extTFS_distributionStageDlucGhgEmissions" ] [ samm:property :distributionStageLuGhgEmissions; samm:optional true; samm:payloadName "extTFS_distributionStageLuGhgEmissions" ] [ samm:property :carbonContentTotal; samm:optional true; samm:payloadName "carbonContentTotal" ] [ samm:property :fossilCarbonContent; samm:optional true; samm:payloadName "extWBCSD_fossilCarbonContent" ] [ samm:property :biogenicCarbonContent; samm:optional true; samm:payloadName "carbonContentBiogenic" ] [ samm:property :distributionStageAircraftGhgEmissions; samm:optional true; samm:payloadName "distributionStageAircraftGhgEmissions" ] ) .
 
 :declaredUnit a samm:Property ;
    samm:preferredName "Unit of measurement"@en ;
@@ -541,20 +486,6 @@
    samm:characteristic :PositiveEmissionsTrait ;
    samm:exampleValue "0.0"^^xsd:decimal .
 
-:companyId a samm:Property ;
-   samm:preferredName "Company Identifier"@en ;
-   samm:description "Identifier of a company in context of a product (carbon) footprint as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:characteristic :CompanyIdCharacteristic ;
-   samm:exampleValue "urn:uuid:51131FB5-42A2-4267-A402-0ECFEFAD1619"^^xsd:anyURI .
-
-:productId a samm:Property ;
-   samm:preferredName "Product Identifier"@en ;
-   samm:description "Identifier of a product in context of a product (carbon) footprint as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:characteristic :ProductIdCharacteristic ;
-   samm:exampleValue "urn:gtin:4712345060507"^^xsd:anyURI .
-
 :DeclaredUnitCharacteristic a samm-c:Enumeration ;
    samm:preferredName "Declared Unit Characteristic"@en ;
    samm:description "Unit of analysis of the product with accepted values as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. For countable products/ components/ materials, Catena-X for example adds the unit \"piece\" to the value list specified by WBCSD."@en ;
@@ -645,18 +576,6 @@
    samm:description "Characteristic for defining (positive or negative) emissions in context of a PCF (Product Carbon Footprint) as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
    samm:dataType xsd:decimal .
-
-:CompanyIdCharacteristic a samm:Characteristic ;
-   samm:preferredName "Company Identifier Characteristic"@en ;
-   samm:description "Characteristic for defining a company identifier in context of a product (carbon) footprint as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:dataType xsd:anyURI .
-
-:ProductIdCharacteristic a samm:Characteristic ;
-   samm:preferredName "Product Identifier Characteristic"@en ;
-   samm:description "Characteristic for defining a product identifier in context of a product (carbon) footprint as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:dataType xsd:anyURI .
 
 :StrictlyPositiveDecimal a samm:Characteristic ;
    samm:preferredName "Strictly Positive Decimal"@en ;
