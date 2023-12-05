@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2023-12-04
+## [2.0.0] - 2023-12-11
 ### Added
 - relocation to shared namespace
 - Separate post consumer and post consumer automotive
