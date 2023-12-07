@@ -1,0 +1,743 @@
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.battery.digital_product_passport:4.0.0#> .
+@prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:3.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#> .
+
+:BatteryPass a samm:Aspect ;
+   samm:preferredName "Battery Passport"@en ;
+   samm:description "The battery pass describes information collected during the lifecycle of a battery. The battery passport is heavily based on the Regulation (EU) 2023/1542 of the European Parliament and of the Council of 12 July 2023 concerning batteries and waste batteries, amending Directive 2008/98/EC and Regulation (EU) 2019/1020 and repealing Directive 2006/66/EC.\nAdditionally attributes come from the Proposal for Ecodesign for Sustainable Products Regulation."@en ;
+   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R1542&qid=1693215264963> ;
+   samm:see <https://environment.ec.europa.eu/publications/proposal-ecodesign-sustainable-products-regulation_en> ;
+   samm:properties ( :identification :chemicalMaterial :circularity :generalInformation [ samm:property :sources; samm:optional true ] :performance :conformity :safety :phsycalDimension ext-passport:metadata ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:identification a samm:Property ;
+   samm:preferredName "identification"@en ;
+   samm:characteristic :IdentificationCharacteristic .
+
+:chemicalMaterial a samm:Property ;
+   samm:preferredName "Chemical Material"@en ;
+   samm:description "Chemical materials relevant for the composition of the battery. These include active, hazardous and critical materials."@en ;
+   samm:characteristic :ChemicalMaterialCharacteristic .
+
+:circularity a samm:Property ;
+   samm:preferredName "Circularity"@en ;
+   samm:description "Circularity includes information on the carbon footprint, sustainability documents, spare parts and the status of the battery."@en ;
+   samm:characteristic :CircularityCharacteristic .
+
+:generalInformation a samm:Property ;
+   samm:preferredName "general information"@en ;
+   samm:description "General information includes details such as the manufacturer's name, facility address, and the date of production. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) and refers to ANNEX VI Part A which refers to Article 38:\n7. Manufacturers shall indicate on the battery their name, registered trade name or registered trade mark, their postal address, indicating a single contact point, and, if available, web and e-mail address. \nFrom Annex XIII (1) (a) and found in ANNEX VI Part A :\n3. the place of manufacture (geographical location of a battery manufacturing plant).\n4. the date of manufacture (month and year)."@en ;
+   samm:characteristic :GeneralInformationCharacteristic .
+
+:sources a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:performance a samm:Property ;
+   samm:preferredName "performance"@en ;
+   samm:characteristic :Characteristic5 .
+
+:conformity a samm:Property ;
+   samm:characteristic :Characteristic34 .
+
+:safety a samm:Property ;
+   samm:preferredName "Safety"@en ;
+   samm:description "Safety information on the battery. Included are the attributes safety measurements, meaning of labels, safe discharging and dismantling. These are all documents. Additionally information about usable extinguish agent can be provided."@en ;
+   samm:characteristic :SafetyCharacteristic .
+
+:phsycalDimension a samm:Property ;
+   samm:description "The weight of the battery. For calculation of the energy density, the volume is also needed. The energy density of a battery is measured in watt-hours per kilogram (Wh/kg) and watt-hours per liter (Wh/L). These measures indicate how much energy a battery can store relative to its weight and volume, respectively. Other measurements are optional.These are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(a) and refers to Annex VI Part A:\n5. the weight."@en ;
+   samm:characteristic :Characteristic8 .
+
+:IdentificationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Identification Characteristic"@en ;
+   samm:description "Battery identification involves specific battery identifiers, including those assigned locally by the manufacturer."@en ;
+   samm:dataType :IdentificationEntity .
+
+:ChemicalMaterialCharacteristic a samm:Characteristic ;
+   samm:preferredName "Chemical Material Characteristic"@en ;
+   samm:description "Chemical Material Characteristic for the battery."@en ;
+   samm:dataType :ChemicalMaterialEntity .
+
+:CircularityCharacteristic a samm:Characteristic ;
+   samm:preferredName "Circularity Characteristic"@en ;
+   samm:description "Characteristic for circularity attributes."@en ;
+   samm:dataType :CircularityEntity .
+
+:GeneralInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "General Information Characteristic"@en ;
+   samm:description "Characteristic includes details such as the manufacturer's name, facility address, and the date of production."@en ;
+   samm:dataType :GeneralInformationEntity .
+
+:Characteristic5 a samm:Characteristic ;
+   samm:dataType :Entity5 .
+
+:Characteristic34 a samm:Characteristic ;
+   samm:dataType :Entity20 .
+
+:SafetyCharacteristic a samm:Characteristic ;
+   samm:preferredName "Safety Characteristic"@en ;
+   samm:description "Safety Characteristic for mostly safety documents."@en ;
+   samm:dataType :SafetyEntity .
+
+:Characteristic8 a samm:Characteristic ;
+   samm:dataType :Entity18 .
+
+:IdentificationEntity a samm:Entity ;
+   samm:preferredName "Identification Entity"@en ;
+   samm:description "Entity for the identification of the battery."@en ;
+   samm:properties ( [ samm:property :batteryCategory; samm:payloadName "category" ] :idDmc [ samm:property :batteryTypeId; samm:payloadName "typeId" ] [ samm:property :batteryChemistry; samm:payloadName "chemistry" ] [ samm:property ext-passport:additionalCode; samm:optional true ] ext-passport:localIdentifier ext-passport:typology ) .
+
+:ChemicalMaterialEntity a samm:Entity ;
+   samm:preferredName "Chemical Material Entity"@en ;
+   samm:description "Chemical Material Entity for the battery. Included are active, hazardous and critical materials as well as a material symbol."@en ;
+   samm:properties ( :activeMaterials [ samm:property :materialSymbol; samm:optional true ] :hazardousSubstance :otherMaterials :criticalMaterial ) .
+
+:CircularityEntity a samm:Entity ;
+   samm:preferredName "Circularity Entity"@en ;
+   samm:description "Entity which includes information on the carbon footprint, sustainability documents, spare parts and the status of the battery."@en ;
+   samm:properties ( [ samm:property :sustainabilityDocuments; samm:payloadName "documents" ] :carbonFootprint ext-passport:spareParts [ samm:property ext-passport:state; samm:payloadName "status" ] ) .
+
+:GeneralInformationEntity a samm:Entity ;
+   samm:preferredName "General Information Entity"@en ;
+   samm:description "Entity which includes details such as the manufacturer's name, facility address, and the date of production. The date of the putting into service is optional."@en ;
+   samm:properties ( [ samm:property :intoServiceDate; samm:optional true ] ext-passport:manufacturer ext-passport:lifespan ) .
+
+:Entity5 a samm:Entity ;
+   samm:properties ( :lifetime :negativeEvents :operatingEnvironment :ratedPerformance :dynamicPerformance ) .
+
+:Entity20 a samm:Entity ;
+   samm:properties ( [ samm:property :declarationOfConformityId; samm:optional true ] :declarationOfConformity :resultOfTestReport :thirdPartyAussurance :dueDilligencePolicy ) .
+
+:SafetyEntity a samm:Entity ;
+   samm:preferredName "Safety Entity"@en ;
+   samm:description "Entity with the attributes safety measurements, meaning of labels, safe discharging and dismantling. These are all documents. Additionally information about usable extinguish agent can be provided."@en ;
+   samm:properties ( :usableExtinguishAgent :safetyMeasures :meaningOfLabels :safeDischarging :dismantling ) .
+
+:Entity18 a samm:Entity ;
+   samm:properties ( :weight :volume [ samm:property ext-passport:height; samm:optional true ] [ samm:property ext-passport:diameter; samm:optional true ] [ samm:property ext-passport:length; samm:optional true ] [ samm:property ext-passport:width; samm:optional true ] ) .
+
+:batteryCategory a samm:Property ;
+   samm:preferredName "Battery Category"@en ;
+   samm:description "The battery category, which can be a portable battery; starting, lighting and ignition battery (SLI); light means of transport battery (LMT); electric vehicle battery (EV), industrial battery and incorporated battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) and refers to ANNEX VI Part A:\n2. the battery category and information identifying the battery in accordance with Article 38(6)."@en ;
+   samm:characteristic :CategoryEnumeration ;
+   samm:exampleValue "EV" .
+
+:idDmc a samm:Property ;
+   samm:preferredName "id DMC"@en ;
+   samm:description "The unique identifier of the product, when it is placed on the market. Through this identifier a web link can be accessed. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Article 77:\n3. The battery passport shall be accessible through the QR code referred to in Article 13(6) which links to a unique identifier that the economic operator placing the battery on the market shall attribute to it. The QR code and the unique identifier shall comply with the ISO/IEC standards 15459-1:2014, 15459-2:2015, 15459-3:2014, 15459-4:2014, 15459-5:2014 and 15459-6:2014 or their equivalent.\nDefined is the QR code in Article 3:\n(24) ?QR code? means a machine-readable matrix code that links to information as required by this Regulation.\n(66) ?unique identifier? means a unique string of characters for the identification of batteries that also enables a web link to the battery passport."@en ;
+   samm:characteristic ext-passport:IdentifierCharacteristic .
+
+:batteryTypeId a samm:Property ;
+   samm:preferredName "Battery Type Id"@en ;
+   samm:description "Identifier for the battery type. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) and refers to ANNEX VI Part A (2) which refers to Article 38:\n6. Manufacturers shall ensure that batteries which they place on the market bear a model identification and batch or serial number, or product number or another element allowing their identification.\nDefined is  ?battery model? in Article 3:\n(19) ?battery model? means a version of a battery all units of which share the same technical characteristics relevant for the requirements of this Regulation on sustainability, safety, labelling, marking and information, and the same model identifier."@en ;
+   samm:characteristic ext-passport:IdentifierCharacteristic ;
+   samm:exampleValue "R2 High-Performance XYZ Battery" .
+
+:batteryChemistry a samm:Property ;
+   samm:preferredName "Battery Chemistry"@en ;
+   samm:description "Battery chemistry refers to the specific chemical composition and reactions that occur within a battery to produce and store electrical energy. The chemestry has to be stated as detailed as possible for example 'NCM' for the Nickel Cobalt Manganese battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) and refers to ANNEX VI Part A:\n7. the chemestry."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "NCM" .
+
+:activeMaterials a samm:Property ;
+   samm:preferredName "Active Materials"@en ;
+   samm:description "The active materials included in the battery. Mandatory are nickel, lithium, cobalt and lead."@en ;
+   samm:characteristic :ActiveMaterialsCharacteristic .
+
+:materialSymbol a samm:Property ;
+   samm:description "Pb, Cd or Cd, Pb or Pb or Cd."@en ;
+   samm:characteristic :Characteristic35Either .
+
+:hazardousSubstance a samm:Property ;
+   samm:preferredName "Hazardous Substance"@en ;
+   samm:description "Hazardous substances like lead, cadmium and mercury."@en ;
+   samm:characteristic :HazardousSubstanceCharacteristic .
+
+:otherMaterials a samm:Property ;
+   samm:characteristic :EitherCompo .
+
+:criticalMaterial a samm:Property ;
+   samm:preferredName "Critical Material"@en ;
+   samm:description "A list of critical raw material names. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) refers to Annex VI Part A: \n10. critical raw materials present in the battery in a concentration of more than 0,1 % weight by weight."@en ;
+   samm:characteristic :Characteristic1LIsttt .
+
+:sustainabilityDocuments a samm:Property ;
+   samm:preferredName "sustainability Documents"@en ;
+   samm:description "Sustainability documents of the battery."@en ;
+   samm:characteristic :SustainabilityDocumentCharacteristic .
+
+:carbonFootprint a samm:Property ;
+   samm:preferredName "Carbon Footprint"@en ;
+   samm:description "The carbon footprint of the battery calculated as kg of carbon dioxide equivalent per one kWh of the total energy provided by the battery over its expected service life. Relevant attributes are the value, the unit, the referenced rulebook, the lifecycle where applied, the declaration, the performance class, the type (PCF), the declaration and the facility. These attributes are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in several places.\nAnnex XIII (1) (c) refers to Article 7 (2) which refers to Article 7 (1)(d):\n1.   For electric vehicle batteries, rechargeable industrial batteries with a capacity greater than 2 kWh and LMT batteries a carbon footprint declaration shall be drawn up for each battery model per manufacturing plant, in accordance with the implementing act referred to in the fourth subparagraph and containing, at least, the following information:\n[...] (d) the carbon footprint of the battery, calculated as kg of carbon dioxide equivalent per one kWh of the total energy provided by the battery over its expected service life;\nAnd aswell in Article 7:\n2.   Electric vehicle batteries, rechargeable industrial batteries with a capacity greater than 2 kWh and LMT batteries shall bear a conspicuous, clearly legible and indelible label indicating the carbon footprint of the battery referred to in paragraph 1, first subparagraph, point (d) and declaring the carbon footprint performance class to which the relevant battery model per manufacturing plant corresponds.\nFurther specified in Annex XIII (1) (c) and refers to Article 7 (1):\n[...] The Commission shall, by 18 February 2024 for electric vehicle batteries, 18 February 2025 for rechargeable industrial batteries, except those with external storage, 18 February 2027 for LMT batteries and 18 February 2029 for industrial batteries with external storage, adopt:\n(a) a delegated act in accordance with Article 89 to supplement this Regulation by establishing the methodology for the calculation and verification of the carbon footprint of the battery referred to in the first subparagraph, point (d), in accordance with the essential elements set out in Annex II;\nThese parameters are defined by Article 3:\n(21) ?carbon footprint? means the sum of greenhouse gas emissions and greenhouse gas removals in a product system, expressed as carbon dioxide equivalents and based on a Product Environmental Footprint (PEF) study using the single impact category of climate change;\nand defined by Annex II (2):\n(e) ?life cycle? means the consecutive and interlinked stages of a product system, from raw material acquisition or generation from natural resources to final disposal (ISO 14040:2006 or an equivalent standard)."@en ;
+   samm:characteristic ext-passport:FootprintList .
+
+:intoServiceDate a samm:Property ;
+   samm:preferredName "Into Service Date"@en ;
+   samm:description "Putting into service is the transition from a state of readiness to actual use or operation. The date should be formatted as yyyy-mm-dd. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex VII Part B: \n1.the date of manufacture of the battery and, where appropriate, the date of putting into service;\nDefined is ?putting into service? in Article 3:\n(18) ?putting into service? means the first use, for its intended purpose, in the Union, of a battery, without having been previously placed on the market."@en ;
+   samm:characteristic ext-passport:DateTrait .
+
+:lifetime a samm:Property ;
+   samm:preferredName "lifetime"@en ;
+   samm:characteristic :Cycles .
+
+:negativeEvents a samm:Property ;
+   samm:characteristic :EitherAppl .
+
+:operatingEnvironment a samm:Property ;
+   samm:characteristic :EitherAppl .
+
+:ratedPerformance a samm:Property ;
+   samm:characteristic :Characteristic11 .
+
+:dynamicPerformance a samm:Property ;
+   samm:characteristic :Characteristic12 .
+
+:declarationOfConformityId a samm:Property ;
+   samm:characteristic :Characteristic36 .
+
+:declarationOfConformity a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:resultOfTestReport a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:thirdPartyAussurance a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:dueDilligencePolicy a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:usableExtinguishAgent a samm:Property ;
+   samm:characteristic :Characteristic14List .
+
+:safetyMeasures a samm:Property ;
+   samm:description "Safety instruction in the form of a documentation. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (2):\n(d) safety measures."@en ;
+   samm:characteristic ext-passport:SourceList .
+
+:meaningOfLabels a samm:Property ;
+   samm:preferredName "Meaning of Labels"@en ;
+   samm:description "Documentation on the meaning of labels on a battery which provide information to help users understand the various symbols, markings, and information present on the battery's label. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(s) and refers to Article 74 (1):\n(e) the meaning of the labels and symbols on batteries in accordance with Article 13 or printed on their packaging or in the documents accompanying batteries [...]."@en ;
+   samm:characteristic ext-passport:SourceList .
+
+:safeDischarging a samm:Property ;
+   samm:description "\n(e) instructions for safe discharging of the battery;"@en ;
+   samm:characteristic ext-passport:SourcesList .
+
+:dismantling a samm:Property ;
+   samm:description "f) technical instructions on removal and replacement\n... dismantling out of the vehicle and itself"@en ;
+   samm:characteristic ext-passport:SourceList .
+
+:weight a samm:Property ;
+   samm:characteristic ext-quantity:MassCharacteristic .
+
+:volume a samm:Property ;
+   samm:characteristic ext-quantity:VolumeCharacteristic .
+
+:CategoryEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Category Enumeration"@en ;
+   samm:description "Enumeration with the values, portable battery; starting, lighting and ignition battery (SLI); light means of transport battery (LMT); electric vehicle battery (EV), industrial battery and incorporated battery."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "SLI" "LMT" "EV" "industrial" "portable" "incorporated" ) .
+
+:ActiveMaterialsCharacteristic a samm:Characteristic ;
+   samm:preferredName "Active Materials Characteristic"@en ;
+   samm:description "Characteristic for the active materials."@en ;
+   samm:dataType :ActiveMaterialEntity .
+
+:Characteristic35Either a samm-c:Either ;
+   samm-c:left :Characteristic35EitherTrait ;
+   samm-c:right :LinkListCharacteristic .
+
+:HazardousSubstanceCharacteristic a samm:Characteristic ;
+   samm:preferredName "Hazardous Substance Characteristic"@en ;
+   samm:description "Hazardous Substance Characteristic for the battery chemical materials."@en ;
+   samm:dataType :HazardousSubstanceEntity .
+
+:EitherCompo a samm-c:Either ;
+   samm-c:left :MaterialCompo ;
+   samm-c:right ext-passport:NotApplicableEnumeration .
+
+:Characteristic1LIsttt a samm-c:List ;
+   samm:dataType :Entity1 .
+
+:SustainabilityDocumentCharacteristic a samm:Characteristic ;
+   samm:description "Characterisitc for sustainability documents of the battery."@en ;
+   samm:dataType :SustainabilityDocumentEntity .
+
+:Cycles a samm:Characteristic ;
+   samm:dataType :Entity12 .
+
+:EitherAppl a samm-c:Either ;
+   samm-c:left ext-passport:SourceList ;
+   samm-c:right ext-passport:NotApplicableEnumeration .
+
+:Characteristic11 a samm:Characteristic ;
+   samm:dataType :Entity14 .
+
+:Characteristic12 a samm:Characteristic ;
+   samm:dataType :Entity15 .
+
+:Characteristic36 a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:Characteristic14List a samm-c:List ;
+   samm:dataType :Entity21 .
+
+:ActiveMaterialEntity a samm:Entity ;
+   samm:preferredName "Active Material Entity"@en ;
+   samm:description "Entity for the active materials included in the battery. Mandatory are nickel, lithium, cobalt and lead."@en ;
+   samm:properties ( :nickel :lithium :cobalt :lead [ samm:property :otherMaterials; samm:optional true ] ) .
+
+:Characteristic35EitherTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :Characteristic9 ;
+   samm-c:constraint :Constraint1rrr .
+
+:LinkListCharacteristic a samm-c:List ;
+   samm:preferredName "Link List Characteristic"@en ;
+   samm:description "Characteristic which describes (multiple) link(s), for example, to a website."@en ;
+   samm:dataType xsd:string .
+
+:HazardousSubstanceEntity a samm:Entity ;
+   samm:preferredName "Hazardous Substance Entity"@en ;
+   samm:description "Hazardous Substance Entity for hazardous chemical materials."@en ;
+   samm:properties ( [ samm:property :hazardousLead; samm:payloadName "lead" ] [ samm:property :hazardousCadmium; samm:payloadName "cadmium" ] [ samm:property :hazardousMercury; samm:payloadName "mercury" ] [ samm:property :otherMaterials; samm:optional true; samm:payloadName "other" ] ) .
+
+:MaterialCompo a samm:Characteristic ;
+   samm:dataType :Entity29 .
+
+:Entity1 a samm:Entity ;
+   samm:properties ( :criticalName [ samm:property ext-passport:substanceIdentification; samm:optional true ] [ samm:property ext-passport:substanceName; samm:optional true ] ) .
+
+:SustainabilityDocumentEntity a samm:Entity ;
+   samm:preferredName "Sustainability Document Entity"@en ;
+   samm:description "Sustainability Document Entity which encapsules relevant information in the form of documents."@en ;
+   samm:properties ( :separateCollection :wastePrevention :impactOfSubstances [ samm:property :euTaxonomyDisclosureStatement; samm:optional true ] [ samm:property :sustainabilityReport; samm:optional true ] :separateCollectionSymbol ) .
+
+:Entity12 a samm:Entity ;
+   samm:properties ( :expectedYears :testReport :cycleLife ) .
+
+:Entity14 a samm:Entity ;
+   samm:properties ( :voltage :ratedRoundTripEfficiency [ samm:property :ratedEnergy; samm:optional true ] :ratedResistance :ratedPower :ratedCapacity [ samm:property :performanceDocument; samm:optional true ] :performanceTemperature :selfDischargingRate ) .
+
+:Entity15 a samm:Entity ;
+   samm:properties ( :stateOfCharge :dataRecordTime :powerFade [ samm:property :energyThroughput; samm:optional true ] [ samm:property :capacityThroughput; samm:optional true ] :capacityFade :soce :fullCycles :resistanceIncrease :roundTripEfficiencyFade [ samm:property :performanceDocument; samm:optional true ] [ samm:property :selfDischargingRate; samm:optional true ] ) .
+
+:Entity21 a samm:Entity ;
+   samm:properties ( [ samm:property :agentDocument; samm:optional true ] :usableExtinguishingMedia :fireClass ) .
+
+:nickel a samm:Property ;
+   samm:preferredName "Nickel"@en ;
+   samm:description "Information about the percentage of recovered nickel from waste. Either (left) a entity with the recycled share, the location and possible supporting documents, or (right) an enumeration where \"not applicable\" can be chosen. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:\n1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant."@en ;
+   samm:characteristic :EitherActiveMaterial .
+
+:lithium a samm:Property ;
+   samm:preferredName "Lithium"@en ;
+   samm:description "Information about the percentage of recovered lithium from waste. Either (left) a entity with the recycled share, the location and possible supporting documents, or (right) an enumeration where \"not applicable\" can be chosen. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:\n1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant."@en ;
+   samm:characteristic :EitherActiveMaterial .
+
+:cobalt a samm:Property ;
+   samm:preferredName "Cobalt"@en ;
+   samm:description "Information about the percentage of recovered cobalt from waste. Either (left) a entity with the recycled share, the location and possible supporting documents, or (right) an enumeration where \"not applicable\" can be chosen. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:\n1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant."@en ;
+   samm:characteristic :EitherActiveMaterial .
+
+:lead a samm:Property ;
+   samm:preferredName "Lead"@en ;
+   samm:description "Information about the percentage of recovered lead from waste. Either (left) a entity with the recycled share, the location and possible supporting documents, or (right) an enumeration where \"not applicable\" can be chosen. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:\n1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant."@en ;
+   samm:characteristic :EitherActiveMaterial .
+
+:Characteristic9 a samm-c:List ;
+   samm:dataType xsd:string .
+
+:Constraint1rrr a samm-c:RegularExpressionConstraint ;
+   samm:description "Pb, Cd or Cd, Pb or Pb or Cd."@en ;
+   samm:value "^(Pb, Cd|Cd, Pb|Pb|Cd)$" .
+
+:hazardousLead a samm:Property ;
+   samm:preferredName "Hazardous Lead"@en ;
+   samm:description "Information about the presence of lead in the battery. Therefore, a concentration and the location within the battery has to be given.  This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) refers to Annex VI Part A: \n8. the hazardous substances present in the battery, other than mercury, cadmium or lead;\nDefined in Article 3:\n(52) ?hazardous substance? means a substance classified as hazardous pursuant to Article 3 of Regulation (EC) No 1272/2008."@en ;
+   samm:characteristic :Characteristic33 .
+
+:hazardousCadmium a samm:Property ;
+   samm:preferredName "Hazardous Cadmium"@en ;
+   samm:description "Information about the presence of cadmium in the battery. Therefore, a concentration and the location within the battery has to be given. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) refers to Annex VI Part A: \n8. the hazardous substances present in the battery, other than mercury, cadmium or lead;\nDefined in Article 3:\n(52) ?hazardous substance? means a substance classified as hazardous pursuant to Article 3 of Regulation (EC) No 1272/2008."@en ;
+   samm:characteristic :Characteristic33 .
+
+:hazardousMercury a samm:Property ;
+   samm:preferredName "Hazardous Mercury"@en ;
+   samm:description "Information about the presence of mercury in the battery. Therefore, a concentration and the location within the battery has to be given. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) refers to Annex VI Part A: \n8. the hazardous substances present in the battery, other than mercury, cadmium or lead;\nDefined in Article 3:\n(52) ?hazardous substance? means a substance classified as hazardous pursuant to Article 3 of Regulation (EC) No 1272/2008."@en ;
+   samm:characteristic :Characteristic33 .
+
+:Entity29 a samm:Entity ;
+   samm:properties ( [ samm:property :supportingDocument; samm:payloadName "impact" ] ext-passport:substanceName ext-passport:substanceIdentification ext-passport:concentration ext-passport:location [ samm:property ext-passport:hazardClass; samm:optional true ] ext-passport:renewable ext-passport:recycled ext-passport:substanceUnit ) .
+
+:criticalName a samm:Property ;
+   samm:preferredName "Critical Name"@en ;
+   samm:description "The name of the critical raw material from the regulation for a framework for ensuring a secure and sustainable supply of critical raw materials."@en ;
+   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM:2023:0160:FIN> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Magnesium" .
+
+:separateCollection a samm:Property ;
+   samm:preferredName "Separate Collection"@en ;
+   samm:description "Documentation about seperate collection of batteries involve information on how to properly collect, handle, and recycle batteries to ensure environmental sustainability and compliance with regulations. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74:\n1. In addition to the information referred to in Article 8a(2) of Directive 2008/98/EC, producers or, where appointed in accordance with Article 57(1), producer responsibility organisations shall make available to end-users and distributors the following information regarding the prevention and management of waste batteries with regard to the categories of batteries that they supply within the territory of a Member State:\n(a) the role of end-users in contributing to waste prevention, including by information on good practices and recommendations concerning the use of batteries aimed at extending their use phase and the possibilities of re-use, preparation for re-use, preparation for repurposing, repurposing and remanufacturing;\n(b) the role of end-users in contributing to the separate collection of waste batteries in accordance with their obligations under Article 64 to allow their treatment;\n(c) the separate collection, take-back and collection points, preparation for re-use, preparation for repurposing and treatment available for waste batteries;\n(d) the necessary safety instructions to handle waste batteries, including in relation to the risks associated with, and the handling of, batteries containing lithium;\n(e) the meaning of the labels and symbols on batteries in accordance with Article 13 or printed on their packaging or in the documents accompanying batteries; and\n(f) the impact of substances, in particular hazardous substances, present in batteries on the environment and on human health or the safety of persons, including the impact due to inappropriate discarding of waste batteries, such as littering or discarding as unsorted municipal waste.\n"@en ;
+   samm:characteristic ext-passport:SourceList .
+
+:wastePrevention a samm:Property ;
+   samm:preferredName "Waste Prevention"@en ;
+   samm:description "Documentation about waste prevention for batteries which include guidelines, recommendations, and information on minimizing the environmental impact associated with the use and disposal of batteries. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74 (1) which call Article 8a of Directive 2008/98/EC:\n2. Member States shall take the necessary measures to ensure that the waste holders targeted by the extended producer responsibility schemes established in accordance with Article 8 (1), are informed about waste prevention measures, centres for re-use and preparing for re-use, take-back and collection systems, and the prevention of littering. Member States shall also take measures to create incentives for the waste holders to assume their responsibility to deliver their waste into the separate collection systems in place, notably, where appropriate, through economic incentives or regulations."@en ;
+   samm:characteristic ext-passport:SourceList .
+
+:impactOfSubstances a samm:Property ;
+   samm:preferredName "Impact of Substances"@en ;
+   samm:description "An accumulation of documents that refer to the impact, especially hazardous substances, on the battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74:\n1. In addition to the information referred to in Article 8a(2) of Directive 2008/98/EC, producers or, where appointed in accordance with Article 57(1), producer responsibility organisations shall make available to end-users and distributors the following information regarding the prevention and management of waste batteries with regard to the categories of batteries that they supply within the territory of a Member State:\n[...]\n(f) the impact of substances, in particular hazardous substances, present in batteries on the environment and on human health or the safety of persons, including the impact due to inappropriate discarding of waste batteries, such as littering or discarding as unsorted municipal waste."@en ;
+   samm:characteristic ext-passport:SourceList .
+
+:euTaxonomyDisclosureStatement a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:sustainabilityReport a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:separateCollectionSymbol a samm:Property ;
+   samm:preferredName "Separate Collection Symbol"@en ;
+   samm:description "Indication of the seperate collction symbol. This can be either (left) provided with the selection of the value \"seperate collection symbol\" in the enumeration or (right) with a link to a corresponding picture. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(q) and refers to Article 13 (4) and refers to Annex VI Part B:\n4. From 18 August 2025, all batteries shall be marked with the symbol for separate collection of batteries (?separate collection symbol?) as shown in Part B of Annex VI."@en ;
+   samm:characteristic :SeparateSymbolEither .
+
+:expectedYears a samm:Property ;
+   samm:characteristic :Characteristic40 .
+
+:testReport a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:cycleLife a samm:Property ;
+   samm:characteristic :Characteristic14 .
+
+:voltage a samm:Property ;
+   samm:characteristic :Characteristic43 .
+
+:ratedRoundTripEfficiency a samm:Property ;
+   samm:characteristic :Characteristic27 .
+
+:ratedEnergy a samm:Property ;
+   samm:characteristic :Characteristic37 .
+
+:ratedResistance a samm:Property ;
+   samm:characteristic :Characteristic22List .
+
+:ratedPower a samm:Property ;
+   samm:characteristic :Characteristic18 .
+
+:ratedCapacity a samm:Property ;
+   samm:characteristic :Characteristic7 .
+
+:performanceDocument a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:performanceTemperature a samm:Property ;
+   samm:characteristic :Characteristic13 .
+
+:selfDischargingRate a samm:Property ;
+   samm:characteristic :PercentMeasurement .
+
+:stateOfCharge a samm:Property ;
+   samm:characteristic :Characteristic2 .
+
+:dataRecordTime a samm:Property ;
+   samm:characteristic samm-c:Timestamp .
+
+:powerFade a samm:Property ;
+   samm:characteristic :Characteristic2 .
+
+:energyThroughput a samm:Property ;
+   samm:description "Annex VII, part B (2"@en ;
+   samm:characteristic :Characteristic4 .
+
+:capacityThroughput a samm:Property ;
+   samm:characteristic :Characteristic3 .
+
+:capacityFade a samm:Property ;
+   samm:characteristic :Characteristic2 .
+
+:soce a samm:Property ;
+   samm:preferredName "SOCE"@en ;
+   samm:characteristic :Characteristic2 .
+
+:fullCycles a samm:Property ;
+   samm:description "5.the number of full equivalent charge-discharge cycles."@en ;
+   samm:characteristic :Characteristic21 .
+
+:resistanceIncrease a samm:Property ;
+   samm:characteristic :Characteristic6 .
+
+:roundTripEfficiencyFade a samm:Property ;
+   samm:characteristic :Characteristic2 .
+
+:agentDocument a samm:Property ;
+   samm:characteristic ext-passport:SourceList .
+
+:usableExtinguishingMedia a samm:Property ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Dry Powder" .
+
+:fireClass a samm:Property ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "A, B" .
+
+:EitherActiveMaterial a samm-c:Either ;
+   samm:preferredName "Either Active Material"@en ;
+   samm:description "Either (left) a entity with the recycled share, the location and possible supporting documents, or (right) an enumeration where \"not applicable\" can be chosen."@en ;
+   samm-c:left :MaterialActive ;
+   samm-c:right ext-passport:NotApplicableEnumeration .
+
+:Characteristic33 a samm-c:Either ;
+   samm-c:left :Entit77 ;
+   samm-c:right ext-passport:NotApplicableEnumeration .
+
+:supportingDocument a samm:Property ;
+   samm:preferredName "Supporting Document"@en ;
+   samm:description "Supporting documentation to clarify use, share and concentration of the respective material."@en ;
+   samm:characteristic ext-passport:SourceList .
+
+:SeparateSymbolEither a samm-c:Either ;
+   samm:preferredName "Separate Symbol Either"@en ;
+   samm:description "Either (left) provided with the selection of the value \"seperate collection symbol\" in the enumeration or (right) with a link to a corresponding picture."@en ;
+   samm-c:left :CollectionEnumeration ;
+   samm-c:right :LinkListCharacteristic .
+
+:Characteristic40 a samm:Characteristic ;
+   samm:dataType xsd:positiveInteger .
+
+:Characteristic14 a samm:Characteristic ;
+   samm:dataType :Entity8 .
+
+:Characteristic43 a samm:Characteristic ;
+   samm:dataType :Entity34 .
+
+:Characteristic27 a samm:Characteristic ;
+   samm:dataType :Entity16 .
+
+:Characteristic37 a samm:Characteristic ;
+   samm:dataType :Entity33 .
+
+:Characteristic22List a samm-c:List ;
+   samm:dataType :Entity13 .
+
+:Characteristic18 a samm:Characteristic ;
+   samm:dataType :Entity11 .
+
+:Characteristic7 a samm:Characteristic ;
+   samm:dataType :Entity9 .
+
+:Characteristic13 a samm:Characteristic ;
+   samm:dataType :Entity7 .
+
+:PercentMeasurement a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:percent .
+
+:Characteristic2 a samm:Characteristic ;
+   samm:dataType :Entity2 .
+
+:Characteristic4 a samm:Characteristic ;
+   samm:dataType :Entity3 .
+
+:Characteristic3 a samm:Characteristic ;
+   samm:dataType :Entity4 .
+
+:Characteristic21 a samm:Characteristic ;
+   samm:dataType :Entity6 .
+
+:Characteristic6 a samm:Characteristic ;
+   samm:dataType :Entity17 .
+
+:MaterialActive a samm:Characteristic ;
+   samm:preferredName "Material Active"@en ;
+   samm:description "Characterisitc to decribe the active material."@en ;
+   samm:dataType :MaterialActiveEntity .
+
+:Entit77 a samm:Characteristic ;
+   samm:dataType :Entity31 .
+
+:CollectionEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Collection Enumeration"@en ;
+   samm:description "Enumeration with the only value separate collection symbol."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "separate collection symbol" ) .
+
+:Entity8 a samm:Entity ;
+   samm:properties ( :temperature :cycles :depthOfDischarge :cRate :appliedChargeRate :appliedDischargeRate ) .
+
+:Entity34 a samm:Entity ;
+   samm:properties ( [ samm:property :minVoltage; samm:payloadName "min" ] [ samm:property :maxVoltage; samm:payloadName "max" ] [ samm:property :nominalVoltage; samm:payloadName "nominal" ] [ samm:property :temperature; samm:optional true ] ) .
+
+:Entity16 a samm:Entity ;
+   samm:properties ( :depthOfDischarge :initalRoundTripEfficiency :roundTripEfficiency50Percent [ samm:property :temperature; samm:optional true ] ) .
+
+:Entity33 a samm:Entity ;
+   samm:properties ( :energyValue :cRate [ samm:property :temperature; samm:optional true ] ) .
+
+:Entity13 a samm:Entity ;
+   samm:properties ( [ samm:property :cellResistance; samm:payloadName "cell" ] [ samm:property :moduleResistance; samm:payloadName "module" ] [ samm:property :packResistance; samm:payloadName "pack" ] [ samm:property :temperature; samm:optional true ] ) .
+
+:Entity11 a samm:Entity ;
+   samm:properties ( :powerValue :capabilityAt20SoC :capabilityAt80SoC [ samm:property :temperature; samm:optional true ] ) .
+
+:Entity9 a samm:Entity ;
+   samm:properties ( :capacityValue :capacityThresholdExhaustion [ samm:property :appliedDischargeRate; samm:optional true ] [ samm:property :temperature; samm:optional true ] ) .
+
+:Entity7 a samm:Entity ;
+   samm:properties ( [ samm:property :lowerTemperatureBoundary; samm:payloadName "lower" ] [ samm:property :upperTemperatureBoundary; samm:payloadName "upper" ] :testReport ) .
+
+:Entity2 a samm:Entity ;
+   samm:properties ( :percentValue :dataRecordTime ) .
+
+:Entity3 a samm:Entity ;
+   samm:properties ( :dataRecordTime :energyValue ) .
+
+:Entity4 a samm:Entity ;
+   samm:properties ( :dataRecordTime :capacityValue ) .
+
+:Entity6 a samm:Entity ;
+   samm:properties ( :dataRecordTime :cycles ) .
+
+:Entity17 a samm:Entity ;
+   samm:properties ( [ samm:property :packResistanceIncrease; samm:payloadName "pack" ] [ samm:property :moduleResistanceIncrease; samm:optional true; samm:payloadName "module" ] [ samm:property :cellResistanceIncrease; samm:payloadName "cell" ] ) .
+
+:MaterialActiveEntity a samm:Entity ;
+   samm:preferredName "Material Active Entity"@en ;
+   samm:description "The information on the active material with the recycled share, location and supporting document(s)."@en ;
+   samm:properties ( [ samm:property :supportingDocument; samm:optional true ] ext-passport:location ext-passport:recycled ) .
+
+:Entity31 a samm:Entity ;
+   samm:properties ( ext-passport:concentration ext-passport:location ) .
+
+:temperature a samm:Property ;
+   samm:characteristic :DegreeMeasurement .
+
+:cycles a samm:Property ;
+   samm:characteristic :Characteristic10 .
+
+:depthOfDischarge a samm:Property ;
+   samm:characteristic :PercentMeasurement .
+
+:cRate a samm:Property ;
+   samm:description "C-rate of relevant cycle-life test"@en ;
+   samm:characteristic :CRate .
+
+:appliedChargeRate a samm:Property ;
+   samm:characteristic :Chararrr .
+
+:appliedDischargeRate a samm:Property ;
+   samm:characteristic :Chararrr .
+
+:minVoltage a samm:Property ;
+   samm:description "0% SoC"@en ;
+   samm:characteristic :Characteristic44 .
+
+:maxVoltage a samm:Property ;
+   samm:description "= rated SOC 100%"@en ;
+   samm:characteristic :Characteristic44 .
+
+:nominalVoltage a samm:Property ;
+   samm:characteristic :Characteristic44 .
+
+:initalRoundTripEfficiency a samm:Property ;
+   samm:characteristic :PercentMeasurement .
+
+:roundTripEfficiency50Percent a samm:Property ;
+   samm:characteristic :PercentMeasurement .
+
+:energyValue a samm:Property ;
+   samm:characteristic :Characteristic39 .
+
+:cellResistance a samm:Property ;
+   samm:characteristic :Characteristic23 .
+
+:moduleResistance a samm:Property ;
+   samm:characteristic :Characteristic23 .
+
+:packResistance a samm:Property ;
+   samm:characteristic :Characteristic23 .
+
+:powerValue a samm:Property ;
+   samm:characteristic :Characteristic20 .
+
+:capabilityAt20SoC a samm:Property ;
+   samm:characteristic :Characteristic20 .
+
+:capabilityAt80SoC a samm:Property ;
+   samm:characteristic :Characteristic20 .
+
+:capacityValue a samm:Property ;
+   samm:characteristic :Characteristic17 .
+
+:capacityThresholdExhaustion a samm:Property ;
+   samm:characteristic :PercentMeasurement .
+
+:lowerTemperatureBoundary a samm:Property ;
+   samm:characteristic :DegreeMeasurement .
+
+:upperTemperatureBoundary a samm:Property ;
+   samm:characteristic :DegreeMeasurement .
+
+:percentValue a samm:Property ;
+   samm:characteristic :PercentMeasurement .
+
+:packResistanceIncrease a samm:Property ;
+   samm:characteristic :Characteristic2 .
+
+:moduleResistanceIncrease a samm:Property ;
+   samm:characteristic :Characteristic2 .
+
+:cellResistanceIncrease a samm:Property ;
+   samm:characteristic :Characteristic2 .
+
+:DegreeMeasurement a samm-c:Measurement ;
+   samm:preferredName "Degree Measurement"@en ;
+   samm:description "Degree measurement in celsius."@en ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:degreeCelsius .
+
+:Characteristic10 a samm:Characteristic ;
+   samm:dataType xsd:positiveInteger .
+
+:CRate a samm:Characteristic ;
+   samm:dataType xsd:double .
+
+:Chararrr a samm:Characteristic ;
+   samm:dataType :Entity10 .
+
+:Characteristic44 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:volt .
+
+:Characteristic39 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:kilowattHour .
+
+:Characteristic23 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:ohm .
+
+:Characteristic20 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:watt .
+
+:Characteristic17 a samm-c:Measurement ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:ampereHour .
+
+:Entity10 a samm:Entity ;
+   samm:properties ( :cRate ) .
+
+:Characteristic1 a samm:Characteristic ;
+   samm:dataType :Entity1 .
+
