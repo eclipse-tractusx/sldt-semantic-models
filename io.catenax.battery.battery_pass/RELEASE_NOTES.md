@@ -3,6 +3,12 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [4.0.0] - 2023-12-11
+### Changed
+- changed to SAMM
+- fundamental changes in the structure
+- references to the Digital Product Passport which references multiple other shared models
+
 ## [3.0.1] - 2023-01-15
 ### Added
 n/a
