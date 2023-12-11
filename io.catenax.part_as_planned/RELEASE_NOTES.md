@@ -1,7 +1,15 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [Unreleased]
+## [2.0.0] - 2023-12-04
+### Added
+- added all relevant part site information of the PartSiteInforamtionAsPlanned aspect model, that will be deprecated
+
+### Changed
+- replaced existing BPNCharacteristic with the BPNCharacterstic of the shared BusinessPartnerNumber aspect model
+
+### Removed
+- removed the whole validityPeriod abstract property with its respective child properties and characteristics
 
 ## [1.0.1]
 ### Added
