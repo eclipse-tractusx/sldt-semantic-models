@@ -20,32 +20,41 @@
    samm:characteristic :EarlyWarningNotificationCharacteristic .
 
 :EarlyWarningNotificationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Early Warning Notification Characteristic"@en ;
+   samm:description "The characteristic for the Early Warning Notification"@en ;
    samm:dataType :EarlyWarningNotificationPayload .
 
 :EarlyWarningNotificationPayload a samm:Entity ;
+   samm:preferredName "Early Warning Notification Payload"@en ;
+   samm:description "The payload for the Early Warning Notification"@en ;
    samm:properties ( :qualityTaskID :anomalyDescription [ samm:property :qualityAppFilter; samm:optional true ] [ samm:property :earlyWarningAttachmentLink; samm:optional true ] ) .
 
 :qualityTaskID a samm:Property ;
-   samm:preferredName "qualityTaskID"@en ;
+   samm:preferredName "QualityTaskID"@en ;
+   samm:description "An ID to reference a existing early warning project and its data"@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "BPN-811_2022_000001" .
 
 :anomalyDescription a samm:Property ;
-   samm:preferredName "anomalyDescription"@en ;
+   samm:preferredName "Anomaly Description"@en ;
+   samm:description "Some text describing the detected anomaly in the data"@en ;
    samm:characteristic samm-c:Text ;
-   samm:exampleValue "Some text describing the detected anomaly in the data" .
+   samm:exampleValue "There is an unusual number of DTCs occuring in the population described by the property qualityAppFiilter" .
 
 :qualityAppFilter a samm:Property ;
-   samm:description "A filter to define the population of affected parts"@en ;
+   samm:preferredName "Quality App Filter"@en ;
+   samm:description "A filter to define the population of affected parts in a C-atnea-X quality app"@en ;
    samm:characteristic :QualityAppFilterCharacteristic .
 
 :earlyWarningAttachmentLink a samm:Property ;
-   samm:preferredName "Link to additional Quality Data"@en ;
-   samm:description "This property provide a refernce to an EDC asset that will contain a zip file organized according to the specification CX-0092 and the model defined in io.catenax.quality_task_attachment:1.0.0. The zip file will contain additional data describing the early warning case."@en ;
+   samm:preferredName "Additional Quality Data Link"@en ;
+   samm:description "This property provides a reference to an EDC asset that will contain a zip file organized according to the specification CX-0092 and the model defined in io.catenax.quality_task_attachment:1.0.0. The zip file will contain additional data describing the early warning case."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "subprotocolBody: catalogEndpoint=https://test.com/catalog;dataset=79afc338-f7ea-4255-a17d-ba6faf40d2b5" .
 
 :QualityAppFilterCharacteristic a samm:Characteristic ;
+   samm:preferredName "Quality App Filter Characteristic"@en ;
+   samm:description "Characteristic for the quality app filter"@en ;
    samm:dataType :QualityAppFilter .
 
 :QualityAppFilter a samm:Entity ;
@@ -60,77 +69,111 @@
 
 :uniqueIdentifiers a samm:Property ;
    samm:preferredName "listOfSerialNumbers"@en ;
+   samm:description "List of unique identifiers to explicitly specifiy parts or vehicles exhibiting the issue described in the property \"anomalyDescription\""@en ;
    samm:characteristic :UniqueIdentifiersCharacteristic .
 
 :FilterCharateristic a samm-c:List ;
+   samm:preferredName "Filter Charateristic"@en ;
+   samm:description "Characteristic for the filter"@en ;
    samm:dataType :PopulationFilter .
 
 :UniqueIdentifiersCharacteristic a samm-c:List ;
-   samm:preferredName "Serial Numbers"@en ;
+   samm:preferredName "Unique Identifiers Characteristic"@en ;
+   samm:description "Characteristic for the UIDs"@en ;
    samm:dataType :UniqueIdentifier .
 
 :PopulationFilter a samm:Entity ;
+   samm:preferredName "Population Filter"@en ;
+   samm:description "Population filter for the early warning data"@en ;
    samm:properties ( :filters :aspectModel ) .
 
 :UniqueIdentifier a samm:Entity ;
+   samm:preferredName "Unique Identifier"@en ;
+   samm:description "A UID"@en ;
    samm:properties ( :anonymizedVIN :catenaXId :serialPartNumber ) .
 
 :filters a samm:Property ;
    samm:preferredName "Filters"@en ;
+   samm:description "A list of filters specifying a data sub-set exhibiting suspicous anomalies"@en ;
    samm:characteristic :ListOfFilters .
 
 :aspectModel a samm:Property ;
-   samm:characteristic samm-c:Text .
+   samm:preferredName "Aspect Model"@en ;
+   samm:description "A reference to an aspect model standardized by Catena-X for the quality use case"@en ;
+   samm:characteristic samm-c:ResourcePath ;
+   samm:exampleValue "urn:bamm:io.catenax.manufactured_parts_quality_information:1.0.0"^^xsd:anyURI .
 
 :anonymizedVIN a samm:Property ;
-   samm:characteristic samm-c:Text .
+   samm:preferredName "VAN"@en ;
+   samm:description "A unique but anonymized identifier for a vehicle"@en ;
+   samm:see <urn:samm:io.catenax.vehicle.product_description:3.0.0> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "3747429FGH382923974682" .
 
 :catenaXId a samm:Property ;
-   samm:characteristic samm-c:Text .
+   samm:preferredName "Catena-X ID"@en ;
+   samm:description "A unique identifier for a part or a vehicle. The identifier relates to a Catena-X digital twin"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "urn:uuid:c227a880-b82b-40f7-846c-3942ddf26c29" .
 
 :serialPartNumber a samm:Property ;
-   samm:characteristic samm-c:Text .
+   samm:preferredName "Serial Part Number"@en ;
+   samm:description "A unique serial number for a produced part"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "436347347.4343884384.FTG.538348" .
 
 :ListOfFilters a samm-c:List ;
+   samm:preferredName "List Of Filters"@en ;
+   samm:description "The list of filters describng the population"@en ;
    samm:dataType :Filter .
 
 :Filter a samm:Entity ;
    samm:preferredName "Filter"@en ;
-   samm:properties ( :aspectProperty :from :to :type :valueList ) .
+   samm:description "A list of values or a data range for a property that specifies a sub set of a data set"@en ;
+   samm:properties ( :aspectProperty :from :to :dataType :valueList ) .
 
 :aspectProperty a samm:Property ;
+   samm:preferredName "Aspect Property"@en ;
    samm:description "A property from the aspect model referenced by \"aspectModel\""@en ;
-   samm:characteristic samm-c:Text .
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "production.productionDate" .
 
 :from a samm:Property ;
-   samm:preferredName "valueRangeFrom"@en ;
-   samm:characteristic :ValueRangeFromCharacteristic .
+   samm:preferredName "ValueRange_From"@en ;
+   samm:description "Start value of a value range for an aspect property "@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2019-02-01T00:00:00" .
 
 :to a samm:Property ;
-   samm:preferredName "valueRangeTo"@en ;
-   samm:characteristic :ValueRangeToCharacteristic .
+   samm:preferredName "ValueRange_To"@en ;
+   samm:description "End value of a value range for an aspect property "@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2019-07-30T23:59:59" .
 
-:type a samm:Property ;
-   samm:characteristic samm-c:Text .
+:dataType a samm:Property ;
+   samm:preferredName "Data Type"@en ;
+   samm:description "Data type for the aspect propoerty"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "daterange" .
 
 :valueList a samm:Property ;
+   samm:preferredName "List of  Values"@en ;
+   samm:description "A list of values for the aspect property"@en ;
    samm:characteristic :ValueListCharacteristic .
 
-:ValueRangeFromCharacteristic a samm:Characteristic ;
-   samm:dataType xsd:string .
-
-:ValueRangeToCharacteristic a samm:Characteristic ;
-   samm:dataType xsd:string .
-
 :ValueListCharacteristic a samm-c:List ;
+   samm:preferredName "Value List Characteristic"@en ;
+   samm:description "Caracteristic for the list of values"@en ;
    samm:dataType :Value .
 
 :Value a samm:Entity ;
+   samm:preferredName "Value"@en ;
+   samm:description "A value for the aspect property"@en ;
    samm:properties ( :value ) .
 
 :value a samm:Property ;
-   samm:characteristic samm-c:Text .
-
-:Characteristic6 a samm:Characteristic ;
-   samm:dataType :Filter .
+   samm:preferredName "Value"@en ;
+   samm:description "A value for the aspect property"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "123-0.740-3434-A" .
 
