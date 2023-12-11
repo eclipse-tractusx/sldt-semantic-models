@@ -1,0 +1,70 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The Material-Recycling Certificate marks the point in time, respectively status update at which an asset irrevocably enters a new status through transferring to an authorized business partner. In most cases the authorized partner is a shredder company and/or a recycler.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the BPNL is composed of prefix 'BPNL', 10 digits and two uppercase letters.",
+        "pattern" : "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$"
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_samm_io.catenax.shared.recycling_strategy_certificate_2.0.0_RecyclingStrategyCertificateCharacteristic" : {
+        "type" : "object",
+        "properties" : {
+          "issuer" : {
+            "description" : "BPN of the business partner who creates this certificate",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait"
+          },
+          "issueDate" : {
+            "description" : "This is the date when the certificate was issued.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "catenaXIdPreviousLife" : {
+            "description" : "Twin identification previous life",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait"
+          },
+          "catenaXId" : {
+            "description" : "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait"
+          },
+          "articleNumber" : {
+            "description" : "Unique identification assigned by the authorized company for internal referencing",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "vin" : {
+            "description" : "Vehicle Identification Number. Remark: this should be deducted from a reference to the vehicle TWIN",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "oeNumber" : {
+            "description" : "original equipment number",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "issuer", "issueDate", "catenaXIdPreviousLife", "catenaXId", "articleNumber", "vin", "oeNumber" ],
+        "description" : "Describes the characteristic of Recycling strategy certificate"
+      }
+    }
+  },
+  "properties" : {
+    "certificate" : {
+      "description" : "A property of the model, named certificate.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.recycling_strategy_certificate_2.0.0_RecyclingStrategyCertificateCharacteristic"
+    }
+  },
+  "required" : [ "certificate" ]
+}
