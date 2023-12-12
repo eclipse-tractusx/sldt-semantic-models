@@ -1,7 +1,34 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [Unreleased]
+## [3.0.0] - 2023-12-04
+### Added
+General
+- payload names are added where missing and needed
+- all company identifiers can now be a company name, full address and contact or a simple identifier with a type
+- all site identifiers can now be a name and full address or a simple identifier
+
+Metadata
+- passportIdentifier added which can be a UUID in the case of catena-X
+
+Characteristics
+- physical dimensions linked to shared.quantity
+
+Sustainability
+- state has a more defined enumeration
+- carbon and environmental footprint have new properties "performance class", "manufacturing plant" and "declaration"
+- renewable and recycled content are now identified trough a share
+
+Identification
+- a list of identifiers can be provided
+
+Operation
+- manufacturing date is mandatory
+
+Handling
+- spare part producers changed to spare part sources
+- hazardClass optional added
+
 
 ## [2.0.0] - 2023-08-28
 ### Added
