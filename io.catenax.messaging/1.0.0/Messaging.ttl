@@ -1,0 +1,112 @@
+#######################################################################
+# Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
+# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:org.eclipse.digitaltwin:1.0.0#>.
+@prefix ext-information: <urn:samm:io.catenax.delivery_information:1.0.0#>.
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#>.
+
+:Messaging a samm:Aspect;
+    samm:preferredName "Messaging"@en;
+    samm:description "This aspect model defines the standard for message exchange between business partners. Messages refer to specific events which affect production or demand."@en;
+    samm:properties ([
+  samm:property :affectedSitesSender;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :affectedSitesReceiver;
+  samm:optional "true"^^xsd:boolean
+] :leadingRootCause :effect [
+  samm:property :message;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :materialNumberDigitalTwin;
+  samm:optional "true"^^xsd:boolean
+] :startDateOfEffect [
+  samm:property :expectedEndDateOfEffect;
+  samm:optional "true"^^xsd:boolean
+] :status [
+  samm:property ext-information:materialNumberCustomer;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property ext-information:materialNumberSupplier;
+  samm:optional "true"^^xsd:boolean
+]);
+    samm:operations ();
+    samm:events ().
+:affectedSitesSender a samm:Property;
+    samm:preferredName "Affected sites of the sender."@en;
+    samm:description "A set of BPNS of the sender which are affected."@en;
+    samm:characteristic :AffectedSitesSet;
+    samm:exampleValue "BPNS7588787849VQ".
+:affectedSitesReceiver a samm:Property;
+    samm:preferredName "Affected sites of the receiver"@en;
+    samm:description "A set of BPNS of the receiver that are affected."@en;
+    samm:characteristic :AffectedSitesSet;
+    samm:exampleValue "BPNS6666787765VQ".
+:leadingRootCause a samm:Property;
+    samm:preferredName "Leading root cause"@en;
+    samm:description "The main cause which affects the demand or production."@en;
+    samm:characteristic :LeadingRootCauseEnumeration;
+    samm:exampleValue "strike".
+:effect a samm:Property;
+    samm:preferredName "Effect"@en;
+    samm:characteristic :EffectEnumeration;
+    samm:exampleValue "capacity-reduction".
+:message a samm:Property;
+    samm:preferredName "Message."@en;
+    samm:characteristic :UserInputCharacteristic;
+    samm:exampleValue "HelloWorld".
+:materialNumberDigitalTwin a samm:Property;
+    samm:preferredName "Material number digital twin."@en;
+    samm:characteristic ext-uuid:UuidV4Trait;
+    samm:exampleValue "f81d4fae-7dec-11d0-a765-00a0c91e6bf6".
+:startDateOfEffect a samm:Property;
+    samm:preferredName "Start date of the effect."@en;
+    samm:characteristic ext-information:DateTimeStamp;
+    samm:exampleValue "2023-12-13T15:00:00+01:00"^^xsd:dateTime.
+:expectedEndDateOfEffect a samm:Property;
+    samm:preferredName "Expected end date of effect."@en;
+    samm:characteristic ext-information:DateTimeStamp;
+    samm:exampleValue "2023-12-17T08:00:00+01:00"^^xsd:dateTime.
+:status a samm:Property;
+    samm:preferredName "Status"@en;
+    samm:characteristic :StatusEnumeration;
+    samm:exampleValue "new".
+:AffectedSitesSet a samm-c:Set;
+    samm:preferredName "Set of affected sites."@en;
+    samm:dataType xsd:string.
+:LeadingRootCauseEnumeration a samm-c:Enumeration;
+    samm:preferredName "Leading root cause enumeration."@en;
+    samm:dataType xsd:string;
+    samm-c:values ("strike" "earthquake" "fire" "flood" "other" "force-majeure").
+:EffectEnumeration a samm-c:Enumeration;
+    samm:preferredName "Effect enumeration."@en;
+    samm:dataType xsd:string;
+    samm-c:values ("demand-reduction" "demand-increase" "capacity-reduction" "capacity-increase").
+:UserInputCharacteristic a samm:Characteristic;
+    samm:preferredName "User input characteristic"@en;
+    samm:dataType xsd:string.
+:StatusEnumeration a samm-c:Enumeration;
+    samm:preferredName "Status enumeration."@en;
+    samm:dataType xsd:string;
+    samm-c:values ("new" "resolved").
