@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2023-12-11
+## [1.0.0] - 2023-12-18
 ### Added
 - relocation to shared namespace
 - Separate post consumer and post consumer automotive
@@ -16,13 +16,4 @@ n/a
 
 ### Removed
 
-## [1.0.0] - 2023-10-04
-### Added
-- initial model
-- name change from material for recycling
-
-### Changed
-n/a
-
-### Removed
-
+Formerly known as `io.catenax.secondary_material_content:1.0.0`.
