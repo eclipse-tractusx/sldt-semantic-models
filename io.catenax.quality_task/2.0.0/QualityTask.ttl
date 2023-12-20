@@ -1,0 +1,116 @@
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.quality_task:1.0.0#> .
+
+:QualityTask a samm:Aspect ;
+   samm:preferredName "QualityTask"@en ;
+   samm:description "A quality task (qTask) defines why data is exchanged between 2 or more companies and what insights should be generated out of the transferred data. In addition there is a flag, what happens with the transferred data when this qTask is closed"@en ;
+   samm:properties ( :qualityTaskId :status :creationDate :title :description :component :dataDeletion :listOfCompanies ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:qualityTaskId a samm:Property ;
+   samm:preferredName "q-Task ID"@en ;
+   samm:description "A unique quality task identifier where these list of parts analysis belong to."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BPN-811_2022_000001" .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "Status of this quality task"@en ;
+   samm:characteristic :StatusCharacteristic ;
+   samm:exampleValue "new" .
+
+:creationDate a samm:Property ;
+   samm:preferredName "Creation Date"@en ;
+   samm:description "Timestamp when this qTask was created"@en ;
+   samm:characteristic :Timestamp ;
+   samm:exampleValue "2022-11-11"^^xsd:dateTimeStamp .
+
+:title a samm:Property ;
+   samm:preferredName "Title"@en ;
+   samm:description "Working title for this qTask"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Evaluation of ComponentA in CarmodelB in country DE" .
+
+:description a samm:Property ;
+   samm:preferredName "Description"@en ;
+   samm:description "Description what should be done in this qTask"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Please evaluate why there is a high number of customer complaints with ComponentA if the vehicle is between 10000-30000km." .
+
+:component a samm:Property ;
+   samm:preferredName "Component"@en ;
+   samm:description "The component that should be investigated in this qTask."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ComponentA" .
+
+:dataDeletion a samm:Property ;
+   samm:preferredName "Deletion policy"@en ;
+   samm:description "What should be done with the data after this qTask is closed"@en ;
+   samm:characteristic :DataDeletionEnumeration ;
+   samm:exampleValue "delete-data-after-closing" .
+
+:listOfCompanies a samm:Property ;
+   samm:preferredName "List of companies"@en ;
+   samm:description "A list of companies involved in this quality task"@en ;
+   samm:characteristic :ListOfCompanies .
+
+:StatusCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Status Characteristic"@en ;
+   samm:description "Enumeration of the different status values"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "in progress" "completed" "closed" ) .
+
+:Timestamp a samm:Characteristic ;
+   samm:preferredName "Timestamp"@en ;
+   samm:description "Describes a Property which contains the date and time with an optional timezone."@en ;
+   samm:dataType xsd:dateTimeStamp .
+
+:DataDeletionEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Data deletion"@en ;
+   samm:description "Enumeration of possible data deletions entries."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "delete-data-after-closing" "no-deletion-after-closing" ) .
+
+:ListOfCompanies a samm-c:List ;
+   samm:preferredName "Companies"@en ;
+   samm:description "A list of all companies involved in this qTask"@en ;
+   samm:dataType :Company .
+
+:Company a samm:Entity ;
+   samm:preferredName "Company"@en ;
+   samm:description "One company involved in this qTask"@en ;
+   samm:properties ( :cxBPN :name :email ) .
+
+:cxBPN a samm:Property ;
+   samm:preferredName "CX Business partner number"@en ;
+   samm:description "Catena-X business partner number of this company"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BPN-811" .
+
+:name a samm:Property ;
+   samm:preferredName "Company name"@en ;
+   samm:description "Name of the comapny"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Company A" .
+
+:email a samm:Property ;
+   samm:preferredName "email"@en ;
+   samm:description "An email address"@en ;
+   samm:characteristic :EMailTrait ;
+   samm:exampleValue "test.mail@example.com" .
+
+:EMailTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :EMailConstraint .
+
+:EMailConstraint a samm-c:RegularExpressionConstraint ;
+   samm:description "Regular expression for mail address as defined in W3C (see https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address)"@en ;
+   samm:value "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$" .
+
