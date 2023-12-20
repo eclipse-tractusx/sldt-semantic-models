@@ -1,0 +1,299 @@
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.fleet.diagnostic_data:2.0.0#> .
+@prefix ext-description: <urn:samm:io.catenax.quality.semantic_data_types:1.0.0#> .
+
+:DiagnosticData a samm:Aspect ;
+   samm:description "A Catena-X semantic data model for a list of vehicle diagnostic sessions."@en ;
+   samm:properties ( :diagnosticSessions ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:diagnosticSessions a samm:Property ;
+   samm:preferredName "Diagnostic sessions"@en ;
+   samm:description "A list of diagnostic sessions."@en ;
+   samm:characteristic :DiagnosticSessions .
+
+:DiagnosticSessions a samm-c:List ;
+   samm:preferredName "Diagnostic sessions"@en ;
+   samm:description "A list of diagnostic sessions coming from multiple vehicles."@en ;
+   samm:dataType :DiagnosticSession .
+
+:DiagnosticSession a samm:Entity ;
+   samm:preferredName "Diagnostic Session"@en ;
+   samm:description "One diagnostic session of one vehicle: Either this is a diagnostic session done in a workshop or via over-the-air diagnostic."@en ;
+   samm:properties ( :startTimestamp [ samm:property :endTimestamp; samm:optional true ] [ samm:property :vehicleSoftwareCategory; samm:optional true ] [ samm:property :vehicleSoftwareVersion; samm:optional true ] [ samm:property :diagnosticSoftwareName; samm:optional true ] [ samm:property :diagnosticSoftwareVersion; samm:optional true ] [ samm:property :ecuList; samm:optional true ] [ samm:property :procedures; samm:optional true ] [ samm:property :envConditionList; samm:optional true ] :sessionId ext-description:countryCode ext-description:anonymizedVIN [ samm:property ext-description:mileage; samm:optional true ] [ samm:property ext-description:catenaXVehicleId; samm:optional true ] [ samm:property ext-description:qualityTaskId; samm:optional true ] [ samm:property ext-description:workshop; samm:optional true ] ) .
+
+:startTimestamp a samm:Property ;
+   samm:characteristic ext-description:TimeStampTraitNullable .
+
+:endTimestamp a samm:Property ;
+   samm:characteristic ext-description:TimeStampTraitNullable .
+
+:vehicleSoftwareCategory a samm:Property ;
+   samm:preferredName "Vehicle software category"@en ;
+   samm:description "Software category of this car during the session - only available for OEMs that have a software category on vehicle level."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "TZGH64738" .
+
+:vehicleSoftwareVersion a samm:Property ;
+   samm:preferredName "Vehicle software version"@en ;
+   samm:description "Software version of this car during the session - only available for OEMs that have a software category on vehicle level."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "3.5.0001.001" .
+
+:diagnosticSoftwareName a samm:Property ;
+   samm:preferredName "Diagnostic Software"@en ;
+   samm:description "The name of the diagnostic software that was used."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Pontiac Car Diagnostic software" .
+
+:diagnosticSoftwareVersion a samm:Property ;
+   samm:preferredName "Diagnostic software version"@en ;
+   samm:description "The version of the used diagnostic software"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "V.411 Patch 2023-02" .
+
+:ecuList a samm:Property ;
+   samm:preferredName "ECU list"@en ;
+   samm:description "list of ECUs that had an entry in its internal failure memory during the diagnostic session"@en ;
+   samm:characteristic :Ecus .
+
+:procedures a samm:Property ;
+   samm:preferredName "Procedures"@en ;
+   samm:description "List of procedures / sub-procedures."@en ;
+   samm:characteristic :Procedures .
+
+:envConditionList a samm:Property ;
+   samm:preferredName "Environment Conditions"@en ;
+   samm:description "A list of environment conditions: E.g. outside temperature measured by the vehicle, a specific value measured by on ECU, ...."@en ;
+   samm:characteristic :EnvironmentConditions .
+
+:sessionId a samm:Property ;
+   samm:preferredName "Session identifier"@en ;
+   samm:description "A oem-specific session identifier that is unique in this company."@en ;
+   samm:characteristic ext-description:UniqueID ;
+   samm:exampleValue "3747429FGH382923974682_Session_2023-11-04T08:00:45" .
+
+:Ecus a samm-c:List ;
+   samm:description "A list of electronic control units."@en ;
+   samm:dataType :ECU .
+
+:Procedures a samm-c:List ;
+   samm:preferredName "Procedures"@en ;
+   samm:description "A list of procedure calls in the diagnostic software."@en ;
+   samm:dataType :ProcedureCall .
+
+:EnvironmentConditions a samm-c:List ;
+   samm:preferredName "Environment Conditions"@en ;
+   samm:description "A list of environment conditions, like surrounding temperature, rpm, ..."@en ;
+   samm:dataType :EnvironmentCondition .
+
+:ECU a samm:Entity ;
+   samm:preferredName "ECU"@en ;
+   samm:description "A single ECU that is present/has a DTC set in the diagnostic session"@en ;
+   samm:properties ( [ samm:property :assemblyPartNumberVersion; samm:optional true ] :readOutDate [ samm:property :dtcList; samm:optional true ] [ samm:property :envConditionList; samm:optional true ] [ samm:property ext-description:catenaXPartId; samm:optional true ] ext-description:oemSerialNumber ext-description:oemPartNumber ext-description:oemPartName [ samm:property ext-description:hwPartNumber; samm:optional true ] [ samm:property ext-description:hwVersion; samm:optional true ] [ samm:property ext-description:swPartNumber; samm:optional true ] [ samm:property ext-description:swVersion; samm:optional true ] ) .
+
+:ProcedureCall a samm:Entity ;
+   samm:preferredName "Procedure Call"@en ;
+   samm:description "One procedure call in the diagnostic software."@en ;
+   samm:properties ( :procedureID :procedureStartTimeStamp :procedureEndTimeStamp :procedureResult [ samm:property :procedureDescription; samm:optional true ] [ samm:property :procedures; samm:optional true ] [ samm:property :ecuList; samm:optional true ] [ samm:property :dtcList; samm:optional true ] [ samm:property :envConditionList; samm:optional true ] ) .
+
+:EnvironmentCondition a samm:Entity ;
+   samm:preferredName "Environment Condition"@en ;
+   samm:description "One environment condition like temperature, rpm,...\nIf the environment condition was measured on vehicle level -> ecuSerialPartNumber is empty"@en ;
+   samm:properties ( :conditionId :conditionCreationTimeStamp :conditionDescription :conditionValue :measurementUnit ) .
+
+:assemblyPartNumberVersion a samm:Property ;
+   samm:preferredName "ECU assembly part number version"@en ;
+   samm:description "OEM-sepcific ecu assembly version"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "0001" .
+
+:readOutDate a samm:Property ;
+   samm:preferredName "Read out date"@en ;
+   samm:description "Date when this ECU information was read out from the diagnostic session"@en ;
+   samm:characteristic ext-description:TimeStampTraitNullable ;
+   samm:exampleValue "2022-01-30T14:45:54" .
+
+:dtcList a samm:Property ;
+   samm:description "list of diagnostic trouble codes"@en ;
+   samm:characteristic :DTCList .
+
+:procedureID a samm:Property ;
+   samm:preferredName "Procedure identifier"@en ;
+   samm:description "A unique identifier for this procedure/subprocedure call"@en ;
+   samm:characteristic ext-description:UniqueID ;
+   samm:exampleValue "ABS_upgrade_deactivate" .
+
+:procedureStartTimeStamp a samm:Property ;
+   samm:preferredName "Procedure start"@en ;
+   samm:description "Start date and time for this procedure call."@en ;
+   samm:characteristic ext-description:TimeStampTraitNullable ;
+   samm:exampleValue "2023-11-27T08:00:00" .
+
+:procedureEndTimeStamp a samm:Property ;
+   samm:preferredName "Procedure end"@en ;
+   samm:description "End date and time for this procedure call."@en ;
+   samm:characteristic ext-description:TimeStampTraitNullable ;
+   samm:exampleValue "2023-11-27T08:00:03" .
+
+:procedureResult a samm:Property ;
+   samm:preferredName "Procedure result"@en ;
+   samm:description "Result of the procedure"@en ;
+   samm:characteristic :ProcedureResultCharacterisitc ;
+   samm:exampleValue "ok" .
+
+:procedureDescription a samm:Property ;
+   samm:preferredName "Procedure Description"@en ;
+   samm:description "An optional description for this procedure"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Deactivation ABS upgrade capability." .
+
+:conditionId a samm:Property ;
+   samm:preferredName "Id"@en ;
+   samm:description "OEM-specific: Primary key for this condition consists of unique identifier of env. condition and DTC"@en ;
+   samm:characteristic ext-description:UniqueID ;
+   samm:exampleValue "DTC1_EnvCond1" .
+
+:conditionCreationTimeStamp a samm:Property ;
+   samm:preferredName "Condition Creation Timestamp"@en ;
+   samm:description "Date and time when this condition/information was created."@en ;
+   samm:characteristic ext-description:TimeStampTraitNullable ;
+   samm:exampleValue "2022-01-28T14:48:54" .
+
+:conditionDescription a samm:Property ;
+   samm:preferredName "Description"@en ;
+   samm:description "The description of the environment condition/information"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "RPM" .
+
+:conditionValue a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "The numeric value (if applicable) of the stored environment condition at the time of the DTC."@en ;
+   samm:characteristic :Double ;
+   samm:exampleValue "2000.0"^^xsd:double .
+
+:measurementUnit a samm:Property ;
+   samm:preferredName "DTC fault path"@en ;
+   samm:description "The unit of measurement for the environment condition value."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "rpm" .
+
+:DTCList a samm-c:List ;
+   samm:description "A list of DTCs"@en ;
+   samm:dataType :DiagnosticTroubleCode .
+
+:ProcedureResultCharacterisitc a samm-c:Enumeration ;
+   samm:preferredName "Procedure Result Characterisitc"@en ;
+   samm:description "Characteristic for procedure results."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "ok" "nok" "failed" "null" ) .
+
+:Double a samm:Characteristic ;
+   samm:preferredName "Double"@en ;
+   samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+   samm:dataType xsd:double .
+
+:DiagnosticTroubleCode a samm:Entity ;
+   samm:preferredName "DTC"@en ;
+   samm:description "diagnostic trouble codes or short DTCs are used inside ECUs to monitor failures. They were introduced for measuring vehicle emissions. Major DTCs for emissions are standardized by ISO standard ISO 15031-6:2015 - so called OBD2 standard. Over time DTCs were also introduced in other ECUs also besides engine and emission control. Many DTCs are vehicle manufacturer specific.\n"@en ;
+   samm:see <https://www.iso.org/standard/66369.html> ;
+   samm:properties ( :dtcHexValue :fullName :fullDescription [ samm:property :occurenceTimeStamp; samm:optional true ] [ samm:property :state; samm:optional true ] [ samm:property :isMilOn; samm:optional true ] [ samm:property :occurenceMileage; samm:optional true ] [ samm:property :faultPath; samm:optional true ] [ samm:property :faultPathDescription; samm:optional true ] [ samm:property :type; samm:optional true ] [ samm:property :occurenceCounterTotal; samm:optional true ] [ samm:property :freezeFrame; samm:optional true ] ) .
+
+:dtcHexValue a samm:Property ;
+   samm:preferredName "Hex"@en ;
+   samm:description "Hex value of this DTC"@en ;
+   samm:characteristic ext-description:HexValueTraitNullable ;
+   samm:exampleValue "4337499FF" .
+
+:fullName a samm:Property ;
+   samm:preferredName "DTC full name:"@en ;
+   samm:description "combined string of DTC name  plus the so called DTC sub type or DTC failure byte. Both string values are concatenated using a \"-\" as separator.\nDTC name is: B|C|P|U + 4 hex chars\nDTC failure byte: 2 hex chars\n\nIn some rare cases this could be just a hex string"@en ;
+   samm:characteristic :FullNameTrait ;
+   samm:exampleValue "P0573-00" .
+
+:fullDescription a samm:Property ;
+   samm:preferredName "DTC description"@en ;
+   samm:description "description of DTC and failure byte. Both description strings are concatenated using a \"-\" as separator"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Brake Switch \"A\" Circuit High-no sub type information" .
+
+:occurenceTimeStamp a samm:Property ;
+   samm:preferredName "DTC first occurence"@en ;
+   samm:description "date and time when the DTC occured the first time/was recorded the first time in the ECU"@en ;
+   samm:characteristic ext-description:TimeStampTraitNullable ;
+   samm:exampleValue "2022-01-30T14:48:54" .
+
+:state a samm:Property ;
+   samm:preferredName "DTC state"@en ;
+   samm:description "OEM-specific state of DTC: 0;1 (permanent/temporary/intermediate), could also be a string with permanent, temporary, intermediate, ...."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "permanent" .
+
+:isMilOn a samm:Property ;
+   samm:preferredName "Is MIL On"@en ;
+   samm:description "describes whether this DTC set the MIL (malfunction indicator light)  in the dashboard"@en ;
+   samm:characteristic ext-description:BooleanEnum ;
+   samm:exampleValue "true" .
+
+:occurenceMileage a samm:Property ;
+   samm:preferredName "DTC first occurence mileage"@en ;
+   samm:description "mileage in km when the DTC occurred the first time "@en ;
+   samm:characteristic ext-description:Mileage ;
+   samm:exampleValue "15000"^^xsd:nonNegativeInteger .
+
+:faultPath a samm:Property ;
+   samm:preferredName "DTC fault path"@en ;
+   samm:description "OEM-specific: Fault path for this DTC. Allows further analysis"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "1000761" .
+
+:faultPathDescription a samm:Property ;
+   samm:preferredName "DTC fault path description"@en ;
+   samm:description "OEM-specific description of DTC fault path"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "shortage to plus" .
+
+:type a samm:Property ;
+   samm:preferredName "Type"@en ;
+   samm:description "Indicator whether this DTC was stored as Error or Info"@en ;
+   samm:characteristic :TypeEnum ;
+   samm:exampleValue "Error" .
+
+:occurenceCounterTotal a samm:Property ;
+   samm:preferredName "Occurence counter"@en ;
+   samm:description "Counter how often this DTC was set in total"@en ;
+   samm:characteristic :Long ;
+   samm:exampleValue "10"^^xsd:long .
+
+:freezeFrame a samm:Property ;
+   samm:preferredName "DTC freeze frame"@en ;
+   samm:description "freeze frame from ecu. The freeze frame records many parameters of the DTC and surrounding parameters like outside temperature when the DTC was set. It is a very long HEX string with many OEM-specific and ECU-specific content in"@en ;
+   samm:characteristic ext-description:HexValueTraitNullable ;
+   samm:exampleValue "100148340349340" .
+
+:FullNameTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :FullDTCCharacteristic ;
+   samm-c:constraint :FullDTCRegEx .
+
+:TypeEnum a samm-c:Enumeration ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Error" "Info" ) .
+
+:Long a samm:Characteristic ;
+   samm:dataType xsd:long .
+
+:FullDTCCharacteristic a samm:Characteristic ;
+   samm:description "DTC-FaultByte like P0573-00"@en ;
+   samm:dataType xsd:string .
+
+:FullDTCRegEx a samm-c:RegularExpressionConstraint ;
+   samm:description "DTC regular expression to ensure B|C|U|P followed by 4 hex chars followed by \"-\" followed by 2 hex chars"@en ;
+   samm:value "(^[B|C|P|U]{1}[0-9A-Fa-f]{4}[-]{1}[0-9A-Fa-f]{2}$)" .
+
