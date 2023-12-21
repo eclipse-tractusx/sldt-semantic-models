@@ -3,7 +3,6 @@ All notable changes to this model will be documented in this file.
 
 ## [Purpose of this model]
 This aspect model was created in the Catena-X use case quality. The purpose of this aspect model is to transfer general information of a list/fleet of vehicles - primarily how the vehicles are equipped, when they were built and which engines are installed.
-The model describes the vehicles at 
 
 ## [2.0.0] - 2024-01-22
 ### Added
