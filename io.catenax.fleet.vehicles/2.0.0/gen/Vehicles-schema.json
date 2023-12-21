@@ -179,6 +179,11 @@
         "maxLength" : 3,
         "minLength" : 3
       },
+      "urn_samm_io.catenax.fleet.vehicles_2.0.0_RecordOperation" : {
+        "type" : "string",
+        "description" : "According this enumeration a merge procedure knows how to update the working copy: \n\n- Add: Data record with this unique id is provided the first time -> add this data record to the working copy\n- Same: Data record with this unique id was already provided in a previous data delivery -> data record in working copy should already exist and is content-wise same as in staging area\n- Update: Data record with this unique id was already provided in a previous data delivery and has changed -> data record in working copy should already exist and must be updated with the new one from the staging area\n- Delete: Data record with this unique id was already provided in a previous data delivery and should now be removed -> data record must be removed from working copy",
+        "enum" : [ "new", "same", "update", "delete" ]
+      },
       "urn_samm_io.catenax.fleet.vehicles_2.0.0_Vehicle" : {
         "description" : "Vehicle data that does not fit into one of the other entities.",
         "type" : "object",
@@ -254,6 +259,10 @@
           "nhtsaWmiName" : {
             "description" : "Name of the vehicle manufacturer according NHTSA: use https://vpic.nhtsa.dot.gov/api/vehicles/decodewmi/WVW?format=json - entry to be used is CommonName",
             "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "recordOperation" : {
+            "description" : "This property describes which operation was done to this data record.\nThis property can be used in case delta updates (only delta data to a previous data delivery) should be transferred.\nDelta updates means: The data consumer has his working copy and a stagging area.\nDelta data deliveries are loaded into the staging area. \n",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.fleet.vehicles_2.0.0_RecordOperation"
           }
         },
         "required" : [ "anonymizedVin" ]
