@@ -1,24 +1,26 @@
-@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
-@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
-@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
-@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <urn:samm:io.catenax.quality_task:1.0.0#> .
+@prefix : <urn:samm:io.catenax.quality_task:2.0.0#> .
+@prefix ext-information: <urn:samm:io.catenax.shared.contact_information:3.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
 
 :QualityTask a samm:Aspect ;
    samm:preferredName "QualityTask"@en ;
    samm:description "A quality task (qTask) defines why data is exchanged between 2 or more companies and what insights should be generated out of the transferred data. In addition there is a flag, what happens with the transferred data when this qTask is closed"@en ;
-   samm:properties ( :qualityTaskId :status :creationDate :title :description :component :dataDeletion :listOfCompanies ) ;
+   samm:properties ( :qualityTaskId [ samm:property :status; samm:optional true ] [ samm:property :creationDate; samm:optional true ] [ samm:property :title; samm:optional true ] [ samm:property :description; samm:optional true ] [ samm:property :component; samm:optional true ] [ samm:property :dataDeletion; samm:optional true ] [ samm:property :listOfCompanies; samm:optional true ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
 :qualityTaskId a samm:Property ;
-   samm:preferredName "q-Task ID"@en ;
-   samm:description "A unique quality task identifier where these list of parts analysis belong to."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "BPN-811_2022_000001" .
+   samm:preferredName "Quality Task ID"@en ;
+   samm:description "A unique quality task identifier within the Catena-X dataspace."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "Qtask_2xckuQ" .
 
 :status a samm:Property ;
    samm:preferredName "Status"@en ;
@@ -61,6 +63,11 @@
    samm:description "A list of companies involved in this quality task"@en ;
    samm:characteristic :ListOfCompanies .
 
+:UniqueID a samm:Characteristic ;
+   samm:preferredName "unique ID"@en ;
+   samm:description "This Characteristic describes a property that is truly unque either inside the Company that is providing the data or even in Catena-X dataspace. Only one property in a semantic entity should be a uniqueID. Unique ids can be used to link a data set with other semantic models."@en ;
+   samm:dataType xsd:string .
+
 :StatusCharacteristic a samm-c:Enumeration ;
    samm:preferredName "Status Characteristic"@en ;
    samm:description "Enumeration of the different status values"@en ;
@@ -86,31 +93,17 @@
 :Company a samm:Entity ;
    samm:preferredName "Company"@en ;
    samm:description "One company involved in this qTask"@en ;
-   samm:properties ( :cxBPN :name :email ) .
+   samm:properties ( :cxBusinessPartnerNumber [ samm:property :name; samm:optional true ] [ samm:property ext-information:email; samm:optional true ] ) .
 
-:cxBPN a samm:Property ;
-   samm:preferredName "CX Business partner number"@en ;
-   samm:description "Catena-X business partner number of this company"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "BPN-811" .
+:cxBusinessPartnerNumber a samm:Property ;
+   samm:preferredName "Catena-X Business partner number"@en ;
+   samm:description "The Catena-X business partner number for this company."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL000000000123" .
 
 :name a samm:Property ;
    samm:preferredName "Company name"@en ;
    samm:description "Name of the comapny"@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Company A" .
-
-:email a samm:Property ;
-   samm:preferredName "email"@en ;
-   samm:description "An email address"@en ;
-   samm:characteristic :EMailTrait ;
-   samm:exampleValue "test.mail@example.com" .
-
-:EMailTrait a samm-c:Trait ;
-   samm-c:baseCharacteristic samm-c:Text ;
-   samm-c:constraint :EMailConstraint .
-
-:EMailConstraint a samm-c:RegularExpressionConstraint ;
-   samm:description "Regular expression for mail address as defined in W3C (see https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address)"@en ;
-   samm:value "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$" .
 

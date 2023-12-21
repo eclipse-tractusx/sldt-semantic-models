@@ -1,0 +1,103 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "A quality task (qTask) defines why data is exchanged between 2 or more companies and what insights should be generated out of the transferred data. In addition there is a flag, what happens with the transferred data when this qTask is closed",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.quality_task_2.0.0_UniqueID" : {
+        "type" : "string",
+        "description" : "This Characteristic describes a property that is truly unque either inside the Company that is providing the data or even in Catena-X dataspace. Only one property in a semantic entity should be a uniqueID. Unique ids can be used to link a data set with other semantic models."
+      },
+      "urn_samm_io.catenax.quality_task_2.0.0_StatusCharacteristic" : {
+        "type" : "string",
+        "description" : "Enumeration of the different status values",
+        "enum" : [ "new", "in progress", "completed", "closed" ]
+      },
+      "urn_samm_io.catenax.quality_task_2.0.0_Timestamp" : {
+        "type" : "string",
+        "format" : "date-time",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_samm_io.catenax.quality_task_2.0.0_DataDeletionEnumeration" : {
+        "type" : "string",
+        "description" : "Enumeration of possible data deletions entries.",
+        "enum" : [ "delete-data-after-closing", "no-deletion-after-closing" ]
+      },
+      "urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the BPNL is composed of prefix 'BPNL', 10 digits and two uppercase letters.",
+        "pattern" : "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$"
+      },
+      "urn_samm_io.catenax.shared.contact_information_3.0.0_EMailTrait" : {
+        "type" : "string",
+        "description" : "Regular expression for mail address as defined in W3C.",
+        "pattern" : "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+      },
+      "urn_samm_io.catenax.quality_task_2.0.0_Company" : {
+        "description" : "One company involved in this qTask",
+        "type" : "object",
+        "properties" : {
+          "cxBusinessPartnerNumber" : {
+            "description" : "The Catena-X business partner number for this company.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait"
+          },
+          "name" : {
+            "description" : "Name of the comapny",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "email" : {
+            "description" : "An email address.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.contact_information_3.0.0_EMailTrait"
+          }
+        },
+        "required" : [ "cxBusinessPartnerNumber" ]
+      },
+      "urn_samm_io.catenax.quality_task_2.0.0_ListOfCompanies" : {
+        "description" : "A list of all companies involved in this qTask",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_2.0.0_Company"
+        }
+      }
+    }
+  },
+  "properties" : {
+    "qualityTaskId" : {
+      "description" : "A unique quality task identifier within the Catena-X dataspace.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_2.0.0_UniqueID"
+    },
+    "status" : {
+      "description" : "Status of this quality task",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_2.0.0_StatusCharacteristic"
+    },
+    "creationDate" : {
+      "description" : "Timestamp when this qTask was created",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_2.0.0_Timestamp"
+    },
+    "title" : {
+      "description" : "Working title for this qTask",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "description" : {
+      "description" : "Description what should be done in this qTask",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "component" : {
+      "description" : "The component that should be investigated in this qTask.",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "dataDeletion" : {
+      "description" : "What should be done with the data after this qTask is closed",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_2.0.0_DataDeletionEnumeration"
+    },
+    "listOfCompanies" : {
+      "description" : "A list of companies involved in this quality task",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_2.0.0_ListOfCompanies"
+    }
+  },
+  "required" : [ "qualityTaskId" ]
+}
