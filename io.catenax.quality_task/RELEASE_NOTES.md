@@ -8,6 +8,7 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 ### Added
 - integration of the shared BPNL trait
 - integration of shared e-Mail trait
+- using of Catena-X UUID as qualityTaskId
 
 ### Changed
 - changed all properties to optional except one unique identifier per entity
