@@ -6,8 +6,11 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 
 ## [2.0.0] - 2024-01-22
 ### Added
-- integration of the shared UUID characteristic and RegEx for the vehicle Catena-X identifier
-- integration of separate aspect model Vehicle.ProductDescription:3.0.0 into this model to do necessary adaptions
+- metaInformation property added to root entity
+- integration of the shared UUID characteristic and RegEx for the vehicle Catena-X identifie
+- Introducing new characteristic for unique identifiers
+- integration of separate aspect model Vehicle.ProductDescription:3.0.0 into this model to do necessary adaptions that were decided in Catena-X Quality use case team: Most of the properties should be set to optional
+- meta data entity: Gives data consumer necessary information how data provider created this data set
 
 ### Changed
 - changed all properties to optional except one unique identifier per entity
@@ -16,9 +19,14 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 - entity production was renamed to productionPlant to increase clarity
 
 ### Removed
-- link to Vehicle.ProductDescription:3.0.0
-- remove of body entity + body properties as it was never used in the past
-- remove of KBA properties: Focusing on NHTSA properties only 
+- link to Vehicle.ProductDescription:3.0.0: Previous linked model now integrated and adapted
+Streamlining of aspect model:
+- remove of body entity + body properties as it was never used
+- remove of all KBA properties: Focusing on NHTSA properties only 
+- remove of oem entity: Properties now located on vehicle level
+- remove of fuel entity: Properties now located on vehicle and engines level
+- remove of sale entity: Properties now located on vehicle level
+- remove of production entity: Properties now located on vehicle level
 
 ## [1.0.0] - 2023-05-15
 ### Added
