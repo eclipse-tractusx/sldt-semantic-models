@@ -10,7 +10,6 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 - integration of the shared UUID characteristic and RegEx for the vehicle Catena-X identifie
 - Introducing new characteristic for unique identifiers
 - integration of separate aspect model Vehicle.ProductDescription:3.0.0 into this model to do necessary adaptions that were decided in Catena-X Quality use case team: Most of the properties should be set to optional
-- meta data entity: Gives data consumer necessary information how data provider created this data set
 
 ### Changed
 - changed all properties to optional except one unique identifier per entity
