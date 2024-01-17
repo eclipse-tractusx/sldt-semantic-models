@@ -1,0 +1,142 @@
+#######################################################################
+# Copyright(c) 2023 BASF SE
+# Copyright(c) 2023 Bayerische Motoren Werke Aktiengesellschaft(BMW AG)
+# Copyright(c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V.(represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright(c) 2023 German Edge Cloud GmbH & Co. KG
+# Copyright(c) 2023 Henkel AG & Co. KGaA
+# Copyright(c) 2023 Mercedes Benz AG
+# Copyright(c) 2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright(c) 2023 SAP SE
+# Copyright(c) 2023 Siemens AG
+# Copyright(c) 2023 T-Systems International GmbH
+# Copyright(c) 2023 ZF Friedrichshafen AG
+# Copyright(c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International(CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.part_as_planned:2.0.0#>.
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#>.
+
+:PartAsPlanned a samm:Aspect;
+   samm:preferredName "Part as Planned"@en;
+   samm:description "A Part as Planned represents an item in the Catena-X Bill of Material(BOM) in As-Planned lifecycle status in a specific version. "@en;
+   samm:properties(:catenaXId :partTypeInformation [ samm:property :partSitesInformationAsPlanned; samm:optional true ]);
+   samm:operations();
+   samm:events().
+
+:catenaXId a samm:Property;
+   samm:preferredName "Catena-X ID"@en;
+   samm:description "The fully anonymous Catena-X ID of the serialized part, valid for the Catena-X dataspace."@en;
+   samm:characteristic ext-uuid:UuidV4Trait;
+   samm:exampleValue "580d3adf-1981-44a0-a214-13d6ceed9379".
+
+:partTypeInformation a samm:Property;
+   samm:preferredName "Part Type Information"@en;
+   samm:description "The part type from which the serialized part has been instantiated"@en;
+   samm:characteristic :PartTypeInformationCharacteristic.
+
+:partSitesInformationAsPlanned a samm:Property;
+   samm:preferredName "Part Sites Information as Planned"@en;
+   samm:description "A site is a delimited geographical area where a legal entity does business(geographical address with geo coordinates).A site always has a primary physical address. It is possible that further physical addresses are specified for the site. P.O. box details are only possible in addition to the physical address. A site has a 1:n relation to addresses, means at least 1 address is necessary and multiple addresses are possible."@en;
+   samm:see <https://confluence.catena-x.net/x/QkBHAw>;
+   samm:characteristic :partSitesInformationAsPlannedCharacteristic.
+
+:PartTypeInformationCharacteristic a samm:Characteristic;
+   samm:preferredName "Part Type Information Characteristic"@en;
+   samm:description "The characteristics of the part type"@en;
+   samm:dataType :PartTypeInformationEntity.
+
+:partSitesInformationAsPlannedCharacteristic a samm-c:Set;
+   samm:preferredName "Part Sites Information as Planned Characteristic"@en;
+   samm:description "The characteristic of the part site information that represents a set of possible site to a repective part. "@en;
+   samm:dataType :partSitesInformationAsPlannedEntity.
+
+:PartTypeInformationEntity a samm:Entity;
+   samm:preferredName "Part Type Information Entity"@en;
+   samm:description "Encapsulation for data related to the part type"@en;
+   samm:properties(:manufacturerPartId :nameAtManufacturer :classification).
+
+:partSitesInformationAsPlannedEntity a samm:Entity;
+   samm:preferredName "Part Sites Information as Planned Entity"@en;
+   samm:description "Describes the ID, function and validity date of a site for the associated part in the AsPlanned context."@en;
+   samm:properties(:catenaXsiteId :function [ samm:property :functionValidFrom; samm:optional true ] [ samm:property :functionValidUntil; samm:optional true ]).
+
+:manufacturerPartId a samm:Property;
+   samm:preferredName "Manufacturer Part ID"@en;
+   samm:description "Part ID as assigned by the manufacturer of the part. The Part ID identifies the part in the manufacturer`s dataspace. The Part ID references a specific version of a part. The version number must be included in the Part ID if it is available.\n\nThe Part ID does not reference a specific instance of a part and must not be confused with the serial number."@en;
+   samm:characteristic :PartIdCharacteristic;
+   samm:exampleValue "123-0.740-3434-A".
+
+:nameAtManufacturer a samm:Property;
+   samm:preferredName "Name at manufacturer"@en;
+   samm:description "Name of the part as assigned by the manufacturer"@en;
+   samm:characteristic :PartNameCharacteristic;
+   samm:exampleValue "Mirror left".
+
+:classification a samm:Property;
+   samm:preferredName "Classification"@en;
+   samm:description "The classification of the part type according to STEP standard definition"@en;
+   samm:characteristic :ClassificationEnumerationCharacteristic;
+   samm:exampleValue "software".
+
+:catenaXsiteId a samm:Property;
+   samm:preferredName "Catena-X site identifier"@en;
+   samm:description "The identifier of the site according to Catena-X BPDM. The catenaXsiteId must be a valid Catena-X BPN. The BPN is a unique, unchangeable identifier for Business Partners / company locations from foundation to closure, regardless of the different business relationships / structures between or within the Business Partners or company locations."@en;
+   samm:characteristic ext-number:BpnsCharacteristic;
+   samm:exampleValue "BPNS1234567890ZZ".
+
+:function a samm:Property;
+   samm:preferredName "Function"@en;
+   samm:description "The function of the site in relation to the part(i.e. the activity within the value chain of the part that is performed at the site)"@en;
+   samm:characteristic :FunctionCharacteristic;
+   samm:exampleValue "production".
+
+:functionValidFrom a samm:Property;
+   samm:preferredName "Function valid from"@en;
+   samm:description "Timestamp, from when the site has the specified function for the given part"@en;
+   samm:characteristic samm-c:Timestamp.
+
+:functionValidUntil a samm:Property;
+   samm:preferredName "Function valid until"@en;
+   samm:description "Timestamp, until when the site has the specified function for the given part"@en;
+   samm:characteristic samm-c:Timestamp.
+
+:PartIdCharacteristic a samm:Characteristic;
+   samm:preferredName "Part ID characteristic"@en;
+   samm:description "The part ID is a multi-character string, usually assigned by an ERP system"@en;
+   samm:dataType xsd:string.
+
+:PartNameCharacteristic a samm:Characteristic;
+   samm:preferredName "Part Name characteristic"@en;
+   samm:description "Part Name in string format from the respective system in the value chain"@en;
+   samm:dataType xsd:string.
+
+:ClassificationEnumerationCharacteristic a samm-c:Enumeration;
+   samm:preferredName "Classification enumeration characteristic"@en;
+   samm:description "A part type must be placed into one of the following classes: 'component', 'product', 'software', ?assembly?, 'tool', or 'raw material'."@en;
+   samm:see <http://private.pdm-if.org/web/pdm-if/recommended-practices1>;
+   samm:dataType xsd:string;
+   samm-c:values("product" "raw material" "software" "assembly" "tool" "component").
+
+:FunctionCharacteristic a samm-c:Enumeration;
+   samm:preferredName "Function characteristic"@en;
+   samm:description "Describes the characteristics of the function for a site related to the respective part"@en;
+   samm:dataType xsd:string;
+   samm-c:values("production" "warehouse" "spare part warehouse").
