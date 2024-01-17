@@ -24,6 +24,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:samm:org.eclipse.notification:1.0.0#>.
 @prefix ext-information: <urn:samm:io.catenax.delivery_information:1.0.0#>.
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#>.
 
 :Notification a samm:Aspect;
@@ -33,7 +34,7 @@
   samm:property :affectedSitesSender;
   samm:optional "true"^^xsd:boolean
 ] [
-  samm:property :affectedSitesReceiver;
+  samm:property :affectedSitesRecipient;
   samm:optional "true"^^xsd:boolean
 ] :leadingRootCause :effect [
   samm:property :text;
@@ -44,24 +45,24 @@
 ] :startDateOfEffect [
   samm:property :expectedEndDateOfEffect;
   samm:optional "true"^^xsd:boolean
-] :status [
-  samm:property ext-information:materialNumberCustomer;
+] :status :contentChangedAt :relatedSourceMessageId [
+  samm:property :materialNumberSupplier;
   samm:optional "true"^^xsd:boolean
 ] [
-  samm:property ext-information:materialNumberSupplier;
+  samm:property :materialNumberCustomer;
   samm:optional "true"^^xsd:boolean
-] :contentChangedAt :relatedSourceMessageId);
+]);
     samm:operations ();
     samm:events ().
 :affectedSitesSender a samm:Property;
     samm:preferredName "Affected sites of the sender."@en;
-    samm:description "A set of BPNS of the sender which are affected."@en;
-    samm:characteristic :AffectedSitesSet;
+    samm:description "The affected Business Partner SITE Numbers of the sending party.\n\nThe value must be a valid BPNS. Applicable constraints are defined in the corresponding standard.\n\nIt is RECOMMENDED to sent the sender BPNS. It MUST be possible to select multiple sender BPNS."@en;
+    samm:characteristic :AffectedSitesCharacteristic;
     samm:exampleValue "BPNS7588787849VQ".
-:affectedSitesReceiver a samm:Property;
-    samm:preferredName "Affected sites of the receiver"@en;
-    samm:description "A set of BPNS of the receiver that are affected."@en;
-    samm:characteristic :AffectedSitesSet;
+:affectedSitesRecipient a samm:Property;
+    samm:preferredName "Affected sites of the recipient"@en;
+    samm:description "The affected Business Partner SITE Numbers of the receiving party.\n\nThe value must be a valid BPNS. Applicable constraints are defined in the corresponding standard.\n\nIt is RECOMMENDED to send the receiver BPNS. It MUST be possible to select multiple receiver BPNS."@en;
+    samm:characteristic :AffectedSitesCharacteristic;
     samm:exampleValue "BPNS6666787765VQ".
 :leadingRootCause a samm:Property;
     samm:preferredName "Leading root cause"@en;
@@ -70,53 +71,87 @@
     samm:exampleValue "strike".
 :effect a samm:Property;
     samm:preferredName "Effect"@en;
+    samm:description "Message Category / Impact\n\nFrom user perspective demand/capacity reduction are most relevant values in connection with above mentioned root causes. For technical completeness demand/capacity increase are also added to the value list."@en;
     samm:characteristic :EffectEnumeration;
     samm:exampleValue "capacity-reduction".
+:text a samm:Property;
+    samm:preferredName "Text"@en;
+    samm:description "Free text description for notification (max. 4000 characters).\n\nThe sender MUST respect data privacy laws."@en;
+    samm:characteristic :UserInputCharacteristic;
+    samm:exampleValue "Capacity reduction due to ongoing strike".
 :materialNumberDigitalTwin a samm:Property;
     samm:preferredName "Material number digital twin."@en;
-    samm:characteristic ext-uuid:UuidV4Trait;
+    samm:characteristic :MaterialNumberDigitalTwinCharacteristic;
     samm:exampleValue "f81d4fae-7dec-11d0-a765-00a0c91e6bf6".
 :startDateOfEffect a samm:Property;
     samm:preferredName "Start date of the effect."@en;
+    samm:description "Expected start date of the impact MUST be shared by the sender of the message.\n\nThis also covers cases where sending of the message and start of the impact differ from each other.\n\nThe value MUST be formatted according to the ISO 8601 standard."@en;
     samm:characteristic ext-information:DateTimeStamp;
     samm:exampleValue "2023-12-13T15:00:00+01:00"^^xsd:dateTime.
 :expectedEndDateOfEffect a samm:Property;
     samm:preferredName "Expected end date of effect."@en;
+    samm:description "Expected end date of the impact MAY be mentioned by the sender of the message.\n\nThe value MUST be formatted according to the ISO 8601 standard."@en;
     samm:characteristic ext-information:DateTimeStamp;
     samm:exampleValue "2023-12-17T08:00:00+01:00"^^xsd:dateTime.
 :status a samm:Property;
     samm:preferredName "Status"@en;
-    samm:description "Status of the notification"@en;
+    samm:description "Status of the notification."@en;
     samm:characteristic :StatusEnumeration;
     samm:exampleValue "open".
-:AffectedSitesSet a samm-c:Set;
-    samm:preferredName "Set of affected sites."@en;
-    samm:dataType xsd:string.
+:contentChangedAt a samm:Property;
+    samm:preferredName "Content changed at"@en;
+    samm:description "The timestamp of the latest change of this notification."@en;
+    samm:characteristic ext-information:DateTimeStamp;
+    samm:exampleValue "2023-12-13T15:00:00+01:00"^^xsd:dateTime.
+:relatedSourceMessageId a samm:Property;
+    samm:preferredName "Related Source Message ID"@en;
+    samm:description "Unique ID identifying a source message somehow related to the current one."@en;
+    samm:characteristic :UuidV4Trait.
+:materialNumberSupplier a samm:Property;
+    samm:preferredName "Supplier Material Number"@en;
+    samm:description "Material identifier as assigned by the supplier. This material number identifies the material (as estimated) in the supplier's database."@en;
+    samm:characteristic :MaterialNumberCharacteristic;
+    samm:exampleValue "MNR-8101-ID146955.001".
+:materialNumberCustomer a samm:Property;
+    samm:preferredName "Customer Material Number"@en;
+    samm:description "Material identifier as assigned by the customer. This material number identifies the material (as estimated) in the customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the material number supplier should be set in this field, too."@en;
+    samm:characteristic :MaterialNumberCharacteristic;
+    samm:exampleValue "MNR-7307-AU340474.002".
+:AffectedSitesCharacteristic a samm-c:Set;
+    samm:preferredName "Affected Sites"@en;
+    samm:description "A set of sites that are affected by the mentioned leadingRootCause."@en;
+    samm:dataType xsd:string;
+    samm-c:elementCharacteristic :BPNSTrait.
 :LeadingRootCauseEnumeration a samm-c:Enumeration;
     samm:preferredName "Leading root cause enumeration."@en;
     samm:dataType xsd:string;
-    samm-c:values ("strike" "earthquake" "fire" "flood" "other" "force-majeure").
+    samm-c:values ("strike" "natural-disaster" "production-incident" "pandemic-or-epidemic" "logistics-disruption" "war" "other").
 :EffectEnumeration a samm-c:Enumeration;
-    samm:preferredName "Effect enumeration."@en;
+    samm:preferredName "Effect enumeration"@en;
+    samm:description "Enumeration of possible effects due to the mentioned leadingRootCause."@en;
     samm:dataType xsd:string;
     samm-c:values ("demand-reduction" "demand-increase" "capacity-reduction" "capacity-increase").
 :UserInputCharacteristic a samm:Characteristic;
     samm:preferredName "User input characteristic"@en;
     samm:dataType xsd:string.
+:MaterialNumberDigitalTwinCharacteristic a samm-c:Set;
+    samm:preferredName "Material Number Digital Twin Characteristic"@en;
+    samm:dataType xsd:string;
+    samm-c:elementCharacteristic :UuidV4Trait.
 :StatusEnumeration a samm-c:Enumeration;
     samm:preferredName "Status enumeration."@en;
     samm:dataType xsd:string;
     samm-c:values ("resolved" "open").
-:text a samm:Property;
-    samm:preferredName "Text"@en;
-    samm:description "Free text description for notification. The sender MUST respect data privacy laws."@en;
-    samm:characteristic :UserInputCharacteristic;
-    samm:exampleValue "HelloWorld".
-:contentChangedAt a samm:Property;
-    samm:preferredName "Content changed at"@en;
-    samm:description "The timestamp of the latest change of this notification"@en;
-    samm:characteristic ext-information:DateTimeStamp.
-:relatedSourceMessageId a samm:Property;
-    samm:preferredName "Related Source Message ID"@en;
-    samm:description "Unique ID identifying a source message somehow related to the current one."@en;
-    samm:characteristic ext-uuid:UuidV4Trait.
+:UuidV4Trait a samm-c:Trait;
+    samm:preferredName "UUID v4 Trait"@en;
+    samm-c:baseCharacteristic ext-uuid:Uuidv4Characteristic;
+    samm-c:constraint ext-uuid:Uuidv4RegularExpression.
+:BPNSTrait a samm-c:Trait;
+    samm:preferredName "BPNS Trait"@en;
+    samm:description "Trait to ensure data format for BPNS."@en;
+    samm-c:baseCharacteristic ext-number:BpnsCharacteristic;
+    samm-c:constraint ext-number:BpnsRegularExpression.
+:MaterialNumberCharacteristic a samm:Characteristic;
+    samm:preferredName "Material Number"@en;
+    samm:description "The material number is a multi-character string, usually assigned by an ERP system."@en;
+    samm:dataType xsd:string.
