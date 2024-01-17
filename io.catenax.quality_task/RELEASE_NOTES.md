@@ -8,7 +8,6 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 ### Added
 - metaInformation added to root entity: Gives data consumer necessary information how data provider created this data set
 - integration of shared UUID characteristic and RegEx for the vehicle Catena-X identifier
-- introducing new characteristic to mark unique identifiers
 - integration of the shared BPNL trait
 - integration of shared e-Mail trait
 - using of Catena-X UUID as qualityTaskId
