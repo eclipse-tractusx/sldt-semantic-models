@@ -1,23 +1,3 @@
-#######################################################################
-# Copyright (c) 2024 Robert Bosch GmbH
-# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
-# Copyright (c) 2024 Volkswagen AG
-# Copyright (c) 2024 ZF Friedrichshafen AG
-# Copyright (c) 2024 SAP SE
-# Copyright (c) 2024 Siemens AG
-# Copyright (c) 2024 Contributors to the Eclipse Foundation
-#
-# See the NOTICE file(s) distributed with this work for additional
-# information regarding copyright ownership.
-#
-# This work is made available under the terms of the
-# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
-# which is available at
-# https://creativecommons.org/licenses/by/4.0/legalcode.
-#
-# SPDX-License-Identifier: CC-BY-4.0
-#######################################################################
-
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -58,7 +38,7 @@
 :PartAnalysis a samm:Entity ;
    samm:preferredName "Part Analysis"@en ;
    samm:description "The analysis results of ONE part"@en ;
-   samm:properties ( [ samm:property :recordStatus; samm:optional true ] :anonymizedVIN [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :catenaXQualityTaskId; samm:optional true ] [ samm:property :isDefect; samm:optional true ] [ samm:property :manufacturerAnalysisID; samm:optional true ] [ samm:property :manufacturerPartName; samm:optional true ] [ samm:property :manufacturerPartNumber; samm:optional true ] [ samm:property :manufacturerSerialNumber; samm:optional true ] [ samm:property :parentAnalysisID; samm:optional true ] [ samm:property :parentPartNumber; samm:optional true ] [ samm:property :parentSerialNumber; samm:optional true ] [ samm:property :resultsDescription; samm:optional true ] [ samm:property :status; samm:optional true ] [ samm:property :addtionalInformation; samm:optional true ] ) .
+   samm:properties ( [ samm:property :recordStatus; samm:optional true ] :anonymizedVIN [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :catenaXQualityTaskId; samm:optional true ] [ samm:property :isDefect; samm:optional true ] [ samm:property :manufacturerAnalysisID; samm:optional true ] [ samm:property :manufacturerPartName; samm:optional true ] [ samm:property :manufacturerPartNumber; samm:optional true ] [ samm:property :manufacturerSerialNumber; samm:optional true ] [ samm:property :parentAnalysisID; samm:optional true ] [ samm:property :parentPartNumber; samm:optional true ] [ samm:property :parentSerialNumber; samm:optional true ] [ samm:property :resultsDescription; samm:optional true ] [ samm:property :status; samm:optional true ] [ samm:property :listOfAddtionalInformation; samm:optional true ] ) .
 
 :MetaInformation a samm:Entity ;
    samm:preferredName "Meta Information"@en ;
@@ -149,10 +129,10 @@
    samm:characteristic :StatusCharacteristic ;
    samm:exampleValue "new" .
 
-:addtionalInformation a samm:Property ;
-   samm:preferredName "Additional information"@en ;
+:listOfAddtionalInformation a samm:Property ;
+   samm:preferredName "Additional information list"@en ;
    samm:description "You can use this key:value list for additional properties that were not defined in this aspect model."@en ;
-   samm:characteristic :Text .
+   samm:characteristic :AdditionalInformationList .
 
 :selectionCriteria a samm:Property ;
    samm:preferredName "Selection criteria"@en ;
@@ -189,31 +169,28 @@
    samm:dataType xsd:string ;
    samm-c:values ( "new" "in progress" "completed" "closed" ) .
 
-:Text a samm:Characteristic ;
-   samm:preferredName "Text"@en ;
-   samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+:AdditionalInformationList a samm-c:List ;
+   samm:preferredName "List of additional information"@en ;
+   samm:description "A list of additional information"@en ;
    samm:dataType :AdditionalInformation .
 
 :AdditionalInformation a samm:Entity ;
    samm:preferredName "Additional information"@en ;
    samm:description "Additional information is stored as list of keys and list of values"@en ;
-   samm:properties ( :keys :values ) .
+   samm:properties ( :key :value ) .
 
-:keys a samm:Property ;
-   samm:preferredName "Keys"@en ;
-   samm:description "a list of keys"@en ;
-   samm:characteristic :Keys ;
+:key a samm:Property ;
+   samm:preferredName "Key"@en ;
+   samm:description "The unique key for this additional infromation"@en ;
+   samm:characteristic :UniqueID ;
    samm:exampleValue "Steel quality" .
 
-:values a samm:Property ;
-   samm:preferredName "Values"@en ;
-   samm:description "Values for the keys defined"@en ;
-   samm:characteristic :Values ;
+:value a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "The value for this additional information that refers to the linked unique key."@en ;
+   samm:characteristic samm-c:Text ;
    samm:exampleValue "Stainless steel" .
 
-:Keys a samm-c:List ;
-   samm:dataType xsd:string .
-
-:Values a samm-c:List ;
-   samm:dataType xsd:string .
+:AdditionalInformationCharacteristic a samm:Characteristic ;
+   samm:dataType :AdditionalInformation .
 
