@@ -17,7 +17,7 @@ All notable changes to this model will be documented in this file.
 ### Removed
 - oem properties -> replaced by parent properties
 
-## [2.0.0] - 2023-05-09
+## [2.0.0] - 2023-06-23
 ### Added
 - property manufacturerAnalysisID: ID of internal system from manufacturer
 - property customerAnalysisID: ID of internal system from customer
