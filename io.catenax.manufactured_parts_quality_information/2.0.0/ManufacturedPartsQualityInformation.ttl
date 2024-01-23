@@ -1,3 +1,23 @@
+#######################################################################
+# Copyright (c) 2022, 2024 Robert Bosch GmbH
+# Copyright (c) 2022, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022, 2024 Volkswagen AG
+# Copyright (c) 2022, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2022, 2024 SAP SE
+# Copyright (c) 2022, 2024 Siemens AG
+# Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2022 Mercedes Benz AG
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -6,6 +26,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.manufactured_parts_quality_information:2.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
 
 :ManufacturedPartsQualityInformation a samm:Aspect ;
@@ -38,7 +59,7 @@
 :ManufacturedPart a samm:Entity ;
    samm:preferredName "Manufactured part"@en ;
    samm:description "Manufacturing information for one part. Important properties are standardized. Besides that there is a key:value list to exchange further non-standardized properties for this part"@en ;
-   samm:properties ( [ samm:property :recordStatus; samm:optional true ] [ samm:property :batchId; samm:optional true ] [ samm:property :catenaXPartId; samm:optional true ] :catenaXQualityTaskId [ samm:property :hasBeenReworked; samm:optional true ] [ samm:property :manufacturerPartName; samm:optional true ] [ samm:property :manufacturerPartNumber; samm:optional true ] [ samm:property :manufacturerSerialNumber; samm:optional true ] [ samm:property :numberOfConductedEOLTests; samm:optional true ] [ samm:property :plantDescription; samm:optional true ] [ samm:property :plantId; samm:optional true ] [ samm:property :productionCountry; samm:optional true ] [ samm:property :productionDate; samm:optional true ] [ samm:property :productionLine; samm:optional true ] [ samm:property :addtionalInformation; samm:optional true ] ) .
+   samm:properties ( [ samm:property :recordStatus; samm:optional true ] [ samm:property :batchId; samm:optional true ] [ samm:property :catenaXPartId; samm:optional true ] :catenaXQualityTaskId [ samm:property :hasBeenReworked; samm:optional true ] [ samm:property :manufacturerPartName; samm:optional true ] [ samm:property :manufacturerPartNumber; samm:optional true ] [ samm:property :manufacturerSerialNumber; samm:optional true ] [ samm:property :numberOfConductedEOLTests; samm:optional true ] [ samm:property :plantCatenaXId; samm:optional true ] [ samm:property :plantCountryCode; samm:optional true ] [ samm:property :plantDescription; samm:optional true ] [ samm:property :plantIdentifier; samm:optional true ] [ samm:property :productionDate; samm:optional true ] [ samm:property :productionLine; samm:optional true ] [ samm:property :addtionalInformation; samm:optional true ] ) .
 
 :MetaInformation a samm:Entity ;
    samm:preferredName "Meta Information"@en ;
@@ -99,23 +120,29 @@
    samm:characteristic :PositiveNumber ;
    samm:exampleValue "1"^^xsd:positiveInteger .
 
-:plantDescription a samm:Property ;
-   samm:preferredName "Plant description"@en ;
-   samm:description "Manufacturer-specific description of the production plant of this part"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Feuerbach Plant" .
+:plantCatenaXId a samm:Property ;
+   samm:preferredName "Plant Catena-X ID"@en ;
+   samm:description "Unique Catena-X plant identifier, also called BPNS."@en ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS0123456789ZZ" .
 
-:plantId a samm:Property ;
-   samm:preferredName "Plant id"@en ;
-   samm:description "Manufacturer-specific identifier of a the production plant of this part"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "00001" .
-
-:productionCountry a samm:Property ;
-   samm:preferredName "Country code"@en ;
-   samm:description "Country code where the part was produced."@en ;
-   samm:characteristic :ProductionCountryCodeTrait ;
+:plantCountryCode a samm:Property ;
+   samm:preferredName "Plant country"@en ;
+   samm:description "Country code of the plant, where the vehicle was produced."@en ;
+   samm:characteristic :CountryCodeTrait ;
    samm:exampleValue "DEU" .
+
+:plantDescription a samm:Property ;
+   samm:preferredName "Vehicle production plant name"@en ;
+   samm:description "Long name of the production plant of the vehicle"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Feuerbach" .
+
+:plantIdentifier a samm:Property ;
+   samm:preferredName "Production plant id"@en ;
+   samm:description "Plant id of the final assembly of the vehicle"@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "4712" .
 
 :productionDate a samm:Property ;
    samm:preferredName "Production Date"@en ;
@@ -166,7 +193,7 @@
 :PositiveNumber a samm:Characteristic ;
    samm:dataType xsd:positiveInteger .
 
-:ProductionCountryCodeTrait a samm-c:Trait ;
+:CountryCodeTrait a samm-c:Trait ;
    samm:preferredName "Production Country Code Trait"@en ;
    samm:description "Trait to ensure standard data format for country code"@en ;
    samm-c:baseCharacteristic :CountryCodeCharacteristic ;
