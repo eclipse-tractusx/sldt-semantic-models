@@ -1,3 +1,23 @@
+#######################################################################
+# Copyright (c) 2022, 2024 Robert Bosch GmbH
+# Copyright (c) 2022, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022, 2024 Volkswagen AG
+# Copyright (c) 2022, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2022, 2024 SAP SE
+# Copyright (c) 2022, 2024 Siemens AG
+# Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2022 Mercedes Benz AG
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -37,7 +57,7 @@
 :DiagnosticSession a samm:Entity ;
    samm:preferredName "Diagnostic Session"@en ;
    samm:description "One diagnostic session of one vehicle: Either this is a diagnostic session done in a workshop or via over-the-air diagnostic."@en ;
-   samm:properties ( [ samm:property :recordStatus; samm:optional true ] :sessionId :anonymizedVIN :catenaXQualityTaskId [ samm:property :catenaXVehicleId; samm:optional true ] [ samm:property :countryCode; samm:optional true ] [ samm:property :diagnosticSoftwareName; samm:optional true ] [ samm:property :diagnosticSoftwareVersion; samm:optional true ] [ samm:property :mileage; samm:optional true ] [ samm:property :sessionEnd; samm:optional true ] [ samm:property :sessionStart; samm:optional true ] [ samm:property :vehicleSoftwareCategory; samm:optional true ] [ samm:property :vehicleSoftwareVersion; samm:optional true ] [ samm:property :workshop; samm:optional true ] [ samm:property :ecuList; samm:optional true ] [ samm:property :procedures; samm:optional true ] ) .
+   samm:properties ( [ samm:property :recordStatus; samm:optional true ] :sessionId [ samm:property :anonymizedVIN; samm:optional true ] [ samm:property :catenaXQualityTaskId; samm:optional true ] [ samm:property :catenaXVehicleId; samm:optional true ] [ samm:property :countryCode; samm:optional true ] [ samm:property :diagnosticSoftwareName; samm:optional true ] [ samm:property :diagnosticSoftwareVersion; samm:optional true ] [ samm:property :mileage; samm:optional true ] [ samm:property :sessionEnd; samm:optional true ] [ samm:property :sessionStart; samm:optional true ] [ samm:property :vehicleSoftwareCategory; samm:optional true ] [ samm:property :vehicleSoftwareVersion; samm:optional true ] [ samm:property :workshop; samm:optional true ] [ samm:property :ecuList; samm:optional true ] [ samm:property :procedures; samm:optional true ] ) .
 
 :MetaInformation a samm:Entity ;
    samm:preferredName "Meta Information"@en ;
@@ -46,7 +66,7 @@
 
 :recordStatus a samm:Property ;
    samm:preferredName "Record status"@en ;
-   samm:description "The record operation enumeration can be used to realize delta update concept.\nDelta update concept means:\n- You transfer an initial load of data\n- After the first week only the delta to the initial load is transferred\n\n\nThe record status describes whether this record is:\n- new=>This record is transferred the first time\n- update=> Some properties of this record have changed compared to a previous transfer\n- delete=> This record was transferred in the initial load or in a previous delta update, but is not \n used any more and therefore it should be deleted on data consumer side\n- same=> This record was transferred in the initial load or in a previous delta update"@en ;
+   samm:description "The record operation enumeration can be used to realize delta update concept.\nDelta update concept means:\n- You transfer an initial load of data\n- After the first week only the delta to the initial load is transferred\n\n\nThe record status describes whether this record is:\n- new=>This record is transferred the first time\n- update=> Some properties of this record have changed compared to a previous transfer\n- delete=> This record was transferred in the initial load or in a previous delta update, but is not used any more and therefore it should be deleted on data consumer side\n- same=> This record was transferred in the initial load or in a previous delta update"@en ;
    samm:characteristic :RecordStatusEnumeration ;
    samm:exampleValue "update" .
 
@@ -129,8 +149,8 @@
 
 :ecuList a samm:Property ;
    samm:preferredName "ECU list"@en ;
-   samm:description "list of ECUs that had an entry in its internal failure memory during the diagnostic session"@en ;
-   samm:characteristic :Ecus .
+   samm:description "List of ECUs that had an entry in its internal failure memory during the diagnostic session"@en ;
+   samm:characteristic :EcuList .
 
 :procedures a samm:Property ;
    samm:preferredName "Procedures"@en ;
@@ -173,7 +193,8 @@
    samm-c:constraint :CountryCodeRegularExpression .
 
 :Mileage a samm-c:Measurement ;
-   samm:description "mileage counter of the car"@en ;
+   samm:preferredName "Mileage"@en ;
+   samm:description "The mileage counter of the car."@en ;
    samm:dataType xsd:nonNegativeInteger ;
    samm-c:unit unit:kilometre .
 
@@ -182,8 +203,9 @@
    samm:description "Groups all workshop properties."@en ;
    samm:dataType :WorkshopProperties .
 
-:Ecus a samm-c:List ;
-   samm:description "A list of electronic control units."@en ;
+:EcuList a samm-c:List ;
+   samm:preferredName "ECU List"@en ;
+   samm:description "A list of electronic control units in this diagnostic session."@en ;
    samm:dataType :ECU .
 
 :Procedures a samm-c:List ;
@@ -347,15 +369,20 @@
    samm:characteristic :SubProceduresList .
 
 :LatitudeTrait a samm-c:Trait ;
-   samm-c:baseCharacteristic :Latitude ;
+   samm:preferredName "Latitude Trait"@en ;
+   samm:description "Trait to define the latitude."@en ;
+   samm-c:baseCharacteristic :Float ;
    samm-c:constraint :ConstraintLatitude .
 
 :LongitudeTrait a samm-c:Trait ;
-   samm-c:baseCharacteristic :Longitude ;
+   samm:preferredName "Longitude Trait"@en ;
+   samm:description "Trait to define the longitude."@en ;
+   samm-c:baseCharacteristic :Float ;
    samm-c:constraint :ConstraintLongitude .
 
 :DTCList a samm-c:List ;
-   samm:description "A list of DTCs"@en ;
+   samm:preferredName "DTC List"@en ;
+   samm:description "A list of DTCs that are present in this diagnostic session."@en ;
    samm:dataType :DiagnosticTroubleCode .
 
 :ProcedureResultCharacterisitc a samm-c:Enumeration ;
@@ -369,8 +396,9 @@
    samm:description "A list of sub-procedures"@en ;
    samm:dataType :ProcedureCall .
 
-:Latitude a samm:Characteristic ;
-   samm:description "Latitude of this workshop"@en ;
+:Float a samm:Characteristic ;
+   samm:preferredName "Float"@en ;
+   samm:description "Characteristic of a float value."@en ;
    samm:dataType xsd:float .
 
 :ConstraintLatitude a samm-c:RangeConstraint ;
@@ -378,9 +406,6 @@
    samm-c:maxValue "90.0"^^xsd:float ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:AT_MOST .
-
-:Longitude a samm:Characteristic ;
-   samm:dataType xsd:float .
 
 :ConstraintLongitude a samm-c:RangeConstraint ;
    samm-c:minValue "-180.0"^^xsd:float ;
@@ -463,7 +488,7 @@
 :type a samm:Property ;
    samm:preferredName "Type"@en ;
    samm:description "Indicator whether this DTC was stored as Error or Info"@en ;
-   samm:characteristic :TypeEnum ;
+   samm:characteristic :TypeEnumumeration ;
    samm:exampleValue "Error" .
 
 :envConditionList a samm:Property ;
@@ -478,9 +503,13 @@
    samm-c:constraint :HexRegularExpressionNullable .
 
 :Long a samm:Characteristic ;
+   samm:preferredName "Long"@en ;
+   samm:description "Characteristic for a long value."@en ;
    samm:dataType xsd:long .
 
-:TypeEnum a samm-c:Enumeration ;
+:TypeEnumumeration a samm-c:Enumeration ;
+   samm:preferredName "Type enumeration"@en ;
+   samm:description "Enumeration for a DTC."@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "Error" "Info" ) .
 
