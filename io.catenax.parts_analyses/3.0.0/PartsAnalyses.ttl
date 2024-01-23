@@ -1,0 +1,217 @@
+#######################################################################
+# Copyright (c) 2023, 2024 Robert Bosch GmbH
+# Copyright (c) 2023, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023, 2024 Volkswagen AG
+# Copyright (c) 2023, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2023, 2024 SAP SE
+# Copyright (c) 2023, 2024 Siemens AG
+# Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.parts_analyses:3.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
+
+:PartsAnalyses a samm:Aspect ;
+   samm:preferredName "Parts Analysis"@en ;
+   samm:description "Parts analysis that are related to one quality task"@en ;
+   samm:properties ( :listOfPartAnalyses [ samm:property :metaInformation; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:listOfPartAnalyses a samm:Property ;
+   samm:preferredName "List Of several Part Analyses"@en ;
+   samm:description "A list of several part analyses"@en ;
+   samm:characteristic :PartsAnalysesList .
+
+:metaInformation a samm:Property ;
+   samm:preferredName "Meta information"@en ;
+   samm:description "This meta information is valid for all entries in this data set. The meta information is used to tell the data consumer which selection criteria were applied by the data provider. "@en ;
+   samm:characteristic :MetaCharacteristic .
+
+:PartsAnalysesList a samm-c:List ;
+   samm:preferredName "Part Analyses"@en ;
+   samm:description "A list for multiple part analyses"@en ;
+   samm:dataType :PartAnalysis .
+
+:MetaCharacteristic a samm:Characteristic ;
+   samm:preferredName "MetaCharacteristic"@en ;
+   samm:description "Characteristic for the meta information."@en ;
+   samm:dataType :MetaInformation .
+
+:PartAnalysis a samm:Entity ;
+   samm:preferredName "Part Analysis"@en ;
+   samm:description "The analysis results of ONE part"@en ;
+   samm:properties ( [ samm:property :recordStatus; samm:optional true ] :anonymizedVIN [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :catenaXQualityTaskId; samm:optional true ] [ samm:property :isDefect; samm:optional true ] [ samm:property :manufacturerAnalysisID; samm:optional true ] [ samm:property :manufacturerPartName; samm:optional true ] [ samm:property :manufacturerPartNumber; samm:optional true ] [ samm:property :manufacturerSerialNumber; samm:optional true ] [ samm:property :parentAnalysisID; samm:optional true ] [ samm:property :parentPartNumber; samm:optional true ] [ samm:property :parentSerialNumber; samm:optional true ] [ samm:property :resultsDescription; samm:optional true ] [ samm:property :status; samm:optional true ] [ samm:property :listOfAddtionalInformation; samm:optional true ] ) .
+
+:MetaInformation a samm:Entity ;
+   samm:preferredName "Meta Information"@en ;
+   samm:description "This entity groups all meta information properties. Meta information properties give hints for a Catena-X data consumer to better understand, how this data set was created on the Catena-X data provider side."@en ;
+   samm:properties ( :selectionCriteria [ samm:property :selectionStart; samm:optional true ] [ samm:property :selectionEnd; samm:optional true ] ) .
+
+:recordStatus a samm:Property ;
+   samm:preferredName "Record status"@en ;
+   samm:description "The record operation enumeration can be used to realize delta update concept.\nDelta update concept means:\n- You transfer an initial load of data\n- After the first week only the delta to the initial load is transferred\n\n\nThe record status describes whether this record is:\n- new=>This record is transferred the first time\n- update=> Some properties of this record have changed compared to a previous transfer\n- delete=> This record was transferred in the initial load or in a previous delta update, but is not used any more and therefore it should be deleted on data consumer side\n- same=> This record was transferred in the initial load or in a previous delta update"@en ;
+   samm:characteristic :RecordStatusEnumeration ;
+   samm:exampleValue "update" .
+
+:anonymizedVIN a samm:Property ;
+   samm:preferredName "Anonymized VIN"@en ;
+   samm:description "OEM-specific hashed VIN. Unique within OEM."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "3747429FGH382923934abcf74682" .
+
+:catenaXPartId a samm:Property ;
+   samm:preferredName "Catena-X Part ID"@en ;
+   samm:description "The fully anonymous Catena-X ID of the analysed part - only available after digital twin registry is fully operational."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9000" .
+
+:catenaXQualityTaskId a samm:Property ;
+   samm:preferredName "Quality Task ID"@en ;
+   samm:description "The fully anonymous and unique Catena-X ID of this quality task. This id is unique inside Catena-X data space."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "430f56d3-1234-1234-1234-abc123456789" .
+
+:isDefect a samm:Property ;
+   samm:preferredName "Part defect flag"@en ;
+   samm:description "True: Analysis turned out that analysed part is defect according part's specification."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:manufacturerAnalysisID a samm:Property ;
+   samm:preferredName "Manufacturer Analysis ID"@en ;
+   samm:description "Internal identifier for this analysis at manufacturer."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "TIER-647439403403" .
+
+:manufacturerPartName a samm:Property ;
+   samm:preferredName "Manufacturer part name"@en ;
+   samm:description "Part name given from  the manufacturer or supplier of this part, component, sub component or raw material. A manufacturer part name is NOT unique: All parts of the same kind share the same part name."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Gear box housing sub-assembly" .
+
+:manufacturerPartNumber a samm:Property ;
+   samm:preferredName "Manufacturer part number"@en ;
+   samm:description "Part number given from  the manufacturer or supplier of this part, component, sub component or raw material. A manufacturer part number is NOT unique: All parts of the same kind share the same part number."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "FZ206460050202212" .
+
+:manufacturerSerialNumber a samm:Property ;
+   samm:preferredName "Manufacturer serial number"@en ;
+   samm:description "Serial number given from the manufacturer or supplier of this part, component, sub component. A manufacturer serial number is unique: With the serial number the produced part can be traced within the manufacturer."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "GBH3232434535454545-3534535" .
+
+:parentAnalysisID a samm:Property ;
+   samm:preferredName "Customer Analysis ID"@en ;
+   samm:description "Internal identifier for this analysis on parent level.\nIf the manufacturer is a TIER1 supplier -> parent level is OEM.\nIf the manufacturer is TIER2 supplier -> parent level is TIER1 supplier."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "OE-43673473438" .
+
+:parentPartNumber a samm:Property ;
+   samm:preferredName "Parent part number"@en ;
+   samm:description "Internal part number of the analysed part.\nIf the manufacturer is a TIER1 supplier -> parent level is OEM.\nIf the manufacturer is a TIER2 supplier -> parent level is TIER1 supplier.\nA parent part number is NOT unique: All parent parts of the same kind share the same parent part number."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "12345" .
+
+:parentSerialNumber a samm:Property ;
+   samm:preferredName "Parent serial number"@en ;
+   samm:description "Serial number of the analysed part.\nIf the manufacturer is a TIER1 supplier -> parent level is OEM.\nIf the manufacturer is a TIER2 supplier -> parent level is TIER1 supplier.\nA parent serial number is unique: With the serial number the produced part can be traced within the parent company."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ECU20646005020221" .
+
+:resultsDescription a samm:Property ;
+   samm:preferredName "Several results of analysis"@en ;
+   samm:description "Detailed description of part analysis results."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Corrosion on component xyz in steering motor" .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "Status of this part analysis"@en ;
+   samm:characteristic :StatusCharacteristic ;
+   samm:exampleValue "new" .
+
+:listOfAddtionalInformation a samm:Property ;
+   samm:preferredName "Additional information list"@en ;
+   samm:description "You can use this key:value list for additional properties that were not defined in this aspect model."@en ;
+   samm:characteristic :AdditionalInformationList .
+
+:selectionCriteria a samm:Property ;
+   samm:preferredName "Selection criteria"@en ;
+   samm:description "Describes the selection criteria a Catena-X data provider has applied to create this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Data set is the result of all Claims where Claim.repairDate is in the range from selectionStartTimestamp to selectionEndTimestamp, supplier is Smith Corporation and supplier component is acceleration sensor" .
+
+:selectionStart a samm:Property ;
+   samm:preferredName "Selection start timestamp"@en ;
+   samm:description "Describes the starting point for providing records in this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2023-01-01T00:00:00" .
+
+:selectionEnd a samm:Property ;
+   samm:preferredName "Selection end timestamp"@en ;
+   samm:description "Describes the end point for providing records in this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2023-12-31T23:59:59" .
+
+:RecordStatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Record status enumeration"@en ;
+   samm:description "Defining the enumeration for the record status"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "update" "delete" "same" ) .
+
+:UniqueID a samm:Characteristic ;
+   samm:preferredName "unique ID"@en ;
+   samm:description "Characteristic for a unique id: every linked property to this characteristic is a unique ID"@en ;
+   samm:dataType xsd:string .
+
+:StatusCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "StatusCharacteristic"@en ;
+   samm:description "Enumeration of the different status values"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "in progress" "completed" "closed" ) .
+
+:AdditionalInformationList a samm-c:List ;
+   samm:preferredName "List of additional information"@en ;
+   samm:description "A list of additional information"@en ;
+   samm:dataType :AdditionalInformation .
+
+:AdditionalInformation a samm:Entity ;
+   samm:preferredName "Additional information"@en ;
+   samm:description "Additional information is stored as list of keys and list of values"@en ;
+   samm:properties ( :key :value ) .
+
+:key a samm:Property ;
+   samm:preferredName "Key"@en ;
+   samm:description "The unique key for this additional information"@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "Steel quality" .
+
+:value a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "The value for this additional information that refers to the linked unique key."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Stainless steel" .
+
+:AdditionalInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Additional information characteristic"@en ;
+   samm:description "Characteristic for additional information: Additional information could be properties that are special for some parts analysis."@en ;
+   samm:dataType :AdditionalInformation .
+
