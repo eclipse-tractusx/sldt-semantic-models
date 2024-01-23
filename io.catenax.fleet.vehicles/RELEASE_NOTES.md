@@ -6,9 +6,9 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 
 ## [2.0.0] - 2024-01-22
 ### Added
-- metaInformation property added to root entity
-- integration of the shared UUID characteristic and RegEx for the vehicle Catena-X identifie
-- Introducing new characteristic for unique identifiers
+- metaInformation added to root entity: Gives data consumer necessary information how data provider created this data set
+- integration of shared UUID characteristic and RegEx for the vehicle Catena-X identifier
+- introducing new characteristic to mark unique identifiers
 - integration of separate aspect model Vehicle.ProductDescription:3.0.0 into this model to do necessary adaptions that were decided in Catena-X Quality use case team: Most of the properties should be set to optional
 
 ### Changed
