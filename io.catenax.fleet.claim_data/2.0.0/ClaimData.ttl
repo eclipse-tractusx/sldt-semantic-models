@@ -99,7 +99,7 @@
    samm:preferredName "CustomerComment"@en ;
    samm:description "short description of the claim from customer view"@en ;
    samm:characteristic samm-c:Text ;
-   samm:exampleValue "Defect does not work properly during parking." .
+   samm:exampleValue "Defect steering. Does not work properly during parking." .
 
 :damageCode a samm:Property ;
    samm:preferredName "DamageCode"@en ;
@@ -211,7 +211,7 @@
 :ClaimedPart a samm:Entity ;
    samm:preferredName "Part"@en ;
    samm:description "one specific part"@en ;
-   samm:properties ( [ samm:property :amountOfReplacedParts; samm:optional true ] [ samm:property :catenaXClaimPartId; samm:optional true ] [ samm:property :isPartCausal; samm:optional true ] [ samm:property :isPartReplaced; samm:optional true ] [ samm:property :partName; samm:optional true ] [ samm:property :partNumber; samm:optional true ] [ samm:property :partTreatement; samm:optional true ] [ samm:property :serialNumber; samm:optional true ] [ samm:property :sparePart; samm:optional true ] ) .
+   samm:properties ( [ samm:property :amountOfReplacedParts; samm:optional true ] [ samm:property :catenaXClaimPartId; samm:optional true ] [ samm:property :isPartCausal; samm:optional true ] [ samm:property :isPartReplaced; samm:optional true ] [ samm:property :partName; samm:optional true ] [ samm:property :partNumber; samm:optional true ] [ samm:property :partTreatement; samm:optional true ] [ samm:property :serialNumber; samm:optional true ] [ samm:property :spareParts; samm:optional true ] [ samm:property :supplierId; samm:optional true ] ) .
 
 :sessionId a samm:Property ;
    samm:preferredName "Session identifier"@en ;
@@ -233,13 +233,13 @@
 
 :isPartCausal a samm:Property ;
    samm:preferredName "IsPartCausal"@en ;
-   samm:description "flag set to True if part was causing the problem\nTrue: part caused the problem\nFalse: part didn't cause the problem\n"@en ;
+   samm:description "Flag is set to true if part was causing the problem-otherwise false."@en ;
    samm:characteristic samm-c:Boolean ;
    samm:exampleValue true .
 
 :isPartReplaced a samm:Property ;
    samm:preferredName "IsPartReplaced"@en ;
-   samm:description "flag is set if part was replaced\nTrue: replaced\nFalse: not replaced"@en ;
+   samm:description "Flag is set to true if part was replaced-otherwise false."@en ;
    samm:characteristic samm-c:Boolean ;
    samm:exampleValue true .
 
@@ -259,7 +259,7 @@
    samm:preferredName "Part treatement"@en ;
    samm:description "Describes what happened to this part in the claim."@en ;
    samm:characteristic samm-c:Text ;
-   samm:exampleValue "Part was defect and was replaced by spare part." .
+   samm:exampleValue "Part was defect and replaced by a spare part." .
 
 :serialNumber a samm:Property ;
    samm:preferredName "Serial number"@en ;
@@ -267,25 +267,31 @@
    samm:characteristic :UniqueID ;
    samm:exampleValue "ECU20646005020221" .
 
-:sparePart a samm:Property ;
-   samm:preferredName "Spare Part"@en ;
-   samm:description "The part which has been built in."@en ;
-   samm:characteristic :SparePartCharacteristic .
+:spareParts a samm:Property ;
+   samm:preferredName "Spare Parts"@en ;
+   samm:description "The spare parts that were built into the vehicle."@en ;
+   samm:characteristic :SparePartsList .
+
+:supplierId a samm:Property ;
+   samm:preferredName "SupplierID"@en ;
+   samm:description "Specific ID of the supplier that manufactured the part that was put out - available if known"@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ZF2064600502" .
 
 :AmountOfReplacedPartsCharacteristic a samm:Characteristic ;
    samm:preferredName "Amount of replaced Parts"@en ;
    samm:description "counter for non-serial parts"@en ;
    samm:dataType xsd:nonNegativeInteger .
 
-:SparePartCharacteristic a samm:Characteristic ;
-   samm:preferredName "Spare part characteristic"@en ;
-   samm:description "One spare part."@en ;
+:SparePartsList a samm-c:List ;
+   samm:preferredName "Spare parts list"@en ;
+   samm:description "A list of spare parts."@en ;
    samm:dataType :SparePart .
 
 :SparePart a samm:Entity ;
    samm:preferredName "Spare part"@en ;
    samm:description "A generic description to identify a spare part."@en ;
-   samm:properties ( [ samm:property :sparePartName; samm:optional true ] [ samm:property :sparePartNumber; samm:optional true ] [ samm:property :sparePartSerialNumber; samm:optional true ] ) .
+   samm:properties ( [ samm:property :sparePartName; samm:optional true ] [ samm:property :sparePartNumber; samm:optional true ] [ samm:property :sparePartSerialNumber; samm:optional true ] [ samm:property :sparePartSupplierId; samm:optional true ] ) .
 
 :sparePartName a samm:Property ;
    samm:preferredName "Spart part name"@en ;
@@ -304,4 +310,13 @@
    samm:description "Serial number of the spare part."@en ;
    samm:characteristic :UniqueID ;
    samm:exampleValue "ECU565657485020221" .
+
+:sparePartSupplierId a samm:Property ;
+   samm:preferredName "Spare part supplier ID"@en ;
+   samm:description "A unique identifier for the spare part supplier."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ZF2064600502" .
+
+:SparePartCharacteristic a samm:Characteristic ;
+   samm:dataType :SparePart .
 
