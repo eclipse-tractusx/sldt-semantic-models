@@ -37,14 +37,14 @@
 :diagnosticSessions a samm:Property ;
    samm:preferredName "Diagnostic sessions"@en ;
    samm:description "A list of diagnostic sessions."@en ;
-   samm:characteristic :DiagnosticSessions .
+   samm:characteristic :SessionList .
 
 :metaInformation a samm:Property ;
    samm:preferredName "Meta information"@en ;
    samm:description "This meta information is valid for all entries in this data set. The meta information is used to tell the data consumer which selection criteria were applied by the data provider. "@en ;
    samm:characteristic :MetaCharacteristic .
 
-:DiagnosticSessions a samm-c:List ;
+:SessionList a samm-c:List ;
    samm:preferredName "Diagnostic sessions"@en ;
    samm:description "A list of diagnostic sessions coming from multiple vehicles."@en ;
    samm:dataType :DiagnosticSession .
@@ -115,7 +115,7 @@
 :mileage a samm:Property ;
    samm:preferredName "Mileage"@en ;
    samm:description "Mileage counter of the car."@en ;
-   samm:characteristic :Mileage ;
+   samm:characteristic :MileageCounter ;
    samm:exampleValue "23500"^^xsd:nonNegativeInteger .
 
 :sessionEnd a samm:Property ;
@@ -155,7 +155,7 @@
 :procedures a samm:Property ;
    samm:preferredName "Procedures"@en ;
    samm:description "List of procedures / sub-procedures."@en ;
-   samm:characteristic :Procedures .
+   samm:characteristic :ProcedureList .
 
 :selectionCriteria a samm:Property ;
    samm:preferredName "Selection criteria"@en ;
@@ -192,7 +192,7 @@
    samm-c:baseCharacteristic :CountryCodeCharacteristic ;
    samm-c:constraint :CountryCodeRegularExpression .
 
-:Mileage a samm-c:Measurement ;
+:MileageCounter a samm-c:Measurement ;
    samm:preferredName "Mileage"@en ;
    samm:description "The mileage counter of the car."@en ;
    samm:dataType xsd:nonNegativeInteger ;
@@ -208,7 +208,7 @@
    samm:description "A list of electronic control units in this diagnostic session."@en ;
    samm:dataType :ECU .
 
-:Procedures a samm-c:List ;
+:ProcedureList a samm-c:List ;
    samm:preferredName "Procedures"@en ;
    samm:description "A list of procedure calls in the diagnostic software."@en ;
    samm:dataType :ProcedureCall .
@@ -232,7 +232,7 @@
 :ECU a samm:Entity ;
    samm:preferredName "ECU"@en ;
    samm:description "A single ECU that is present/has a DTC set in the diagnostic session"@en ;
-   samm:properties ( :oemSerialNumber [ samm:property :assemblyPartNumberVersion; samm:optional true ] [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :calibrationVersion; samm:optional true ] [ samm:property :hwPartNumber; samm:optional true ] [ samm:property :hwVersion; samm:optional true ] [ samm:property :oemPartName; samm:optional true ] [ samm:property :oemPartNumber; samm:optional true ] [ samm:property :readOutDate; samm:optional true ] [ samm:property :swPartNumber; samm:optional true ] [ samm:property :swVersion; samm:optional true ] [ samm:property :variantCoding; samm:optional true ] [ samm:property :dtcList; samm:optional true ] ) .
+   samm:properties ( :oemSerialNumber [ samm:property :assemblyPartNumberVersion; samm:optional true ] [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :calibrationVersion; samm:optional true ] [ samm:property :hwPartNumber; samm:optional true ] [ samm:property :hwVersion; samm:optional true ] [ samm:property :oemPartName; samm:optional true ] [ samm:property :oemPartNumber; samm:optional true ] [ samm:property :readOutDate; samm:optional true ] [ samm:property :swPartNumber; samm:optional true ] [ samm:property :swVersion; samm:optional true ] [ samm:property :variantCoding; samm:optional true ] [ samm:property :dtcs; samm:optional true ] ) .
 
 :ProcedureCall a samm:Entity ;
    samm:preferredName "Procedure Call"@en ;
@@ -329,13 +329,13 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Variant: No trailer." .
 
-:dtcList a samm:Property ;
+:dtcs a samm:Property ;
    samm:description "list of diagnostic trouble codes"@en ;
    samm:characteristic :DTCList .
 
 :procedureID a samm:Property ;
    samm:preferredName "Procedure identifier"@en ;
-   samm:description "A unique identifier for this procedure/subprocedure call"@en ;
+   samm:description "A unique identifier for this procedure/sub-procedure call"@en ;
    samm:characteristic :UniqueID ;
    samm:exampleValue "ABS_upgrade_deactivate" .
 
@@ -422,7 +422,7 @@
 :dtcHexValue a samm:Property ;
    samm:preferredName "Hex"@en ;
    samm:description "Hex value of this DTC"@en ;
-   samm:characteristic :HexValueTraitNullable ;
+   samm:characteristic :HexValueTrait ;
    samm:exampleValue "4337499FF" .
 
 :faultPath a samm:Property ;
@@ -440,7 +440,7 @@
 :freezeFrame a samm:Property ;
    samm:preferredName "DTC freeze frame"@en ;
    samm:description "freeze frame from ecu. The freeze frame records many parameters of the DTC and surrounding parameters like outside temperature when the DTC was set. It is a very long HEX string with many OEM-specific and ECU-specific content in"@en ;
-   samm:characteristic :HexValueTraitNullable ;
+   samm:characteristic :HexValueTrait ;
    samm:exampleValue "100148340349340" .
 
 :fullDescription a samm:Property ;
@@ -470,7 +470,7 @@
 :occurenceMileage a samm:Property ;
    samm:preferredName "DTC first occurence mileage"@en ;
    samm:description "mileage in km when the DTC occurred the first time "@en ;
-   samm:characteristic :Mileage ;
+   samm:characteristic :MileageCounter ;
    samm:exampleValue "15000"^^xsd:nonNegativeInteger .
 
 :occurenceTimeStamp a samm:Property ;
@@ -496,11 +496,11 @@
    samm:description "A list of environment conditions: E.g. outside temperature measured by the vehicle, a specific value measured by on ECU, ...."@en ;
    samm:characteristic :EnvironmentConditions .
 
-:HexValueTraitNullable a samm-c:Trait ;
-   samm:preferredName "Hex Value Trait Nullable"@en ;
+:HexValueTrait a samm-c:Trait ;
+   samm:preferredName "Hex Value Trait"@en ;
    samm:description "This trait allows 0-9, a-f, A-F in a string value. Optional prefix is \"0x\"."@en ;
    samm-c:baseCharacteristic :HexCodeCharacteristic ;
-   samm-c:constraint :HexRegularExpressionNullable .
+   samm-c:constraint :HexRegularExpression .
 
 :Long a samm:Characteristic ;
    samm:preferredName "Long"@en ;
@@ -523,7 +523,7 @@
    samm:description "Describing a hex code: 0-9, a-f, A-F, optional 0x"@en ;
    samm:dataType xsd:string .
 
-:HexRegularExpressionNullable a samm-c:RegularExpressionConstraint ;
+:HexRegularExpression a samm-c:RegularExpressionConstraint ;
    samm:preferredName "Hex regular expression"@en ;
    samm:description "This regular expression enforces a hex string. It ensures 0-9, a-f, A-F with an optional prefix 0x.\nValid examples:\n- 0x0123456789abcdefABCDEF\n- 0123456789abcdefABCDEF\n"@en ;
    samm:value "^(0x)?[0-9a-fA-F]+$" .
