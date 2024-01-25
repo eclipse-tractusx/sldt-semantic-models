@@ -58,7 +58,7 @@
 :Claim a samm:Entity ;
    samm:preferredName "Claim"@en ;
    samm:description "A claim is when a customer has a problem with his vehicle and goes to the workshop to get this problem fixed. Sometimes potentially faulty parts are exchanged."@en ;
-   samm:properties ( [ samm:property :recordStatus; samm:optional true ] [ samm:property :anonymizedVIN; samm:optional true ] [ samm:property :catenaXQualityTaskId; samm:optional true ] [ samm:property :catenaXVehicleId; samm:optional true ] :claimId [ samm:property :countryCode; samm:optional true ] [ samm:property :customerComment; samm:optional true ] [ samm:property :damageCode; samm:optional true ] [ samm:property :diagnosticSessions; samm:optional true ] [ samm:property :repairCountryCode; samm:optional true ] [ samm:property :repairDate; samm:optional true ] [ samm:property :repairMileage; samm:optional true ] [ samm:property :technicianComment; samm:optional true ] [ samm:property :workshop; samm:optional true ] [ samm:property :listOfParts; samm:optional true ] ) .
+   samm:properties ( [ samm:property :recordStatus; samm:optional true ] [ samm:property :anonymizedVIN; samm:optional true ] [ samm:property :catenaXQualityTaskId; samm:optional true ] [ samm:property :catenaXVehicleId; samm:optional true ] :claimId [ samm:property :countryCode; samm:optional true ] [ samm:property :customerComment; samm:optional true ] [ samm:property :damageCode; samm:optional true ] [ samm:property :repairCountryCode; samm:optional true ] [ samm:property :repairDate; samm:optional true ] [ samm:property :repairMileage; samm:optional true ] [ samm:property :technicianComment; samm:optional true ] [ samm:property :workshop; samm:optional true ] [ samm:property :listOfParts; samm:optional true ] [ samm:property :listOfDiagnosticSessions; samm:optional true ] ) .
 
 :MetaInformation a samm:Entity ;
    samm:preferredName "Meta Information"@en ;
@@ -113,11 +113,6 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Steering adapter" .
 
-:diagnosticSessions a samm:Property ;
-   samm:preferredName "Diagnostic sessions"@en ;
-   samm:description "A list of diagnostic sessions linked to this claim."@en ;
-   samm:characteristic :SessionList .
-
 :repairCountryCode a samm:Property ;
    samm:preferredName "Repair Country code"@en ;
    samm:description "Country code where this repair took place."@en ;
@@ -151,6 +146,11 @@
    samm:preferredName "ListOfParts"@en ;
    samm:description "a list of parts which will be replaced or repaired"@en ;
    samm:characteristic :PartsListCharacteristic .
+
+:listOfDiagnosticSessions a samm:Property ;
+   samm:preferredName "Diagnostic sessions"@en ;
+   samm:description "A list of diagnostic sessions linked to this claim."@en ;
+   samm:characteristic :DiagnosticSessionsList .
 
 :selectionCriteria a samm:Property ;
    samm:preferredName "Selection criteria"@en ;
@@ -187,11 +187,6 @@
    samm-c:baseCharacteristic :CountryCodeCharacteristic ;
    samm-c:constraint :CountryCodeRegularExpression .
 
-:SessionList a samm-c:List ;
-   samm:preferredName "Diagnostic sessions"@en ;
-   samm:description "A list of diagnostic sessions that are linked to this claim."@en ;
-   samm:dataType :DiagnosticSession .
-
 :MileageCounter a samm-c:Measurement ;
    samm:preferredName "Mileage"@en ;
    samm:description "The mileage counter of the car."@en ;
@@ -208,6 +203,11 @@
    samm:description "Characteristic for a list of parts that are linked to a claim."@en ;
    samm:dataType :ClaimedPart .
 
+:DiagnosticSessionsList a samm-c:List ;
+   samm:preferredName "Diagnostic sessions"@en ;
+   samm:description "A list of diagnostic sessions that are linked to this claim."@en ;
+   samm:dataType :DiagnosticSession .
+
 :CountryCodeCharacteristic a samm:Characteristic ;
    samm:preferredName "Country Code Characteristic"@en ;
    samm:description "ISO 3166-1 alpha-3 – three-letter country codes "@en ;
@@ -219,11 +219,6 @@
    samm:description "Regular Expression that ensures a three-letter code "@en ;
    samm:value "^[A-Z][A-Z][A-Z]$" .
 
-:DiagnosticSession a samm:Entity ;
-   samm:preferredName "Diagnostic Session"@en ;
-   samm:description "One diagnostic session of one vehicle: Either this is a diagnostic session done in a workshop or via over-the-air diagnostic."@en ;
-   samm:properties ( :sessionId ) .
-
 :WorkshopProperties a samm:Entity ;
    samm:preferredName "Workshop Properties"@en ;
    samm:description "All properties to clearly identify a workshop."@en ;
@@ -234,11 +229,10 @@
    samm:description "one specific part"@en ;
    samm:properties ( [ samm:property :amountOfReplacedParts; samm:optional true ] [ samm:property :catenaXClaimPartId; samm:optional true ] [ samm:property :isPartCausal; samm:optional true ] [ samm:property :isPartReplaced; samm:optional true ] [ samm:property :partName; samm:optional true ] [ samm:property :partNumber; samm:optional true ] [ samm:property :partTreatment; samm:optional true ] [ samm:property :serialNumber; samm:optional true ] [ samm:property :spareParts; samm:optional true ] [ samm:property :supplierId; samm:optional true ] ) .
 
-:sessionId a samm:Property ;
-   samm:preferredName "Session identifier"@en ;
-   samm:description "A oem-specific session identifier that is unique in this company."@en ;
-   samm:characteristic :UniqueID ;
-   samm:exampleValue "3747429FGH382923974682_Session_2023-11-04T08:00:45" .
+:DiagnosticSession a samm:Entity ;
+   samm:preferredName "Diagnostic Session"@en ;
+   samm:description "One diagnostic session of one vehicle: Either this is a diagnostic session done in a workshop or via over-the-air diagnostic."@en ;
+   samm:properties ( :sessionId ) .
 
 :workShopId a samm:Property ;
    samm:preferredName "OEM Workshop ID"@en ;
@@ -262,7 +256,7 @@
    samm:preferredName "AmountOfReplacedParts"@en ;
    samm:description "counter for non-serial parts which have been replaced"@en ;
    samm:characteristic :AmountOfReplacedPartsCharacteristic ;
-   samm:exampleValue "2"^^xsd:nonNegativeInteger .
+   samm:exampleValue "1"^^xsd:nonNegativeInteger .
 
 :catenaXClaimPartId a samm:Property ;
    samm:preferredName "Catena-X Claim Part ID"@en ;
@@ -316,6 +310,12 @@
    samm:description "Specific ID of the supplier that manufactured the part that was put out - available if known"@en ;
    samm:characteristic :UniqueID ;
    samm:exampleValue "ZF2064600502" .
+
+:sessionId a samm:Property ;
+   samm:preferredName "Session identifier"@en ;
+   samm:description "A oem-specific session identifier that is unique in this company."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "3747429FGH382923974682_Session_2023-11-04T08:00:45" .
 
 :LatitudeTrait a samm-c:Trait ;
    samm:preferredName "Latitude Trait"@en ;
