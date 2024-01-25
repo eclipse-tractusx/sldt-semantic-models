@@ -18,6 +18,11 @@
         "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
         "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
       },
+      "urn_samm_io.catenax.fleet.claim_data_2.0.0_CountryCodeTrait" : {
+        "type" : "string",
+        "description" : "Regular Expression that ensures a three-letter code ",
+        "pattern" : "^[A-Z][A-Z][A-Z]$"
+      },
       "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text" : {
         "type" : "string",
         "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
@@ -40,11 +45,6 @@
           "$ref" : "#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_DiagnosticSession"
         }
       },
-      "urn_samm_io.catenax.fleet.claim_data_2.0.0_CountryCodeTrait" : {
-        "type" : "string",
-        "description" : "Regular Expression that ensures a three-letter code ",
-        "pattern" : "^[A-Z][A-Z][A-Z]$"
-      },
       "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
         "type" : "string",
         "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
@@ -54,6 +54,41 @@
         "type" : "number",
         "minimum" : 0,
         "description" : "The mileage counter of the car."
+      },
+      "urn_samm_io.catenax.fleet.claim_data_2.0.0_LatitudeTrait" : {
+        "type" : "number",
+        "description" : "Trait to define the latitude.",
+        "maximum" : 90.0,
+        "exclusiveMaximum" : false,
+        "minimum" : -90.0,
+        "exclusiveMinimum" : false
+      },
+      "urn_samm_io.catenax.fleet.claim_data_2.0.0_LongitudeTrait" : {
+        "type" : "number",
+        "description" : "Trait to define the longitude.",
+        "maximum" : 180.0,
+        "exclusiveMaximum" : false,
+        "minimum" : -180.0,
+        "exclusiveMinimum" : false
+      },
+      "urn_samm_io.catenax.fleet.claim_data_2.0.0_WorkshopCharacteristic" : {
+        "description" : "Groups all workshop properties.",
+        "type" : "object",
+        "properties" : {
+          "workShopId" : {
+            "description" : "OEM-specific identifier for a workshop.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID"
+          },
+          "latitude" : {
+            "description" : "Latitude property for GPS coordinates.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_LatitudeTrait"
+          },
+          "longitude" : {
+            "description" : "Longitude property for GPS coordinates.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_LongitudeTrait"
+          }
+        },
+        "required" : [ "workShopId" ]
       },
       "urn_samm_io.catenax.fleet.claim_data_2.0.0_AmountOfReplacedPartsCharacteristic" : {
         "type" : "number",
@@ -170,6 +205,10 @@
             "description" : "Claim ID: Unique for each OEM",
             "$ref" : "#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID"
           },
+          "countryCode" : {
+            "description" : "Country code in  ISO 3166-1 alpha-3 codes where this session took place",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_CountryCodeTrait"
+          },
           "customerComment" : {
             "description" : "short description of the claim from customer view",
             "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
@@ -197,6 +236,10 @@
           "technicianComment" : {
             "description" : "short description of the claim from the technicians",
             "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "workshop" : {
+            "description" : "Groups workshop-related properties",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_WorkshopCharacteristic"
           },
           "listOfParts" : {
             "description" : "a list of parts which will be replaced or repaired",
