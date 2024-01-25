@@ -14,133 +14,129 @@
 # SPDX-License-Identifier: CC-BY-4.0
 ##########################################################################################
 
-@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#>.
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
 @prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-@prefix : <urn:samm:io.catenax.shopfloor_information.productionTrackingRequest:1.0.0#>.
+@prefix : <urn:samm:io.catenax.shopfloor_information.get_production_tracking:1.0.0#>.
 @prefix ext-header2: <urn:samm:io.catenax.shared.message_header:2.0.0#>.
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
 @prefix ext-part: <urn:samm:io.catenax.serial_part:2.0.0#>.
 
 :GetProductionTrackingData a samm:Aspect;
     samm:preferredName "GetProductionTrackingData"@en;
-    samm:properties (:customerId [
-  samm:property :billOfProcessId;
-  samm:optional "true"^^xsd:boolean
-] :processReferenceType :processStepIdentifierList ext-header2:header [
-  samm:property ext-part:catenaXId;
-  samm:optional "true"^^xsd:boolean
-] ext-part:localIdentifiers ext-header2:version);
+    samm:properties (:customerId [ samm:property :billOfProcessId; samm:optional "true"^^xsd:boolean ] :processReferenceType :processStepIdentifierList ext-header2:header [ samm:property ext-part:catenaXId; samm:optional "true"^^xsd:boolean ] ext-part:localIdentifiers ext-header2:version);
     samm:operations ();
     samm:events ();
     samm:description "Aspect to request product specific data from modular production"@en.
+
 :customerId a samm:Property;
     samm:preferredName "customerId"@en;
     samm:description "internal customer Id"@en;
     samm:characteristic ext-number:BpnlTrait.
+
 :billOfProcessId a samm:Property;
     samm:preferredName "billOfProcessId"@en;
     samm:description "Id to identify an instance of the bill of process data model "@en;
     samm:characteristic :URICharacteristic;
-    samm:exampleValue "12345TestBoP.org"^^xsd:anyURI.
+    samm:exampleValue "12345TestBoP.org"^^xsd:string.
+
 :processReferenceType a samm:Property;
     samm:preferredName "processReferenceType"@en;
     samm:description "Value of an enumeration that determines whether the request is based on concrete process steps or capabilities"@en;
     samm:characteristic :ProcessReferenceTypeCharacteristic;
     samm:exampleValue "processStep".
+
 :processStepIdentifierList a samm:Property;
     samm:preferredName "processStepIdentifierList"@en;
     samm:description "List of Process Steps for which a set of parameter is requested"@en;
     samm:characteristic :ProcessStepIdentifierCharacteristic.
+
 :URICharacteristic a samm:Characteristic;
     samm:preferredName "UriCharacteristic"@en;
     samm:description "Characteristic to specify unique resource identifiers"@en;
-    samm:dataType xsd:anyURI.
+    samm:dataType xsd:string.
+
 :ProcessReferenceTypeCharacteristic a samm-c:Enumeration;
     samm:preferredName "ProcessReferenceTypeCharacteristic"@en;
     samm:description "Enumeration to distinguish between a request based on process steps or a request based on capabilities"@en;
     samm:dataType xsd:string;
     samm-c:values ("processStep" "capability").
+
 :ProcessStepIdentifierCharacteristic a samm-c:List;
     samm:preferredName "ProcessStepIdentifierCharacteristic"@en;
     samm:dataType :ProcessStepId.
+
 :ProcessStepId a samm:Entity;
     samm:preferredName "ProcessStepId"@en;
-    samm:properties ([
-  samm:property :capabilityId;
-  samm:optional "true"^^xsd:boolean
-] [
-  samm:property :partInstanceLevel;
-  samm:optional "true"^^xsd:boolean
-] [
-  samm:property :billOfMaterialId;
-  samm:optional "true"^^xsd:boolean
-] [
-  samm:property :billOfMaterialElementId;
-  samm:optional "true"^^xsd:boolean
-] [
-  samm:property :processStepIdentifier;
-  samm:optional "true"^^xsd:boolean
-] :processParameterList [
-  samm:property ext-part:localIdentifiers;
-  samm:optional "true"^^xsd:boolean
-]);
+    samm:properties ([ samm:property :capabilityId; samm:optional "true"^^xsd:boolean ] [ samm:property :partInstanceLevel; samm:optional "true"^^xsd:boolean ] [ samm:property :billOfMaterialId; samm:optional "true"^^xsd:boolean ] [ samm:property :billOfMaterialElementId; samm:optional "true"^^xsd:boolean ] [ samm:property :processStepIdentifier; samm:optional "true"^^xsd:boolean ] :processParameterList [ samm:property ext-part:localIdentifiers; samm:optional "true"^^xsd:boolean ]);
     samm:description "Id of a process Step"@en.
+
 :StringCharacteristic a samm:Characteristic;
     samm:preferredName "StringCharacteristic"@en;
     samm:description "Characteristic to express string values"@en;
     samm:dataType xsd:string.
+
 :capabilityId a samm:Property;
     samm:preferredName "capabilityId"@en;
     samm:description "Id of a capability that is required in case of a capability based request"@en;
     samm:characteristic :URICharacteristic;
-    samm:exampleValue "Fuegen.Anpressen_Einpressen.Schrauben.Deckelverschrauben"^^xsd:anyURI.
+    samm:exampleValue "Fuegen.Anpressen_Einpressen.Schrauben.Deckelverschrauben"^^xsd:string.
+
 :partInstanceLevel a samm:Property;
     samm:preferredName "partInstanceLevel"@en;
     samm:description "Value of an enumeration that determins whether a part is identified based on its serial number of a Bom + BomElementId"@en;
     samm:characteristic :PartInstanceLevelCharacteristic;
     samm:exampleValue "bom".
+
 :billOfMaterialId a samm:Property;
     samm:preferredName "billOfMaterialId"@en;
     samm:description "Identifier for a bill of material, available for both partners"@en;
     samm:characteristic :StringCharacteristic;
     samm:exampleValue "321-BomIdentifier".
+
 :billOfMaterialElementId a samm:Property;
     samm:preferredName "billOfMaterialElementId"@en;
     samm:description "Id of an element of within an instance of a bill of material, available for both partners "@en;
     samm:characteristic :StringCharacteristic;
     samm:exampleValue "456-BomElementId.coverId".
+
 :processStepIdentifier a samm:Property;
     samm:preferredName "processStepId"@en;
     samm:description "Id of a process Step, specified within an instance of a Bill of process data model"@en;
     samm:characteristic :StringCharacteristic;
     samm:exampleValue "Fuegen.Anpressen_Einpressen.Schrauben.Deckelverschrauben_01".
+
 :processParameterList a samm:Property;
     samm:preferredName "processParameterList"@en;
     samm:description "List of requested Process parameter"@en;
     samm:characteristic :ProcessPartameterListCharacteristic.
+
 :PartInstanceLevelCharacteristic a samm-c:Enumeration;
     samm:preferredName "PartInstanceLevelCharacteristic"@en;
     samm:description "Distinguishes whether the a Part is identifid by a bill of material Id, or a part instance Id, available for both partners"@en;
     samm:dataType xsd:string;
     samm-c:values ("bom" "serial").
+
 :ProcessPartameterListCharacteristic a samm-c:List;
     samm:preferredName "ProcessPartameterListCharacteristic"@en;
     samm:description "List os process parameters, whose values the requester wants to receive from the provider "@en;
     samm:dataType :ProcessParameterRequestType.
+
 :ProcessParameterRequestType a samm:Entity;
     samm:preferredName "ProcessParameterRequestType"@en;
     samm:properties (:processParameterName :processParameterSemanticId);
     samm:description "Entity to define process parameters"@en.
+
 :processParameterName a samm:Property;
     samm:preferredName "processParameterName"@en;
     samm:description "name of a process parameter"@en;
     samm:characteristic :StringCharacteristic;
     samm:exampleValue "Drehmoment_max".
+
 :processParameterSemanticId a samm:Property;
     samm:preferredName "processParameterSemanticId"@en;
     samm:description "Reference to a semantic that defines the unit and the data type of the parameter"@en;
