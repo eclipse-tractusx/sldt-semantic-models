@@ -1,0 +1,270 @@
+##########################################################################################
+# Copyright (c) 2023-2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IOSB & Fraunhofer IWU & Fraunhofer IPA)
+# Copyright (c) 2023-2024 Siemens AG
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+##########################################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.shared.bill_of_process:1.0.0#> .
+@prefix ext-header: <urn:samm:io.catenax.shared.message_header:2.0.0#> .
+
+:BillOfProcessSharedAspect a samm:Aspect ;
+   samm:preferredName "BillOfProcessSharedAspect"@en ;
+   samm:description "Shared aspect for the bill of process data model"@en ;
+   samm:properties ( :billOfProcessModel ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:billOfProcessModel a samm:Property ;
+   samm:preferredName "billOfProcessModel"@en ;
+   samm:description "Instance of the bill of process model"@en ;
+   samm:characteristic :BillOfProcessCharacteritic .
+
+:BillOfProcessCharacteritic a samm:Characteristic ;
+   samm:preferredName "BillOfProcessCharacteritic"@en ;
+   samm:description "Characteristic containing a bill of process"@en ;
+   samm:dataType :BillOfProcess .
+
+:BillOfProcess a samm:Entity ;
+   samm:preferredName "BillOfProcess"@en ;
+   samm:description "Entity to describe processes in an industrial context"@en ;
+   samm:properties ( :process :productVersion :productName :billOfProcessIdentification ext-header:version ) .
+
+:process a samm:Property ;
+   samm:preferredName "process"@en ;
+   samm:description "List that contains all manufacturing steps of a product, wherat each manufacturing step refers to exactly one capability. This list contains all process steps that are required to manufacture the product, specified with the bill of process  "@en ;
+   samm:characteristic :ProcessStepsList .
+
+:productVersion a samm:Property ;
+   samm:preferredName "productVersion"@en ;
+   samm:description "Version of the product whose manufacturing steps are specified with the bill of process. It can for example specify a concrete variant of a product"@en ;
+   samm:characteristic :StringCharacteristic ;
+   samm:exampleValue "bar_chair_1.0.0" .
+
+:productName a samm:Property ;
+   samm:preferredName "productName"@en ;
+   samm:description "Name of the product whose production steps are specified within the bill of process"@en ;
+   samm:characteristic :StringCharacteristic ;
+   samm:exampleValue "Bar Chair" .
+
+:billOfProcessIdentification a samm:Property ;
+   samm:preferredName "billOfProcessIdentification"@en ;
+   samm:description "uniqur identifier for a a bill of process that can be used to reference the bill of process during an exchange between partners"@en ;
+   samm:characteristic :StringCharacteristic ;
+   samm:exampleValue "www.1234-bar-chair-billOfProcess.de" .
+
+:ProcessStepsList a samm-c:List ;
+   samm:preferredName "ProcessStepsList"@en ;
+   samm:description "Unordered list that contains all process steps to manufacture a product. The relation between these process steps are created through the precedence relation property"@en ;
+   samm:dataType :ProcessStep .
+
+:StringCharacteristic a samm:Characteristic ;
+   samm:preferredName "StringCharacteristic"@en ;
+   samm:dataType xsd:string .
+
+:ProcessStep a samm:Entity ;
+   samm:preferredName "ProcessStep"@en ;
+   samm:description "Entity to characterize single process steps"@en ;
+   samm:properties ( :processStepIdentifier :capabilityReference [ samm:property :inputParameter; samm:optional true ] [ samm:property :outputParameter; samm:optional true ] [ samm:property :precedenceRelation; samm:optional true ] [ samm:property :childProcessSteps; samm:optional true ] :processStepType ) .
+
+:processStepIdentifier a samm:Property ;
+   samm:preferredName "processStepIdentifier"@en ;
+   samm:description "Unique identifier for a concrete process step"@en ;
+   samm:characteristic :ProcessStepIdentifierList ;
+   samm:exampleValue "1234-transport" .
+
+:capabilityReference a samm:Property ;
+   samm:preferredName "capabilityReference"@en ;
+   samm:description "Reference to an instance of a  manufacturing capability. this capability has to be executen on the product, to complete the process step"@en ;
+   samm:characteristic :StringCharacteristic .
+
+:inputParameter a samm:Property ;
+   samm:preferredName "inputParameter"@en ;
+   samm:description "Optional list of parameter that are required to execute the corresponding process step"@en ;
+   samm:characteristic :ParameterList .
+
+:outputParameter a samm:Property ;
+   samm:preferredName "outputParameter"@en ;
+   samm:description "Optional list of parameter that are returned from a concrete process step and are used as inputParameters for the subsequent step"@en ;
+   samm:characteristic :ParameterList .
+
+:precedenceRelation a samm:Property ;
+   samm:preferredName "precedenceRelation"@en ;
+   samm:description "Relation of the process step to subsequent process steps"@en ;
+   samm:characteristic :PrecedenceParallelismCharacteristic .
+
+:childProcessSteps a samm:Property ;
+   samm:preferredName "childProcessSteps"@en ;
+   samm:description "List of child processes that need to be completed to complete the represented process step. it is important to express hierarchies between capabilities, e.g. a transport capability needs to execute at least a pick, a move and a place capability"@en ;
+   samm:characteristic :ProcessStepIdentifierList .
+
+:processStepType a samm:Property ;
+   samm:preferredName "processStepType"@en ;
+   samm:description "Distinguishes process steps based on whether there are the first or last process step to be executed, or if they are a subprocess step, which subdivides a higher-level process step into smaller process steps"@en ;
+   samm:characteristic :ProcessStepTypeCharacteristic .
+
+:ProcessStepIdentifierList a samm-c:List ;
+   samm:preferredName "ProcessStepIdentifierList"@en ;
+   samm:description "List of process step identifiers that refers to  other process steps that are specified within the bill of process"@en ;
+   samm:dataType xsd:string .
+
+:ParameterList a samm-c:List ;
+   samm:preferredName "ParameterList"@en ;
+   samm:description "A list of parameters"@en ;
+   samm:dataType :Parameter .
+
+:PrecedenceParallelismCharacteristic a samm-c:List ;
+   samm:preferredName "PrecedenceParallelismCharacteristic"@en ;
+   samm:description "List to express parallelism for subsequent process steps "@en ;
+   samm:dataType :PrecedenceElements .
+
+:ProcessStepTypeCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "ProcessStepTypeCharacteristic"@en ;
+   samm:description "Distinguishes 4 cases of process steps: the first and the last process step, a process step that is inbetween the first and the last, or a subprocess step "@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "IsFirstElement" "IsLastElement" "IsProcessElement" "IsSubprocessElement" ) .
+
+:Parameter a samm:Entity ;
+   samm:preferredName "Parameter"@en ;
+   samm:description "Generic entity to characterize parameter. It distinguished four cases: a parameter without a value, a parameter with a value, a parameter with a value range and a paramater with tolerances "@en ;
+   samm:properties ( :name [ samm:property :value; samm:optional true ] :semanticReference :parameterKey [ samm:property :valueRangeList; samm:optional true ] [ samm:property :tolerances; samm:optional true ] ) .
+
+:PrecedenceElements a samm:Entity ;
+   samm:preferredName "PrecedenceElements"@en ;
+   samm:description "List of parallel relations between process steps"@en ;
+   samm:properties ( :precedenceElements ) .
+
+:name a samm:Property ;
+   samm:preferredName "name"@en ;
+   samm:description "Name of the parameter"@en ;
+   samm:characteristic :StringCharacteristic ;
+   samm:exampleValue "dimensionality" .
+
+:value a samm:Property ;
+   samm:preferredName "value"@en ;
+   samm:description "value of the parameter"@en ;
+   samm:characteristic :StringCharacteristic ;
+   samm:exampleValue "{length:5, heigth:6, width:3}" .
+
+:semanticReference a samm:Property ;
+   samm:preferredName "semanticReference"@en ;
+   samm:description "Reference to a semantic namespace in which the type of the parameter is defined"@en ;
+   samm:characteristic :SemanticListCharacteristic .
+
+:parameterKey a samm:Property ;
+   samm:preferredName "parameterKey"@en ;
+   samm:description "Enumeration that determines if and which optional properties become mandatory"@en ;
+   samm:characteristic :ParameterizedCharacteristic ;
+   samm:exampleValue "HasValue" .
+
+:valueRangeList a samm:Property ;
+   samm:preferredName "valueRangeList"@en ;
+   samm:description "List with value ranges for a parameter"@en ;
+   samm:characteristic :ValueRangeList .
+
+:tolerances a samm:Property ;
+   samm:preferredName "tolerances"@en ;
+   samm:description "Tolerances for the paramtere "@en ;
+   samm:characteristic :ToleranceCharacteristic .
+
+:precedenceElements a samm:Property ;
+   samm:preferredName "precedenceElements"@en ;
+   samm:description "List alternative process steps from which the manufacturer that executes the process that is specified within the bill of process has to select exactly one step to be executed"@en ;
+   samm:characteristic :PrecedenceElementList .
+
+:SemanticListCharacteristic a samm-c:List ;
+   samm:preferredName "SemanticListCharacteristic"@en ;
+   samm:description "A list containing all semantic references for a parameter"@en ;
+   samm:dataType :SemanticReferenceEntity .
+
+:ParameterizedCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "ParameterizedCharacteristic"@en ;
+   samm:description "Enumeration that determines what kind of value a parameter has"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "HasValue" "HasNoValue" "HasValueRange" "HasTolerances" ) .
+
+:ValueRangeList a samm-c:List ;
+   samm:preferredName "ValueRangeList"@en ;
+   samm:description "List with value ranges"@en ;
+   samm:dataType :ValueRange .
+
+:ToleranceCharacteristic a samm:Characteristic ;
+   samm:preferredName "ToleranceCharacteristic"@en ;
+   samm:description "List with value tolerances"@en ;
+   samm:dataType :TolerancesEntity .
+
+:PrecedenceElementList a samm-c:List ;
+   samm:preferredName "PrecedenceElementList"@en ;
+   samm:description "Set of process steps which can be executed in any order, preferred by the executor "@en ;
+   samm:dataType :PrecedenceElement .
+
+:SemanticReferenceEntity a samm:Entity ;
+   samm:preferredName "SemanticReferenceEntity"@en ;
+   samm:description "A concrete semantic reference for a parameter"@en ;
+   samm:properties ( :semanticReferenceId ) .
+
+:ValueRange a samm:Entity ;
+   samm:preferredName "ValueRange"@en ;
+   samm:description "Entity for each value range item"@en ;
+   samm:properties ( :lowerValue :upperValue [ samm:property :name; samm:optional true ] ) .
+
+:TolerancesEntity a samm:Entity ;
+   samm:preferredName "TolerancesEntity"@en ;
+   samm:description "Entity to express a tolerance of a parameter"@en ;
+   samm:properties ( :lowerLimit :upperLimit [ samm:property :name; samm:optional true ] ) .
+
+:PrecedenceElement a samm:Entity ;
+   samm:preferredName "PrecedenceElement"@en ;
+   samm:description "Entity to link the current process step to its successors"@en ;
+   samm:properties ( :successor ) .
+
+:semanticReferenceId a samm:Property ;
+   samm:preferredName "semanticReferenceId"@en ;
+   samm:description "A concrete reference, e.g. an URL, to a globally defined semantic to provide a semantic for the parameter"@en ;
+   samm:characteristic :StringCharacteristic .
+
+:lowerValue a samm:Property ;
+   samm:preferredName "fieldName"@en ;
+   samm:description "lower border of a value range item"@en ;
+   samm:characteristic :StringCharacteristic ;
+   samm:exampleValue "5" .
+
+:upperValue a samm:Property ;
+   samm:preferredName "upperValue"@en ;
+   samm:description "upper border for a value range item"@en ;
+   samm:characteristic :StringCharacteristic ;
+   samm:exampleValue "10" .
+
+:lowerLimit a samm:Property ;
+   samm:preferredName "lowerLimit"@en ;
+   samm:description "the lower direct limit of the tolerance"@en ;
+   samm:characteristic :StringCharacteristic ;
+   samm:exampleValue "4.9" .
+
+:upperLimit a samm:Property ;
+   samm:preferredName "upperLimit"@en ;
+   samm:description "upper direct limit of the tolerance"@en ;
+   samm:characteristic :StringCharacteristic ;
+   samm:exampleValue "5.1" .
+
+:successor a samm:Property ;
+   samm:preferredName "successor"@en ;
+   samm:description "Subsequent process step that has to be executed after the current process step"@en ;
+   samm:characteristic :ProcessStepIdentifierList .
+
