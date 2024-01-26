@@ -1,13 +1,13 @@
 # Bill of Process Shared Aspect Model
 
-The bill of process aspect model is a data model can be utilized to exchange information about a manufacturing process 
+The bill of process aspect model is a data model that can be utilized to exchange information about a manufacturing process 
 of a product between partners. In general, it specifies a precedence graph for this manufacturing process. 
 Since it is not part of an individual Catana-X standard, additional information about its 
-deployment provided with this README.md file. The model itself is defined as a shared aspect to be included into other 
+deployment are provided with this README.md file. The model itself is defined as a shared aspect to be included into other 
 aspect models
-and will be included into the Catena-X Standard Request for Quotation. Besides, a reference to model instances of the 
+and will be used in the Catena-X Standard Request for Quotation. Besides, a reference to model instances of the 
 bill of process aspect model are used within the production tracking data model of the Shop Floor Information Service, 
-as well within the Manufacturing Capability data model. 
+as well as within the Manufacturing Capability data model. 
 
 The following will provide additional information about the entities, properties and characteristics within the bill of 
 process aspect model:
