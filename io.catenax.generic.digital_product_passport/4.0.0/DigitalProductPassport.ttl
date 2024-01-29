@@ -1,12 +1,12 @@
 #######################################################################
-# Copyright (c) 2023 ZF Friedrichshafen AG
-# Copyright (c) 2023 BMW AG
-# Copyright (c) 2023 BASF Coatings GmbH
-# Copyright (c) 2023 Henkel AG & Co. KGaA
-# Copyright (c) 2023 CGI Deutschland B.V. & Co. KG
-# Copyright (c) 2023 SAP Deutschland SE & Co.KG
-# Copyright (c) 2023 T-Systems International GmbH
-# Copyright (c) 2023 Contributors to the Eclipse Foundation
+# Copyright (c) 2023-2024 ZF Friedrichshafen AG
+# Copyright (c) 2023-2024 BMW AG
+# Copyright (c) 2023-2024 BASF Coatings GmbH
+# Copyright (c) 2023-2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023-2024 CGI Deutschland B.V. & Co. KG
+# Copyright (c) 2023-2024 SAP Deutschland SE & Co.KG
+# Copyright (c) 2023-2024 T-Systems International GmbH
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -27,8 +27,10 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.generic.digital_product_passport:4.0.0#> .
+@prefix ext-batch: <urn:samm:io.catenax.batch:2.0.1#> .
 @prefix ext-classification: <urn:samm:io.catenax.shared.part_classification:1.0.0#> .
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
+@prefix ext-part: <urn:samm:io.catenax.serial_part:2.0.0#> .
 @prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#> .
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
 
@@ -36,9 +38,9 @@
    samm:preferredName "Digital Product Passport"@en ;
    samm:description "The Digital Product Passport (DPP) allows to share process and product-related information amongst supply chain businesses, authorities and consumers. The DPP allows for efficient information flows following best practices; and the possibility of accompanying the measures under this Regulation with mitigating measures so that impacts are expected to remain proportionate for SMEs.This is expected to increase transparency, both for supply chain businesses and for the general public, and increase efficiencies in terms of information transfer to support the data exchange between economic actors in integrating circularity in product design and manufacturing.\nIn particular, it is likely to help facilitate and streamline the monitoring and enforcement of the regulation carried out by EU and Member State authorities. It is also likely to provide a market-intelligence tool that may be used for revising and refining obligations in the future.\nThe DPP includes data about components, materials and chemical substances, information on repairability, spare parts, environmental impact and professional disposal for a product.\nThe data model will be updated, as newer versions of the regulation will be published.\nThis data model is based on the proposed Ecodesign Regulation (\"Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL establishing a framework for setting ecodesign requirements for sustainable products and repealing Directive 2009/125/EC\" ESPR from March 30th, 2022 with some additional data points which can be found in the adopted Amendments from July 12th 2023 (Amendments adopted by the European Parliament on 12 July 2023 on the proposal for a regulation of the European Parliament and of the Council establishing a framework for setting eco-design requirements for sustainable products and repealing Directive 2009/125/EC)."@en ;
    samm:see <https://data.consilium.europa.eu/doc/document/ST-9014-2023-INIT/en/pdf> ;
+   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52022PC0142> ;
    samm:see <https://www.europarl.europa.eu/doceo/document/TA-9-2023-0272_EN.html> ;
    samm:see <https://commission.europa.eu/energy-climate-change-environment/standards-tools-and-labels/products-labelling-rules-and-requirements/sustainable-products/ecodesign-sustainable-products_en> ;
-   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52022PC0142> ;
    samm:properties ( :metadata :typology :sustainability :characteristics :commercial :operation :identification :handling :sources :additionalData ) ;
    samm:operations ( ) ;
    samm:events ( ) .
@@ -151,12 +153,12 @@
 :TypologyEntity a samm:Entity ;
    samm:preferredName "Typology Entity"@en ;
    samm:description "Entity describing attributes such class and different names of the product."@en ;
-   samm:properties ( :longName [ samm:property :class; samm:optional true ] :shortName ) .
+   samm:properties ( [ samm:property :class; samm:optional true ] :shortName ext-part:nameAtManufacturer ) .
 
 :SustainabilityEntity a samm:Entity ;
    samm:preferredName "Sustainability Entity"@en ;
    samm:description "Entity with the properties state, al list of different materials, a list of critical materials and the product carbon footprint."@en ;
-   samm:properties ( [ samm:property :state; samm:payloadName "status" ] :productEnvironmentalFootprint :substancesOfConcern :materialComposition :criticalMaterial ) .
+   samm:properties ( [ samm:property :state; samm:payloadName "status" ] :productEnvironmentalFootprint :substancesOfConcern :materialComposition ) .
 
 :CharacteristicsEntity a samm:Entity ;
    samm:preferredName "Characteristics Entity"@en ;
@@ -176,7 +178,7 @@
 :IdentificationEntity a samm:Entity ;
    samm:preferredName "Identification Entity"@en ;
    samm:description "Entity with identification information of the product with local identifiers,  other codes and the data carrier."@en ;
-   samm:properties ( :additionalCode :localIdentifier [ samm:property :dataCarrier; samm:optional true ] ) .
+   samm:properties ( :additionalCode [ samm:property :dataCarrier; samm:optional true ] [ samm:property ext-part:localIdentifiers; samm:optional true; samm:payloadName "serial" ] [ samm:property ext-batch:localIdentifiers; samm:payloadName "batch" ] ) .
 
 :HandlingEntity a samm:Entity ;
    samm:preferredName "Handling Entity"@en ;
@@ -234,12 +236,6 @@
    samm:description "The identification of the owner/economic operator of the passport. Proposed, according to ISO 15459, is the CIN (company identification code). Other identification numbers like the tax identification number, value added tax identification number, commercial register number and the like are also valid entries. In the Catena-X network, the BPNL is used for the identification of companies and the information stored like contact information and addresses. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(k) the [...] unique operator identifier code of the economic operator established in the Union responsible for carrying out the tasks set out in Article 4 of Regulation (EU) 2019/1020, or Article 15 of Regulation (EU) on general product safety, or similar tasks pursuant to other EU legislation applicable to the product."@en ;
    samm:characteristic ext-number:BpnlTrait .
 
-:longName a samm:Property ;
-   samm:preferredName "Long Name"@en ;
-   samm:description "The full name of the product as a general short product description. This provides the users of the product passport with relevant information about the product. It can also be a marketing slogan or short description with one to a few sentences."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Product Description long text" .
-
 :class a samm:Property ;
    samm:preferredName "Class"@en ;
    samm:description "The associated product category according to a specific classification standard."@en ;
@@ -271,11 +267,6 @@
    samm:preferredName "Material Composition"@en ;
    samm:description "Material composition of the product with information on recycled and renewable materials."@en ;
    samm:characteristic :MaterialCharacteristic .
-
-:criticalMaterial a samm:Property ;
-   samm:preferredName "Critical Material"@en ;
-   samm:description "Critical Material of the product."@en ;
-   samm:characteristic :CriticalCharacteristic .
 
 :lifespan a samm:Property ;
    samm:preferredName "Lifespan"@en ;
@@ -313,11 +304,6 @@
    samm:preferredName "Additional Code"@en ;
    samm:description "Codes for identification can be for example commodity codes. In Europe, two commonly used codes for goods classification are the Harmonized System (HS) code and the Combined Nomenclature (CN). Other codes can also be given."@en ;
    samm:characteristic :CodeList .
-
-:localIdentifier a samm:Property ;
-   samm:preferredName "Local Identifier"@en ;
-   samm:description "The unique identifier of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 ANNEX III:\n(b) the unique product identifier at the level indicated in the applicable delegated act adopted pursuant to Article 4.\nAdditionally in Article 9 regarding general requirements for the product passport is stated that:\n(e) the information included in the product passport shall refer to the product model, batch, or item as specified in the delegated act adopted pursuant to Article 4."@en ;
-   samm:characteristic :LocalIdentifierList .
 
 :dataCarrier a samm:Property ;
    samm:preferredName "Data Carrier"@en ;
@@ -420,11 +406,6 @@
    samm:description "Material Characteristic with information on the materials."@en ;
    samm:dataType :MaterialsEntity .
 
-:CriticalCharacteristic a samm:Characteristic ;
-   samm:preferredName "Critical Characteristic"@en ;
-   samm:description "Critical Characteristic of critical materials."@en ;
-   samm:dataType :CriticalMaterialEntity .
-
 :LifespanList a samm-c:List ;
    samm:preferredName "Lifespan List"@en ;
    samm:description "List of different life spans of a product."@en ;
@@ -455,11 +436,6 @@
    samm:preferredName "Code List"@en ;
    samm:description "A list of additional codes."@en ;
    samm:dataType :CodeEntity .
-
-:LocalIdentifierList a samm-c:List ;
-   samm:preferredName "Local Identifier List"@en ;
-   samm:description "Local Identifier List for the product."@en ;
-   samm:dataType :IdentifierEntity .
 
 :DataCarrierCharacteristic a samm:Characteristic ;
    samm:preferredName "Data Carrier Characteristic"@en ;
@@ -506,11 +482,6 @@
    samm:description "Material entity with attributes if applicable to the product."@en ;
    samm:properties ( :applicable :chemicalMaterial ) .
 
-:CriticalMaterialEntity a samm:Entity ;
-   samm:preferredName "Critical Material Entity"@en ;
-   samm:description "Critical material entity with attributes if applicable to the product."@en ;
-   samm:properties ( :critical :applicable ) .
-
 :LifespanEntity a samm:Entity ;
    samm:preferredName "Lifespan Entity"@en ;
    samm:description "Entity for the lifespan of a product with type, unit and value."@en ;
@@ -535,11 +506,6 @@
    samm:preferredName "Code Entity"@en ;
    samm:description "Code entity with code key and value."@en ;
    samm:properties ( [ samm:property :codeKey; samm:payloadName "key" ] [ samm:property :codeValue; samm:payloadName "value" ] ) .
-
-:IdentifierEntity a samm:Entity ;
-   samm:preferredName "Identifier Entity"@en ;
-   samm:description "Identifier Entity with the attributes key and value."@en ;
-   samm:properties ( [ samm:property :identifierKey; samm:payloadName "key" ] [ samm:property :identifierValue; samm:payloadName "value" ] ) .
 
 :DataCarrierEntity a samm:Entity ;
    samm:preferredName "Data Carrier Entity"@en ;
@@ -580,12 +546,6 @@
    samm:preferredName "Material"@en ;
    samm:description "Information on different materials in the product."@en ;
    samm:characteristic :MaterialList .
-
-:critical a samm:Property ;
-   samm:preferredName "Critical"@en ;
-   samm:description "A list of critical raw material names and their share which are included at the level of the product. This attribute is complemented to the ESPR proposal by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(hb) use or content of critical raw materials.\nIn Annex II of the connected proposal Act of Critical Raw Materials, a list of critical raw materials can be found."@en ;
-   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM:2023:0160:FIN> ;
-   samm:characteristic :CriticalList .
 
 :lifeUnit a samm:Property ;
    samm:preferredName "Life Unit"@en ;
@@ -649,7 +609,7 @@
 :facilityIdentification a samm:Property ;
    samm:preferredName "Facility Identification"@en ;
    samm:description "The facility identification, where the main manufacturing took place. In the CATENA-X use case, the BPNA can be stated. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:\n(i) unique facility identifiers."@en ;
-   samm:characteristic :PlantLocation .
+   samm:characteristic ext-number:BpnaTrait .
 
 :manufacturerIdentification a samm:Property ;
    samm:preferredName "Manufacturer Identification"@en ;
@@ -678,18 +638,6 @@
    samm:description "The code value for the identification of the product in regard to the chosen code name."@en ;
    samm:characteristic :IdentifierCharacteristic ;
    samm:exampleValue "8703 24 10 00" .
-
-:identifierKey a samm:Property ;
-   samm:preferredName "Identifier Key"@en ;
-   samm:description "For traceability of the product, the ESPR requires identification on the most specific level. It can be chosen from \"PartInstanceId\" \"BatchId\" \"ModelId\" from an enumeration. This attribute is mentioned in the ESPR proposal from March 30th, 2022 ANNEX III:\n(b) the unique product identifier at the level indicated in the applicable delegated act adopted pursuant to Article 4.\nAdditionally in Article 9 regarding general requirements for the product passport is stated that:\n(e) the information included in the product passport shall refer to the product model, batch, or item as specified in the delegated act adopted pursuant to Article 4."@en ;
-   samm:characteristic :IdentifierEnumeration ;
-   samm:exampleValue "PartInstanceId" .
-
-:identifierValue a samm:Property ;
-   samm:preferredName "Identifier Value"@en ;
-   samm:description "The value of the corresponding identifier for part/item, batch or model. This attribute is mentioned in the ESPR proposal from March 30th, 2022 ANNEX III:\n(b) the unique product identifier at the level indicated in the applicable delegated act adopted pursuant to Article 4.\nAdditionally in Article 9 regarding general requirements for the product passport is stated that:\n(e) the information included in the product passport shall refer to the product model, batch, or item as specified in the delegated act adopted pursuant to Article 4."@en ;
-   samm:characteristic :IdentifierCharacteristic ;
-   samm:exampleValue "SN12345678" .
 
 :carrierType a samm:Property ;
    samm:preferredName "Carrier Type"@en ;
@@ -741,11 +689,6 @@
    samm:description "A list of different materials in the product."@en ;
    samm:dataType :MaterialEntity .
 
-:CriticalList a samm-c:List ;
-   samm:preferredName "Critical List"@en ;
-   samm:description "The list of critical raw materials in the product (CRM) which is specified by EU."@en ;
-   samm:dataType xsd:string .
-
 :LifeEnumeration a samm-c:Enumeration ;
    samm:preferredName "Life Enumeration"@en ;
    samm:description "Enumeration with the possible units day, month, cycle, year and runningOrOperatingHour."@en ;
@@ -764,11 +707,6 @@
    samm:dataType xsd:string ;
    samm-c:values ( "guaranteed lifetime" "technical lifetime" "mean time between failures" ) .
 
-:PlantLocation a samm:Characteristic ;
-   samm:preferredName "Plant Location"@en ;
-   samm:description "The plant location."@en ;
-   samm:dataType :LocationIdEntity .
-
 :ImporterCharacteristic a samm:Characteristic ;
    samm:preferredName "Importer Characteristic"@en ;
    samm:description "Characteristic with information regarding the importer."@en ;
@@ -784,12 +722,6 @@
    samm:preferredName "Identifier Characteristic"@en ;
    samm:description "Characteristic for Identifiers."@en ;
    samm:dataType xsd:string .
-
-:IdentifierEnumeration a samm-c:Enumeration ;
-   samm:preferredName "Identifier Enumeration"@en ;
-   samm:description "Enumeration with \"PartInstanceId\" \"BatchId\" and \"ModelId\"."@en ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "PartInstanceId" "BatchId" "ModelId" ) .
 
 :SourcesList a samm-c:List ;
    samm:preferredName "Sources List"@en ;
@@ -828,12 +760,7 @@
 :MaterialEntity a samm:Entity ;
    samm:preferredName "Material Entity"@en ;
    samm:description "Information regarding recycled and/or renewable materials in the product. Attributes are among others material names, ids and percentage. These attributes are mentioned in the ESPR proposal from March 30th, 2022 Article 1:\n(1) (f) recycled content in products.\nAnd complemented by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(ha) use or content of sustainably sourced renewable materials."@en ;
-   samm:properties ( [ samm:property :materialName; samm:payloadName "name" ] :recycled :renewable [ samm:property :materialValue; samm:payloadName "value" ] [ samm:property :materialUnit; samm:payloadName "unit" ] [ samm:property :materialIdentification; samm:payloadName "id" ] ) .
-
-:LocationIdEntity a samm:Entity ;
-   samm:preferredName "Location Id Entity"@en ;
-   samm:description "Entity for a plant location."@en ;
-   samm:properties ( :locationIdentifier ) .
+   samm:properties ( [ samm:property :materialName; samm:payloadName "name" ] :recycled :renewable [ samm:property :materialValue; samm:payloadName "value" ] [ samm:property :materialUnit; samm:payloadName "unit" ] [ samm:property :materialIdentification; samm:payloadName "id" ] :critical ) .
 
 :ImporterEntity a samm:Entity ;
    samm:preferredName "Importer Entity"@en ;
@@ -928,8 +855,8 @@
 
 :hazardClass a samm:Property ;
    samm:description "The specification of the hazard class."@en ;
-   samm:see <https://echa.europa.eu/et/support/mixture-classification/hazard-class-table> ;
    samm:see <https://echa.europa.eu/regulations/clp/classification> ;
+   samm:see <https://echa.europa.eu/et/support/mixture-classification/hazard-class-table> ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Acute toxicity" .
 
@@ -971,11 +898,12 @@
    samm:description "The material identification, in accordance with the specification in the attribute list type."@en ;
    samm:characteristic :MaterialIdList .
 
-:locationIdentifier a samm:Property ;
-   samm:preferredName "Location Identifier"@en ;
-   samm:description "The identifier used for a location."@en ;
-   samm:characteristic ext-number:BpnaTrait ;
-   samm:exampleValue "BPNA1234567890AA" .
+:critical a samm:Property ;
+   samm:preferredName "Critical"@en ;
+   samm:description "A flag, if the material is a critical raw material. This attribute is complemented to the ESPR proposal by the amendments of the European Parliament from July 12th, 2023 Annex I:\n(hb) use or content of critical raw materials.\nIn Annex II of the connected proposal Act of Critical Raw Materials, a list of critical raw materials can be found."@en ;
+   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM:2023:0160:FIN> ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
 
 :eori a samm:Property ;
    samm:preferredName "EORI"@en ;
@@ -1115,8 +1043,8 @@
 :ListTypeEnumerationName a samm-c:Enumeration ;
    samm:preferredName "List Type Enumeration Name"@en ;
    samm:description "Enumeration of different systems and organizations related to the identification and classification of chemical substances in the field of chemistry. The enumeration values are IUPAC, EC or CAS."@en ;
-   samm:see <https://www.cas.org/cas-data/cas-registry> ;
    samm:see <https://iupac.org/> ;
+   samm:see <https://www.cas.org/cas-data/cas-registry> ;
    samm:dataType xsd:string ;
    samm-c:values ( "IUPAC" "CAS" "EC" ) .
 
