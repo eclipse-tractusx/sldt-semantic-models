@@ -8,6 +8,7 @@ All notable changes to this model will be documented in this file.
 
 - added isInactive as optional flag in aspect model header
 - added demandVolatilityParameters as optional entity in aspect model header
+- added agreedCapacity as optional property in capacities set
 
 ### Changed
 
