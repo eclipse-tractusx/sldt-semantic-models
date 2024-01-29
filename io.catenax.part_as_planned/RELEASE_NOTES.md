@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
+## [3.0.0] 2024-02-05
+### Added
+- Integration of the new shared PartClassifcation 1.0.0 aspect model as child-property of the PartTypeInformation
+- Added possibility to add date information excluding time
+
 ## [2.0.0] - 2023-12-04
 ### Added
 - added all relevant part site information of the PartSiteInforamtionAsPlanned aspect model, that will be deprecated
