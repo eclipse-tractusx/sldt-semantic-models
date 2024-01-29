@@ -23,7 +23,6 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:samm:org.eclipse.notification:1.0.0#>.
-@prefix ext-information: <urn:samm:io.catenax.delivery_information:1.0.0#>.
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#>.
 
@@ -90,12 +89,12 @@
 :startDateOfEffect a samm:Property;
     samm:preferredName "Start date of the effect."@en;
     samm:description "Expected start date of the impact MUST be shared by the sender of the message.\n\nThis also covers cases where sending of the message and start of the impact differ from each other.\n\nThe value MUST be formatted according to the ISO 8601 standard."@en;
-    samm:characteristic ext-information:DateTimeStamp;
+    samm:characteristic :DateTimeStamp;
     samm:exampleValue "2023-12-13T15:00:00+01:00"^^xsd:dateTime.
 :expectedEndDateOfEffect a samm:Property;
     samm:preferredName "Expected end date of effect."@en;
     samm:description "Expected end date of the impact MAY be mentioned by the sender of the message.\n\nThe value MUST be formatted according to the ISO 8601 standard."@en;
-    samm:characteristic ext-information:DateTimeStamp;
+    samm:characteristic :DateTimeStamp;
     samm:exampleValue "2023-12-17T08:00:00+01:00"^^xsd:dateTime.
 :status a samm:Property;
     samm:preferredName "Status"@en;
@@ -105,7 +104,7 @@
 :contentChangedAt a samm:Property;
     samm:preferredName "Content changed at"@en;
     samm:description "The timestamp of the latest change of this notification."@en;
-    samm:characteristic ext-information:DateTimeStamp;
+    samm:characteristic :DateTimeStamp;
     samm:exampleValue "2023-12-13T15:00:00+01:00"^^xsd:dateTime.
 :relatedSourceMessageId a samm:Property;
     samm:preferredName "Related Source Message ID"@en;
@@ -138,7 +137,7 @@
     samm:preferredName "User Input Trait"@en;
     samm:description "Trait to ensure correct values for the user input."@en;
     samm-c:baseCharacteristic :UserInputCharacteristic;
-    samm-c:constraint :Constraint1.
+    samm-c:constraint :TextLengthConstraint.
 :MaterialNumberDigitalTwinCharacteristic a samm-c:Set;
     samm:preferredName "Material Number Digital Twin Characteristic"@en;
     samm:description "A set of Digital Twin material numbers."@en;
@@ -166,7 +165,12 @@
     samm:preferredName "User input characteristic"@en;
     samm:description "User input can be any string that is max. 4000 characters."@en;
     samm:dataType xsd:string.
-:Constraint1 a samm-c:LengthConstraint;
+:TextLengthConstraint a samm-c:LengthConstraint;
     samm:preferredName "UserInputConstraint"@en;
     samm:description "Constraint for a string to be max. 4000 characters long."@en;
     samm-c:maxValue "4000"^^xsd:nonNegativeInteger.
+:DateTimeStamp a samm:Characteristic;
+    samm:preferredName "Date Time Stamp Characteristic"@en;
+    samm:description "The Date with the timezone."@en;
+    samm:dataType xsd:dateTime;
+    samm:see <https://www.iso.org/iso-8601-date-and-time-format.html>.
