@@ -2,7 +2,7 @@
 
 All notable changes to this model will be documented in this file.
 
-## [3.0.0] - 204-01-29
+## [3.0.0] - 2024-01-29
 ### Added
 
 - Many new concepts to describe resources, materials, capabilities and processes in more detail
