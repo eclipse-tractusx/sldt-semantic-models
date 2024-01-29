@@ -1,0 +1,176 @@
+---
+openapi: 3.0.3
+info:
+  title: PartClassification
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/part-classification:
+    get:
+      tags:
+      - PartClassification
+      operationId: getPartClassification
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/PartClassification'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartClassification'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationStandardCharacteristic:
+      type: string
+      description: Identified classification standards that align to the Catena-X
+        needs.
+    urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationIDCharacteristic:
+      type: string
+      description: "It can be numeric or a string, depending on the chosen classification\
+        \ standard."
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationEntity:
+      description: Encapsulates data related to the classification of the part.
+      type: object
+      properties:
+        classificationStandard:
+          description: Identified classification standards that align to the Catena-X
+            needs.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationStandardCharacteristic'
+        classificationID:
+          description: The classification ID of the part type according to the corresponding
+            standard definition mentioned in the key value pair.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationIDCharacteristic'
+        classificationDescription:
+          description: Optional property describing the classification standard.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - classificationStandard
+      - classificationID
+    urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationCharacteristic:
+      description: Classification characteristic enabling a set of further properties.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationEntity'
+      uniqueItems: true
+    PartClassification:
+      description: "This model is used as a shared aspect, that integrates classification\
+        \ properties into the models of the industry core. it should be reused once\
+        \ models handle part related data. Mainly, as it provides the possibility\
+        \ for data providers to chose which classification standards for components\
+        \ or parts to use and therefore enables the network to have a broader acceptance\
+        \ towards the various classification standards used in the industry. Moreover,\
+        \ multiple standards can be used for one part these range from E-Class, to\
+        \ ISO, IEC, or STEP."
+      type: object
+      properties:
+        partClassification:
+          description: Property describing the classification of a part.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationCharacteristic'
+      required:
+      - partClassification
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    PartClassification:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    PartClassification:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PartClassification'

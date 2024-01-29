@@ -1,0 +1,184 @@
+#######################################################################
+# Copyright (c) 2023, 2024 Robert Bosch GmbH
+# Copyright (c) 2023, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023, 2024 Volkswagen AG
+# Copyright (c) 2023, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2023, 2024 SAP SE
+# Copyright (c) 2023, 2024 Siemens AG
+# Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.quality_task:2.0.0#> .
+@prefix ext-information: <urn:samm:io.catenax.shared.contact_information:3.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
+
+:QualityTask a samm:Aspect ;
+   samm:preferredName "QualityTasks"@en ;
+   samm:description "A list of quality tasks (qTask). "@en ;
+   samm:properties ( :listOfQualityTasks [ samm:property :metaInformation; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:listOfQualityTasks a samm:Property ;
+   samm:preferredName "List of quality tasks"@en ;
+   samm:description "Property for the list of quality tasks."@en ;
+   samm:characteristic :QualityTaskList .
+
+:metaInformation a samm:Property ;
+   samm:preferredName "Meta information"@en ;
+   samm:description "This meta information is valid for all entries in this data set. The meta information is used to tell the data consumer which selection criteria were applied by the data provider. "@en ;
+   samm:characteristic :MetaCharacteristic .
+
+:QualityTaskList a samm-c:List ;
+   samm:preferredName "List of quality tasks"@en ;
+   samm:description "The list of quality tasks itself."@en ;
+   samm:dataType :SingleQualityTask .
+
+:MetaCharacteristic a samm:Characteristic ;
+   samm:preferredName "MetaCharacteristic"@en ;
+   samm:description "Characteristic for the meta information."@en ;
+   samm:dataType :MetaInformation .
+
+:SingleQualityTask a samm:Entity ;
+   samm:preferredName "QualityTask"@en ;
+   samm:description "A quality task (qTask) defines why data is exchanged between 2 or more companies and what insights should be generated out of the transferred data. In addition there is a flag, what happens with the transferred data when this qTask is closed"@en ;
+   samm:properties ( [ samm:property :recordStatus; samm:optional true ] [ samm:property :creationDate; samm:optional true ] [ samm:property :component; samm:optional true ] [ samm:property :dataDeletion; samm:optional true ] [ samm:property :description; samm:optional true ] :qualityTaskId [ samm:property :status; samm:optional true ] [ samm:property :title; samm:optional true ] [ samm:property :listOfCompanies; samm:optional true ] ) .
+
+:MetaInformation a samm:Entity ;
+   samm:preferredName "Meta Information"@en ;
+   samm:description "This entity groups all meta information properties. Meta information properties give hints for a Catena-X data consumer to better understand, how this data set was created on the Catena-X data provider side."@en ;
+   samm:properties ( :selectionCriteria [ samm:property :selectionStart; samm:optional true ] [ samm:property :selectionEnd; samm:optional true ] ) .
+
+:recordStatus a samm:Property ;
+   samm:preferredName "Record status"@en ;
+   samm:description "The record operation enumeration can be used to realize delta update concept.\nDelta update concept means:\n- You transfer an initial load of data\n- After the first week only the delta to the initial load is transferred\n\n\nThe record status describes whether this record is:\n- new=>This record is transferred the first time\n- update=> Some properties of this record have changed compared to a previous transfer\n- delete=> This record was transferred in the initial load or in a previous delta update, but is not \nused any more and therefore it should be deleted on data consumer side\n- same=> This record was transferred in the initial load or in a previous delta update"@en ;
+   samm:characteristic :RecordStatusEnumeration ;
+   samm:exampleValue "update" .
+
+:creationDate a samm:Property ;
+   samm:preferredName "Creation Date"@en ;
+   samm:description "Timestamp when this qTask was created"@en ;
+   samm:characteristic :Date ;
+   samm:exampleValue "2022-11-11"^^xsd:date .
+
+:component a samm:Property ;
+   samm:preferredName "Component"@en ;
+   samm:description "The component that should be investigated in this qTask."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ComponentA" .
+
+:dataDeletion a samm:Property ;
+   samm:preferredName "Deletion policy"@en ;
+   samm:description "What should be done with the data after this qTask is closed"@en ;
+   samm:characteristic :DataDeletionEnumeration ;
+   samm:exampleValue "delete-data-after-closing" .
+
+:description a samm:Property ;
+   samm:preferredName "Description"@en ;
+   samm:description "Description what should be done in this qTask"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Please evaluate why there is a high number of customer complaints with ComponentA if the vehicle is between 10000-30000km." .
+
+:qualityTaskId a samm:Property ;
+   samm:preferredName "Quality Task ID"@en ;
+   samm:description "A unique quality task identifier within the Catena-X dataspace. The unique id uses the Catena-X UUID trait."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "430f56d3-1234-1234-1234-abc123456789" .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "Status of this quality task"@en ;
+   samm:characteristic :StatusCharacteristic ;
+   samm:exampleValue "new" .
+
+:title a samm:Property ;
+   samm:preferredName "Title"@en ;
+   samm:description "Working title for this qTask"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Evaluation of ComponentA in CarmodelB in country DE" .
+
+:listOfCompanies a samm:Property ;
+   samm:preferredName "List of companies"@en ;
+   samm:description "A list of companies involved in this quality task"@en ;
+   samm:characteristic :ListOfCompanies .
+
+:selectionCriteria a samm:Property ;
+   samm:preferredName "Selection criteria"@en ;
+   samm:description "Describes the selection criteria a Catena-X data provider has applied to create this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "A list of all open quality tasks between company A and company B" .
+
+:selectionStart a samm:Property ;
+   samm:preferredName "Selection start"@en ;
+   samm:description "Describes the starting point for providing records in this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2023-01-01T00:00:00" .
+
+:selectionEnd a samm:Property ;
+   samm:preferredName "Selection end"@en ;
+   samm:description "Describes the end point for providing records in this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2023-12-31T23:59:59" .
+
+:RecordStatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Record status enumeration"@en ;
+   samm:description "Defining the enumeration for the record status"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "update" "delete" "same" ) .
+
+:Date a samm:Characteristic ;
+   samm:preferredName "Date"@en ;
+   samm:description "Describes a Property which contains the date and time with an optional timezone."@en ;
+   samm:dataType xsd:date .
+
+:DataDeletionEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Data deletion"@en ;
+   samm:description "Enumeration of possible data deletions entries."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "delete-data-after-closing" "no-deletion-after-closing" "delete-data-after-closing" "no-deletion-after-closing" ) .
+
+:StatusCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Status Characteristic"@en ;
+   samm:description "Enumeration of the different status values"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "in progress" "completed" "closed" "new" "in progress" "completed" "closed" ) .
+
+:ListOfCompanies a samm-c:List ;
+   samm:preferredName "Companies"@en ;
+   samm:description "A list of all companies involved in this qTask"@en ;
+   samm:dataType :Company .
+
+:Company a samm:Entity ;
+   samm:preferredName "Company"@en ;
+   samm:description "One company involved in this qTask"@en ;
+   samm:properties ( :cxBusinessPartnerNumber [ samm:property :name; samm:optional true ] [ samm:property ext-information:email; samm:optional true ] ) .
+
+:cxBusinessPartnerNumber a samm:Property ;
+   samm:preferredName "Catena-X Business partner number"@en ;
+   samm:description "The Catena-X business partner number for this company."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL000000000123" .
+
+:name a samm:Property ;
+   samm:preferredName "Company name"@en ;
+   samm:description "Name of the company"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Company A" .
+

@@ -1,0 +1,298 @@
+---
+openapi: 3.0.3
+info:
+  title: Parts Analysis
+  version: v3
+servers:
+- url: catenax.io/api/v3
+  variables:
+    api-version:
+      default: v3
+paths:
+  /{tenant-id}/parts-analyses:
+    get:
+      tags:
+      - PartsAnalyses
+      operationId: getPartsAnalyses
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/PartsAnalyses'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartsAnalyses'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.parts_analyses_3.0.0_RecordStatusEnumeration:
+      type: string
+      description: Defining the enumeration for the record status
+      enum:
+      - new
+      - update
+      - delete
+      - same
+    urn_samm_io.catenax.parts_analyses_3.0.0_UniqueID:
+      type: string
+      description: "Characteristic for a unique id: every linked property to this\
+        \ characteristic is a unique ID"
+    urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean:
+      type: boolean
+      description: Represents a boolean value (i.e. a "flag").
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_io.catenax.parts_analyses_3.0.0_StatusCharacteristic:
+      type: string
+      description: Enumeration of the different status values
+      enum:
+      - new
+      - in progress
+      - completed
+      - closed
+    urn_samm_io.catenax.parts_analyses_3.0.0_AdditionalInformation:
+      description: Additional information is stored as list of keys and list of values
+      type: object
+      properties:
+        key:
+          description: The unique key for this additional information
+          $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_UniqueID'
+        value:
+          description: The value for this additional information that refers to the
+            linked unique key.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - key
+      - value
+    urn_samm_io.catenax.parts_analyses_3.0.0_AdditionalInformationList:
+      description: A list of additional information
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_AdditionalInformation'
+    urn_samm_io.catenax.parts_analyses_3.0.0_PartAnalysis:
+      description: The analysis results of ONE part
+      type: object
+      properties:
+        recordStatus:
+          description: |-
+            The record operation enumeration can be used to realize delta update concept.
+            Delta update concept means:
+            - You transfer an initial load of data
+            - After the first week only the delta to the initial load is transferred
+
+
+            The record status describes whether this record is:
+            - new=>This record is transferred the first time
+            - update=> Some properties of this record have changed compared to a previous transfer
+            - delete=> This record was transferred in the initial load or in a previous delta update, but is not used any more and therefore it should be deleted on data consumer side
+            - same=> This record was transferred in the initial load or in a previous delta update
+          $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_RecordStatusEnumeration'
+        anonymizedVIN:
+          description: OEM-specific hashed VIN. Unique within OEM.
+          $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_UniqueID'
+        catenaXPartId:
+          description: The fully anonymous Catena-X ID of the analysed part - only
+            available after digital twin registry is fully operational.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        catenaXQualityTaskId:
+          description: The fully anonymous and unique Catena-X ID of this quality
+            task. This id is unique inside Catena-X data space.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        isDefect:
+          description: "True: Analysis turned out that analysed part is defect according\
+            \ part's specification."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        manufacturerAnalysisID:
+          description: Internal identifier for this analysis at manufacturer.
+          $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_UniqueID'
+        manufacturerPartName:
+          description: "Part name given from  the manufacturer or supplier of this\
+            \ part, component, sub component or raw material. A manufacturer part\
+            \ name is NOT unique: All parts of the same kind share the same part name."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        manufacturerPartNumber:
+          description: "Part number given from  the manufacturer or supplier of this\
+            \ part, component, sub component or raw material. A manufacturer part\
+            \ number is NOT unique: All parts of the same kind share the same part\
+            \ number."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        manufacturerSerialNumber:
+          description: "Serial number given from the manufacturer or supplier of this\
+            \ part, component, sub component. A manufacturer serial number is unique:\
+            \ With the serial number the produced part can be traced within the manufacturer."
+          $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_UniqueID'
+        parentAnalysisID:
+          description: |-
+            Internal identifier for this analysis on parent level.
+            If the manufacturer is a TIER1 supplier -> parent level is OEM.
+            If the manufacturer is TIER2 supplier -> parent level is TIER1 supplier.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        parentPartNumber:
+          description: |-
+            Internal part number of the analysed part.
+            If the manufacturer is a TIER1 supplier -> parent level is OEM.
+            If the manufacturer is a TIER2 supplier -> parent level is TIER1 supplier.
+            A parent part number is NOT unique: All parent parts of the same kind share the same parent part number.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        parentSerialNumber:
+          description: |-
+            Serial number of the analysed part.
+            If the manufacturer is a TIER1 supplier -> parent level is OEM.
+            If the manufacturer is a TIER2 supplier -> parent level is TIER1 supplier.
+            A parent serial number is unique: With the serial number the produced part can be traced within the parent company.
+          $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_UniqueID'
+        resultsDescription:
+          description: Detailed description of part analysis results.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        status:
+          description: Status of this part analysis
+          $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_StatusCharacteristic'
+        listOfAddtionalInformation:
+          description: You can use this key:value list for additional properties that
+            were not defined in this aspect model.
+          $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_AdditionalInformationList'
+      required:
+      - anonymizedVIN
+    urn_samm_io.catenax.parts_analyses_3.0.0_PartsAnalysesList:
+      description: A list for multiple part analyses
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_PartAnalysis'
+    urn_samm_io.catenax.parts_analyses_3.0.0_MetaCharacteristic:
+      description: Characteristic for the meta information.
+      type: object
+      properties:
+        selectionCriteria:
+          description: Describes the selection criteria a Catena-X data provider has
+            applied to create this data set.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        selectionStart:
+          description: Describes the starting point for providing records in this
+            data set.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        selectionEnd:
+          description: Describes the end point for providing records in this data
+            set.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - selectionCriteria
+    PartsAnalyses:
+      description: Parts analysis that are related to one quality task
+      type: object
+      properties:
+        listOfPartAnalyses:
+          description: A list of several part analyses
+          $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_PartsAnalysesList'
+        metaInformation:
+          description: 'This meta information is valid for all entries in this data
+            set. The meta information is used to tell the data consumer which selection
+            criteria were applied by the data provider. '
+          $ref: '#/components/schemas/urn_samm_io.catenax.parts_analyses_3.0.0_MetaCharacteristic'
+      required:
+      - listOfPartAnalyses
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    PartsAnalyses:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    PartsAnalyses:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PartsAnalyses'
