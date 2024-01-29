@@ -45,7 +45,10 @@
 ] :startDateOfEffect [
   samm:property :expectedEndDateOfEffect;
   samm:optional "true"^^xsd:boolean
-] :status :contentChangedAt :relatedSourceMessageId [
+] :status :contentChangedAt [
+  samm:property :relatedSourceMessageId;
+  samm:optional "true"^^xsd:boolean
+] [
   samm:property :materialNumberSupplier;
   samm:optional "true"^^xsd:boolean
 ] [
@@ -66,21 +69,22 @@
     samm:exampleValue "BPNS6666787765VQ".
 :leadingRootCause a samm:Property;
     samm:preferredName "Leading root cause"@en;
-    samm:description "The main cause which affects the demand or production."@en;
+    samm:description "The main cause that has or may have an impact on the supply of goods."@en;
     samm:characteristic :LeadingRootCauseEnumeration;
     samm:exampleValue "strike".
 :effect a samm:Property;
     samm:preferredName "Effect"@en;
-    samm:description "Message Category / Impact\n\nFrom user perspective demand/capacity reduction are most relevant values in connection with above mentioned root causes. For technical completeness demand/capacity increase are also added to the value list."@en;
+    samm:description "Effect or impact on the supply of goods as a consequence of the leadingRootCause.\n\nFrom business perspective demand/capacity reduction are most relevant values in connection with above mentioned root causes. For technical completeness demand/capacity increase are also added to the value list."@en;
     samm:characteristic :EffectEnumeration;
     samm:exampleValue "capacity-reduction".
 :text a samm:Property;
     samm:preferredName "Text"@en;
-    samm:description "Free text description for notification (max. 4000 characters).\n\nThe sender MUST respect data privacy laws."@en;
-    samm:characteristic :UserInputCharacteristic;
-    samm:exampleValue "Capacity reduction due to ongoing strike".
+    samm:description "Free text description for notification (max. 4000 characters)."@en;
+    samm:characteristic :UserInputTrait;
+    samm:exampleValue "Capacity reduction due to ongoing strike.".
 :materialNumberDigitalTwin a samm:Property;
-    samm:preferredName "Material number digital twin."@en;
+    samm:preferredName "Material number Digital Twin"@en;
+    samm:description "UUID (DT Network Identifier): Via DT (Digital Twin) UUID a receiver is able to identify the own affected material numbers, because the digital twin is common for the sender and the receiver. If a digital twin is available, it is RECOMMENDED only exchanging the DT material number."@en;
     samm:characteristic :MaterialNumberDigitalTwinCharacteristic;
     samm:exampleValue "f81d4fae-7dec-11d0-a765-00a0c91e6bf6".
 :startDateOfEffect a samm:Property;
@@ -95,7 +99,7 @@
     samm:exampleValue "2023-12-17T08:00:00+01:00"^^xsd:dateTime.
 :status a samm:Property;
     samm:preferredName "Status"@en;
-    samm:description "Status of the notification."@en;
+    samm:description "Status \"open\" should be used in the context of an effect which remains active. Status \"resolved\" should be used to inform the other business that the effect of the initial notification stopped or has been resolved."@en;
     samm:characteristic :StatusEnumeration;
     samm:exampleValue "open".
 :contentChangedAt a samm:Property;
@@ -105,18 +109,16 @@
     samm:exampleValue "2023-12-13T15:00:00+01:00"^^xsd:dateTime.
 :relatedSourceMessageId a samm:Property;
     samm:preferredName "Related Source Message ID"@en;
-    samm:description "Unique ID identifying a source message somehow related to the current one."@en;
+    samm:description "Unique ID identifying a source message somehow related to the current one.\n\nProposal: Unique ID identifying the source message that started the notification thread."@en;
     samm:characteristic :UuidV4Trait.
 :materialNumberSupplier a samm:Property;
     samm:preferredName "Supplier Material Number"@en;
-    samm:description "Material identifier as assigned by the supplier. This material number identifies the material (as estimated) in the supplier's database."@en;
-    samm:characteristic :MaterialNumberCharacteristic;
-    samm:exampleValue "MNR-8101-ID146955.001".
+    samm:description "Material identifier as assigned by the supplier. This material number identifies the material in the supplier's database.\n\nIf the supplier is the sender, sending supplier material number is RECOMMENDED. It MUST be possible to send multiple supplier material numbers."@en;
+    samm:characteristic :MaterialNumberCharacteristic.
 :materialNumberCustomer a samm:Property;
     samm:preferredName "Customer Material Number"@en;
-    samm:description "Material identifier as assigned by the customer. This material number identifies the material (as estimated) in the customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the material number supplier should be set in this field, too."@en;
-    samm:characteristic :MaterialNumberCharacteristic;
-    samm:exampleValue "MNR-7307-AU340474.002".
+    samm:description "Material identifier as assigned by the customer. This material number identifies the material in the customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the material number supplier should be set in this field, too.\n\nIf the customer is the sender, it is RECOMMENDED to send the materialNumberCustomer. It MUST be possible to send multiple customer material numbers."@en;
+    samm:characteristic :MaterialNumberCharacteristic.
 :AffectedSitesCharacteristic a samm-c:Set;
     samm:preferredName "Affected Sites"@en;
     samm:description "A set of sites that are affected by the mentioned leadingRootCause."@en;
@@ -124,6 +126,7 @@
     samm-c:elementCharacteristic :BPNSTrait.
 :LeadingRootCauseEnumeration a samm-c:Enumeration;
     samm:preferredName "Leading root cause enumeration."@en;
+    samm:description "Possible root causes."@en;
     samm:dataType xsd:string;
     samm-c:values ("strike" "natural-disaster" "production-incident" "pandemic-or-epidemic" "logistics-disruption" "war" "other").
 :EffectEnumeration a samm-c:Enumeration;
@@ -131,27 +134,39 @@
     samm:description "Enumeration of possible effects due to the mentioned leadingRootCause."@en;
     samm:dataType xsd:string;
     samm-c:values ("demand-reduction" "demand-increase" "capacity-reduction" "capacity-increase").
-:UserInputCharacteristic a samm:Characteristic;
-    samm:preferredName "User input characteristic"@en;
-    samm:dataType xsd:string.
+:UserInputTrait a samm-c:Trait;
+    samm:preferredName "User Input Trait"@en;
+    samm:description "Trait to ensure correct values for the user input."@en;
+    samm-c:baseCharacteristic :UserInputCharacteristic;
+    samm-c:constraint :Constraint1.
 :MaterialNumberDigitalTwinCharacteristic a samm-c:Set;
     samm:preferredName "Material Number Digital Twin Characteristic"@en;
+    samm:description "A set of Digital Twin material numbers."@en;
     samm:dataType xsd:string;
     samm-c:elementCharacteristic :UuidV4Trait.
 :StatusEnumeration a samm-c:Enumeration;
     samm:preferredName "Status enumeration."@en;
+    samm:description "Status can be either \"open\" or \"resolved\"."@en;
     samm:dataType xsd:string;
     samm-c:values ("resolved" "open").
 :UuidV4Trait a samm-c:Trait;
     samm:preferredName "UUID v4 Trait"@en;
     samm-c:baseCharacteristic ext-uuid:Uuidv4Characteristic;
     samm-c:constraint ext-uuid:Uuidv4RegularExpression.
+:MaterialNumberCharacteristic a samm-c:Set;
+    samm:preferredName "Material Number"@en;
+    samm:description "The material number is a multi-character string, usually assigned by an ERP system of the customer or the supplier."@en;
+    samm:dataType xsd:string.
 :BPNSTrait a samm-c:Trait;
     samm:preferredName "BPNS Trait"@en;
     samm:description "Trait to ensure data format for BPNS."@en;
     samm-c:baseCharacteristic ext-number:BpnsCharacteristic;
     samm-c:constraint ext-number:BpnsRegularExpression.
-:MaterialNumberCharacteristic a samm:Characteristic;
-    samm:preferredName "Material Number"@en;
-    samm:description "The material number is a multi-character string, usually assigned by an ERP system."@en;
+:UserInputCharacteristic a samm:Characteristic;
+    samm:preferredName "User input characteristic"@en;
+    samm:description "User input can be any string that is max. 4000 characters."@en;
     samm:dataType xsd:string.
+:Constraint1 a samm-c:LengthConstraint;
+    samm:preferredName "UserInputConstraint"@en;
+    samm:description "Constraint for a string to be max. 4000 characters long."@en;
+    samm-c:maxValue "4000"^^xsd:nonNegativeInteger.
