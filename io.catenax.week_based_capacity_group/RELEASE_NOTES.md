@@ -1,9 +1,22 @@
 # Changelog
+
 All notable changes to this model will be documented in this file.
+
+## [3.0.0] - 2024-02-xx
+
+### Added
+
+- added isInactive as optional flag in aspect model header
+- added demandVolatilityParameters as optional entity in aspect model header
+
+### Changed
+
+- migrated from SAMM version 2.0.0 to 2.1.0
 
 ## [2.0.0] - 2023-11-07
 
 ### Added
+
 - linkedCapacityGroups added as optional property in aspect model header
 - added loadFactor as optional property in LinkedDemandSeries entity
 - added unit:secondUnitOfTime, unit:minuteUnitOfTime, unit:hourUnitOfTime and unit:cycle to list of unit of measure for load information
@@ -11,6 +24,7 @@ All notable changes to this model will be documented in this file.
 - added unitOfMeasureIsOmitted as mandatory property in aspect model header
 
 ### Changed
+
 - made linkedDemandSeries property optional
 - made capacities property optional
 - unitOfMeasure uses value list of shared aspect Quantity now. Units are now represented as reference units instead of common codes
@@ -18,11 +32,13 @@ All notable changes to this model will be documented in this file.
 - migrated from BAMM to SAMM namespace
 
 ### Removed
+
 - removed 'blank' value in list of unitOfMeasure. unitOfMeasureIsOmitted flag taking over the function of the 'blank' value
 
 ## [1.0.1] - 2023-05-10
 
 ### Changed
+
 - Changed description for property changedAt
 
 ## [1.0.0]
