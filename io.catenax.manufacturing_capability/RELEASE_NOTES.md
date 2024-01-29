@@ -2,7 +2,19 @@
 
 All notable changes to this model will be documented in this file.
 
-## [Unreleased]
+## [3.0.0]
+### Added
+
+- Many new concepts to describe resources, materials, capabilities and processes in more detail
+- Possibility to reference a bill of process (BoP) using the BoP identifier from the bill of process aspect model
+- A certificate representation
+- Concept for semantic references
+
+### Changed
+
+- Replaced the former process representation by a set to reference bills of processes
+- Replaced the resource representation by representations for machines and machine tools
+
 
 ## [2.0.0] - 2023-10-16
 
