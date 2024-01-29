@@ -21,6 +21,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix : <urn:samm:io.catenax.shared.bill_of_process:1.0.0#>.
+@prefix ext-capability: <urn:samm:io.catenax.manufacturing_capability:3.0.0#>.
 @prefix ext-header: <urn:samm:io.catenax.shared.message_header:2.0.0#>.
 
 :BillOfProcessSharedAspect a samm:Aspect;
@@ -65,7 +66,7 @@
 :billOfProcessIdentification a samm:Property;
    samm:preferredName "Bill of Process Identifier"@en;
    samm:description "Unique identifier for a bill of process that can be used to reference instances of the bill of process"@en;
-   samm:characteristic :StringCharacteristic;
+   samm:characteristic :BillOfProcessIdCharacteristic;
    samm:exampleValue "www.1234-bar-chair-billOfProcess.de".
 
 :ProcessStepsList a samm-c:List;
@@ -78,22 +79,21 @@
    samm:description "Characteristic to express string values"@en;
    samm:dataType xsd:string.
 
+:BillOfProcessIdCharacteristic a samm:Characteristic;
+   samm:preferredName "Bill Of Process Id Characteristic"@en;
+   samm:description "Characteristic for Bill of process Identifiers"@en;
+   samm:dataType xsd:string.
+
 :ProcessStep a samm:Entity;
    samm:preferredName "Process Step"@en;
    samm:description "Entity to characterize single process steps"@en;
-   samm:properties ( :processStepIdentifier :capabilityReference [ samm:property :inputParameters; samm:optional true ] [ samm:property :outputParameters; samm:optional true ] [ samm:property :precedenceRelation; samm:optional true ] [ samm:property :childProcessSteps; samm:optional true ] :processStepType ).
+   samm:properties ( :processStepIdentifier [ samm:property :inputParameters; samm:optional true ] [ samm:property :outputParameters; samm:optional true ] [ samm:property :precedenceRelation; samm:optional true ] [ samm:property :childProcessSteps; samm:optional true ] :processStepType ext-capability:capabilityId ).
 
 :processStepIdentifier a samm:Property;
    samm:preferredName "Process Step Identifier"@en;
    samm:description "Unique identifier for a concrete process step"@en;
    samm:characteristic :ProcessStepIdentifierList;
    samm:exampleValue "1234-transport".
-
-:capabilityReference a samm:Property;
-   samm:preferredName "Capability Reference"@en;
-   samm:description "Reference to an instance of a  manufacturing capability. This capability has to be executed on the product, to complete the process step"@en;
-   samm:characteristic :StringCharacteristic;
-   samm:exampleValue "transportCapability".
 
 :inputParameters a samm:Property;
    samm:preferredName "Input Parameters"@en;
@@ -153,7 +153,7 @@
    samm:description "List of process steps that must be executed in parallel"@en;
    samm:properties ( :precedenceElements ).
 
-:name a samm:Property;
+:name a samm:Property ;
    samm:preferredName "Name"@en;
    samm:description "Name of the parameter"@en;
    samm:characteristic :StringCharacteristic;
@@ -262,6 +262,3 @@
    samm:description "List of subsequent process step which can be executed in any order "@en;
    samm:characteristic :ProcessStepIdentifierList;
    samm:exampleValue "TransportStepId".
-
-
-
