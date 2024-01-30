@@ -1,13 +1,14 @@
 #######################################################################
-# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft
-# Copyright (c) 2023 Robert Bosch GmbH
-# Copyright (c) 2023 Henkel AG & Co. KGaA
-# Copyright (c) 2023 LRP Autorecycling Leipzig GmbH
-# Copyright (c) 2023 SAP SE
-# Copyright (c) 2023 ZF Friedrichshafen AG
-# Copyright (c) 2023 Circular Economy Solutions GmbH (C-ECO)
-# Copyright (c) 2023 T-Systems International GmbH
-# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
+# Copyright (c) 2023-2024 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2023-2024 Robert Bosch GmbH
+# Copyright (c) 2023-2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023-2024 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2023-2024 SAP SE
+# Copyright (c) 2023-2024 ZF Friedrichshafen AG
+# Copyright (c) 2023-2024 Circular Economy Solutions GmbH (C-ECO)
+# Copyright (c) 2023-2024 T-Systems International GmbH
+# Copyright (c) 2023-2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -20,20 +21,23 @@
 # SPDX-License-Identifier: CC-BY-4.0
 #######################################################################
 
-@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
-@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
-@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
-@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.return_request:2.0.0#> .
+@prefix ext-characteristic: <urn:samm:io.catenax.shared.address_characteristic:3.0.0#> .
+@prefix ext-classification: <urn:samm:io.catenax.shared.part_classification:1.0.0#> .
+@prefix ext-part: <urn:samm:io.catenax.serial_part:2.0.0#> .
 @prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#> .
 
 :ReturnRequest a samm:Aspect ;
    samm:preferredName "return request"@en ;
    samm:description "Aspect to indicate if there is a return request for a product."@en ;
-   samm:properties ( :needsReturn :returnConditions :requestDate :latestReturnDate :productConditions :title :marketplaceProduct :quantity :unitOfMeasure :validityPeriod :isRecall :identification :productionDate :deliveryAddress :areaOfUsage :productGroup :arrivalDateAtCustomer ) ;
+   samm:properties ( :needsReturn :returnConditions :requestDate :latestReturnDate :productConditions :title :marketplaceProduct :quantity :validityPeriod :isRecall :identification :productionDate :deliveryAddress :areaOfUsage :productGroup :arrivalDateAtCustomer ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -83,13 +87,6 @@
    samm:description "The desired quantity of the on the marketplace offered product in SKU."@en ;
    samm:characteristic ext-quantity:ItemQuantityCharacteristic .
 
-:unitOfMeasure a samm:Property ;
-   samm:preferredName "unit of measure"@en ;
-   samm:description "The unit of measure (related to quantity)."@en ;
-   samm:see <https://resources.gs1us.org/GS1-US-Data-Hub-Help-Center/ArtMID/3451/ArticleID/116/Unit-of-Measure-Codes> ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "kg" .
-
 :validityPeriod a samm:Property ;
    samm:preferredName "validity period"@en ;
    samm:description "Specifies the time period when the need exists"@en ;
@@ -115,8 +112,7 @@
 :deliveryAddress a samm:Property ;
    samm:preferredName "delivery address"@en ;
    samm:description "The address that the product should be delivered to"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Unten den Linden 1" .
+   samm:characteristic ext-characteristic:PostalAddress .
 
 :areaOfUsage a samm:Property ;
    samm:preferredName "area of usage"@en ;
@@ -127,8 +123,7 @@
 :productGroup a samm:Property ;
    samm:preferredName "product group"@en ;
    samm:description "Classification of product group"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "power unit" .
+   samm:characteristic ext-classification:ClassificationCharacteristic .
 
 :arrivalDateAtCustomer a samm:Property ;
    samm:preferredName "arrival date at customer"@en ;
@@ -169,7 +164,7 @@
 :IdentificationEntity a samm:Entity ;
    samm:preferredName "identification entity"@en ;
    samm:description "Entity encapsulating different unique identifier of the product (manufacturingPartID, OeNumber and/or serialNumber)"@en ;
-   samm:properties ( :manufacturingPartID :oeNumber :serialNumber ) .
+   samm:properties ( :oeNumber ext-part:localIdentifiers ext-part:manufacturerPartId ) .
 
 :missingParts a samm:Property ;
    samm:preferredName "missing parts"@en ;
@@ -219,23 +214,11 @@
    samm:characteristic :DateTimestamp ;
    samm:exampleValue "2030-09-30"^^xsd:date .
 
-:manufacturingPartID a samm:Property ;
-   samm:preferredName "manufacturing part id"@en ;
-   samm:description "The unique identifier of the product from the manufacturer, characterizes the type of component"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "4S7R7002DB" .
-
 :oeNumber a samm:Property ;
    samm:preferredName "oe number"@en ;
    samm:description "The unique identifier of the product from the original manufacturer, characterizes the type of component"@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "8O8RKJZ7ER" .
-
-:serialNumber a samm:Property ;
-   samm:preferredName "serial number"@en ;
-   samm:description "Serial number as unique identifier for a part"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "PODBS39HZ7382HDG28" .
 
 :NumericValueofMileage a samm-c:Measurement ;
    samm:preferredName "value of mileage"@en ;
