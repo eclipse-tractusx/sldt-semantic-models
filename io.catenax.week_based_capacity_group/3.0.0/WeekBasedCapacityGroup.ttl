@@ -36,7 +36,7 @@
 :WeekBasedCapacityGroup a samm:Aspect ;
    samm:preferredName "Week-Based Capacity Group"@en ;
    samm:description "An entity made up of the weekly actual and maximum capacities for a specific customer in a given time period. A capacity group is used to compare demand and capacity data for one or several similar bundled materials in a defined unit of measure."@en ;
-   samm:properties ( :capacityGroupId :name [ samm:property :supplierLocations; samm:optional true ] :customer :supplier [ samm:property :unitOfMeasure; samm:optional true ] [ samm:property :linkedDemandSeries; samm:optional true ] [ samm:property :capacities; samm:optional true ] :changedAt [ samm:property :linkedCapacityGroups; samm:optional true ] :unitOfMeasureIsOmitted [ samm:property :demandVolatilityParameters; samm:optional true ] [ samm:property :isInactive; samm:optional true ] ) ;
+   samm:properties ( :capacityGroupId :name [ samm:property :supplierLocations; samm:optional true ] :customer :supplier [ samm:property :unitOfMeasure; samm:optional true ] [ samm:property :linkedDemandSeries; samm:optional true ] [ samm:property :capacities; samm:optional true ] :changedAt [ samm:property :linkedCapacityGroups; samm:optional true ] :unitOfMeasureIsOmitted [ samm:property :demandVolatilityParameters; samm:optional true ] [ samm:property :capacityGroupIsInactive; samm:optional true ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -109,9 +109,9 @@
    samm:description "The parameters to calibrate the measuring of demand volatility"@en ;
    samm:characteristic :DemandVolatilityCharacteristic .
 
-:isInactive a samm:Property ;
-   samm:preferredName "Is Inactive"@en ;
-   samm:description "Indicates that this capacity group is currently not in use by the supplier anymore."@en ;
+:capacityGroupIsInactive a samm:Property ;
+   samm:preferredName "Capacity Group Is Inactive"@en ;
+   samm:description "Indicates that this capacity group is currently not in use/maintained by the supplier."@en ;
    samm:characteristic samm-c:Boolean ;
    samm:exampleValue true .
 
@@ -177,7 +177,7 @@
 :DemandVolatilityParametersEntity a samm:Entity ;
    samm:preferredName "Demand Volatility parameters entity"@en ;
    samm:description "Encapsulation of the demand volatility parameters"@en ;
-   samm:properties ( :activeFlag :snapshotReferenceDateTime :snapshotFrequency :retentionScope :subhorizons ) .
+   samm:properties ( :demandVolatilityMeasurementIsActive :snapshotReferenceDateTime :snapshotFrequency :retentionScope :subhorizons ) .
 
 :materialNumberCustomer a samm:Property ;
    samm:preferredName "Customer Material Number"@en ;
@@ -238,9 +238,9 @@
    samm:characteristic :QuantityTrait ;
    samm:exampleValue "1800"^^xsd:decimal .
 
-:activeFlag a samm:Property ;
-   samm:preferredName "Active flag"@en ;
-   samm:description "Indicates if the measurement of demand volatility is active for the capacity group"@en ;
+:demandVolatilityMeasurementIsActive a samm:Property ;
+   samm:preferredName "Demand Volatility Measurement Is Active"@en ;
+   samm:description "Indicates if the measurement of demand volatility is active for this capacity group."@en ;
    samm:characteristic samm-c:Boolean ;
    samm:exampleValue true .
 
@@ -291,8 +291,8 @@
 
 :QuantityTrait a samm-c:Trait ;
    samm-c:baseCharacteristic :Quantity ;
-   samm-c:constraint :QuantityRange ;
-   samm-c:constraint :QuantityFixedPoint .
+   samm-c:constraint :QuantityFixedPoint ;
+   samm-c:constraint :QuantityRange .
 
 :DeltaProductionResultCharacteristic a samm:Characteristic ;
    samm:preferredName "Delta Production Result Characteristic"@en ;
@@ -351,6 +351,12 @@
    samm:description "Quantity of weekly actual or maximum capacity."@en ;
    samm:dataType xsd:decimal .
 
+:QuantityFixedPoint a samm-c:FixedPointConstraint ;
+   samm:preferredName "Quantity Fixed Point"@en ;
+   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
+   samm-c:integer "15"^^xsd:positiveInteger ;
+   samm-c:scale "1000"^^xsd:positiveInteger .
+
 :QuantityRange a samm-c:RangeConstraint ;
    samm:preferredName "Quantity Range"@en ;
    samm:description "Constraint to ensure a non-negative value for quantities."@en ;
@@ -358,12 +364,6 @@
    samm-c:maxValue "999999999999999999.999"^^xsd:decimal ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:AT_MOST .
-
-:QuantityFixedPoint a samm-c:FixedPointConstraint ;
-   samm:preferredName "Quantity Fixed Point"@en ;
-   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
-   samm-c:integer "15"^^xsd:positiveInteger ;
-   samm-c:scale "1000"^^xsd:positiveInteger .
 
 :SubHorizons a samm:Entity ;
    samm:preferredName "SubHorizons"@en ;
