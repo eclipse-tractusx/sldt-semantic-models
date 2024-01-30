@@ -1,14 +1,14 @@
 #######################################################################
-# Copyright (c) 2024 T-Systems International GmbH
-# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft
-# Copyright (c) 2024 Robert Bosch GmbH
-# Copyright (c) 2024 Henkel AG & Co. KGaA
-# Copyright (c) 2024 LRP Autorecycling Leipzig GmbH
-# Copyright (c) 2024 SAP SE
-# Copyright (c) 2024 ZF Friedrichshafen AG
-# Copyright (c) 2024 Circular Economy Solutions GmbH (C-ECO)
-# Copyright (c) 2024 Contributors to the Eclipse Foundation
-# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
+# Copyright (c) 2023-2024 T-Systems International GmbH
+# Copyright (c) 2023-2024 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2023-2024 Robert Bosch GmbH
+# Copyright (c) 2023-2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023-2024 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2023-2024 SAP SE
+# Copyright (c) 2023-2024 ZF Friedrichshafen AG
+# Copyright (c) 2023-2024 Circular Economy Solutions GmbH (C-ECO)
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2023-2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -19,21 +19,23 @@
 # https://creativecommons.org/licenses/by/4.0/legalcode.
 #
 # SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
 
-@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#> .
-@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#> .
-@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#> .
-@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#> .
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.market_place_offer:2.0.0#> .
-@prefix ext-dimension: <urn:samm:io.catenax.shared.physical_dimension:2.0.0#> .
+@prefix ext-part: <urn:samm:io.catenax.serial_part:2.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#> .
 
 :MarketplaceOffer a samm:Aspect ;
    samm:preferredName "Marketplace Offer"@en ;
    samm:description "Description of all needed information to place a market place offer on the marketplace."@en ;
-   samm:properties ( [ samm:property :sku; samm:optional true ] :quantity :unitOfMeasure [ samm:property :condition; samm:optional true ] :pickupLocation [ samm:property :incoterms; samm:optional true ] :price [ samm:property :image; samm:optional true ] [ samm:property :attachment; samm:optional true ] :bundleOffer :marketplaceProduct [ samm:property :missingParts; samm:optional true ] [ samm:property :dismantled; samm:optional true ] [ samm:property :mechanicalDamage; samm:optional true ] [ samm:property :corroded; samm:optional true ] [ samm:property :discolored; samm:optional true ] [ samm:property :availabilityDate; samm:optional true ] [ samm:property :mileage; samm:optional true ] [ samm:property :burned; samm:optional true ] [ samm:property :errorCodes; samm:optional true ] [ samm:property :partMarking; samm:optional true ] [ samm:property :vehicleDescription; samm:optional true ] :serialNumber :taxPercentage :dimensions :productionDate :areaOfUsage ) ;
+   samm:properties ( [ samm:property :sku; samm:optional true ] :quantity [ samm:property :condition; samm:optional true ] :pickupLocation [ samm:property :incoterms; samm:optional true ] :price [ samm:property :image; samm:optional true ] [ samm:property :attachment; samm:optional true ] :bundleOffer :marketplaceProduct [ samm:property :missingParts; samm:optional true ] [ samm:property :dismantled; samm:optional true ] [ samm:property :mechanicalDamage; samm:optional true ] [ samm:property :corroded; samm:optional true ] [ samm:property :discolored; samm:optional true ] [ samm:property :availabilityDate; samm:optional true ] [ samm:property :mileage; samm:optional true ] [ samm:property :burned; samm:optional true ] [ samm:property :errorCodes; samm:optional true ] [ samm:property :partMarking; samm:optional true ] [ samm:property :vehicleDescription; samm:optional true ] :serialNumber :taxPercentage :height :productionDate :areaOfUsage :width :length :diameter :weight ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -44,14 +46,7 @@
 
 :quantity a samm:Property ;
    samm:description "The available quantity of an offered product."@en ;
-   samm:characteristic :QuantityCharacteristic ;
-   samm:exampleValue "50"^^xsd:double .
-
-:unitOfMeasure a samm:Property ;
-   samm:description "The unit of measure (related to quantity)."@en ;
-   samm:see <file:///C:/Users/YUL/AppData/Local/ASPECT-MODEL-EDITOR/https%253A%252F%252Fresources.gs1us.org%252FGS1-US-Data-Hub-Help-Center%252FArtMID%252F3451%252FArticleID%252F116%252FUnit-of-Measure-Codes> ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "each" .
+   samm:characteristic ext-quantity:ItemQuantityCharacteristic .
 
 :condition a samm:Property ;
    samm:description "The condition of the offered product."@en ;
@@ -168,10 +163,10 @@
    samm:characteristic :Decimal ;
    samm:exampleValue "10.5"^^xsd:decimal .
 
-:dimensions a samm:Property ;
-   samm:preferredName "dimensions"@en ;
-   samm:description "(length, height, width, diameter, weight)"@en ;
-   samm:characteristic ext-dimension:PhysicalDimensionsCharacteristic .
+:height a samm:Property ;
+   samm:preferredName "height"@en ;
+   samm:description "The product height. According to: UCUM (Unified Code for Units of Measure)."@en ;
+   samm:characteristic ext-quantity:LinearCharacteristic .
 
 :productionDate a samm:Property ;
    samm:preferredName "productionDate"@en ;
@@ -185,10 +180,25 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Sahara, extreme dry and high temperature" .
 
-:QuantityCharacteristic a samm:Characteristic ;
-   samm:preferredName "quantity characteristic"@en ;
-   samm:description "Describes a quantity as decimal number."@en ;
-   samm:dataType xsd:double .
+:width a samm:Property ;
+   samm:preferredName "width"@en ;
+   samm:description "The product width. According to: UCUM (Unified Code for Units of Measure)."@en ;
+   samm:characteristic ext-quantity:LinearCharacteristic .
+
+:length a samm:Property ;
+   samm:preferredName "length"@en ;
+   samm:description "The product length. According to: UCUM (Unified Code for Units of Measure)."@en ;
+   samm:characteristic ext-quantity:LinearCharacteristic .
+
+:diameter a samm:Property ;
+   samm:preferredName "diameter"@en ;
+   samm:description "The product diameter. According to: UCUM (Unified Code for Units of Measure)."@en ;
+   samm:characteristic ext-quantity:LinearCharacteristic .
+
+:weight a samm:Property ;
+   samm:preferredName "weight"@en ;
+   samm:description "The product weight."@en ;
+   samm:characteristic ext-quantity:MassCharacteristic .
 
 :ConditionCharacteristic a samm-c:Enumeration ;
    samm:preferredName "Condition Characteristic"@en ;
@@ -257,7 +267,7 @@
 
 :ProductEntity a samm:Entity ;
    samm:preferredName "product entity"@en ;
-   samm:properties ( :productDescription :brand :category [ samm:property :originalManufacturer; samm:optional true ] [ samm:property :manufacturerPartNumber; samm:optional true ] [ samm:property :productLink; samm:optional true ] [ samm:property :oeNumber; samm:optional true ] :technicalSpecification ) .
+   samm:properties ( :productDescription :brand :category [ samm:property :originalManufacturer; samm:optional true ] [ samm:property :productLink; samm:optional true ] [ samm:property :oeNumber; samm:optional true ] :technicalSpecification ext-part:manufacturerPartId ) .
 
 :longitude a samm:Property ;
    samm:preferredName "longitude"@en ;
@@ -323,12 +333,6 @@
    samm:description "The original manufacturer of a product."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "BMW" .
-
-:manufacturerPartNumber a samm:Property ;
-   samm:preferredName "manufacturer part number"@en ;
-   samm:description "The unique identifier of the product from the manufacturer."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "4S7R7002DB" .
 
 :productLink a samm:Property ;
    samm:preferredName "product link"@en ;
