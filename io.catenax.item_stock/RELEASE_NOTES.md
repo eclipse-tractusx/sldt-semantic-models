@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
+## [2.0.0] - 2024-01-XY
+### Added
+n/a
+
+### Changed
+- Update Collections to Set for stronger semantics
+  - PositionsCollection -> PositionsSet
+  - AllocatedStockCollection -> AllocatedStockSet
+- lastUpdatedOnDateTime
+  - move from position to allocatedStock
+  - use samm datatype instead of custom Characteristic
+
+### Removed
+- Harmonization for Industry Core
+  - materialGlobalAssetId
+  - materialNumberSupplier
+  - materialNumberCustomer
+
 ## [1.0.0] - 2023-11-20
 ### Added
 initial model as update of product stock model
