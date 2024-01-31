@@ -12,6 +12,7 @@ n/a
 - lastUpdatedOnDateTime
   - move from position to allocatedStock
   - use samm datatype instead of custom Characteristic
+  - fixed semantics from supplier specific, to more generic partner specific
 
 ### Removed
 - Harmonization for Industry Core
