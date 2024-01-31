@@ -1,0 +1,384 @@
+---
+openapi: 3.0.3
+info:
+  title: ClaimData
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/claim-data:
+    get:
+      tags:
+      - ClaimData
+      operationId: getClaimData
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/ClaimData'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClaimData'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_RecordStatusEnumeration:
+      type: string
+      description: Defining the enumeration for the record status
+      enum:
+      - new
+      - update
+      - delete
+      - same
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID:
+      type: string
+      description: This Characteristic describes a property that is truly unique either
+        inside the Company that is providing the data or even in Catena-X data space.
+        Only one property in a semantic entity should be a uniqueID. Unique IDs can
+        be used to link a data set with other semantic models.
+    urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_CountryCodeTrait:
+      type: string
+      description: 'Regular Expression that ensures a three-letter code '
+      pattern: "^[A-Z][A-Z][A-Z]$"
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_MileageCounter:
+      type: number
+      minimum: 0
+      description: The mileage counter of the car.
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_LatitudeTrait:
+      type: number
+      description: Trait to define the latitude.
+      maximum: 90.0
+      exclusiveMaximum: false
+      minimum: -90.0
+      exclusiveMinimum: false
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_LongitudeTrait:
+      type: number
+      description: Trait to define the longitude.
+      maximum: 180.0
+      exclusiveMaximum: false
+      minimum: -180.0
+      exclusiveMinimum: false
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_WorkshopCharacteristic:
+      description: Groups all workshop properties.
+      type: object
+      properties:
+        workShopId:
+          description: OEM-specific identifier for a workshop.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID'
+        latitude:
+          description: Latitude property for GPS coordinates.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_LatitudeTrait'
+        longitude:
+          description: Longitude property for GPS coordinates.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_LongitudeTrait'
+      required:
+      - workShopId
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_AmountOfReplacedPartsCharacteristic:
+      type: number
+      minimum: 0
+      description: counter for non-serial parts
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean:
+      type: boolean
+      description: Represents a boolean value (i.e. a "flag").
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_SparePart:
+      description: A generic description to identify a spare part.
+      type: object
+      properties:
+        catenaXSparePartId:
+          description: Catena-X ID of the spare part that was put into the vehicle.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        sparePartName:
+          description: Spare part name of this part.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        sparePartNumber:
+          description: Internal spare part number of the part. A spare part number
+            is NOT unique.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        sparePartSerialNumber:
+          description: Serial number of the spare part.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID'
+        sparePartSupplierId:
+          description: A unique identifier for the spare part supplier.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID'
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_SparePartsList:
+      description: A list of spare parts.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_SparePart'
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_ClaimedPart:
+      description: one specific part
+      type: object
+      properties:
+        amountOfReplacedParts:
+          description: counter for non-serial parts which have been replaced
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_AmountOfReplacedPartsCharacteristic'
+        catenaXClaimPartId:
+          description: Catena-X ID of the part that is involved in the claim.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        isPartCausal:
+          description: Flag is set to true if part was causing the problem-otherwise
+            false.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        isPartReplaced:
+          description: Flag is set to true if part was replaced-otherwise false.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partName:
+          description: Part name of this part.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        partNumber:
+          description: Internal part number of the part. A part number is NOT unique.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        partTreatment:
+          description: Describes what happened to this part in the claim.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        serialNumber:
+          description: Serial number of the part.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID'
+        spareParts:
+          description: The spare parts that were built into the vehicle.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_SparePartsList'
+        supplierId:
+          description: Specific ID of the supplier that manufactured the part that
+            was put out - available if known
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID'
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_PartsListCharacteristic:
+      description: Characteristic for a list of parts that are linked to a claim.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_ClaimedPart'
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_DiagnosticSession:
+      description: "One diagnostic session of one vehicle: Either this is a diagnostic\
+        \ session done in a workshop or via over-the-air diagnostic."
+      type: object
+      properties:
+        sessionId:
+          description: A oem-specific session identifier that is unique in this company.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID'
+      required:
+      - sessionId
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_DiagnosticSessionsList:
+      description: A list of diagnostic sessions that are linked to this claim.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_DiagnosticSession'
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_Claim:
+      description: A claim is when a customer has a problem with his vehicle and goes
+        to the workshop to get this problem fixed. Sometimes potentially faulty parts
+        are exchanged.
+      type: object
+      properties:
+        recordStatus:
+          description: |-
+            The record operation enumeration can be used to realize delta update concept.
+            Delta update concept means:
+            - You transfer an initial load of data
+            - After the first week only the delta to the initial load is transferred
+
+
+            The record status describes whether this record is:
+            - new=>This record is transferred the first time
+            - update=> Some properties of this record have changed compared to a previous transfer
+            - delete=> This record was transferred in the initial load or in a previous delta update, but is not used any more and therefore it should be deleted on data consumer side
+            - same=> This record was transferred in the initial load or in a previous delta update
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_RecordStatusEnumeration'
+        anonymizedVIN:
+          description: OEM-specific hashed VIN. Unique within OEM.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID'
+        catenaXQualityTaskId:
+          description: The fully anonymous and unique Catena-X ID of this quality
+            task. This id is unique inside Catena-X data space.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        catenaXVehicleId:
+          description: A unique identifier for the vehicle in the Catena-X data space.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        claimId:
+          description: "Claim ID: Unique for each OEM"
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_UniqueID'
+        countryCode:
+          description: Country code in  ISO 3166-1 alpha-3 codes where this session
+            took place
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_CountryCodeTrait'
+        customerComment:
+          description: short description of the claim from customer view
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        damageCode:
+          description: OEM-specific damage code
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        repairCountryCode:
+          description: Country code where this repair took place.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_CountryCodeTrait'
+        repairDate:
+          description: references the date when claim was initially reported
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        repairMileage:
+          description: mileage of the car when the claim was reported
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_MileageCounter'
+        technicianComment:
+          description: short description of the claim from the technicians
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        workshop:
+          description: Groups workshop-related properties
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_WorkshopCharacteristic'
+        listOfParts:
+          description: a list of parts which will be replaced or repaired
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_PartsListCharacteristic'
+        listOfDiagnosticSessions:
+          description: A list of diagnostic sessions linked to this claim.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_DiagnosticSessionsList'
+      required:
+      - claimId
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_ClaimList:
+      description: A list of claims.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_Claim'
+    urn_samm_io.catenax.fleet.claim_data_2.0.0_MetaCharacteristic:
+      description: Characteristic for the meta information.
+      type: object
+      properties:
+        selectionCriteria:
+          description: Describes the selection criteria a Catena-X data provider has
+            applied to create this data set.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        selectionStart:
+          description: Describes the starting point for providing records in this
+            data set.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        selectionEnd:
+          description: Describes the end point for providing records in this data
+            set.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - selectionCriteria
+    ClaimData:
+      description: Claim data from a fleet
+      type: object
+      properties:
+        listOfClaims:
+          description: A list of customer complaints or workshop repairs that belong
+            to one or more quality tasks.
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_ClaimList'
+        metaInformation:
+          description: 'This meta information is valid for all entries in this data
+            set. The meta information is used to tell the data consumer which selection
+            criteria were applied by the data provider. '
+          $ref: '#/components/schemas/urn_samm_io.catenax.fleet.claim_data_2.0.0_MetaCharacteristic'
+      required:
+      - listOfClaims
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ClaimData:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    ClaimData:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClaimData'
