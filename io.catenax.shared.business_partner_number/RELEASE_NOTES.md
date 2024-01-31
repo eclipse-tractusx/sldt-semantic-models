@@ -6,7 +6,11 @@ All notable changes to this model will be documented in this file.
 n/a
 
 ### Changed
-- updated regexes from `^BPNL[0-9]{8}[a-zA-Z0-9]{4}$` to `^BPNL[a-zA-Z0-9]{12}$`
+- updated regexes
+  - from `^BPNL[0-9]{8}[a-zA-Z0-9]{4}$` to `^BPNL[a-zA-Z0-9]{12}$`
+  - semantic descriptions as checksum is not two UPPERCASE but two alphanumeric digits
+- fixed typo in prefferedName of BpnlTrait
+
 
 ### Removed
 n/a
