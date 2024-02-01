@@ -2,6 +2,9 @@
 
 All notable changes to this model will be documented in this file.
 
+### [3.0.0] - 2024-01-30
+- migrated from samm 2.0.0 to samm 2.1.0
+
 ## [2.0.0] - 2023-11-28
 ### Added
 - add / integrate shared UUID characteristic and RegEx for the properties messageId and relatedMessageId

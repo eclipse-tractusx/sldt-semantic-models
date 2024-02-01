@@ -1,0 +1,309 @@
+---
+openapi: 3.0.3
+info:
+  title: Provide Production Forecast
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/provide-production-forecast:
+    get:
+      tags:
+      - ProvideProductionForecast
+      operationId: getProvideProductionForecast
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/ProvideProductionForecast'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.shared.shopfloor_information_types_2.0.0_TimeUnitEnum:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: Enumerates all time units
+      enum:
+      - unit:secondUnitOfTime
+      - unit:minuteUnitOfTime
+      - unit:hour
+      - unit:day
+      - unit:week
+      - unit:month
+      - unit:year
+    urn_samm_io.catenax.shared.shopfloor_information_types_2.0.0_IntegerValueCharacteristic:
+      type: number
+      description: The value of the specified timeUnit as an integer value
+    urn_samm_io.catenax.shared.shopfloor_information_types_2.0.0_TimeValueCharacteristic:
+      description: Link to the  TimeUnit Data Type
+      type: object
+      properties:
+        timeUnit:
+          description: Specifies the unit in which the time is represented
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.shopfloor_information_types_2.0.0_TimeUnitEnum'
+        value:
+          description: The amount of timeUnits considered
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.shopfloor_information_types_2.0.0_IntegerValueCharacteristic'
+      required:
+      - timeUnit
+      - value
+    urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ProductionStatusEnum:
+      type: string
+      description: Enumeration with all possible states of an order within modular
+        production
+      enum:
+      - itemReceived
+      - itemPlanned
+      - itemInProduction
+      - itemCompleted
+      - statusUndefined
+    urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ReasonsForDelayEnum:
+      type: string
+      description: Enum that specifies reasons for a delay of an order
+      enum:
+      - supplyProblems
+      - otherCircumstances
+      - internalProblems
+      - noInformationAvailable
+    urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ReturnCodeEnum:
+      type: string
+      description: Enumeration with all Return Codes
+      enum:
+      - ok
+      - lowerAccuracyOfPrecision
+      - noForecastAvailable
+    urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ForecastItem:
+      description: ForecastItem entry for the requested order
+      type: object
+      properties:
+        positionId:
+          description: Identifier of a position of an order
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        productionForecast:
+          description: Date of completion
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        precisionOfForecast:
+          description: Accuracy of the prediction
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.shopfloor_information_types_2.0.0_TimeValueCharacteristic'
+        productionStatus:
+          description: Status of the order/position within MP
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ProductionStatusEnum'
+        reasonsForDelay:
+          description: Optional field to provide information to the customer why a
+            delivery date is not met
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ReasonsForDelayEnum'
+        returnCode:
+          description: Return code that indicates whether a single item of an order
+            matches the customers desired request
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ReturnCodeEnum'
+        forecastDate:
+          description: Date/time of the forecast calculation
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+      required:
+      - positionId
+      - productionForecast
+      - precisionOfForecast
+      - productionStatus
+      - returnCode
+      - forecastDate
+    urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ForecastItemList:
+      description: List with the forecast items
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ForecastItem'
+    urn_samm_io.catenax.shared.shopfloor_information_types_2.0.0_CommunicationModeEnum:
+      type: string
+      description: Enumerates all possible communication modes
+      enum:
+      - synchronous
+      - cyclic
+      - notification
+    urn_samm_io.catenax.shared.message_header_2.0.0_SemanticVersioningTrait:
+      type: string
+      description: Constraint for defining a SemVer version.
+      pattern: "^(0|[1-9][0-9]*).(0|[1-9][0-9]*).(0|[1-9][0-9]*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*)(.[0-9A-Za-z-]+)*)?([0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?$"
+    urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ProductionForecastCharacteristic:
+      description: All Data that is related to a production forecast
+      type: object
+      properties:
+        listOfForecastItems:
+          description: List of ForecastItems matching the items to an order
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ForecastItemList'
+        iterationNumber:
+          description: "Only set in CommunicationMode == \"notification/cyclic\" to\
+            \ be able to check the order of the notifications. \n\nNot required for\
+            \ communication mode = \"synchronous\""
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.shopfloor_information_types_2.0.0_IntegerValueCharacteristic'
+        communicationMode:
+          description: Specification of the communication mode
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.shopfloor_information_types_2.0.0_CommunicationModeEnum'
+        version:
+          description: The unique identifier of the aspect model defining the structure
+            and the semantics of the message's header. The version number should reflect
+            the versioning schema of aspect models in Catena-X.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_2.0.0_SemanticVersioningTrait'
+      required:
+      - listOfForecastItems
+      - communicationMode
+      - version
+    urn_samm_io.catenax.shared.message_header_2.0.0_ContextCharacteristic:
+      type: string
+      description: Defining a string value for the context
+    urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait:
+      type: string
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two uppercase letters."
+      pattern: "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$"
+    urn_samm_io.catenax.shared.message_header_2.0.0_HeaderCharacteristic:
+      description: Characteristic describing the common shared aspect Message Header
+      type: object
+      properties:
+        messageId:
+          description: "Unique ID identifying the message. The purpose of the ID is\
+            \ to uniquely identify a single message, therefore it MUST not be reused."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        context:
+          description: |-
+            Information about the context the message should be considered in.
+            The value MUST consist of two parts: an identifier of the context (e.g. business domain, etc.) followed by a version number.
+            Both the identifier and the version number MUST correspond to the content of the message.
+            If the content of a message is described by an aspect model available in the Catena-X Semantic Hub, then the unique identifier of this semantic model (e.g. urn:samm:io.catenax.<ASPECT-MODEL-NAME>:1.x.x) MUST be used as a value of the context field. This is considered the default case.
+            In all other cases the value of the context field MUST follow the pattern <domain>-<subdomain>-<object>:<[major] version> (e.g. TRACE-QM-Alert:1.x.x).
+            Versioning only refers to major versions in both default and fallback cases.
+            Note: The version of the message's header is specified in the version field.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_2.0.0_ContextCharacteristic'
+        sentDateTime:
+          description: Time zone aware timestamp holding the date and the time the
+            message was sent by the sending party. The value MUST be formatted according
+            to the ISO 8601 standard
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        senderBpn:
+          description: The Business Partner Number of the sending party. The value
+            MUST be a valid BPN. BPNA and BPNS are not allowed. Applicable constraints
+            are defined in the corresponding standard
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait'
+        receiverBpn:
+          description: The Business Partner Number of the receiving party. The value
+            MUST be a valid BPN. BPNA and BPNS are not allowed. Applicable constraints
+            are defined in the corresponding standard.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait'
+        expectedResponseBy:
+          description: Time zone aware timestamp holding the date and time by which
+            the sending party expects a certain type of response from the receiving
+            party. The meaning and interpretation of the fields's value are context-bound
+            and MUST therefore be defined by any business domain or platform capability
+            making use of it. The value MUST be formatted according to the ISO 8601
+            standard
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        relatedMessageId:
+          description: Unique ID identifying a message somehow related to the current
+            one
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        version:
+          description: The unique identifier of the aspect model defining the structure
+            and the semantics of the message's header. The version number should reflect
+            the versioning schema of aspect models in Catena-X.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_2.0.0_SemanticVersioningTrait'
+      required:
+      - messageId
+      - context
+      - sentDateTime
+      - senderBpn
+      - receiverBpn
+      - version
+    ProvideProductionForecast:
+      description: Answer to a customer with all information about the requested items
+      type: object
+      properties:
+        productionForecastResponse:
+          description: The concrete information about a production forecast
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.provide_production_forecast_2.0.0_ProductionForecastCharacteristic'
+        header:
+          description: Contains standardized attributes for message processing common
+            across several use cases.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_2.0.0_HeaderCharacteristic'
+      required:
+      - productionForecastResponse
+      - header
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ProvideProductionForecast:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProvideProductionForecast'
+      description: The request was successful.
+  requestBodies:
+    ProvideProductionForecast:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProvideProductionForecast'
