@@ -29,7 +29,7 @@
 :Notifications a samm:Aspect ;
    samm:preferredName "Notifications"@en ;
    samm:description "This aspect model defines the standard for notification exchange between business partners. Notifications refer to specific events which affect production or demand."@en ;
-   samm:properties ( [ samm:property :affectedSitesSender; samm:optional true ] [ samm:property :affectedSitesRecipient; samm:optional true ] :leadingRootCause :effect [ samm:property :text; samm:optional true ] [ samm:property :materialNumberDigitalTwin; samm:optional true ] :startDateOfEffect [ samm:property :expectedEndDateOfEffect; samm:optional true ] :status :contentChangedAt [ samm:property :relatedSourceMessageId; samm:optional true ] [ samm:property :materialNumberSupplier; samm:optional true ] [ samm:property :materialNumberCustomer; samm:optional true ] ) ;
+   samm:properties ( [ samm:property :affectedSitesSender; samm:optional true ] [ samm:property :affectedSitesRecipient; samm:optional true ] :leadingRootCause :effect [ samm:property :text; samm:optional true ] [ samm:property :materialNumberDigitalTwin; samm:optional true ] :startDateOfEffect [ samm:property :expectedEndDateOfEffect; samm:optional true ] :status :contentChangedAt [ samm:property :relatedSourceMessageId; samm:optional true ] [ samm:property :manufacturerPartId; samm:optional true ] [ samm:property :customerPartId; samm:optional true ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -105,7 +105,7 @@ The value MUST be formatted according to the ISO 8601 standard."""@en ;
 
 :contentChangedAt a samm:Property ;
    samm:preferredName "Content changed at"@en ;
-   samm:description "The timestamp of the latest change of this notification."@en ;
+   samm:description "The timestamp of the latest change of this notification. Date and time are set according to a timezone."@en ;
    samm:characteristic samm-c:Timestamp ;
    samm:exampleValue "2023-12-13T15:00:00+01:00"^^xsd:dateTime .
 
@@ -116,18 +116,18 @@ The value MUST be formatted according to the ISO 8601 standard."""@en ;
 Proposal: Unique ID identifying the source message that started the notification thread."""@en ;
    samm:characteristic ext-uuid:UuidV4Trait .
 
-:materialNumberSupplier a samm:Property ;
-   samm:preferredName "Supplier Material Number"@en ;
-   samm:description """Material identifier as assigned by the supplier. This material number identifies the material in the supplier's database.
+:manufacturerPartId a samm:Property ;
+   samm:preferredName "Manufacturer Part ID"@en ;
+   samm:description """Part identifier as assigned by the manufacturer. This property identifies the part in the manufacturer's database.
 
-If the supplier is the sender, sending supplier material number is RECOMMENDED. It MUST be possible to send multiple supplier material numbers."""@en ;
+If the manufacturer is the data provider, sending manufacturer part ID is RECOMMENDED."""@en ;
    samm:characteristic :MaterialNumberCharacteristic .
 
-:materialNumberCustomer a samm:Property ;
-   samm:preferredName "Customer Material Number"@en ;
-   samm:description """Material identifier as assigned by the customer. This material number identifies the material in the customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the material number supplier should be set in this field, too.
+:customerPartId a samm:Property ;
+   samm:preferredName "Customer Part ID"@en ;
+   samm:description """Part identifier as assigned by the customer. This property identifies the part in the customer's database. For standard parts (e.g. screws) for which a customer does not have an own ID, the manufacturerPartId supplier should be set in this field, too.
 
-If the customer is the sender, it is RECOMMENDED to send the materialNumberCustomer. It MUST be possible to send multiple customer material numbers."""@en ;
+If the customer is the data provider, it is RECOMMENDED to send the customerPartId."""@en ;
    samm:characteristic :MaterialNumberCharacteristic .
 
 :LeadingRootCauseEnumeration a samm-c:Enumeration ;
@@ -162,7 +162,7 @@ If the customer is the sender, it is RECOMMENDED to send the materialNumberCusto
 
 :MaterialNumberCharacteristic a samm-c:Set ;
    samm:preferredName "Material Number"@en ;
-   samm:description "The material number is a multi-character string, usually assigned by an ERP system of the customer or the supplier."@en ;
+   samm:description "The material number is a multi-character string, usually assigned by an ERP system of the customer or the manufacturer."@en ;
    samm:dataType xsd:string .
 
 :UserInputCharacteristic a samm:Characteristic ;
