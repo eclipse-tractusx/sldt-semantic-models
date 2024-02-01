@@ -1,0 +1,122 @@
+---
+openapi: 3.0.3
+info:
+  title: Shared Aspect for any business partner number
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/business-partner-number:
+    get:
+      tags:
+      - BusinessPartnerNumber
+      operationId: getBusinessPartnerNumber
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/BusinessPartnerNumber'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlTrait:
+      type: string
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two alphanumeric letters."
+      pattern: "^BPNL[a-zA-Z0-9]{12}$"
+    urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait:
+      type: string
+      description: "The provided regular expression ensures that the BPNS is composed\
+        \ of prefix 'BPNS', 10 digits and two alphanumeric letters."
+      pattern: "^BPNS[a-zA-Z0-9]{12}$"
+    urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnaTrait:
+      type: string
+      description: "The provided regular expression ensures that the BPNA is composed\
+        \ of prefix 'BPNA', 10 digits and two alphanumeric letters."
+      pattern: "^BPNA[a-zA-Z0-9]{12}$"
+    BusinessPartnerNumber:
+      description: This is a shared aspect for BPN with a regex.
+      type: object
+      properties:
+        bpnlProperty:
+          description: Property based on a BPNL.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlTrait'
+        bpnsProperty:
+          description: Property based on a BPNS.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait'
+        bpnaProperty:
+          description: Property based on a BPNA.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnaTrait'
+      required:
+      - bpnlProperty
+      - bpnsProperty
+      - bpnaProperty
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BusinessPartnerNumber:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BusinessPartnerNumber'
+      description: The request was successful.
+  requestBodies:
+    BusinessPartnerNumber:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BusinessPartnerNumber'
