@@ -6,10 +6,10 @@ All notable changes to this model will be documented in this file.
 
 ## [2.0.0]
 ### Added
-- Migrated the Model to SAMM Meta Version 2.1.0
+n/a
 
 ### Changed
-n/a
+- Migrated the Model to SAMM Meta Version 2.1.0
 
 ### Removed
 n/a
