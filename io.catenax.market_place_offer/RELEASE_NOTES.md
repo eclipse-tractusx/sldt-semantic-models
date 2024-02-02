@@ -4,12 +4,12 @@ All notable changes to this model will be documented in this file.
 ## [2.0.0] - 2024-02-05
 ### Added
 - new aspect based on shared aspect "recycling strategy certificate"
-- several other new aspects
+- other new aspects
 - link serveral more models
 
 ### Changed
 - Upgrade from BAMM model to SAMM model
-- several aspects
+- some aspects
 
 ### Removed
 - 2 aspects
