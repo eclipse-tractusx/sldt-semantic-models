@@ -38,7 +38,7 @@
 :MaterialDemand a samm:Aspect ;
    samm:preferredName "Material Demand"@en ;
    samm:description "The requirements of a customer towards a specific supplier for a specific material. Each material demand is unique by its Customer, Supplier and Material Number."@en ;
-   samm:properties ( :materialDemandId :demandSeries :customer :supplier [ samm:property :unitOfMeasure; samm:optional true ] :materialNumberCustomer [ samm:property :materialNumberSupplier; samm:optional true ] :materialDescriptionCustomer :changedAt [ samm:property :materialGlobalAssetId; samm:optional true ] :demandRate :unitOfMeasureIsOmitted [ samm:property :materialDemandIsInactive; samm:optional true ] ) ;
+   samm:properties ( :materialDemandId :demandSeries :customer :supplier [ samm:property :unitOfMeasure; samm:optional true ] :materialNumberCustomer [ samm:property :materialNumberSupplier; samm:optional true ] :materialDescriptionCustomer :changedAt [ samm:property :materialGlobalAssetId; samm:optional true ] :demandRate :unitOfMeasureIsOmitted :materialDemandIsInactive ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -291,26 +291,20 @@
    samm:preferredName "Quantity Trait"@en ;
    samm:description "Defining the data type for a demand key figure."@en ;
    samm-c:baseCharacteristic :Quantity ;
-   samm-c:constraint :QuantityFixedPoint ;
-   samm-c:constraint :QuantityRange .
+   samm-c:constraint :QuantityRange ;
+   samm-c:constraint :QuantityFixedPoint .
 
 :PointInTimeCharacteristic a samm:Characteristic ;
    samm:preferredName "Point in Time Characteristic"@en ;
    samm:description "- If demand rate is \"calendar week\": An ISO calendar week in which a given demand is needed. Must be given as date of the Monday in the week. (ISO-8601-1:2019)\n- If demand rate is \"day\": An ISO day on which a given demand is needed. Must be given as single day (consider the time zone of the customer's location). (ISO-8601)"@en ;
-   samm:see <https://www.iso.org/standard/70907.html> ;
    samm:see <https://www.iso.org/iso-8601-date-and-time-format.html> ;
+   samm:see <https://www.iso.org/standard/70907.html> ;
    samm:dataType xsd:date .
 
 :Quantity a samm:Characteristic ;
    samm:preferredName "Quantity"@en ;
    samm:description "Quantities of demands."@en ;
    samm:dataType xsd:decimal .
-
-:QuantityFixedPoint a samm-c:FixedPointConstraint ;
-   samm:preferredName "Quantity Fixed Point"@en ;
-   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
-   samm-c:integer "15"^^xsd:positiveInteger ;
-   samm-c:scale "1000"^^xsd:positiveInteger .
 
 :QuantityRange a samm-c:RangeConstraint ;
    samm:preferredName "Quantity Range"@en ;
@@ -319,4 +313,10 @@
    samm-c:maxValue "999999999999999999.999"^^xsd:decimal ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:AT_MOST .
+
+:QuantityFixedPoint a samm-c:FixedPointConstraint ;
+   samm:preferredName "Quantity Fixed Point"@en ;
+   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
+   samm-c:integer "15"^^xsd:positiveInteger ;
+   samm-c:scale "1000"^^xsd:positiveInteger .
 
