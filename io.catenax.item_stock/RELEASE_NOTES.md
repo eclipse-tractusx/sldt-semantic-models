@@ -13,10 +13,14 @@ n/a
   - move from position to allocatedStock
   - use samm datatype instead of custom Characteristic
   - fixed semantics from supplier specific, to more generic partner specific
+- updated dependencies
+  - io.catenax.shared.uuid
+  - io.catenax.shared.quantity
+  - io.catenax.shared.business_partner_number
+- migrated samm version from 2.0.0 to 2.1.0
 
 ### Removed
 - Harmonization for Industry Core
-  - materialGlobalAssetId
   - materialNumberSupplier
   - materialNumberCustomer
 
