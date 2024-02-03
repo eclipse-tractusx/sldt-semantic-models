@@ -1,0 +1,2691 @@
+---
+openapi: 3.0.3
+info:
+  title: Battery Passport
+  version: v4
+servers:
+- url: catenax.io/api/v4
+  variables:
+    api-version:
+      default: v4
+paths:
+  /{tenant-id}/battery-pass:
+    get:
+      tags:
+      - BatteryPass
+      operationId: getBatteryPass
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/BatteryPass'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatteryPass'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_CategoryEnumeration:
+      type: string
+      description: "Enumeration with the values, portable battery; starting, lighting\
+        \ and ignition battery (SLI); light means of transport battery (LMT); electric\
+        \ vehicle battery (EV), industrial battery and incorporated battery."
+      enum:
+      - SLI
+      - LMT
+      - EV
+      - industrial
+      - portable
+      - incorporated
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierCharacteristic:
+      type: string
+      description: Characteristic for Identifiers.
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CodeEnumeration:
+      type: string
+      description: "Enumeration for GTIN, hash, DID, ISBN, TARIC or other."
+      enum:
+      - TARIC
+      - GTIN
+      - DID
+      - ISBN
+      - hash
+      - other
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CodeEntity:
+      description: Code entity with code key and value.
+      type: object
+      properties:
+        key:
+          description: |-
+            The code key for the identification of the product. These are GTIN, hash, DID, ISBN, TARIC or other which can be chosen from an enumeration. This attribute is mentioned in the ESPR proposal from March 30th, 2022 ANNEX III:
+            (b) the unique product identifier at the level indicated in the applicable delegated act adopted pursuant to Article 4;
+            (c) the Global Trade Identification Number as provided for in standard ISO/IEC 15459-6 or equivalent of products or their parts;
+            (d) relevant commodity codes, such as a TARIC code as defined in Council Regulation (EEC) No 2658/87.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CodeEnumeration'
+        value:
+          description: The code value for the identification of the product in regard
+            to the chosen code name.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierCharacteristic'
+      required:
+      - key
+      - value
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CodeList:
+      description: A list of additional codes.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CodeEntity'
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierEnumeration:
+      type: string
+      description: Enumeration with "PartInstanceId" "BatchId" and "ModelId".
+      enum:
+      - PartInstanceId
+      - BatchId
+      - ModelId
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierEntity:
+      description: Identifier Entity with the attributes key and value.
+      type: object
+      properties:
+        key:
+          description: |-
+            For traceability of the product, the ESPR requires identification on the most specific level. It can be chosen from "PartInstanceId" "BatchId" "ModelId" from an enumeration. This attribute is mentioned in the ESPR proposal from March 30th, 2022 ANNEX III:
+            (b) the unique product identifier at the level indicated in the applicable delegated act adopted pursuant to Article 4.
+            Additionally in Article 9 regarding general requirements for the product passport is stated that:
+            (e) the information included in the product passport shall refer to the product model, batch, or item as specified in the delegated act adopted pursuant to Article 4.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierEnumeration'
+        value:
+          description: |-
+            The value of the corresponding identifier for part/item, batch or model. This attribute is mentioned in the ESPR proposal from March 30th, 2022 ANNEX III:
+            (b) the unique product identifier at the level indicated in the applicable delegated act adopted pursuant to Article 4.
+            Additionally in Article 9 regarding general requirements for the product passport is stated that:
+            (e) the information included in the product passport shall refer to the product model, batch, or item as specified in the delegated act adopted pursuant to Article 4.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierCharacteristic'
+      required:
+      - key
+      - value
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LocalIdentifierList:
+      description: Local Identifier List for the product.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierEntity'
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CodeTrait:
+      type: string
+      description: "Constraint to limit the input to a valid ECLASS number. The constraint\
+        \ ensures that each pair of digits is followed by a hyphen, resulting in a\
+        \ pattern like \"00-00-00-00\" where the zeros can be replaced by any digit."
+      pattern: "^\\d{2}-\\d{2}-\\d{2}-\\d{2}$"
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ClassCharacteristic:
+      description: Characteristic to describe the ECLASS typology of a product.
+      type: object
+      properties:
+        code:
+          description: "The associated product category coded name/code, according\
+            \ to ECLASS. The 8-digit  code consists of two digits for each of the\
+            \ four hierarchical levels."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CodeTrait'
+        definition:
+          description: The associated product category preferred name/definition according
+            to ECLASS. This preferred name is always associated with the code.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - code
+      - definition
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_TypologyCharacteristic:
+      description: Characteristic to further describe product.
+      type: object
+      properties:
+        longName:
+          description: The full name of the product as a general short product description.
+            This provides the users of the product passport with relevant information
+            about the product. It can also be a marketing slogan or short description
+            with one to a few sentences.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        class:
+          description: The associated product category according to ECLASS. The ECLASS
+            is the worldwide reference data standard for classifying and clearly describing
+            products and services.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ClassCharacteristic'
+        shortName:
+          description: The short name of the product. Short names can contain abbreviations.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - longName
+      - shortName
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_IdentificationCharacteristic:
+      description: "Battery identification involves specific battery identifiers,\
+        \ including those assigned locally by the manufacturer."
+      type: object
+      properties:
+        category:
+          description: |-
+            The battery category, which can be a portable battery; starting, lighting and ignition battery (SLI); light means of transport battery (LMT); electric vehicle battery (EV), industrial battery and incorporated battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) and refers to ANNEX VI Part A:
+            2. the battery category and information identifying the battery in accordance with Article 38(6).
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_CategoryEnumeration'
+        idDmc:
+          description: |-
+            The unique identifier of the product, when it is placed on the market. Through this identifier a web link can be accessed. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Article 77:
+            3. The battery passport shall be accessible through the QR code referred to in Article 13(6) which links to a unique identifier that the economic operator placing the battery on the market shall attribute to it. The QR code and the unique identifier shall comply with the ISO/IEC standards 15459-1:2014, 15459-2:2015, 15459-3:2014, 15459-4:2014, 15459-5:2014 and 15459-6:2014 or their equivalent.
+            Defined is the QR code in Article 3:
+            (24) "QR code" means a machine-readable matrix code that links to information as required by this Regulation.
+            (66) "unique identifier" means a unique string of characters for the identification of batteries that also enables a web link to the battery passport.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierCharacteristic'
+        typeId:
+          description: |-
+            Identifier for the battery type. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) and refers to ANNEX VI Part A (2) which refers to Article 38:
+            6. Manufacturers shall ensure that batteries which they place on the market bear a model identification and batch or serial number, or product number or another element allowing their identification.
+            Defined is  "battery model" in Article 3:
+            (19) "battery model" means a version of a battery all units of which share the same technical characteristics relevant for the requirements of this Regulation on sustainability, safety, labelling, marking and information, and the same model identifier.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierCharacteristic'
+        chemistry:
+          description: |-
+            Battery chemistry refers to the specific chemical composition and reactions that occur within a battery to produce and store electrical energy. The chemistry has to be stated as detailed as possible for example 'NCM' for the Nickel Cobalt Manganese battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) and refers to ANNEX VI Part A:
+            7. the chemestry.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        additionalCode:
+          description: "Codes for identification can be for example commodity codes.\
+            \ In Europe, two commonly used codes for goods classification are the\
+            \ Harmonized System (HS) code and the Combined Nomenclature (CN). Other\
+            \ codes can also be given."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CodeList'
+        localIdentifier:
+          description: |-
+            The unique identifier of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 ANNEX III:
+            (b) the unique product identifier at the level indicated in the applicable delegated act adopted pursuant to Article 4.
+            Additionally in Article 9 regarding general requirements for the product passport is stated that:
+            (e) the information included in the product passport shall refer to the product model, batch, or item as specified in the delegated act adopted pursuant to Article 4.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LocalIdentifierList'
+        typology:
+          description: Properties further describing the product type.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_TypologyCharacteristic'
+      required:
+      - category
+      - idDmc
+      - typeId
+      - chemistry
+      - localIdentifier
+      - typology
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceCategoryEnumeration:
+      type: string
+      description: The types of sources that can be linked in a digital product passport
+        can vary depending on the nature of the product and the information that needs
+        to be included. This is an enumeration of possible sources.
+      enum:
+      - Product Specifications
+      - Manufacturer Information
+      - User Manuals and Guides
+      - Certifications and Compliance
+      - Product Images and Videos
+      - Warranty Information
+      - Reviews and Ratings
+      - Product Variations
+      - Supply Chain Information
+      - Environmental Impact
+      - Compatibility and Accessories
+      - FAQs and Support
+      - Purchase and Retail Information
+      - Privacy and Data Handling
+      - Third-Party Integrations
+      - Legal Information
+      - Safety Information
+      - Repair and Installation
+      - Waste Generation and Prevention
+      - Specific Voluntary Labels
+      - Product Packaging
+      - Return and Disposal
+      - End of Life
+      - Material and Substance Information
+      - Technical Documentation
+      - Other
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceEnumeration:
+      type: string
+      description: Enumeration on different sources.
+      enum:
+      - URL
+      - PDF
+      - Other
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_HeaderTrait:
+      type: string
+      description: Constraint for a maximum of 100 characters.
+      maxLength: 100
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_DocumentEntity:
+      description: "Document entity with header, content, category and type."
+      type: object
+      properties:
+        content:
+          description: The content of the document e.g a link.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        category:
+          description: |-
+            The category in which the document can be sorted. These are mentioned in the ESPR proposal from March 30th, 2022 ANNEX III:
+            (e) compliance documentation and information required under this Regulation or other Union law applicable to the product, such as the declaration of conformity, technical documentation or conformity certificates;
+            ANNEX IV states additional information regarding the content of the technical documentation
+            Further information on documents are mentioned in the proposal from March 30th, 2022 ANNEX III:
+            (f) user manuals, instructions, warnings or safety information, as required by other Union legislation applicable to the product.
+            Additionally requirements are mentioned in Article 21:
+            (7) Manufacturers shall ensure that that a product covered by a delegated act adopted pursuant to Article 4 is accompanied by instructions that enable consumers and other end-users to safely assemble, install, operate, store, maintain, repair and dispose of the product in a language that can be easily understood by consumers and other end-users, as determined by the Member State concerned. Such instructions shall be clear, understandable and legible and include at least the information specified in the delegated acts adopted pursuant to Article 4 and pursuant to Article 7(2)(b), point (ii).
+            Article 7 states additionally:
+            (2) (b) (ii) information for consumers and other end-users on how to install, use, maintain and repair the product in order to minimise its impact on the environment and to ensure optimum durability, as well as on how to return or dispose of the product at end-of-life;
+            (2) (b) (iii) information for treatment facilities on disassembly, recycling, or disposal at end-of-life;
+            (2) (b) (iv) other information that may influence the way the product is handled by parties other than the manufacturer in order to improve performance in relation to product parameters referred to in Annex I.
+            (5) (d) relevant instructions for the safe use of the product.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceCategoryEnumeration'
+        type:
+          description: "The type of content which can be expected in the \"content\"\
+            \ property. Examples are a link, restricted link, pdf, excel, etc."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceEnumeration'
+        header:
+          description: The header as a short description of the document with a maximum
+            of 100 characters.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_HeaderTrait'
+      required:
+      - content
+      - category
+      - type
+      - header
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList:
+      description: A list of documents.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_DocumentEntity'
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_Share:
+      type: number
+      description: The share represented in a float number in the unit percent.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_EitherActiveMaterial:
+      description: "Either (left) a entity with the recycled share, the location and\
+        \ possible supporting documents, or (right) an enumeration where \"not applicable\"\
+        \ can be chosen."
+      additionalProperties: false
+      properties:
+        left:
+          description: Characteristic to describe the active material.
+          type: object
+          properties:
+            supportingDocument:
+              description: "Supporting documentation to clarify use, share and concentration\
+                \ of the respective material."
+              $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+            location:
+              description: |-
+                The location of the substances of concern within the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:
+                (5) (b) the location of the substances of concern within the product.
+              $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+            recycled:
+              description: |-
+                The share of the material, which is recovered recycled content from the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 1:
+                (1) (f) recycled content in products.
+              $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_Share'
+          required:
+          - location
+          - recycled
+        right:
+          type: string
+          description: Enumeration with the value "not applicable".
+          enum:
+          - not applicable
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ListTypeEnumerationName:
+      type: string
+      description: "Enumeration of different systems and organizations related to\
+        \ the identification and classification of chemical substances in the field\
+        \ of chemistry. The enumeration values are IUPAC, EC or CAS."
+      enum:
+      - IUPAC
+      - CAS
+      - EC
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_NameCharacteristic:
+      description: Name Characteristic for the definition of the name.
+      type: object
+      properties:
+        chemicalName:
+          description: "The name, in accordance with the specification in the attribute\
+            \ for the list type, which is present in the product."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        type:
+          description: "The type of list used for the identification of the substances.\
+            \ Selected can be for example IUPAC, EC or CAS."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ListTypeEnumerationName'
+      required:
+      - chemicalName
+      - type
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ListTypeEnumerationId:
+      type: string
+      description: Enumeration of different systems and organizations related to the
+        identification and classification of chemical substances in the field of chemistry.
+        The enumeration values are EC or CAS.
+      enum:
+      - CAS
+      - EC
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_MaterialIdEntity:
+      description: Id Entity with identifier and list type.
+      type: object
+      properties:
+        materialid:
+          description: "The substance identification, in accordance with the specification\
+            \ in the attribute for the list type."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierCharacteristic'
+        type:
+          description: The type of list used for the identification of the substances.
+            Selected can be for example CAS or EC.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ListTypeEnumerationId'
+      required:
+      - materialid
+      - type
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_MaterialIdList:
+      description: List of ids for the identification.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_MaterialIdEntity'
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ConcentrationValue:
+      type: number
+      description: Float number representing a concentration.
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_RangeEntity:
+      description: "Entity for the concentration range with two values, the highest\
+        \ and the lowest of the concentration range."
+      type: object
+      properties:
+        min:
+          description: |-
+            The minimum concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:
+            (5) (c) [...] concentration range of the substances of concern, at the level of the product [...].
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ConcentrationValue'
+        max:
+          description: |-
+            The maximum concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:
+            (5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...].
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ConcentrationValue'
+      required:
+      - max
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherConcentration:
+      description: "Characteristic with two possible values. Either the concentration\
+        \ range, which can be either the range or only the maximum concentration (left)\
+        \ or a single concentration (right)."
+      additionalProperties: false
+      properties:
+        left:
+          description: "Range characteristic with two values, the highest and the\
+            \ lowest of the concentration range. Only providing the maximum range\
+            \ is also possible."
+          type: array
+          items:
+            $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_RangeEntity'
+        right:
+          description: Single concentration characteristic for the actual concentration.
+          type: object
+          properties:
+            value:
+              description: |-
+                Concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:
+                (5) (c) the concentration [...] of the substances of concern, at the level of the product [...].
+              $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ConcentrationValue'
+          required:
+          - value
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ConcentrationEnumeration:
+      type: string
+      description: "Enumeration of possible units of concentration with percent, volume\
+        \ percent, parts per thousand, parts per million, parts per billion and parts\
+        \ per trillion."
+      enum:
+      - unit:partPerMillion
+      - unit:percent
+      - unit:percentVolume
+      - unit:partPerThousand
+      - unit:partPerTrillionUs
+      - unit:partPerBillionUs
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_MaterialEntity:
+      description: "Material Entity for other materials which are necessary to describe\
+        \ the material composition, especially if they are active, critical or hazardous\
+        \ and are not mentioned otherwise."
+      type: object
+      properties:
+        supportingDocument:
+          description: "Supporting documentation to clarify use, share and concentration\
+            \ of the respective material."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        substanceName:
+          description: |-
+            The substance name, in accordance with the specification in the attribute for the list type, which is present in the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:
+            (5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_NameCharacteristic'
+        substanceIdentification:
+          description: |-
+            The substance identification, in accordance with the specification in the attribute for the list type. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:
+            (5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_MaterialIdList'
+        concentration:
+          description: |-
+            Concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:
+            (5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...].
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherConcentration'
+        location:
+          description: |-
+            The location of the substances of concern within the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:
+            (5) (b) the location of the substances of concern within the product.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        hazardClass:
+          description: The specification of the hazard class.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        renewable:
+          description: |-
+            The share of the material, which is from a renewable resource that can be replenished. Renewable resources are those that can be reproduced by physical, chemical, or mechanical processes. These are the kind of resources that can be regenerated throughout time. Forest wood, for example, can be grown through reforestation. This attribute is complemented to the ESPR proposal by the amendments of the European Parliament from July 12th, 2023 Annex I:
+            (ha) use or content of sustainably sourced renewable materials.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_Share'
+        recycled:
+          description: |-
+            The share of the material, which is recovered recycled content from the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 1:
+            (1) (f) recycled content in products.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_Share'
+        substanceUnit:
+          description: "The unit of concentration chosen from an enumeration: mass\
+            \ percent, volume percent, parts per thousand, parts per million, parts\
+            \ per billion and  parts per trillion."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ConcentrationEnumeration'
+      required:
+      - substanceName
+      - substanceIdentification
+      - concentration
+      - location
+      - renewable
+      - recycled
+      - substanceUnit
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_EitherMaterial:
+      description: Either (left) a material attributes like the identification etc.
+        or (right) an enumeration where "not applicable" can be chosen.
+      additionalProperties: false
+      properties:
+        left:
+          description: Material Composition as a List.
+          type: array
+          items:
+            $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_MaterialEntity'
+        right:
+          type: string
+          description: Enumeration with the value "not applicable".
+          enum:
+          - not applicable
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_ActiveMaterialsCharacteristic:
+      description: Characteristic for the active materials.
+      type: object
+      properties:
+        nickel:
+          description: |-
+            Information about the percentage of recovered nickel from waste. Either (left) a entity with the recycled share, the location and possible supporting documents, or (right) an enumeration where "not applicable" can be chosen. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:
+            1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_EitherActiveMaterial'
+        lithium:
+          description: |-
+            Information about the percentage of recovered lithium from waste. Either (left) a entity with the recycled share, the location and possible supporting documents, or (right) an enumeration where "not applicable" can be chosen. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:
+            1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_EitherActiveMaterial'
+        cobalt:
+          description: |-
+            Information about the percentage of recovered cobalt from waste. Either (left) a entity with the recycled share, the location and possible supporting documents, or (right) an enumeration where "not applicable" can be chosen. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:
+            1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_EitherActiveMaterial'
+        lead:
+          description: |-
+            Information about the percentage of recovered lead from waste. Either (left) a entity with the recycled share, the location and possible supporting documents, or (right) an enumeration where "not applicable" can be chosen. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:
+            1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_EitherActiveMaterial'
+        otherMaterials:
+          description: "Other materials which are necessary to describe the material\
+            \ composition, especially if they are active, critical or hazardous and\
+            \ are not mentioned otherwise. This is mentioned in the Battery regulation\
+            \ 2023/1542 from 12 July 2023 in Annex XIII (1):\n(b) the material composition\
+            \ of the battery, including its chemistry, hazardous substances present\
+            \ in the battery, other than mercury, cadmium or lead, and critical raw\
+            \ materials present in the battery; \n(f) the share of renewable content.\n\
+            and in Annex XIII (2):\n(a) detailed composition, including materials\
+            \ used in the cathode, anode and electrolyte;\nDefinition from Article\
+            \ 3:\n(52) \"hazardous substance\" means a substance classified as hazardous\
+            \ pursuant to Article 3 of Regulation (EC) No 1272/2008:\nA substance\
+            \ or a mixture fulfilling the criteria relating to physical hazards, health\
+            \ hazards or environmental hazards, laid down in Parts 2 to 5 of Annex\
+            \ I is hazardous and shall be classified in relation to the respective\
+            \ hazard classes provided for in that Annex.\nWhere, in Annex I, hazard\
+            \ classes are differentiated on the basis of the route of exposure or\
+            \ the nature of the effects, the substance or mixture shall be classified\
+            \ in accordance with such differentiation.\nDefined in Article 2 of Regulation\
+            \ (EC) No 1272/2008:\n1. hazard class\" means the nature of the physical,\
+            \ health or environmental hazard."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_EitherMaterial'
+      required:
+      - nickel
+      - lithium
+      - cobalt
+      - lead
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_MaterialSymbolEither:
+      description: "A symbol representing lead and cadmium, if present in the battery.\
+        \ Either as (left) a short value for example Cd or (right) one or multiple\
+        \ links to the corresponding symbol of lead or cadmium."
+      additionalProperties: false
+      properties:
+        left:
+          type: string
+          description: "Constraint to restrict the possible entries to the chemical\
+            \ symbol(s). These are Pb, Cd or Cd, Pb or Pb or Cd."
+          pattern: "^(Pb, Cd|Cd, Pb|Pb|Cd)$"
+        right:
+          description: "Characteristic which describes (multiple) link(s), for example,\
+            \ to a website."
+          type: array
+          items:
+            type: string
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_HazardousEither:
+      description: Either (left) a material attributes like the identification etc.
+        or (right) an enumeration where "not applicable" can be chosen.
+      additionalProperties: false
+      properties:
+        left:
+          description: Material attributes for hazardous materials.
+          type: object
+          properties:
+            supportingDocument:
+              description: "Supporting documentation to clarify use, share and concentration\
+                \ of the respective material."
+              $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+            concentration:
+              description: |-
+                Concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:
+                (5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...].
+              $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherConcentration'
+            location:
+              description: |-
+                The location of the substances of concern within the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:
+                (5) (b) the location of the substances of concern within the product.
+              $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+            substanceUnit:
+              description: "The unit of concentration chosen from an enumeration:\
+                \ mass percent, volume percent, parts per thousand, parts per million,\
+                \ parts per billion and  parts per trillion."
+              $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ConcentrationEnumeration'
+          required:
+          - concentration
+          - location
+          - substanceUnit
+        right:
+          type: string
+          description: Enumeration with the value "not applicable".
+          enum:
+          - not applicable
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_HazardousSubstanceCharacteristic:
+      description: Hazardous Substance Characteristic for the battery chemical materials.
+      type: object
+      properties:
+        lead:
+          description: "Information about the presence of lead in the battery. Therefore,\
+            \ a concentration and the location within the battery has to be given.\
+            \ This is mentioned in the Battery regulation 2023/1542 from 12 July 2023\
+            \ in Annex XIII (1) (a) refers to Annex VI Part A: \n8. the hazardous\
+            \ substances present in the battery, other than mercury, cadmium or lead;\n\
+            Defined in Article 3:\n(52) \"hazardous substance\" means a substance\
+            \ classified as hazardous pursuant to Article 3 of Regulation (EC) No\
+            \ 1272/2008."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_HazardousEither'
+        cadmium:
+          description: "Information about the presence of cadmium in the battery.\
+            \ Therefore, a concentration and the location within the battery has to\
+            \ be given. This is mentioned in the Battery regulation 2023/1542 from\
+            \ 12 July 2023 in Annex XIII (1) (a) refers to Annex VI Part A: \n8. the\
+            \ hazardous substances present in the battery, other than mercury, cadmium\
+            \ or lead;\nDefined in Article 3:\n(52) \"hazardous substance\" means\
+            \ a substance classified as hazardous pursuant to Article 3 of Regulation\
+            \ (EC) No 1272/2008."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_HazardousEither'
+        mercury:
+          description: "Information about the presence of mercury in the battery.\
+            \ Therefore, a concentration and the location within the battery has to\
+            \ be given. This is mentioned in the Battery regulation 2023/1542 from\
+            \ 12 July 2023 in Annex XIII (1) (a) refers to Annex VI Part A: \n8. the\
+            \ hazardous substances present in the battery, other than mercury, cadmium\
+            \ or lead;\nDefined in Article 3:\n(52) \"hazardous substance\" means\
+            \ a substance classified as hazardous pursuant to Article 3 of Regulation\
+            \ (EC) No 1272/2008."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_HazardousEither'
+        other:
+          description: "Other materials which are necessary to describe the material\
+            \ composition, especially if they are active, critical or hazardous and\
+            \ are not mentioned otherwise. This is mentioned in the Battery regulation\
+            \ 2023/1542 from 12 July 2023 in Annex XIII (1):\n(b) the material composition\
+            \ of the battery, including its chemistry, hazardous substances present\
+            \ in the battery, other than mercury, cadmium or lead, and critical raw\
+            \ materials present in the battery; \n(f) the share of renewable content.\n\
+            and in Annex XIII (2):\n(a) detailed composition, including materials\
+            \ used in the cathode, anode and electrolyte;\nDefinition from Article\
+            \ 3:\n(52) \"hazardous substance\" means a substance classified as hazardous\
+            \ pursuant to Article 3 of Regulation (EC) No 1272/2008:\nA substance\
+            \ or a mixture fulfilling the criteria relating to physical hazards, health\
+            \ hazards or environmental hazards, laid down in Parts 2 to 5 of Annex\
+            \ I is hazardous and shall be classified in relation to the respective\
+            \ hazard classes provided for in that Annex.\nWhere, in Annex I, hazard\
+            \ classes are differentiated on the basis of the route of exposure or\
+            \ the nature of the effects, the substance or mixture shall be classified\
+            \ in accordance with such differentiation.\nDefined in Article 2 of Regulation\
+            \ (EC) No 1272/2008:\n1. hazard class\" means the nature of the physical,\
+            \ health or environmental hazard."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_EitherMaterial'
+      required:
+      - lead
+      - cadmium
+      - mercury
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_CriticalEntity:
+      description: "Entity with attributes for the name of the critical material and,\
+        \ when available, the official codes and names of the material."
+      type: object
+      properties:
+        criticalName:
+          description: "The name of the critical material. This attribute is mentioned\
+            \ in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII\
+            \ (1) (a) refers to Annex VI Part A: \n10. critical raw materials present\
+            \ in the battery in a concentration of more than 0,1 % weight by weight."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        substanceIdentification:
+          description: |-
+            The substance identification, in accordance with the specification in the attribute for the list type. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:
+            (5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_MaterialIdList'
+        substanceName:
+          description: |-
+            The substance name, in accordance with the specification in the attribute for the list type, which is present in the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 7:
+            (5) (a) the International Union of Pure and Applied Chemistry (IUPAC) name of the substances of concern present in the product, including the chemical identification number, that is the European Inventory of Existing Commercial Chemical Substances (EINECS) or European List of Notified Chemical Substances (ELINCS) number or Chemical Abstract Service (CAS) number.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_NameCharacteristic'
+      required:
+      - criticalName
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_CriticalListCharacteristic:
+      description: List of critical raw materials.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_CriticalEntity'
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_ChemicalMaterialCharacteristic:
+      description: Chemical Material Characteristic for the battery.
+      type: object
+      properties:
+        activeMaterials:
+          description: "The active materials included in the battery. Mandatory are\
+            \ nickel, lithium, cobalt and lead. Others are optional."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_ActiveMaterialsCharacteristic'
+        materialSymbol:
+          description: |-
+            A symbol representing lead and cadmium, if present in the battery. Possible entries are: Pb, Cd or Cd, Pb or Pb or Cd. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Article 13:
+            5. All batteries containing more than 0,002 % cadmium or more than 0,004 % lead, shall be marked with the chemical symbol for the metal concerned: Cd or Pb.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_MaterialSymbolEither'
+        hazardousSubstance:
+          description: "Hazardous substances like lead, cadmium and mercury."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_HazardousSubstanceCharacteristic'
+        otherMaterials:
+          description: "Other materials which are necessary to describe the material\
+            \ composition, especially if they are active, critical or hazardous and\
+            \ are not mentioned otherwise. This is mentioned in the Battery regulation\
+            \ 2023/1542 from 12 July 2023 in Annex XIII (1):\n(b) the material composition\
+            \ of the battery, including its chemistry, hazardous substances present\
+            \ in the battery, other than mercury, cadmium or lead, and critical raw\
+            \ materials present in the battery; \n(f) the share of renewable content.\n\
+            and in Annex XIII (2):\n(a) detailed composition, including materials\
+            \ used in the cathode, anode and electrolyte;\nDefinition from Article\
+            \ 3:\n(52) \"hazardous substance\" means a substance classified as hazardous\
+            \ pursuant to Article 3 of Regulation (EC) No 1272/2008:\nA substance\
+            \ or a mixture fulfilling the criteria relating to physical hazards, health\
+            \ hazards or environmental hazards, laid down in Parts 2 to 5 of Annex\
+            \ I is hazardous and shall be classified in relation to the respective\
+            \ hazard classes provided for in that Annex.\nWhere, in Annex I, hazard\
+            \ classes are differentiated on the basis of the route of exposure or\
+            \ the nature of the effects, the substance or mixture shall be classified\
+            \ in accordance with such differentiation.\nDefined in Article 2 of Regulation\
+            \ (EC) No 1272/2008:\n1. hazard class\" means the nature of the physical,\
+            \ health or environmental hazard."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_EitherMaterial'
+        criticalMaterial:
+          description: "A list of critical raw material names. This attribute is mentioned\
+            \ in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII\
+            \ (1) (a) refers to Annex VI Part A: \n10. critical raw materials present\
+            \ in the battery in a concentration of more than 0,1 % weight by weight."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_CriticalListCharacteristic'
+      required:
+      - activeMaterials
+      - hazardousSubstance
+      - otherMaterials
+      - criticalMaterial
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_SeparateSymbolEither:
+      description: Either (left) provided with the selection of the value "separate
+        collection symbol" in the enumeration or (right) with a link to a corresponding
+        picture.
+      additionalProperties: false
+      properties:
+        left:
+          type: string
+          description: Enumeration with the only value separate collection symbol.
+          enum:
+          - separate collection symbol
+        right:
+          description: "Characteristic which describes (multiple) link(s), for example,\
+            \ to a website."
+          type: array
+          items:
+            type: string
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_SustainabilityDocumentCharacteristic:
+      description: Characteristic for sustainability documents of the battery.
+      type: object
+      properties:
+        separateCollection:
+          description: |-
+            Documentation about separate collection of batteries involve information on how to properly collect, handle, and recycle batteries to ensure environmental sustainability and compliance with regulations. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74:
+            1. In addition to the information referred to in Article 8a(2) of Directive 2008/98/EC, producers or, where appointed in accordance with Article 57(1), producer responsibility organisations shall make available to end-users and distributors the following information regarding the prevention and management of waste batteries with regard to the categories of batteries that they supply within the territory of a Member State:
+            (a) the role of end-users in contributing to waste prevention, including by information on good practices and recommendations concerning the use of batteries aimed at extending their use phase and the possibilities of re-use, preparation for re-use, preparation for repurposing, repurposing and remanufacturing;
+            (b) the role of end-users in contributing to the separate collection of waste batteries in accordance with their obligations under Article 64 to allow their treatment;
+            (c) the separate collection, take-back and collection points, preparation for re-use, preparation for repurposing and treatment available for waste batteries;
+            (d) the necessary safety instructions to handle waste batteries, including in relation to the risks associated with, and the handling of, batteries containing lithium;
+            (e) the meaning of the labels and symbols on batteries in accordance with Article 13 or printed on their packaging or in the documents accompanying batteries; and
+            (f) the impact of substances, in particular hazardous substances, present in batteries on the environment and on human health or the safety of persons, including the impact due to inappropriate discarding of waste batteries, such as littering or discarding as unsorted municipal waste.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        wastePrevention:
+          description: |-
+            Documentation about waste prevention for batteries which include guidelines, recommendations, and information on minimizing the environmental impact associated with the use and disposal of batteries. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74 (1) which call Article 8a of Directive 2008/98/EC:
+            2. Member States shall take the necessary measures to ensure that the waste holders targeted by the extended producer responsibility schemes established in accordance with Article 8 (1), are informed about waste prevention measures, centres for re-use and preparing for re-use, take-back and collection systems, and the prevention of littering. Member States shall also take measures to create incentives for the waste holders to assume their responsibility to deliver their waste into the separate collection systems in place, notably, where appropriate, through economic incentives or regulations.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        impactOfSubstances:
+          description: |-
+            An accumulation of documents that refer to the impact, especially hazardous substances, on the battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74:
+            1. In addition to the information referred to in Article 8a(2) of Directive 2008/98/EC, producers or, where appointed in accordance with Article 57(1), producer responsibility organisations shall make available to end-users and distributors the following information regarding the prevention and management of waste batteries with regard to the categories of batteries that they supply within the territory of a Member State:
+            [...]
+            (f) the impact of substances, in particular hazardous substances, present in batteries on the environment and on human health or the safety of persons, including the impact due to inappropriate discarding of waste batteries, such as littering or discarding as unsorted municipal waste.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        euTaxonomyDisclosureStatement:
+          description: "Optional disclosure regarding the EU taxonomy, with the choice\
+            \ to voluntarily provide the EU Taxonomy disclosure through the battery\
+            \ passport."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        sustainabilityReport:
+          description: Voluntarily making the Sustainability Report available via
+            the battery passport. A report containing the information concerning the
+            sustainability in form of a document.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        separateCollectionSymbol:
+          description: |-
+            Indication of the separate collection symbol. This can be either (left) provided with the selection of the value "separate collection symbol" in the enumeration or (right) with a link to a corresponding picture. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(q) and refers to Article 13 (4) and refers to Annex VI Part B:
+            4. From 18 August 2025, all batteries shall be marked with the symbol for separate collection of batteries ("separate collection symbol") as shown in Part B of Annex VI.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_SeparateSymbolEither'
+      required:
+      - separateCollection
+      - wastePrevention
+      - impactOfSubstances
+      - separateCollectionSymbol
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_FootprintValueCharacteristic:
+      type: number
+      description: The value corresponding to the environmental footprint associated
+        with the unit.
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CategoryEnumeration:
+      type: string
+      description: Enumeration of the 19 impact categories in accordance to EN15804+A2.
+      enum:
+      - Climate Change Total
+      - Climate Change Fossil
+      - Climate Change Biogenic Removals and Emissions
+      - Climate Change Land Use and Land Use Change
+      - Ozone Depletion
+      - Acidification
+      - Eutrophication Aquatic Freshwater
+      - Eutrophication Fresh Marine
+      - Eutrophication Terrestrial
+      - Photochemical Ozone Formation
+      - Abiotic Depletion- Minerals and Metals
+      - Fossil Fuels
+      - Water Use
+      - Particulate Matter Emissions
+      - "Ionizing Radiation, Human Health"
+      - Eco-Toxicity
+      - "Human Toxicity, Cancer Effects"
+      - "Human Toxicity, Non-Cancer Effects"
+      - Land Use Related Impacts/Soil Quality
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_ThoroughfareTechnicalKeyCharacteristic:
+      type: string
+      description: Characteristic of the technical key of a thoroughfare.
+      enum:
+      - STREET
+      - INDUSTRIAL_ZONE
+      - OTHER
+      - RIVER
+      - SQUARE
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_ThoroughfareEntity:
+      description: "Characteristic for defining a thoroughfare which can consist of\
+        \ a type (e.g. \"STREET\"), value (e.g. \"Bernstra?e\") and number (e.g. \"\
+        45\"). Model follows the specification of BPDM."
+      type: object
+      properties:
+        technicalKey:
+          description: "Technical key of a thoroughfare. As specified by BPDM, this\
+            \ can be a \"STREET\" or a different type."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_ThoroughfareTechnicalKeyCharacteristic'
+        value:
+          description: "Value of a thoroughfare, e.g. name of a street."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        number:
+          description: "Number of a thoroughfare. As used differently in international\
+            \ context, this number can contain both numerical and alphanumerical values."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - technicalKey
+      - value
+      - number
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_LocalityTechnicalKeyCharacteristic:
+      type: string
+      description: Characteristic of the technical key of a locality
+      enum:
+      - BLOCK
+      - CITY
+      - DISTRICT
+      - OTHER
+      - POST_OFFICE_CITY
+      - QUARTER
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_LocalityEntity:
+      description: Characteristic for defining a locality which belongs to an address
+        and which consists of a type (e.g. "CITY") and value (e.g. "Mannheim"). Model
+        follows the specification of BPDM.
+      type: object
+      properties:
+        technicalKey:
+          description: Technical key of a locality.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_LocalityTechnicalKeyCharacteristic'
+        value:
+          description: "Value of a locality, e.g. name of a city (\"Mannheim\")."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - technicalKey
+      - value
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_PremiseTechnicalKeyCharacteristic:
+      type: string
+      description: Characteristic of the technical key of a premise.
+      enum:
+      - BUILDING
+      - HARBOUR
+      - LEVEL
+      - OTHER
+      - ROOM
+      - SUITE
+      - UNIT
+      - WAREHOUSE
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_PremiseEntity:
+      description: Characteristic for defining a premise which consists of a technical
+        key (e.g. "BUILDING" or "OTHER") and a value (e.g. "Werk 1").
+      type: object
+      properties:
+        technicalKey:
+          description: Technical key of a premise.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PremiseTechnicalKeyCharacteristic'
+        value:
+          description: "Value of a premise, e.g. name or designation of a particular\
+            \ site."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - technicalKey
+      - value
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostalDeliveryPointTechnicalKeyCharacteristic:
+      type: string
+      description: Characteristic of the technical key of a postal delivery point.
+      enum:
+      - INTERURBAN_DELIVERY_POINT
+      - MAIL_STATION
+      - MAILBOX
+      - OTHER
+      - POST_OFFICE_BOX
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostalDeliveryPointEntity:
+      description: Characteristic for defining a postal delivery point which consists
+        of a technical key (e.g. "MAILBOX" or "OTHER") and a value. Model follows
+        the specification of BPDM.
+      type: object
+      properties:
+        technicalKey:
+          description: Technical key of a postal delivery point.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostalDeliveryPointTechnicalKeyCharacteristic'
+        value:
+          description: "Value of a postal delivery point, e.g. designation of a gate."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - technicalKey
+      - value
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_CountryTrait:
+      type: string
+      description: Regular expression for designation of a short name of a country
+        as defined in ISO 3166-2.
+      pattern: "([A-Z]{2}-[A-Z0-9]{1,3}|)"
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_CountryEntity:
+      description: Characteristic of a country belonging to an address
+      type: object
+      properties:
+        shortName:
+          description: The short variation of the name of the country.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_CountryTrait'
+      required:
+      - shortName
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostCodeTrait:
+      type: string
+      description: Regular expression for post codes.
+      pattern: "^[a-z0-9][a-z0-9\\- ]{0,10}$"
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostCodeTechnicalKeyCharacteristic:
+      type: string
+      description: Characteristic for the technical key of a post code.
+      enum:
+      - CEDEX
+      - LARGE_MAIL_USER
+      - OTHER
+      - POST_BOX
+      - REGULAR
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostCodeEntity:
+      description: Characteristic for defining a postcode which can consist of a type
+        (e.g. "REGULAR" for zip codes) and a value (e.g. "98765-4321"). Model follows
+        the specification of BPDM.
+      type: object
+      properties:
+        value:
+          description: The value of a post code.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostCodeTrait'
+        technicalKey:
+          description: The technical key of a post code.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostCodeTechnicalKeyCharacteristic'
+      required:
+      - value
+      - technicalKey
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherLocationIdentifier:
+      description: "Either a BPNA (left) or a non-restricted identifier, which can\
+        \ be further defines through the Location Identifier Type."
+      additionalProperties: false
+      properties:
+        left:
+          type: string
+          description: "The provided regular expression ensures that the BPNA is composed\
+            \ of prefix 'BPNA', 10 digits and two uppercase letters."
+          pattern: "^BPNA[0-9]{8}[a-zA-Z0-9]{4}$"
+        right:
+          type: string
+          description: String for a location identifier.
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherPlantLocation:
+      description: Either the plant location as an ID (right) or a complete address
+        (left).
+      additionalProperties: false
+      properties:
+        left:
+          description: A characteristic to express the postal address and which is
+            intended to be referenced by other aspects.
+          type: object
+          properties:
+            thoroughfare:
+              description: Street or thorough road name.
+              $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_ThoroughfareEntity'
+            locality:
+              description: Locality belonging to an address.
+              $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_LocalityEntity'
+            premise:
+              description: "Premise of an address, e.g. a specific \"BUILDING\" but\
+                \ can also be used for naming a particular site."
+              $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PremiseEntity'
+            postalDeliveryPoint:
+              description: "Delivery point, e.g. designation of a gate."
+              $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostalDeliveryPointEntity'
+            country:
+              description: Country of an address.
+              $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_CountryEntity'
+            postCode:
+              description: Postal code of the address.
+              $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostCodeEntity'
+          required:
+          - thoroughfare
+          - locality
+          - country
+          - postCode
+        right:
+          description: A short id for a manufacturing plant.
+          type: object
+          properties:
+            locationIdentifier:
+              description: The identifier used for a location.
+              $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherLocationIdentifier'
+            locationIdentifierType:
+              description: The type of identifier used for a location. In the case
+                of catena-x it is a BPNA.
+              $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          required:
+          - locationIdentifier
+          - locationIdentifierType
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_FootprintEntity:
+      description: "Footprint Entity for the carbon and environmental footprint with\
+        \ the total value, unit, impact category type, lifecycle, rulebook, declaration,\
+        \ performance class and the facility."
+      type: object
+      properties:
+        value:
+          description: |
+            The value of the environmental footprint or carbon footprint of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:
+            (l) the environmental footprint of the product, expressed as a quantification, in accordance with the applicable delegated act, of a product?s life cycle environmental impacts, whether in relation to one or more environmental impact categories or an aggregated set of impact categories;
+            (m) the carbon footprint of the product.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_FootprintValueCharacteristic'
+        rulebook:
+          description: The applied rulebook for the environmental footprint of the
+            product.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        lifecycle:
+          description: "The lifecycle stage, to which the environmental footprint\
+            \ corresponds. These could be for example \"raw material acquisition and\
+            \ pre-processing\", \"main product production\", \"distribution\" or \"\
+            end of life and recycling\"."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        unit:
+          description: "The unit of measurement of the environmental impact category.\
+            \ For each impact category a specific unit is used. For climate change/carbon\
+            \ footprint \"kg CO2 eq\" will be used. If an aggregation is used, utilize\
+            \ the normalization and weighting methods used in the referenced rulebook."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        type:
+          description: |-
+            The type of the environmental footprint of the product. This could be one of the environmental impact categories. For the carbon footprint chose the "Climate Change" category from the environmental impact categories. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:
+            (l) the environmental footprint of the product, expressed as a quantification, in accordance with the applicable delegated act, of a product?s life cycle environmental impacts, whether in relation to one or more environmental impact categories or an aggregated set of impact categories.
+            (m) the carbon footprint of the product.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CategoryEnumeration'
+        performanceClass:
+          description: The performance classification of the footprint.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        manufacturingPlant:
+          description: The manufacturing plant of the footprint in the specific lifecycle
+            phase.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherPlantLocation'
+        declaration:
+          description: 'The footprint declaration in the format of a link '
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - value
+      - rulebook
+      - lifecycle
+      - unit
+      - type
+      - manufacturingPlant
+      - declaration
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_FootprintList:
+      description: Footprint List for the environmental footprint.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_FootprintEntity'
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CompanyList:
+      description: List of company names.
+      type: array
+      items:
+        type: string
+    urn_samm_io.catenax.shared.contact_information_3.0.0_WebsiteCharacteristic:
+      type: string
+      format: uri
+      description: Address of the website.
+    urn_samm_io.catenax.shared.contact_information_3.0.0_PhoneNumberTrait:
+      type: string
+      description: "Constraint to allow only numbers, whitespaces and an optional\
+        \ leading + sign."
+      pattern: "^[+]?[0-9 ]+$"
+    urn_samm_io.catenax.shared.contact_information_3.0.0_EMailTrait:
+      type: string
+      description: Regular expression for mail address as defined in W3C.
+      pattern: "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+    urn_samm_io.catenax.shared.contact_information_3.0.0_ContactCharacteristic:
+      description: Characteristic describing information on how to contact an organization.
+      type: object
+      properties:
+        website:
+          description: Website of the contact.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.contact_information_3.0.0_WebsiteCharacteristic'
+        phoneNumber:
+          description: Phone number with country and area code.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.contact_information_3.0.0_PhoneNumberTrait'
+        email:
+          description: An email address.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.contact_information_3.0.0_EMailTrait'
+        faxNumber:
+          description: Fax number with country and area code.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.contact_information_3.0.0_PhoneNumberTrait'
+    urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostalAddress:
+      description: A characteristic to express the postal address and which is intended
+        to be referenced by other aspects.
+      type: object
+      properties:
+        thoroughfare:
+          description: Street or thorough road name.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_ThoroughfareEntity'
+        locality:
+          description: Locality belonging to an address.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_LocalityEntity'
+        premise:
+          description: "Premise of an address, e.g. a specific \"BUILDING\" but can\
+            \ also be used for naming a particular site."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PremiseEntity'
+        postalDeliveryPoint:
+          description: "Delivery point, e.g. designation of a gate."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostalDeliveryPointEntity'
+        country:
+          description: Country of an address.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_CountryEntity'
+        postCode:
+          description: Postal code of the address.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostCodeEntity'
+      required:
+      - thoroughfare
+      - locality
+      - country
+      - postCode
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherIdentifier:
+      description: "Either a BPNL (left) or a non-restricted identifier, which can\
+        \ be further defines through the Business Identifier Type."
+      additionalProperties: false
+      properties:
+        left:
+          type: string
+          description: "The provided regular expression ensures that the BPNL is composed\
+            \ of prefix 'BPNL', 10 digits and two uppercase letters."
+          pattern: "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$"
+        right:
+          type: string
+          description: Business Identifier Characteristic which describes an identifier
+            for a company.
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_BusinessType:
+      type: string
+      description: The type of identifier used in combination with the business identifier.
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_BusinessIdEntity:
+      description: Business Id Entity encapsulating a business identifier and type.
+      type: object
+      properties:
+        businessIdentifier:
+          description: The identifier used for a company address.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherIdentifier'
+        businessIdentifierType:
+          description: "The type of identifier used in combination with the business\
+            \ identifier. In case of catena-x, a value can be BPNL or BPNA."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_BusinessType'
+      required:
+      - businessIdentifier
+      - businessIdentifierType
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherBusiness:
+      description: Either a complete business address and contact information (left)
+        or an identifier (right) to reference this information.
+      additionalProperties: false
+      properties:
+        left:
+          description: Characteristic further defining a business address.
+          type: object
+          properties:
+            companyName:
+              description: "Company name, registered trade name or registered trade\
+                \ mark."
+              $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_CompanyList'
+            contactProperty:
+              description: Property describing contact information for an organization.
+              $ref: '#/components/schemas/urn_samm_io.catenax.shared.contact_information_3.0.0_ContactCharacteristic'
+            address:
+              description: The address of the data provider.
+              $ref: '#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_3.0.0_PostalAddress'
+          required:
+          - companyName
+          - contactProperty
+          - address
+        right:
+          description: A identifier to refer to a business.
+          type: array
+          items:
+            $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_BusinessIdEntity'
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourcesEntity:
+      description: Entity for a possible spare part sources.
+      type: object
+      properties:
+        id:
+          description: "The identifier of a spare part producer of the product. In\
+            \ the Catena-X network, the BPNL is used for the identification of companies\
+            \ and the information stored for this like contact information and addresses."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherBusiness'
+      required:
+      - id
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourcesList:
+      description: List of possible spare part sources.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourcesEntity'
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_PartsEntity:
+      description: Possible spare parts of the product with identifiers and names.
+      type: object
+      properties:
+        partNumber:
+          description: |-
+            The part number to identify the spare part. It could be a also for example a GTIN. GTIN stands for Global Trade Item Number. It is a unique and internationally recognized identifier used to identify products in the global marketplace. GTINs are typically encoded in barcodes and are used by retailers, manufacturers, and suppliers to track and manage their products throughout the supply chain. Valid inputs are all GTIN versions (GTIN-8, GTIN-12, GTIN-13, and GTIN-14).This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:
+            (c) the Global Trade Identification Number as provided for in standard ISO/IEC 15459-6 or equivalent of products or their parts.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierCharacteristic'
+        partName:
+          description: |-
+            The name of the spare part. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:
+            (b) ease of repair and maintenance as expressed through: characteristics, availability and delivery time of spare parts, modularity, compatibility with commonly available spare parts, availability of repair and maintenance instructions, number of materials and components used, use of standard components, use of component and material coding standards for the identification of components and materials, number and complexity of processes and tools needed,  ease of non-destructive disassembly and re-assembly, conditions for access to product data, conditions for access to or use of hardware and software needed.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - partNumber
+      - partName
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_PartList:
+      description: A list of possible spare parts of the product.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_PartsEntity'
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherSparePart:
+      description: Either spare parts and optional spare part producers (left) or
+        the string value "not applicable" (right).
+      additionalProperties: false
+      properties:
+        left:
+          description: Characteristic describing sources and spare parts.
+          type: object
+          properties:
+            producer:
+              description: Sources of possible spare parts.
+              $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourcesList'
+            sparePart:
+              description: Possible spare parts of the product.
+              $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_PartList'
+          required:
+          - producer
+          - sparePart
+        right:
+          type: string
+          description: Enumeration with the value "not applicable".
+          enum:
+          - not applicable
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_StateEnumeration:
+      type: string
+      description: "Enumeration defined as original, repurposed, re-used, remanufactured\
+        \ or waste."
+      enum:
+      - original
+      - repurposed
+      - re-used
+      - remanufactured
+      - waste
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_CircularityCharacteristic:
+      description: Characteristic for circularity attributes.
+      type: object
+      properties:
+        documents:
+          description: Sustainability documents of the battery.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_SustainabilityDocumentCharacteristic'
+        carbonFootprint:
+          description: |-
+            The carbon footprint of the battery calculated as kg of carbon dioxide equivalent per one kWh of the total energy provided by the battery over its expected service life. Relevant attributes are the value, the unit, the referenced rulebook, the lifecycle where applied, the declaration, the performance class, the type (PCF), the declaration and the facility. These attributes are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in several places.
+            Annex XIII (1) (c) refers to Article 7 (2) which refers to Article 7 (1)(d):
+            1. For electric vehicle batteries, rechargeable industrial batteries with a capacity greater than 2 kWh and LMT batteries a carbon footprint declaration shall be drawn up for each battery model per manufacturing plant, in accordance with the implementing act referred to in the fourth subparagraph and containing, at least, the following information:
+            [...] (d) the carbon footprint of the battery, calculated as kg of carbon dioxide equivalent per one kWh of the total energy provided by the battery over its expected service life;
+            And as well in Article 7:
+            2. Electric vehicle batteries, rechargeable industrial batteries with a capacity greater than 2 kWh and LMT batteries shall bear a conspicuous, clearly legible and indelible label indicating the carbon footprint of the battery referred to in paragraph 1, first subparagraph, point (d) and declaring the carbon footprint performance class to which the relevant battery model per manufacturing plant corresponds.
+            Further specified in Annex XIII (1) (c) and refers to Article 7 (1):
+            [...] The Commission shall, by 18 February 2024 for electric vehicle batteries, 18 February 2025 for rechargeable industrial batteries, except those with external storage, 18 February 2027 for LMT batteries and 18 February 2029 for industrial batteries with external storage, adopt:
+            (a) a delegated act in accordance with Article 89 to supplement this Regulation by establishing the methodology for the calculation and verification of the carbon footprint of the battery referred to in the first subparagraph, point (d), in accordance with the essential elements set out in Annex II;
+            These parameters are defined by Article 3:
+            (21) "carbon footprint" means the sum of greenhouse gas emissions and greenhouse gas removals in a product system, expressed as carbon dioxide equivalents and based on a Product Environmental Footprint (PEF) study using the single impact category of climate change;
+            and defined by Annex II (2):
+            (e) "life cycle" means the consecutive and interlinked stages of a product system, from raw material acquisition or generation from natural resources to final disposal (ISO 14040:2006 or an equivalent standard).
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_FootprintList'
+        spareParts:
+          description: The list of spare parts available for the product from various
+            suppliers.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherSparePart'
+        status:
+          description: |-
+            The status of the product (original, repurposed, re-used, remanufactured or waste) to indicated, whether it is a used product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:
+            (j) incorporation of used components.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_StateEnumeration'
+      required:
+      - documents
+      - carbonFootprint
+      - spareParts
+      - status
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_DateTrait:
+      type: string
+      description: Constraint fo a timestamp in the format (yyyy-mm-dd).
+      pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ManufacturerCharacteristic:
+      description: Manufacturing information.
+      type: object
+      properties:
+        facility:
+          description: |-
+            The facility identification, where the main manufacturing took place. In the CATENA-X use case, the BPNA can be stated. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:
+            (i) unique facility identifiers.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherPlantLocation'
+        manufacturer:
+          description: |-
+            The main manufacturer, if different from the passport owner, represented by an identification number. In the Catena-X use case, the BPNL can be stated. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:
+            (g) information related to the manufacturer, such as its unique operator identifier and the information referred to in Article 21(7).
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherBusiness'
+        manufacturingDate:
+          description: "The timestamp in the format (yyyy-mm-dd) of the manufacturing\
+            \ date as the final step in production process (e.g. final quality check,\
+            \ ready-for-shipment event)."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_DateTrait'
+      required:
+      - facility
+      - manufacturer
+      - manufacturingDate
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LifeEnumeration:
+      type: string
+      description: "Enumeration with the possible units day, month, cycle, year and\
+        \ runningOrOperatingHour."
+      enum:
+      - unit:day
+      - unit:month
+      - unit:year
+      - unit:cycle
+      - unit:runningOrOperatingHour
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LifeValueCharacteristic:
+      type: number
+      description: Characteristic for the life span value as an integer.
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LifeTypeEnumeration:
+      type: string
+      description: "Enumeration with the values guaranteed lifetime, technical lifetime\
+        \ and mean time between failures."
+      enum:
+      - guaranteed lifetime
+      - technical lifetime
+      - mean time between failures
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LifespanEntity:
+      description: "Entity for the lifespan of a product with type, unit and value."
+      type: object
+      properties:
+        unit:
+          description: "The unit of the respective lifespan expressed through the\
+            \ possible units day, month, cycle, year and runningOrOperatingHour."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LifeEnumeration'
+        value:
+          description: The value as an integer for the respective lifespan.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LifeValueCharacteristic'
+        key:
+          description: |-
+            The type of lifespan represented with the values guaranteed lifetime, technical lifetime and mean time between failures. This attribute is mentioned in the ESPR proposal from March 30th, 2022 ANNEX I:
+            (a) durability and reliability of the product or its components as expressed through the product?s guaranteed lifetime, technical lifetime [or] mean time between failures [...].
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LifeTypeEnumeration'
+      required:
+      - unit
+      - value
+      - key
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LifespanList:
+      description: List of different life spans of a product.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LifespanEntity'
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_GeneralInformationCharacteristic:
+      description: "Characteristic includes details such as the manufacturer's name,\
+        \ facility address, and the date of production."
+      type: object
+      properties:
+        intoServiceDate:
+          description: "Putting into service is the transition from a state of readiness\
+            \ to actual use or operation. The date should be formatted as yyyy-mm-dd.\
+            \ This attribute is mentioned in the Battery regulation 2023/1542 from\
+            \ 12 July 2023 in Annex VII Part B: \n1.the date of manufacture of the\
+            \ battery and, where appropriate, the date of putting into service;\n\
+            Defined is \"putting into service\" in Article 3:\n(18) \"putting into\
+            \ service\" means the first use, for its intended purpose, in the Union,\
+            \ of a battery, without having been previously placed on the market."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_DateTrait'
+        manufacturer:
+          description: |-
+            Manufacturing information of the product. In the CATENA-X use case, the BPNL and BPNA can be stated. These attributes are mentioned in the ESPR proposal from March 30th, 2022 Annex III:
+            (g) information related to the manufacturer, such as its unique operator identifier and the information referred to in Article 21(7);
+            (i) unique facility identifiers.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_ManufacturerCharacteristic'
+        lifespan:
+          description: |-
+            The type of lifespan represented with the values guaranteed lifetime, technical lifetime and mean time between failures. Both can be described through the attributes: type, which defines the type such as guaranteed lifetime or technical lifetime, the unit for the lifetime, and the value represented by an integer. These attributes are mentioned in the ESPR proposal from March 30th, 2022 ANNEX I:
+            (a) durability and reliability of the product or its components as expressed through the products guaranteed lifetime, technical lifetime [or] mean time between failures [...].
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_LifespanList'
+      required:
+      - manufacturer
+      - lifespan
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_VoltMeasurement:
+      type: number
+      description: Measurement for volt as a double.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_DegreeMeasurement:
+      type: number
+      description: Degree measurement in celsius.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_VoltageCharacteristic:
+      description: Characteristic for voltage values.
+      type: object
+      properties:
+        min:
+          description: |-
+            Minimum voltage refers to the lowest voltage the battery is able to reach. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (h) minimal, nominal and maximum voltage, with temperature ranges when relevant.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_VoltMeasurement'
+        max:
+          description: |-
+            Maximum voltage refers to the highest voltage the battery is able to reach. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (h) minimal, nominal and maximum voltage, with temperature ranges when relevant.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_VoltMeasurement'
+        nominal:
+          description: |-
+            Nominal voltage is a standardized or average voltage value assigned to the battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (h) minimal, nominal and maximum voltage, with temperature ranges when relevant.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_VoltMeasurement'
+        temperature:
+          description: Temperature refers to the temperature of the battery during
+            it's cycle-life testing or as boundary condition for other rated values
+            in celsius.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DegreeMeasurement'
+      required:
+      - min
+      - max
+      - nominal
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_PercentMeasurement:
+      type: number
+      description: Measurement in percent as double.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedRoundTripEfficiencyCharacteristic:
+      description: Characteristic for the rated round trip efficiency.
+      type: object
+      properties:
+        depthOfDischarge:
+          description: |-
+            Depth of discharge is a measure used to quantify the extent to which the battery has been discharged relative to its maximum capacity during its cycle-life testing. It represents the percentage of the total available capacity that has been drained or used during a particular discharge cycle. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4)  (a) refers to Article 10 (1), refers to Annex IV Part B:
+            3. Depth of discharge in the cycle-life test.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PercentMeasurement'
+        initial:
+          description: |-
+            The efficiency value of a battery refers to the ratio of useful output energy to the input energy, expressed as a percentage. It quantifies how effectively a battery can convert and deliver stored energy during the discharge process relative to the energy input during charging. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (n) initial round trip energy efficiency and at 50 % of cycle-life.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PercentMeasurement'
+        "50PercentLife":
+          description: |-
+            The round trip efficiency at 50 percent refers to the efficiency of a rechargeable battery's energy storage and retrieval process when the battery has undergone approximately half of its expected number of charge-discharge cycles. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (n) initial round trip energy efficiency and at 50 % of cycle-life.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PercentMeasurement'
+        temperature:
+          description: Temperature refers to the temperature of the battery during
+            it's cycle-life testing or as boundary condition for other rated values
+            in celsius.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DegreeMeasurement'
+      required:
+      - depthOfDischarge
+      - initial
+      - 50PercentLife
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_KilowattHourMeasurement:
+      type: number
+      description: Measurement for the energy expressed in kilowatt hours as double.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedEnergyCharacteristic:
+      description: Characteristic for the rated energy.
+      type: object
+      properties:
+        value:
+          description: "Value describing the energy in a specific measurement period,\
+            \ expressed in kilowatt-hours."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_KilowattHourMeasurement'
+        temperature:
+          description: Temperature refers to the temperature of the battery during
+            it's cycle-life testing or as boundary condition for other rated values
+            in celsius.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DegreeMeasurement'
+      required:
+      - value
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_OhmMeasurement:
+      type: number
+      description: Measurement in ohms as double.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedResistanceCharacteristic:
+      description: Characteristic for rated resistance values of the battery on different
+        levels.
+      type: object
+      properties:
+        cell:
+          description: |-
+            Cell resistance refers to the internal resistance of an individual battery cell in ohms. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (o) internal battery cell and pack resistance;
+            Definition from Annex IV:
+            (5) "Internal resistance" means the opposition to the flow of current within a cell or a battery under reference conditions, that is, the sum of electronic resistance and ionic resistance to the contribution to total effective resistance including inductive/capacitive properties.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_OhmMeasurement'
+        module:
+          description: "The module resistance in ohms includes the internal resistance\
+            \ of each cell within the module as well as the resistance introduced\
+            \ by interconnecting components such as busbars, connectors, and thermal\
+            \ management systems."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_OhmMeasurement'
+        pack:
+          description: |-
+            Pack resistance refers to the overall electrical resistance within a battery pack in ohms. This resistance is a combination of the individual resistances in various components within the pack, including the electrodes, connectors, and other conductive elements. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (o) internal battery cell and pack resistance;
+            Definition from Annex IV:
+            (5) "Internal resistance" means the opposition to the flow of current within a cell or a battery under reference conditions, that is, the sum of electronic resistance and ionic resistance to the contribution to total effective resistance including inductive/capacitive properties.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_OhmMeasurement'
+        temperature:
+          description: Temperature refers to the temperature of the battery during
+            it's cycle-life testing or as boundary condition for other rated values
+            in celsius.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DegreeMeasurement'
+      required:
+      - cell
+      - pack
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_WattMeasurement:
+      type: number
+      description: Measurement in watt as double.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedPowerCharacteristic:
+      description: Characteristic for rated power values.
+      type: object
+      properties:
+        value:
+          description: "Value describing the power in a specific measurement period,\
+            \ expressed in watt."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_WattMeasurement'
+        at20SoC:
+          description: "Capability at 20% SoC refers to the battery's capability at\
+            \ 80% State of Charge. This measurement is indicative of the immediate\
+            \ available energy in the battery. This attribute is mentioned in the\
+            \ Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4)(a)\
+            \ refers to Article 10 (1), refers to Annex IV Part B:\t\n4. Power capability\
+            \ at 80 % and 20 % state of charge."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_WattMeasurement'
+        at80SoC:
+          description: "Capability at 80% SoC refers to the battery's capability at\
+            \ 80% State of Charge. This measurement is indicative of the immediate\
+            \ available energy in the battery. This attribute is mentioned in the\
+            \ Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4)(a)\
+            \ refers to Article 10 (1), refers to Annex IV Part B:\t\n4. Power capability\
+            \ at 80 % and 20 % state of charge"
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_WattMeasurement'
+        temperature:
+          description: Temperature refers to the temperature of the battery during
+            it's cycle-life testing or as boundary condition for other rated values
+            in celsius.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DegreeMeasurement'
+      required:
+      - value
+      - at20SoC
+      - at80SoC
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_AmpereHourMeasurement:
+      type: number
+      description: Measurement for the capacity expressed in ampere hours as double.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedCapacityCharacteristic:
+      description: Characteristic for rated capacity values.
+      type: object
+      properties:
+        value:
+          description: "Value describing the capacity in a specific measurement period,\
+            \ expressed in ampere-hours."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_AmpereHourMeasurement'
+        thresholdExhaustion:
+          description: |-
+            Capacity threshold exhaustion refers to the condition where a battery's capacity diminishes to a level that is considered unacceptable for its intended use. The capacity threshold is a predetermined level below which the battery is considered to be no longer effective or reliable for the specific application. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (k) capacity threshold for exhaustion (only for electric vehicle batteries).
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PercentMeasurement'
+        temperature:
+          description: Temperature refers to the temperature of the battery during
+            it's cycle-life testing or as boundary condition for other rated values
+            in celsius.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DegreeMeasurement'
+      required:
+      - value
+      - thresholdExhaustion
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_PerformanceTemperatureCharacteristic:
+      description: Characteristic for temperature values.
+      type: object
+      properties:
+        lower:
+          description: |-
+            The lower temperature boundary (in Celsius) refers to the minimum temperature at which a battery can effectively operate. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (l) temperature range the battery can withstand when not in use (reference test).
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DegreeMeasurement'
+        upper:
+          description: |-
+            The upper temperature boundary (in Celsius) refers to the minimum temperature at which a battery can effectively operate. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (l) temperature range the battery can withstand when not in use (reference test).
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DegreeMeasurement'
+      required:
+      - lower
+      - upper
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_IntegerCharacteristic:
+      type: number
+      description: Characteristic for an integer value.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_CRateCharacteristic:
+      type: number
+      description: "The C-rate, also known as the charge/discharge rate, quantifies\
+        \ how quickly a battery is charged or discharged in relation to its capacity.\
+        \ It is dimensionless."
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_CycleLifeCharacteristic:
+      description: Cycle Life Characteristic for the battery lifetime testing.
+      type: object
+      properties:
+        temperature:
+          description: Temperature refers to the temperature of the battery during
+            it's cycle-life testing or as boundary condition for other rated values
+            in celsius.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DegreeMeasurement'
+        cycles:
+          description: Cycle refers to one complete charging and discharging sequence.
+            Either during the battery's cycle-life testing or as full equivalent while
+            in use.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_IntegerCharacteristic'
+        depthOfDischarge:
+          description: |-
+            Depth of discharge is a measure used to quantify the extent to which the battery has been discharged relative to its maximum capacity during its cycle-life testing. It represents the percentage of the total available capacity that has been drained or used during a particular discharge cycle. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4)  (a) refers to Article 10 (1), refers to Annex IV Part B:
+            3. Depth of discharge in the cycle-life test.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PercentMeasurement'
+        appliedChargeRate:
+          description: |-
+            The applied discharge rate (c rate) refers to the rate at which a battery is charged. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (p) c-rate of relevant cycle-life test;
+            and Annex XIII (4)(a) refers to Article 10(1) refers to Annex IV Part B:
+            1. Applied discharge rate and charge rate.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_CRateCharacteristic'
+        appliedDischargeRate:
+          description: |-
+            The applied charge rate (c rate) refers to the rate at which a battery is discharged. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (p) c-rate of relevant cycle-life test;
+            and Annex XIII (4)(a) refers to Article 10(1) refers to Annex IV Part B:
+            1. Applied discharge rate and charge rate.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_CRateCharacteristic'
+      required:
+      - temperature
+      - cycles
+      - depthOfDischarge
+      - appliedChargeRate
+      - appliedDischargeRate
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_LifeCycleCharacteristic:
+      description: Life Cycle Characteristic with attributes for the lifetime evaluation
+        of a battery.
+      type: object
+      properties:
+        expectedYears:
+          description: "The expected years refer to the expected life-time of the\
+            \ battery before it starts heavily degrading in its capacity and c-rate\
+            \ in calendar years. This attribute is mentioned in the Battery regulation\
+            \ 2023/1542 from 12 July 2023 in Annex XIII (4) (a) refers to the Article\
+            \ 10 (1) refers to Annex IV Part A: \n5. The expected life-time of the\
+            \ battery under the reference conditions for which it has been designed,\
+            \ in terms of cycles, except for non-cycle applications, and calendar\
+            \ years."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_IntegerCharacteristic'
+        report:
+          description: |-
+            The test reports refer to the testings conducted during the determination of the rated values of the battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (3):
+            [...] results of test reports proving compliance with the requirements laid down in this Regulation or any delegated or implementing act adopted pursuant to this Regulation.
+            And Annex XIII (4)(a) refers to Article 10(1) and refer to Annex IV Part B:
+            5. Any calculations performed with the measured parameters, if applicable.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        cycleLifeTesting:
+          description: The cycle life testing of the battery.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_CycleLifeCharacteristic'
+      required:
+      - expectedYears
+      - report
+      - cycleLifeTesting
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedPerformanceCharacteristic:
+      description: Characteristic for rated performance values of the battery.
+      type: object
+      properties:
+        voltage:
+          description: |-
+            Voltage values are mandatory for the battery, with the option to include temperature values voluntarily. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (h) minimal, nominal and maximum voltage, with temperature ranges when relevant.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_VoltageCharacteristic'
+        roundTripEfficiency:
+          description: "The efficiency value of a battery refers to the ratio of useful\
+            \ output energy to the input energy, expressed as a percentage. With the\
+            \ option to include temperature values voluntarily."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedRoundTripEfficiencyCharacteristic'
+        energy:
+          description: Representation of the total amount of energy that the battery
+            can store and subsequently deliver during its discharge cycle. It is necessary
+            to calculate the SOCE.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedEnergyCharacteristic'
+        resistance:
+          description: "Rated resistance of the battery on the level of the pack,\
+            \ module (optional) and cell."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedResistanceCharacteristic'
+        power:
+          description: "The power value is the rate at which energy is delivered or\
+            \ consumed. It is measured in watts (W) and represents how quickly energy\
+            \ is transferred. This attribute is mentioned in the Battery regulation\
+            \ 2023/1542 from 12 July 2023 in Annex XIII (4)(a) refers to Article 10(1),\
+            \ refers to Annex IV Part A: \t\n2. Power (in W) and power fade (in %).\n\
+            Definition from Annex IV:\n(3) \"Power\" means the amount of energy that\
+            \ a battery is capable of providing over a given period under reference\
+            \ conditions."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedPowerCharacteristic'
+        capacity:
+          description: "Capacity value refers to the amount of electric charge that\
+            \ a battery can store and subsequently deliver when needed. It is a fundamental\
+            \ characteristic of a battery and is expressed in ampere-hours. This attribute\
+            \ is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in\
+            \ Annex XIII (1):\n(g) rated capacity (in Ah);\nand in Annex XIII (4)(a)\
+            \ referring to Article 10 (1) and referring to Annex IV Part A:\n1. Rated\
+            \ capacity (in Ah) and capacity fade (in %). \nAnd in Annex XIII (1)(a)\
+            \ referring to Annex VI Part A:\n6. the capacity;\nDefinition from Annex\
+            \ IV:\n(1) \"Rated capacity\" means the total number of ampere-hours (Ah)\
+            \ that can be withdrawn from a fully charged battery under reference conditions."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedCapacityCharacteristic'
+        performanceDocument:
+          description: |-
+            The performance document lists information regarding the performance of the battery. This can be an overview about several rated performance attributes. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (3):
+            [...] results of test reports proving compliance with the requirements laid down in this Regulation or any delegated or implementing act adopted pursuant to this Regulation.
+            And Annex XIII (4)(a) refers to Article 10(1) and refer to Annex IV Part B:
+            5. Any calculations performed with the measured parameters, if applicable.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        temperature:
+          description: |-
+            The battery temperatures. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (l) temperature range the battery can withstand when not in use (reference test).
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PerformanceTemperatureCharacteristic'
+        selfDischargingRate:
+          description: |-
+            The self-discharge rate of a battery refers to the rate at which the battery loses its stored energy when not in use. It's the discharge of the battery that occurs internally without any external load recorded in percentage for every month. This attribute is mentioned in the Battery Regulation 2023/1542 from 12 July 2023 in Annex XIII (4) (b) refers to Article 14, refers to Annex VII Part A:
+            4. the evolution of self-discharging rates.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PercentMeasurement'
+        testReport:
+          description: |-
+            The test reports refer to the testings conducted during the determination of the rated values of the battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (3):
+            [...] results of test reports proving compliance with the requirements laid down in this Regulation or any delegated or implementing act adopted pursuant to this Regulation.
+            And Annex XIII (4)(a) refers to Article 10(1) and refer to Annex IV Part B:
+            5. Any calculations performed with the measured parameters, if applicable.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        lifetime:
+          description: Attributes for the lifetime evaluation of a battery.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_LifeCycleCharacteristic'
+      required:
+      - voltage
+      - roundTripEfficiency
+      - resistance
+      - power
+      - capacity
+      - temperature
+      - selfDischargingRate
+      - lifetime
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_RecordCharacteristic:
+      description: Characteristic for a dynamic record with a value and timestamp.
+      type: object
+      properties:
+        value:
+          description: A value as a percentage in the form of a double.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PercentMeasurement'
+        time:
+          description: |-
+            The entry date and time corresponding to when a specific parameter was measured. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4):
+            (d) information and data resulting from its use, including the number of charging and discharging cycles and negative events, such as accidents, as well as periodically recorded information on the operating environmental conditions, including temperature, and on the state of charge.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+      required:
+      - value
+      - time
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_FullCycleCharacteristic:
+      description: Characteristic for dynamic cycle values.
+      type: object
+      properties:
+        time:
+          description: |-
+            The entry date and time corresponding to when a specific parameter was measured. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4):
+            (d) information and data resulting from its use, including the number of charging and discharging cycles and negative events, such as accidents, as well as periodically recorded information on the operating environmental conditions, including temperature, and on the state of charge.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        value:
+          description: Cycle refers to one complete charging and discharging sequence.
+            Either during the battery's cycle-life testing or as full equivalent while
+            in use.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_IntegerCharacteristic'
+      required:
+      - time
+      - value
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_RemainingPowerCharacteristic:
+      description: Characteristic for the remaining power.
+      type: object
+      properties:
+        time:
+          description: |-
+            The entry date and time corresponding to when a specific parameter was measured. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4):
+            (d) information and data resulting from its use, including the number of charging and discharging cycles and negative events, such as accidents, as well as periodically recorded information on the operating environmental conditions, including temperature, and on the state of charge.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        value:
+          description: "Value describing the power in a specific measurement period,\
+            \ expressed in watt."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_WattMeasurement'
+      required:
+      - time
+      - value
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicPowerCharacteristic:
+      description: Characteristic for dynamic power values.
+      type: object
+      properties:
+        fade:
+          description: "Power fade refers to a reduction in the power of the battery\
+            \ system over time expressed as a percentage in reference to the initial\
+            \ value. This attribute is mentioned in the Battery regulation 2023/1542\
+            \ from 12 July 2023 in Annex XIII (4)(a) refers to Article 10 (1), refers\
+            \ to Annex IV Part A: \t\n2. Power (in W) and power fade (in %).\nDefinition\
+            \ from Annex IV:\n(4) \"Power fade\" means the decrease over time and\
+            \ upon usage in the amount of power that a battery can deliver at the\
+            \ rated voltage."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RecordCharacteristic'
+        remaining:
+          description: |-
+            The remaining power capability in the battery expressed in watt. This attribute is mentioned in the Battery Regulation 2023/1542 from 12 July 2023 in Annex XIII (4) (b) refers to Article 14, refers to Annex VII Part A:
+            2. where possible, the remaining power capability;
+            Definition from Annex IV:
+            (3) "Power" means the amount of energy that a battery is capable of providing over a given period under reference
+            conditions.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RemainingPowerCharacteristic'
+      required:
+      - fade
+      - remaining
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_CapacityCharacteristic:
+      description: Characteristic for dynamic capacity values such as the throughput
+        and the remaining capacity.
+      type: object
+      properties:
+        time:
+          description: |-
+            The entry date and time corresponding to when a specific parameter was measured. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4):
+            (d) information and data resulting from its use, including the number of charging and discharging cycles and negative events, such as accidents, as well as periodically recorded information on the operating environmental conditions, including temperature, and on the state of charge.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        value:
+          description: "Value describing the capacity in a specific measurement period,\
+            \ expressed in ampere-hours."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_AmpereHourMeasurement'
+      required:
+      - time
+      - value
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicCapacityCharacteristic:
+      description: Characteristic for dynamic capacity values.
+      type: object
+      properties:
+        fade:
+          description: "Capacity fade refers to a reduction in the capacity of the\
+            \ battery system over time expressed as a percentage in reference to the\
+            \ initial value. This attribute is mentioned in the Battery regulation\
+            \ 2023/1542 from 12 July 2023 in Annex XIII (4)(a) refers to Article 10(1)\
+            \ and refer to Annex IV Part A: \n1. Rated capacity (in Ah) and capacity\
+            \ fade (in %).\nDefinition from Annex IV:\n(2) \"Capacity fade\" means\
+            \ the decrease over time and upon usage in the amount of charge that a\
+            \ battery can deliver at the rated voltage, with respect to the original\
+            \ rated capacity."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RecordCharacteristic'
+        throughput:
+          description: "Capacity throughput refers to the total amount of energy that\
+            \ a battery has delivered over its lifetime. It represents the cumulative\
+            \ energy discharge and recharge cycles a battery has undergone. Capacity\
+            \ throughput is expressed in ampere-hours. This attribute is mentioned\
+            \ in the Battery regulation 2023/1542 from 12 July 2023 in Annex VII Part\
+            \ B: \n3. the capacity throughput."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_CapacityCharacteristic'
+        capacity:
+          description: |
+            The remaining capacity in the battery expressed in ampere hours. This attribute is mentioned in the Battery Regulation 2023/1542 from 12 July 2023 in Annex XIII (4) (b) refers to Article 14, refers to Annex VII Part A:
+            1. the remaining capacity.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_CapacityCharacteristic'
+      required:
+      - fade
+      - throughput
+      - capacity
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicRoundTripEfficiencyCharacteristic:
+      description: Characteristic for dynamic round trip efficiency values.
+      type: object
+      properties:
+        fade:
+          description: "Round trip efficiency fade refers to a reduction in the round\
+            \ trip efficiency of the battery system over time expressed as a percentage\
+            \ in reference to the initial value. This attribute is mentioned in the\
+            \ Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4)(a)\
+            \ refers to Article 10(1) and refers to Annex IV: \n4. Where applicable,\
+            \ energy round trip efficiency and its fade (in %).\nDefinition from Annex\
+            \ IV:\n(6) \"Energy round trip efficiency\" means the ratio of the net\
+            \ energy delivered by a battery during a discharge test to the total energy\
+            \ required to restore the initial state of charge by a standard charge."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RecordCharacteristic'
+        remaining:
+          description: |-
+            The remaining round trip efficiency in the battery expressed as percentage. This attribute is mentioned in the Battery Regulation 2023/1542 from 12 July 2023 in Annex XIII (4) (b) refers to Article 14, refers to Annex VII Part A:
+            3. where possible, the remaining round trip efficiency.
+            Definition from Annex IV:
+            (6) "Energy round trip efficiency" means the ratio of the net energy delivered by a battery during a discharge test to the total energy required to restore the initial state of charge by a standard charge.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RecordCharacteristic'
+      required:
+      - fade
+      - remaining
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_ResistanceIncreaseCharacteristic:
+      description: Characteristic for the increase of the battery resistance.
+      type: object
+      properties:
+        pack:
+          description: "Pack resistance increase refers to the overall electrical\
+            \ resistance within a battery pack. This resistance is a combination of\
+            \ the individual resistances in various components within the pack, including\
+            \ the electrodes, connectors, and other conductive elements. The rise\
+            \ in the pack resistance is expressed as a percentage in reference to\
+            \ the initial value.\nThis attribute is mentioned in the Battery regulation\
+            \ 2023/1542 from 12 July 2023 in Annex XIII (4)(a) refers to Article 10(1)\
+            \ and refers to Annex IV Part A: \n3. Internal resistance (in \") and\
+            \ internal resistance increase (in %).\nDefinition from Annex IV:\n(5)\
+            \ \"Internal resistance\" means the opposition to the flow of current\
+            \ within a cell or a battery under reference conditions, that is, the\
+            \ sum of electronic resistance and ionic resistance to the contribution\
+            \ to total effective resistance including inductive/capacitive properties."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RecordCharacteristic'
+        module:
+          description: "The module resistance increase includes the internal resistance\
+            \ of each cell within the module as well as the resistance introduced\
+            \ by interconnecting components such as busbars, connectors, and thermal\
+            \ management systems. The rise in the module resistance is expressed as\
+            \ a percentage in reference to the initial value."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RecordCharacteristic'
+        cell:
+          description: "Cell resistance increase refers to the internal resistance\
+            \ of an individual battery cell. The rise in the cell resistance is expressed\
+            \ as a percentage in reference to the initial value. This attribute is\
+            \ mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex\
+            \ XIII (4)(a) refers to Article 10(1) and refers to Annex IV Part A: \n\
+            3. Internal resistance (in ohms) and internal resistance increase (in\
+            \ %).\nDefinition from Annex IV:\n(5) \"Internal resistance\" means the\
+            \ opposition to the flow of current within a cell or a battery under reference\
+            \ conditions, that is, the sum of electronic resistance and ionic resistance\
+            \ to the contribution to total effective resistance including inductive/capacitive\
+            \ properties."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RecordCharacteristic'
+      required:
+      - pack
+      - cell
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_OhmsMeasurement:
+      type: number
+      description: Measurement for ohm as double.
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_RemainingResistanceCharacteristicRecord:
+      description: Characteristic for the remaining battery resistance.
+      type: object
+      properties:
+        time:
+          description: |-
+            The entry date and time corresponding to when a specific parameter was measured. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4):
+            (d) information and data resulting from its use, including the number of charging and discharging cycles and negative events, such as accidents, as well as periodically recorded information on the operating environmental conditions, including temperature, and on the state of charge.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        value:
+          description: The remaining resistance value expressed in ohms.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_OhmsMeasurement'
+      required:
+      - time
+      - value
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_RemainingResistanceCharacteristic:
+      description: Characteristic for the remaining battery resistance.
+      type: object
+      properties:
+        pack:
+          description: |-
+            Pack resistance refers to the overall electrical resistance within a battery pack. This resistance is a combination of the individual resistances in various components within the pack, including the electrodes, connectors, and other conductive elements. This attribute is mentioned in the Battery Regulation 2023/1542 from 12 July 2023 in Annex XIII (4) (b) refers to Article 14, refers to Annex VII Part A:
+            5. where possible, the ohmic resistance.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RemainingResistanceCharacteristicRecord'
+        module:
+          description: "Module resistance in ohms includes the internal resistance\
+            \ of each cell within the module as well as the resistance introduced\
+            \ by interconnecting components such as busbars, connectors, and thermal\
+            \ management systems."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RemainingResistanceCharacteristicRecord'
+        cell:
+          description: |-
+            Cell resistance refers to the internal resistance of an individual battery cell expressed in ohms. This attribute is mentioned in the Battery Regulation 2023/1542 from 12 July 2023 in Annex XIII (4) (b) refers to Article 14, refers to Annex VII Part A:
+            5. where possible, the ohmic resistance.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RemainingResistanceCharacteristicRecord'
+      required:
+      - pack
+      - cell
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicInternalResistanceCharacteristic:
+      description: Characteristic for dynamic internal resistance values.
+      type: object
+      properties:
+        increase:
+          description: "The increase as percentage in the battery resistance on the\
+            \ level of the pack, module (optional) and cell."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_ResistanceIncreaseCharacteristic'
+        remaining:
+          description: "The remaining resistance in ohms in the battery on the level\
+            \ of the pack, module (optional) and cell."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RemainingResistanceCharacteristic'
+      required:
+      - increase
+      - remaining
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_EnergyCharacteristic:
+      description: Characteristic for energy values expressed in a timestamp and a
+        kilowatt-hours value.
+      type: object
+      properties:
+        time:
+          description: |-
+            The entry date and time corresponding to when a specific parameter was measured. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4):
+            (d) information and data resulting from its use, including the number of charging and discharging cycles and negative events, such as accidents, as well as periodically recorded information on the operating environmental conditions, including temperature, and on the state of charge.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        value:
+          description: "Value describing the energy in a specific measurement period,\
+            \ expressed in kilowatt-hours."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_KilowattHourMeasurement'
+      required:
+      - time
+      - value
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicEnergyCharacteristic:
+      description: Characteristic for dynamic energy values.
+      type: object
+      properties:
+        soce:
+          description: "The state of certified energy (SOCE) refers to the current\
+            \ measured or on-board usable battery energy (UBE) performance expressed\
+            \ as a percentage. This attribute is mentioned in the Battery regulation\
+            \ 2023/1542 from 12 July 2023 in Annex XIII (4)(b) refers to Article 14)\
+            \ and refers to Annex VII Part A: \nstate of certified energy (SOCE)."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RecordCharacteristic'
+        remaining:
+          description: The remaining energy in the battery expressed in kilowatt-hours.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_EnergyCharacteristic'
+        throughput:
+          description: "Energy throughput refers to the total amount of energy that\
+            \ passes through a system over a specific period. This measure encompasses\
+            \ both the energy input (during charging) and the energy output (during\
+            \ discharging). Energy throughput is expressed in kilowatt-hours. This\
+            \ attribute is mentioned in the Battery regulation 2023/1542 from 12 July\
+            \ 2023 in Annex VII Part B: \n2. the energy throughput."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_EnergyCharacteristic'
+      required:
+      - soce
+      - remaining
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicPerformanceCharacteristic:
+      description: Characteristic for dynamic performance values of the battery.
+      type: object
+      properties:
+        stateOfCharge:
+          description: |-
+            State of Charge (SOC) refers to the amount of energy remaining in a battery at a given point in time, expressed as a percentage of the total capacity. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4):
+            (d) information and data resulting from its use, including the number of charging and discharging cycles and negative events, such as accidents, as well as periodically recorded information on the operating environmental conditions, including temperature, and on the state of charge.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RecordCharacteristic'
+        fullCycles:
+          description: |-
+            Full cycles include the cumulative and equivalent count of complete charge and discharge cycles experienced by the battery over its entire life. This attribute is mentioned in the Battery Regulation 2023/1542 from 12 July 2023 in Annex XIII (4) (d) information and data resulting from its use, including the number of charging and discharging cycles and negative events, such as accidents, as well as periodically recorded information on the operating environmental conditions, including temperature, and on the state of charge.
+            And in AnnexVII Part B:
+            5. the number of full equivalent charge-discharge cycles.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_FullCycleCharacteristic'
+        performanceDocument:
+          description: |-
+            The performance document lists information regarding the performance of the battery. This can be an overview about several rated performance attributes. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (3):
+            [...] results of test reports proving compliance with the requirements laid down in this Regulation or any delegated or implementing act adopted pursuant to this Regulation.
+            And Annex XIII (4)(a) refers to Article 10(1) and refer to Annex IV Part B:
+            5. Any calculations performed with the measured parameters, if applicable.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        selfDischargingRate:
+          description: |-
+            The self-discharge rate of a battery refers to the rate at which the battery loses its stored energy when not in use. It's the discharge of the battery that occurs internally without any external load recorded in percentage for every month. This attribute is mentioned in the Battery Regulation 2023/1542 from 12 July 2023 in Annex XIII (4) (b) refers to Article 14, refers to Annex VII Part A:
+            4. the evolution of self-discharging rates.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PercentMeasurement'
+        power:
+          description: Values that describe dynamically captured power values.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicPowerCharacteristic'
+        capacity:
+          description: Values that describe dynamically captured capacity values.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicCapacityCharacteristic'
+        roundTripEfficiency:
+          description: Dynamic round trip efficiency values.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicRoundTripEfficiencyCharacteristic'
+        resistance:
+          description: Values that describe dynamically captured internal resistance
+            values.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicInternalResistanceCharacteristic'
+        energy:
+          description: Values that describe dynamically captured energy values.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicEnergyCharacteristic'
+        negativeEvents:
+          description: |-
+            Mandatory if applicable. Negative events refers to several possible events influencing the battery's condition and lifetime such as extreme temperatures. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4):
+            (d) information and data resulting from its use, including the number of charging and discharging cycles and negative events, such as accidents, as well as periodically recorded information on the operating environmental conditions, including temperature, and on the state of charge.
+            And Annex VII Part B:
+            4. the tracking of harmful events, such as the number of deep discharge events, time spent in extreme temperatures, time spent charging in extreme temperatures.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        operatingEnvironment:
+          description: |-
+            Mandatory if applicable. The operating environment refers to the conditions in which the battery is designed to function optimally. The environment includes factors such as temperature, humidity, pressure, and other external conditions that can impact the performance, safety, and lifespan of the battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (4):
+            (d) information and data resulting from its use, including the number of charging and discharging cycles and negative events, such as accidents, as well as periodically recorded information on the operating environmental conditions, including temperature, and on the state of charge.
+            And Annex VII Part B:
+            4. the tracking of harmful events, such as the number of deep discharge events, time spent in extreme temperatures, time spent charging in extreme temperatures.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+      required:
+      - stateOfCharge
+      - fullCycles
+      - selfDischargingRate
+      - power
+      - capacity
+      - roundTripEfficiency
+      - resistance
+      - energy
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_PerformanceCharacteristic:
+      description: Performance Characteristic for the battery.
+      type: object
+      properties:
+        rated:
+          description: "Rated performance values of the battery such as voltage, round\
+            \ trip efficiency, energy, resistance, power, capacity, temperature ranges\
+            \ and self-discharging rate."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_RatedPerformanceCharacteristic'
+        dynamic:
+          description: Dynamic performance values of the battery.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_DynamicPerformanceCharacteristic'
+      required:
+      - rated
+      - dynamic
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_ConformityCharacteristic:
+      description: Characteristic for conformity documents.
+      type: object
+      properties:
+        declarationOfConformityId:
+          description: |-
+            Identification number of the EU declaration of conformity. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (r) the EU declaration of conformity referred to in Article 18.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentifierCharacteristic'
+        declarationOfConformity:
+          description: |-
+            The EU Declaration of Conformity is a document in which the manufacturer or their authorized representative declares that the battery complies with all relevant European Union product safety directives and regulations. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (r) the EU declaration of conformity referred to in Article 18.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        resultOfTestReport:
+          description: |-
+            The result of tests reports refers to the results of various tests conducted with the battery, testing its life cycle, life span, c-rate and various other aspects. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):
+            (l) temperature range the battery can withstand when not in use (reference test);
+            and Annex XIII (3):
+            results of test reports proving compliance with the requirements laid down in this Regulation or any delegated or implementing act adopted pursuant to this Regulation.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        thirdPartyAssurance:
+          description: |-
+            A summary report from third-parties, covering the verifications. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (d) refers to the Article 52:
+            3. The economic operator referred to in Article 48(1) shall on an annual basis review and make publicly available, including on the internet, a report on its battery due diligence policy. [...], as well as a summary report of the third-party verifications carried out in accordance with Article 51, including the name of the notified body, with due regard for business confidentiality and other competitive concerns. That report shall also cover, where relevant, access to information, public participation in decision-making and access to justice in environmental matters in relation to the sourcing, processing and trading of the raw materials present in batteries.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        dueDiligencePolicy:
+          description: |-
+            A report containing the information concerning the due diligence policy, a set of procedures and guidelines the organization follows to thoroughly assess and evaluate the various aspects of the battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (d) refers to the Article 52:
+            3. The economic operator referred to in Article 48(1) shall on an annual basis review and make publicly available, including on the internet, a report on its battery due diligence policy. That report shall contain, in a manner that is easily comprehensible for end-users and clearly identifies the batteries concerned, the data and information on steps taken by that economic operator to comply with the requirements laid down in Articles 49 and 50, including findings of significant adverse impacts in the risk categories listed in point 2 of Annex X, and how they have been addressed, as well as a summary report of the third-party verifications carried out in accordance with Article 51, including the name of the notified body, with due regard for business confidentiality and other competitive concerns. That report shall also cover, where relevant, access to information, public participation in decision-making and access to justice in environmental matters in relation to the sourcing, processing and trading of the raw materials present in batteries.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+      required:
+      - declarationOfConformity
+      - resultOfTestReport
+      - thirdPartyAssurance
+      - dueDiligencePolicy
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_ExtinguishAgentEntity:
+      description: Entity for the extinguish agents.
+      type: object
+      properties:
+        document:
+          description: Documentation about the extinguishing agent.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        media:
+          description: |-
+            The agent used to extinguish a fire, based on the fire class. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(a) and refers to Annex VI Part A:
+            9. usable extinguishing agent.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        fireClass:
+          description: "Safety classification based on the chemistry and construction\
+            \ of the battery. It determines the means of handling a fire caused by\
+            \ the battery. Possible values are A, B and C and a combination of these."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - media
+      - fireClass
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_ExtinguishAgentList:
+      description: List of extinguish agents.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_ExtinguishAgentEntity'
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_SafetyCharacteristic:
+      description: Safety Characteristic for mostly safety documents.
+      type: object
+      properties:
+        usableExtinguishAgent:
+          description: |-
+            The usable extinguish agents for the battery in case of a fire. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(a) and refers to Annex VI Part A
+            9. usable extinguishing agent.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_ExtinguishAgentList'
+        safetyMeasures:
+          description: |-
+            Safety instruction in the form of a documentation. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (2):
+            (d) safety measures.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        meaningOfLabels:
+          description: |-
+            Documentation on the meaning of labels on a battery which provide information to help users understand the various symbols, markings, and information present on the battery's label. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(s) and refers to Article 74 (1):
+            (e) the meaning of the labels and symbols on batteries in accordance with Article 13 or printed on their packaging or in the documents accompanying batteries [...].
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        safeDischarging:
+          description: "Safe discharging documentation explaining for example the\
+            \ setting of a minimum voltage threshold for the battery. Discharging\
+            \ a battery below this threshold can lead to damage, reduced capacity,\
+            \ and safety hazards."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        dismantling:
+          description: |-
+            Dismantling refers to the proper way of dismantling the battery itself. It refers to the process of taking apart the battery for various purposes, such as recycling, disposal, or examination of its components. This attribute is mentioned in the Battery Regulation 2023/1542 from 12 July 2023 in Annex XIII (2) (c) dismantling information, including at least:
+            - exploded diagrams of the battery system/pack showing the location of battery cells,
+            - disassembly sequences,
+            - type and number of fastening techniques to be unlocked,
+            - tools required for disassembly,
+            - warnings if risk of damaging parts exist,
+            - amount of cells used and layout.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        removalFromAppliance:
+          description: "Removal refers to the proper process of disassembling a battery\
+            \ from an appliance, typically for purposes such as repairs, replacements,\
+            \ or disposal."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+      required:
+      - usableExtinguishAgent
+      - safetyMeasures
+      - meaningOfLabels
+      - dismantling
+    urn_samm_io.catenax.shared.quantity_1.0.0_QuantityValueCharacteristic:
+      type: number
+      description: The quantity value associated with the unit expressed as float.
+    urn_samm_io.catenax.shared.quantity_1.0.0_MassUnitEnumeration:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: Enumeration for mass units.
+      enum:
+      - unit:gram
+      - unit:kilogram
+      - unit:tonneMetricTon
+      - unit:tonUsOrShortTonUkorus
+      - unit:ounceAvoirdupois
+      - unit:pound
+    urn_samm_io.catenax.shared.quantity_1.0.0_MassCharacteristic:
+      description: Characteristic for mass measurements of an item.
+      type: object
+      properties:
+        value:
+          description: The quantity value associated with the unit.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_QuantityValueCharacteristic'
+        unit:
+          description: The unit of a mass related attribute.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_MassUnitEnumeration'
+      required:
+      - value
+      - unit
+    urn_samm_io.catenax.shared.quantity_1.0.0_VolumeUnitEnumeration:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: Enumeration for volume units.
+      enum:
+      - unit:cubicMetre
+      - unit:litre
+      - unit:millilitre
+      - unit:cubicCentimetre
+      - unit:cubicInch
+      - unit:cubicFoot
+      - unit:cubicYard
+      - unit:hectolitre
+    urn_samm_io.catenax.shared.quantity_1.0.0_VolumeCharacteristic:
+      description: Characteristic for volume measurements of an item.
+      type: object
+      properties:
+        value:
+          description: The quantity value associated with the unit.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_QuantityValueCharacteristic'
+        unit:
+          description: The unit of a volume related attribute.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_VolumeUnitEnumeration'
+      required:
+      - value
+      - unit
+    urn_samm_io.catenax.shared.quantity_1.0.0_LinearUnitEnumeration:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: "The unit of a linear attribute that may be used for height, width,\
+        \ length and diameter."
+      enum:
+      - unit:millimetre
+      - unit:centimetre
+      - unit:metre
+      - unit:kilometre
+      - unit:inch
+      - unit:foot
+      - unit:yard
+    urn_samm_io.catenax.shared.quantity_1.0.0_LinearCharacteristic:
+      description: Characteristic for linear measurements of an item.
+      type: object
+      properties:
+        value:
+          description: The quantity value associated with the unit.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_QuantityValueCharacteristic'
+        unit:
+          description: The unit of a linear attribute.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_LinearUnitEnumeration'
+      required:
+      - value
+      - unit
+    urn_samm_io.catenax.battery.battery_pass_4.0.0_PhysicalDimensionCharacteristic:
+      description: Characteristic for the physical dimensions.
+      type: object
+      properties:
+        weight:
+          description: |-
+            The weight of the battery. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(a) and refers to Annex VI Part A:
+            5. the weight.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_MassCharacteristic'
+        volume:
+          description: "The volume of the battery. For calculation of the energy density,\
+            \ the volume is needed. The energy density of a battery is measured in\
+            \ watt-hours per kilogram (Wh/kg) and watt-hours per liter (Wh/L). These\
+            \ measures indicate how much energy a battery can store relative to its\
+            \ weight and volume, respectively."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_VolumeCharacteristic'
+        height:
+          description: The height of the item measured in a specific linear unit which
+            can be declared in the corresponding unit attribute.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_LinearCharacteristic'
+        diameter:
+          description: "The diameter of the item, if applicable, measured in a specific\
+            \ linear unit which can be declared in the corresponding unit attribute."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_LinearCharacteristic'
+        length:
+          description: The length of the item measured in a specific linear unit which
+            can be declared in the corresponding unit attribute.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_LinearCharacteristic'
+        width:
+          description: The width of the item measured in a specific linear unit which
+            can be declared in the corresponding unit attribute.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_LinearCharacteristic'
+      required:
+      - weight
+      - volume
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_StatusEnumeration:
+      type: string
+      description: "The current status of the product passport declared through either:\
+        \ draft, approved, invalid or expired."
+      enum:
+      - draft
+      - approved
+      - invalid
+      - expired
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EconomicOperatorCharacteristic:
+      description: Economic operator of the passport.
+      type: object
+      properties:
+        economicOperatorId:
+          description: |-
+            The identification of the owner/economic operator of the passport. Proposed, according to ISO 15459, is the CIN (company identification code). Other identification numbers like the tax identification number, value added tax identification number, commercial register number and the like are also valid entries. In the Catena-X network, the BPNL is used for the identification of companies and the information stored like contact information and addresses. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex III:
+            (k) the [...] unique operator identifier code of the economic operator established in the Union responsible for carrying out the tasks set out in Article 4 of Regulation (EU) 2019/1020, or Article 15 of Regulation (EU) [?/?] on general product safety, or similar tasks pursuant to other EU legislation applicable to the product.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EitherBusiness'
+      required:
+      - economicOperatorId
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentificationEither:
+      description: Either (left) a uuidv4 or (right) an other type of identifier.
+      additionalProperties: false
+      properties:
+        left:
+          type: string
+          description: "The provided regular expression ensures that the UUID is composed\
+            \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+            \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+            \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+          pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+        right:
+          type: string
+          description: Characteristic for Identifiers.
+      oneOf:
+      - required:
+        - left
+      - required:
+        - right
+    urn_samm_io.catenax.generic.digital_product_passport_3.0.0_MetadataCharacteristic:
+      description: Characteristic for the passport metadata of the digital product
+        passport.
+      type: object
+      properties:
+        version:
+          description: The current version of the product passport. The possibility
+            of modification/updating the product passport needs to include versioning
+            of the dataset. This attribute is an internal versioning from the passport
+            issuer.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        status:
+          description: "The current status of the product passport declared through\
+            \ either: draft, approved, invalid or expired."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_StatusEnumeration'
+        expirationDate:
+          description: |-
+            The timestamp in the format (yyyy-mm-dd) for the product passport until when it is available or a comment describing this period. This attribute is mentioned in the ESPR proposal from March 30th, 2022 and changed by the amendments of the European Parliament from July 12th, 2023 Article 8:
+            (2) (h) the period during which the product passport shall remain available which shall correspond to at least the expected lifetime of a specific product.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_DateTrait'
+        issueDate:
+          description: The timestamp in the format (yyyy-mm-dd) since when the product
+            passport is available.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_DateTrait'
+        economicOperator:
+          description: The economic operator of the passport.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_EconomicOperatorCharacteristic'
+        predecessor:
+          description: "Identification of the preceding product passport. This could\
+            \ either be an identification of the registered twin, a redirection to\
+            \ a platform where it is available, or if there is no preceding passport,\
+            \ input null."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentificationEither'
+        passportIdentifier:
+          description: "The identifier of the product passport, which could be a uuidv4."
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_IdentificationEither'
+      required:
+      - version
+      - expirationDate
+      - issueDate
+      - economicOperator
+      - predecessor
+      - passportIdentifier
+    BatteryPass:
+      description: |-
+        The battery pass describes information collected during the lifecycle of a battery. The battery passport is heavily based on the Regulation (EU) 2023/1542 of the European Parliament and of the Council of 12 July 2023 concerning batteries and waste batteries, amending Directive 2008/98/EC and Regulation (EU) 2019/1020 and repealing Directive 2006/66/EC.
+        Additionally attributes come from the Proposal for Ecodesign for Sustainable Products Regulation.
+      type: object
+      properties:
+        identification:
+          description: |-
+            Battery identification involves specific battery identifiers, including those assigned locally by the manufacturer. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(a) refers to AnnexVi PartA (2) refers to Article 38 (6):
+            battery batch number or serial number or product number or another element allowing their identification.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_IdentificationCharacteristic'
+        chemicalMaterial:
+          description: "Chemical materials relevant for the composition of the battery.\
+            \ These include active, hazardous and critical materials."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_ChemicalMaterialCharacteristic'
+        circularity:
+          description: "Circularity includes information on the carbon footprint,\
+            \ sustainability documents, spare parts and the status of the battery."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_CircularityCharacteristic'
+        generalInformation:
+          description: "General information includes details such as the manufacturer's\
+            \ name, facility address, the date of production and commercial warranty.\
+            \ This attribute is mentioned in the Battery regulation 2023/1542 from\
+            \ 12 July 2023 in Annex XIII (1) (a) and refers to ANNEX VI Part A which\
+            \ refers to Article 38:\n7. Manufacturers shall indicate on the battery\
+            \ their name, registered trade name or registered trade mark, their postal\
+            \ address, indicating a single contact point, and, if available, web and\
+            \ e-mail address. \nFrom Annex XIII (1) (a) and found in ANNEX VI Part\
+            \ A :\n3. the place of manufacture (geographical location of a battery\
+            \ manufacturing plant).\n4. the date of manufacture (month and year).\n\
+            And in Annex XIII (1):\n(m) period for which the commercial warranty for\
+            \ the calendar life applies."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_GeneralInformationCharacteristic'
+        sources:
+          description: Consider additional available sources to enhance the content
+            of the battery passport.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_SourceList'
+        performance:
+          description: Performance attributes of the battery including rated and dynamic
+            values.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PerformanceCharacteristic'
+        conformity:
+          description: Conformity documents for the battery passport.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_ConformityCharacteristic'
+        safety:
+          description: "Safety information on the battery. Included are the attributes\
+            \ safety measurements, meaning of labels, safe discharging and dismantling.\
+            \ These are all documents. Additionally information about usable extinguish\
+            \ agent can be provided."
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_SafetyCharacteristic'
+        physicalDimension:
+          description: |-
+            The weight of the battery. For calculation of the energy density, the volume is also needed. The energy density of a battery is measured in watt-hours per kilogram (Wh/kg) and watt-hours per liter (Wh/L). These measures indicate how much energy a battery can store relative to its weight and volume, respectively. Other measurements are optional.These are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(a) and refers to Annex VI Part A:
+            5. the weight.
+          $ref: '#/components/schemas/urn_samm_io.catenax.battery.battery_pass_4.0.0_PhysicalDimensionCharacteristic'
+        metadata:
+          description: |-
+            Metadata of the product passport regarding issue and expiration date, version, status and the economic operator. These are mentioned in the ESPR proposal from March 30th, 2022 and some changed by the amendments of the European Parliament from July 12th, 2023 Article 8:
+            (2) (h) the period during which the product passport shall remain available which shall correspond to at least the expected lifetime of a specific product.
+            Additionally Annex III mentions:
+            (g) information related to the manufacturer, such as its unique operator identifier and the information referred to in Article 21(7);
+            (h) unique operator identifiers other than that of the manufacturer;
+            (k) the [...] unique operator identifier code of the economic operator established in the Union responsible for carrying out the tasks set out in Article 4 of Regulation (EU) 2019/1020, or Article 15 of Regulation (EU) [?/?] on general product safety, or similar tasks pursuant to other EU legislation applicable to the product.
+          $ref: '#/components/schemas/urn_samm_io.catenax.generic.digital_product_passport_3.0.0_MetadataCharacteristic'
+      required:
+      - identification
+      - chemicalMaterial
+      - circularity
+      - generalInformation
+      - performance
+      - conformity
+      - safety
+      - physicalDimension
+      - metadata
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BatteryPass:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    BatteryPass:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BatteryPass'

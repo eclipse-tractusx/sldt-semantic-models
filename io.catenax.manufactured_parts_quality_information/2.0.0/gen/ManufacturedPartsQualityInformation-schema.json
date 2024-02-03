@@ -1,0 +1,181 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "This aspect model is used to exchange manufacturing-oriented information of several parts, e.g. for quality tasks",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_RecordStatusEnumeration" : {
+        "type" : "string",
+        "description" : "Defining the enumeration for the record status",
+        "enum" : [ "new", "update", "delete", "same" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean" : {
+        "type" : "boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_UniqueID" : {
+        "type" : "string",
+        "description" : "This Characteristic describes a property that is truly unique either inside the Company that is providing the data or even in Catena-X data space. Only one property in a semantic entity should be a uniqueID. Unique IDs can be used to link a data set with other semantic models."
+      },
+      "urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_PositiveNumber" : {
+        "type" : "number",
+        "minimum" : 1,
+        "description" : "This Characteristic describes a positive number. 0 is not included."
+      },
+      "urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnsTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two uppercase letters.",
+        "pattern" : "^BPNS[0-9]{8}[a-zA-Z0-9]{4}$"
+      },
+      "urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_CountryCodeTrait" : {
+        "type" : "string",
+        "description" : "Regular Expression that ensures a three-letter code ",
+        "pattern" : "^[A-Z][A-Z][A-Z]$"
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_AdditionalInformation" : {
+        "description" : "One key:value information pair",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "description" : "Key identifier for this additional information",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "value" : {
+            "description" : "Value for this additional information",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "key", "value" ]
+      },
+      "urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_ListOfAdditionalInformation" : {
+        "description" : "A list of additional information.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_AdditionalInformation"
+        }
+      },
+      "urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_ManufacturedPart" : {
+        "description" : "Manufacturing information for one part. Important properties are standardized. Besides that there is a key:value list to exchange further non-standardized properties for this part",
+        "type" : "object",
+        "properties" : {
+          "recordStatus" : {
+            "description" : "The record operation enumeration can be used to realize delta update concept.\nDelta update concept means:\n- You transfer an initial load of data\n- After the first week only the delta to the initial load is transferred\n\n\nThe record status describes whether this record is:\n- new=>This record is transferred the first time\n- update=> Some properties of this record have changed compared to a previous transfer\n- delete=> This record was transferred in the initial load or in a previous delta update, but is not \n used any more and therefore it should be deleted on data consumer side\n- same=> This record was transferred in the initial load or in a previous delta update",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_RecordStatusEnumeration"
+          },
+          "batchId" : {
+            "description" : "Manufacturer-specific batch identifier: In which batch was this part manufactured",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "catenaXPartId" : {
+            "description" : "The fully anonymous and unique Catena-X ID of this part. This id is unique inside Catena-X data space.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait"
+          },
+          "catenaXQualityTaskId" : {
+            "description" : "The fully anonymous and unique Catena-X ID of this quality task. This id is unique inside Catena-X data space.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait"
+          },
+          "hasBeenReworked" : {
+            "description" : "Indicator whether this part was reworked during manufacturing",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean"
+          },
+          "manufacturerPartName" : {
+            "description" : "Part name given from  the manufacturer or supplier of this part, component, sub component or raw material. A manufacturer part name is NOT unique: All parts of the same kind share the same part name.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "manufacturerPartNumber" : {
+            "description" : "Part number given from  the manufacturer or supplier of this part, component, sub component or raw material. A manufacturer part number is NOT unique: All parts of the same kind share the same part number.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "manufacturerSerialNumber" : {
+            "description" : "Serial number given from the manufacturer or supplier of this part, component, sub component. A manufacturer serial number is unique: With the serial number the produced part can be traced within the manufacturer.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_UniqueID"
+          },
+          "numberOfConductedEOLTests" : {
+            "description" : "Number how often this part went through the EOL test",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_PositiveNumber"
+          },
+          "plantCatenaXId" : {
+            "description" : "Unique Catena-X plant identifier, also called BPNS.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnsTrait"
+          },
+          "plantCountryCode" : {
+            "description" : "Country code of the plant, where the vehicle was produced.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_CountryCodeTrait"
+          },
+          "plantDescription" : {
+            "description" : "Long name of the production plant of the vehicle",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "plantIdentifier" : {
+            "description" : "Plant id of the final assembly of the vehicle",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_UniqueID"
+          },
+          "productionDate" : {
+            "description" : "Date of production for this specific part.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "productionLine" : {
+            "description" : "On which production line was this part produced",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "additionalInformation" : {
+            "description" : "You can use this key:value list for additional properties that were not defined in this aspect model.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_ListOfAdditionalInformation"
+          }
+        },
+        "required" : [ "catenaXQualityTaskId" ]
+      },
+      "urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_ManufacturedPartsList" : {
+        "description" : "A list of manufactured parts",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_ManufacturedPart"
+        }
+      },
+      "urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_MetaCharacteristic" : {
+        "description" : "Characteristic for the meta information.",
+        "type" : "object",
+        "properties" : {
+          "selectionCriteria" : {
+            "description" : "Describes the selection criteria a Catena-X data provider has applied to create this data set.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "selectionStart" : {
+            "description" : "Describes the starting point for providing records in this data set.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "selectionEnd" : {
+            "description" : "Describes the end point for providing records in this data set.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "selectionCriteria" ]
+      }
+    }
+  },
+  "properties" : {
+    "listOfManufacturedParts" : {
+      "description" : "A list of manufactured parts and their properties",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_ManufacturedPartsList"
+    },
+    "metaInformation" : {
+      "description" : "This meta information is valid for all entries in this data set. The meta information is used to tell the data consumer which selection criteria were applied by the data provider. ",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.manufactured_parts_quality_information_2.0.0_MetaCharacteristic"
+    }
+  },
+  "required" : [ "listOfManufacturedParts" ]
+}
