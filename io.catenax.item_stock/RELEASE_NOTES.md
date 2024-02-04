@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [2.0.0] - 2024-01-XY
+## [2.0.0] - 2024-02-19
 ### Added
 n/a
 
