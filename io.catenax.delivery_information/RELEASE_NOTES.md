@@ -19,6 +19,7 @@ n/a
 - migrated samm version from 2.0.0 to 2.1.0
 - updated materialGlobalAssetId description to point to part type twin
 - Delivery: fixed lowercase start in preferred name
+- make materialGlobalAssetId mandatory
 
 ### Removed
 - Harmonization for Industry Core
