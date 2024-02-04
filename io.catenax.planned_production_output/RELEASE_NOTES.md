@@ -18,6 +18,7 @@ n/a
   - io.catenax.shared.business_partner_number
 - migrated samm version from 2.0.0 to 2.1.0
 - updated materialGlobalAssetId description to point to part type twin
+- make materialGlobalAssetId mandatory
 
 ### Removed
 - Harmonization for Industry Core
