@@ -43,7 +43,7 @@ function deploySingleAspect(files, status) {
             status : hubStatus
         }
         output.upload.push(aspect)
-    }
+    })
 }
 
 function metadataStatusToHubStatus(status) {
