@@ -23,8 +23,9 @@ var output = {
 }
 
 try {
-    const added = JSON.parse(getInput('ADDED'))
-    deploySingleAspect(added,"release")
+    is_main_input = getInput('IS_MAIN')
+    console.log("added: " + is_main_input)
+    deploySingleAspect(is_main_input,"release")
     setOutput()
 
 } catch (error) {
@@ -32,8 +33,7 @@ try {
 }
 
 
-function deploySingleAspect(files, status) {
-    files.forEach((file) => {
+function deploySingleAspect(file, status) {
         console.log("Adding model to upload list for model file: " + file)
         hubStatus = metadataStatusToHubStatus(status)
   
@@ -43,7 +43,6 @@ function deploySingleAspect(files, status) {
             status : hubStatus
         }
         output.upload.push(aspect)
-    })
 }
 
 function metadataStatusToHubStatus(status) {
