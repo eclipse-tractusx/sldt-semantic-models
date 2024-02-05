@@ -24,6 +24,7 @@ var output = {
 
 try {
     const model = JSON.parse(getInput('ADDED'))
+    console.log("model:"+model)
     deploySingleAspect(model,"release")
     setOutput()
 
