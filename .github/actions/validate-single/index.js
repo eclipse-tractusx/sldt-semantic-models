@@ -23,7 +23,8 @@ var output = {
 }
 
 try {
-    deploySingleAspect("io.catenax.generic.digital_product_passport/3.0.0/DigitalProductPassport.ttl","release")
+    const added = JSON.parse(getInput('ADDED'))
+    deploySingleAspect(added+"","release")
     setOutput()
 
 } catch (error) {
