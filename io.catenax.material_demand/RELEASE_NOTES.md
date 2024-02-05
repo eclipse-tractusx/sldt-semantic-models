@@ -2,11 +2,11 @@
 
 All notable changes to this model will be documented in this file.
 
-## [2.0.0] - 2024-02-xx
+## [2.0.0] - 2024-02-12
 
 ### Added
 
-- added `materialDemandIsInactive` as optional flag in aspect model header
+- added `materialDemandIsInactive` as mandatory flag in aspect model header
 
 ### Changed
 
