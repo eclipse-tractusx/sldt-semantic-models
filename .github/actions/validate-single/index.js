@@ -98,8 +98,8 @@ function setOutput() {
     if (!fs.existsSync(archiveDir)){
         fs.mkdirSync(archiveDir);
     }
-    fs.writeFileSync("/output.json", JSON.stringify(output)) 
-       console.log("File added to" +"/output.json")
+    fs.writeFileSync("output.json", JSON.stringify(output)) 
+       console.log("File added to:" +"output.json")
    } catch(err) {
     console.log("Error writing file: " + error.message)
    }
