@@ -32,7 +32,6 @@ try {
 
 
 function deploySingleAspect(file, status) {
-    if (isModelFile(file)) {
         console.log("Adding model to upload list for model file: " + file)
         hubStatus = metadataStatusToHubStatus(status)
   
@@ -42,10 +41,6 @@ function deploySingleAspect(file, status) {
             status : hubStatus
         }
         output.upload.push(aspect)
-        
-    } else {
-        console.log("Did not add file to upload list, because it is not a model file: " + file) 
-    }
 }
 
 function metadataStatusToHubStatus(status) {
