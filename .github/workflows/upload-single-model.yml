@@ -18,32 +18,6 @@ on:
         default: 'model_path'
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout files
-        uses: actions/checkout@v3
-        with:
-          sparse-checkout: |
-            .github
-            io.catenax.generic.digital_product_passport/3.0.0
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - name: Install Node dependencies
-        working-directory: ./.github/actions/model-validation
-        run: npm install
-      - name: validate models
-        uses: ./.github/actions/model-validation
-        with:
-          bamm_version: 2.5.1
-          bulk: false
-      - name: Archive
-        uses: actions/upload-artifact@v3
-        with:
-          name: full-validation-report
-          path: output
   upload-models:
     name: 00 Upload Models
     runs-on: ubuntu-latest
@@ -56,17 +30,19 @@ jobs:
           echo "WORKSPACE_UPPERCASE=INT" >> $GITHUB_ENV
       - name: Checkout files
         uses: actions/checkout@v3
+        id: repository_type
         with:
           sparse-checkout: |
             .github
             io.catenax.generic.digital_product_passport/3.0.0
-      - name: Read digital_product_passport
-        id: package
-        uses: jaywcjlove/github-action-read-file@main
+      - name: validate changes from PR
+        if: github.event.pull_request
+        uses: ./.github/actions/validate-single
+      - name: Archive
+        uses: actions/upload-artifact@v3
         with:
-          path: output.json
-      - name: Echo output.json
-        run: echo "${{ steps.package.outputs.content }}"
+          name: output
+          path: toArchive
       - name: Fetch Access Token
         id: token_request
         env:
