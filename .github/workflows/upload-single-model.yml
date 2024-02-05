@@ -12,7 +12,7 @@ name: Upload Single Model
 on:
   workflow_dispatch:
     inputs:
-      filename:
+      modelname:
         description: 'Path of the model to be uploaded'
         required: true
         default: 'model_path'
@@ -34,9 +34,11 @@ jobs:
         with:
           sparse-checkout: |
             .github
-            io.catenax.generic.digital_product_passport/3.0.0
+            ${{ github.event.inputs.modelname }}
       - name: validate changes from PR
         uses: ./.github/actions/validate-single
+        with:
+          ADDED: ${{ github.event.inputs.modelname }}
       - name: Archive
         uses: actions/upload-artifact@v3
         with:
