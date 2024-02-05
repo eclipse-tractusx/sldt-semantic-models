@@ -24,7 +24,7 @@ var output = {
 
 try {
     const added = JSON.parse(getInput('ADDED'))
-    deploySingleAspect(added+"","release")
+    deploySingleAspect(added,"release")
     setOutput()
 
 } catch (error) {
