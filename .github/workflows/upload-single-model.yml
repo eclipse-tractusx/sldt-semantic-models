@@ -18,6 +18,32 @@ on:
         default: 'model_path'
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout files
+        uses: actions/checkout@v3
+        with:
+          sparse-checkout: |
+            .github
+            io.catenax.generic.digital_product_passport/3.0.0
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Install Node dependencies
+        working-directory: ./.github/actions/model-validation
+        run: npm install
+      - name: validate models
+        uses: ./.github/actions/model-validation
+        with:
+          bamm_version: 2.5.1
+          bulk: false
+      - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: full-validation-report
+          path: output
   upload-models:
     name: 00 Upload Models
     runs-on: ubuntu-latest
@@ -34,30 +60,13 @@ jobs:
           sparse-checkout: |
             .github
             io.catenax.generic.digital_product_passport/3.0.0
-
-      - name: Download artifact
-        uses: actions/github-script@v6.3.3
+      - name: Read digital_product_passport
+        id: package
+        uses: jaywcjlove/github-action-read-file@main
         with:
-          script: |
-            var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                run_id: ${{github.event.workflow_run.id }},
-            });
-            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "output"
-            })[0];
-            var download = await github.rest.actions.downloadArtifact({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                artifact_id: matchArtifact.id,
-                archive_format: 'zip',
-            });
-            var fs = require('fs');
-            fs.writeFileSync('${{github.workspace}}/output.zip', Buffer.from(download.data));
-      - run: |
-          unzip output.zip
-          cat output.json
+          path: output.json
+      - name: Echo output.json
+        run: echo "${{ steps.package.outputs.content }}"
       - name: Fetch Access Token
         id: token_request
         env:
