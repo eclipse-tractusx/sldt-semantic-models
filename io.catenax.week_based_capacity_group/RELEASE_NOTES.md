@@ -2,11 +2,11 @@
 
 All notable changes to this model will be documented in this file.
 
-## [3.0.0] - 2024-02-xx
+## [3.0.0] - 2024-02-12
 
 ### Added
 
-- added `capacityGroupIsInactive` as optional flag in aspect model header
+- added `capacityGroupIsInactive` as mandatory flag in aspect model header
 - added `demandVolatilityParameters` as optional entity in aspect model header
 - added `agreedCapacity` as optional property in capacities set
 
