@@ -32,7 +32,8 @@ try {
 }
 
 
-function deploySingleAspect(file, status) {
+function deploySingleAspect(files, status) {
+    files.forEach((file) => {
         console.log("Adding model to upload list for model file: " + file)
         hubStatus = metadataStatusToHubStatus(status)
   
@@ -42,6 +43,7 @@ function deploySingleAspect(file, status) {
             status : hubStatus
         }
         output.upload.push(aspect)
+    }
 }
 
 function metadataStatusToHubStatus(status) {
