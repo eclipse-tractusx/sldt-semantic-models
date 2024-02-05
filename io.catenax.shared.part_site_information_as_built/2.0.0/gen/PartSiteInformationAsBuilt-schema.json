@@ -1,0 +1,58 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The aspect provides site related information for a given item(i.e. a part type or part instance that is uniquely identifiable within Catena-X via its Catena-X ID). A site is a delimited geographical area where a legal entity does business. In this context all potentially related sites are listed including all sites where e.g. production of this part(type).",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two alphanumeric letters.",
+        "pattern" : "^BPNS[a-zA-Z0-9]{12}$"
+      },
+      "urn_samm_io.catenax.shared.part_site_information_as_built_2.0.0_FunctionCharacteristic" : {
+        "type" : "string",
+        "description" : "Describes the characteristics of the function for a site related to the respective part.",
+        "enum" : [ "production", "warehouse", "spare part warehouse" ]
+      },
+      "urn_samm_io.catenax.shared.part_site_information_as_built_2.0.0_SitesEntity" : {
+        "description" : "Describes the ID and function of a site for the associated part in the AsBuilt context(e.g. SerialPart, Batch, jIS).",
+        "type" : "object",
+        "properties" : {
+          "catenaXsiteId" : {
+            "description" : "The identifier of the site according to Catena-X BPDM. The catenaXsiteId must be a valid Catena-X BPN. The BPN is a unique, unchangeable identifier for Business Partners / company locations from foundation to closure, regardless of the different business relationships / structures between or within the Business Partners or company locations.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait"
+          },
+          "function" : {
+            "description" : "The function of the site in relation to the part(i.e. the activity within the value chain of the part that is performed at the site)",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.part_site_information_as_built_2.0.0_FunctionCharacteristic"
+          }
+        },
+        "required" : [ "catenaXsiteId", "function" ]
+      },
+      "urn_samm_io.catenax.shared.part_site_information_as_built_2.0.0_SitesCharacteristic" : {
+        "description" : "Sites Characteristic",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.part_site_information_as_built_2.0.0_SitesEntity"
+        },
+        "uniqueItems" : true
+      },
+      "urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      }
+    }
+  },
+  "properties" : {
+    "sites" : {
+      "description" : "A site is a delimited geographical area where a legal entity does business(geographical address with geo coordinates).A site always has a primary physical address. It is possible that further physical addresses are specified for the site. P.O. box details are only possible in addition to the physical address. A site has a 1:n relation to addresses, means at least 1 address is necessary and multiple addresses are possible.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.part_site_information_as_built_2.0.0_SitesCharacteristic"
+    },
+    "catenaXId" : {
+      "description" : "The Catena-X ID of the given item(i.e. a part type or part instance), valid for the Catena-X dataspace.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait"
+    }
+  },
+  "required" : [ "sites", "catenaXId" ]
+}
