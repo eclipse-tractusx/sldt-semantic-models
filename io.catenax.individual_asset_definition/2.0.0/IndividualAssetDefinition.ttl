@@ -1,0 +1,94 @@
+#######################################################################
+# Copyright (c) 2023,2024 BASF SE
+# Copyright (c) 2023,2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023,2024 ZF Friedrichshafen AG
+# Copyright (c) 2023,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.individual_asset_definition:2.0.0#> .
+@prefix ext-dimension: <urn:samm:io.catenax.shared.physical_dimension:3.0.0#> .
+
+:IndividualAssetDefinition a samm:Aspect ;
+   samm:preferredName "Individual Asset Definition"@en ;
+   samm:description "Permanent characteristics of an individual asset."@en ;
+   samm:properties ( :catenaXId :assetOwnerId :assetSerialNumber :assetType :physicalDimensionsProperty ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X Identifier"@en ;
+   samm:description "The fully anonymous Catena-X ID of the asset, valid for the Catena-X dataspace."@en ;
+   samm:characteristic :CatenaXIdTrait ;
+   samm:exampleValue "urn:uuid:ed85f17e-29dd-473c-9cb8-d7ad1dc44d2f" .
+
+:assetOwnerId a samm:Property ;
+   samm:preferredName "Asset Owner ID"@en ;
+   samm:description "BPNL of the asset owner."@en ;
+   samm:characteristic :AssetOwnerCharacteristic ;
+   samm:exampleValue "BPNL021738173000" .
+
+:assetSerialNumber a samm:Property ;
+   samm:preferredName "Asset Serial Number"@en ;
+   samm:description "The serial number of the asset."@en ;
+   samm:characteristic :AssetSerialNumberCharacteristic ;
+   samm:exampleValue "321-0740-6790-XY" .
+
+:assetType a samm:Property ;
+   samm:preferredName "Asset Type"@en ;
+   samm:description "The type of an asset."@en ;
+   samm:characteristic :AssetTypeCharacteristic ;
+   samm:exampleValue "package" .
+
+:physicalDimensionsProperty a samm:Property ;
+   samm:preferredName "physical dimensions"@en ;
+   samm:description "Describes the physical dimensions of then entity."@en ;
+   samm:characteristic ext-dimension:PhysicalDimensionsCharacteristic .
+
+:CatenaXIdTrait a samm-c:Trait ;
+   samm:preferredName "Catena-X Id Trait"@en ;
+   samm:description "Trait to ensure UUID v4 data format."@en ;
+   samm-c:baseCharacteristic :UUIDv4 ;
+   samm-c:constraint :UUIDv4RegularExpression .
+
+:AssetOwnerCharacteristic a samm:Characteristic ;
+   samm:preferredName "Asset Owner Characteristic"@en ;
+   samm:description "Characteristic describing the property asset owner."@en ;
+   samm:dataType xsd:string .
+
+:AssetSerialNumberCharacteristic a samm:Characteristic ;
+   samm:preferredName "Asset Serial Number Characteristic"@en ;
+   samm:description "Characteristic describing the property serial number."@en ;
+   samm:dataType xsd:string .
+
+:AssetTypeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Asset Type Characteristic"@en ;
+   samm:description "Characteristic describing the property asset type."@en ;
+   samm:dataType xsd:string .
+
+:UUIDv4 a samm:Characteristic ;
+   samm:preferredName "UUIDv4"@en ;
+   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
+   samm:dataType xsd:string .
+
+:UUIDv4RegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Catena-X Id Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
+
