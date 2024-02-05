@@ -23,8 +23,6 @@ var output = {
 }
 
 try {
-    const model = JSON.parse(getInput('ADDED'))
-    console.log("model:"+model)
     deploySingleAspect("io.catenax.generic.digital_product_passport/3.0.0/DigitalProductPassport.ttl","release")
     setOutput()
 
