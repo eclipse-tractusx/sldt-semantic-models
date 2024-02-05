@@ -25,7 +25,7 @@ var output = {
 try {
     const model = JSON.parse(getInput('ADDED'))
     console.log("model:"+model)
-    deploySingleAspect(model,"release")
+    deploySingleAspect(model+".ttl","release")
     setOutput()
 
 } catch (error) {
