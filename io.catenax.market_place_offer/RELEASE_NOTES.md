@@ -5,7 +5,7 @@ All notable changes to this model will be documented in this file.
 ### Added
 - new aspect based on shared aspect "recycling strategy certificate"
 - other new aspects
-- link serveral more models
+- link several more models
 
 ### Changed
 - Upgrade from BAMM model to SAMM model
