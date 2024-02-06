@@ -1,8 +1,17 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [Purpose of this model]
-This aspect model was created in the Catena-X use case quality. The purpose of this aspect model is to transfer general information of a list/fleet of vehicles - primarily how the vehicles are equipped, when they were built and which engines are installed.
+## [Unreleased]
+- Version 2.0.0 of model is deprecated. It has a wrong regex for BPNS validation from the old shared model for BPNS trait.
+
+## [2.1.0] - 2024-02-12
+### Added
+
+### Changed
+- reference to shared aspect model for BPNS was changed to latest version
+
+### Removed
+
 
 ## [2.0.0] - 2024-01-22
 ### Added
