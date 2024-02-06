@@ -1,0 +1,178 @@
+##########################################################################################
+# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IOSB & Fraunhofer IWU & Fraunhofer IPA)
+# Copyright (c) 2024 Siemens AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+##########################################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.shopfloor_information.get_production_tracking:1.0.0#>.
+@prefix ext-header2: <urn:samm:io.catenax.shared.message_header:2.0.0#>.
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#>.
+@prefix ext-part: <urn:samm:io.catenax.serial_part:3.0.0#>.
+
+:GetProductionTracking a samm:Aspect;
+    samm:preferredName "Get Production Tracking"@en;
+    samm:description "Aspect to request product specific data from modular production"@en;
+    samm:properties (:request ext-header2:header);
+    samm:operations ();
+    samm:events ().
+
+:request a samm:Property;
+    samm:preferredName "Request"@en;
+    samm:description "Contains the data for the production tracking request"@en;
+    samm:characteristic :RequestCharacteristic.
+
+:RequestCharacteristic a samm:Characteristic;
+    samm:preferredName "Request Characteristic"@en;
+    samm:description "Characteristic for the production tracking request"@en;
+    samm:dataType :ProductionTrackingRequest.
+
+:ProductionTrackingRequest a samm:Entity;
+    samm:preferredName "Production Tracking Request"@en;
+    samm:description "Entity that describes the request for the production tracking "@en;
+    samm:properties (:stepIdentifierList [ samm:property :processReferenceType; samm:optional "true"^^xsd:boolean ] [ samm:property :billOfProcessId; samm:optional "true"^^xsd:boolean ] :customerId [ samm:property ext-part:catenaXId; samm:optional "true"^^xsd:boolean ] ext-header2:version :identifierType :identifierNumber).
+
+:stepIdentifierList a samm:Property;
+    samm:preferredName "Step Identifier List"@en;
+    samm:description "List of manufacturing steps from which a set of parameter is requested. The manufacturing steps are either determined by a capability or a process step identifier"@en;
+    samm:characteristic :ProcessStepIdentifierCharacteristic.
+
+:processReferenceType a samm:Property;
+    samm:preferredName "Process Reference Type"@en;
+    samm:description "Value of an enumeration that determines whether the request is based on concrete process steps (Bill of process) or capabilities"@en;
+    samm:characteristic :ProcessReferenceTypeCharacteristic;
+    samm:exampleValue "processStep".
+
+:billOfProcessId a samm:Property;
+    samm:preferredName "Bill of Process Identifier"@en;
+    samm:description "Id to identify an instance of the bill of process data model "@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "12345TestBoP.org".
+
+:customerId a samm:Property;
+    samm:preferredName "customer Identification"@en;
+    samm:description "Internal customer Identification"@en;
+    samm:characteristic ext-number:BpnlTrait;
+    samm:exampleValue "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$".
+
+:ProcessStepIdentifierCharacteristic a samm-c:List;
+    samm:preferredName "Process Step Identifier Characteristic"@en;
+    samm:description "List characteristic to define the set of manufacturing steps."@en;
+    samm:dataType :ProcessIdentifier.
+
+:ProcessReferenceTypeCharacteristic a samm-c:Enumeration;
+    samm:preferredName "Process Reference Type Characteristic"@en;
+    samm:description "Enumeration to distinguish between a request based on process steps or a request based on capabilities"@en;
+    samm:dataType xsd:string;
+    samm-c:values ("processStep" "capability").
+
+:StringCharacteristic a samm:Characteristic;
+    samm:preferredName "String Characteristic"@en;
+    samm:description "Characteristic to express string values"@en;
+    samm:dataType xsd:string.
+
+:ProcessIdentifier a samm:Entity;
+    samm:preferredName "Process Identifier"@en;
+    samm:description "Concrete identifier of a manufacturing step, either based on a process step identifier or a capability"@en;
+    samm:properties ([ samm:property :capabilityId; samm:optional "true"^^xsd:boolean ] [ samm:property :billOfMaterialId; samm:optional "true"^^xsd:boolean ] [ samm:property :processStepId; samm:optional "true"^^xsd:boolean] :processParameterList :partInstanceLevel :partInstanceId :billOfMaterialElementId).
+
+:capabilityId a samm:Property;
+    samm:preferredName "Capability Identifier"@en;
+    samm:description "Identifier of a capability that is required in case of a capability based request"@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "Fuegen.Anpressen_Einpressen.Schrauben.Deckelverschrauben".
+
+:billOfMaterialId a samm:Property;
+    samm:preferredName "Bill of Material Identifier"@en;
+    samm:description "Identifier for a bill of material, which is known by both partners"@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "321-BomIdentifier".
+
+:processStepId a samm:Property;
+    samm:preferredName "Process Step Identifier"@en;
+    samm:description "Id of a process Step, specified within an instance of a bill of process data model that is known to both partners"@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "Fuegen.Anpressen_Einpressen.Schrauben.Deckelverschrauben_01".
+
+:processParameterList a samm:Property;
+    samm:preferredName "Process Parameter List"@en;
+    samm:description "List of requested Process parameter"@en;
+    samm:characteristic :ProcessPartameterListCharacteristic.
+
+:partInstanceLevel a samm:Property;
+    samm:preferredName "Part Instance Level"@en;
+    samm:description "Specifies for the case of a  capability based request, whether the parts are identified with a serial number or with a bill of material "@en;
+    samm:characteristic :PartInstanceLevelCharacteristic;
+    samm:exampleValue "bom".
+
+:partInstanceId a samm:Property;
+    samm:preferredName "Part Instance Identifier"@en;
+    samm:description "Identifies an instance of a part in case that the partInstanceLevel property has the value partInstanceId "@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "Deckel-Serial-123".
+
+:billOfMaterialElementId a samm:Property;
+    samm:preferredName "Bill of Material Element Identifier"@en;
+    samm:description "Identifier of an element that is part of the bill of material, referenced by the bill of material Id "@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "Deckel-Bom-123-Schraube".
+
+:ProcessPartameterListCharacteristic a samm-c:List;
+    samm:preferredName "Process Partameter List Characteristic"@en;
+    samm:description "List of process parameters, whose values the requester wants to receive from the provider "@en;
+    samm:dataType :ProcessParameter.
+
+:PartInstanceLevelCharacteristic a samm-c:Enumeration;
+    samm:preferredName "Part Instance Level Characteristic"@en;
+    samm:description "Enumeration that contains two values, bom and partInstanceId. It is used to determine whether the optinal field bill of materialId and billOfMaterialElementId or partInstanceId become mandatory"@en;
+    samm:dataType xsd:string;
+    samm-c:values ("partInstanceId" "bomId").
+
+:ProcessParameter a samm:Entity;
+    samm:preferredName "Process Parameter"@en;
+    samm:description "Entity to define process parameters"@en;
+    samm:properties (:processParameterName :processParameterSemanticId).
+
+:processParameterName a samm:Property;
+    samm:preferredName "Process Parameter Name"@en;
+    samm:description "Name of a process parameter"@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "Drehmoment_max".
+
+:processParameterSemanticId a samm:Property;
+    samm:preferredName "Process Parameter Semantic Identifier"@en;
+    samm:description "Reference to a semantic that defines the unit and the data type of the parameter"@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "Semantic_Drehmoment_max".
+
+:identifierType a samm:Property;
+    samm:preferredName "Identifier Type"@en;
+    samm:description "Identifies a product based on an identifier and distinguishes whether the request is based on a bill of material, part instance identifier oder a batch identifier."@en;
+    samm:characteristic :IdentifierTypeCharacteristic.
+
+:identifierNumber a samm:Property;
+    samm:preferredName "Identifier Number"@en;
+    samm:description "Identifier number of a product"@en;
+    samm:characteristic :StringCharacteristic.
+
+:IdentifierTypeCharacteristic a samm-c:Enumeration;
+    samm:preferredName "Identifier Type Characteristic"@en;
+    samm:description "Used to distinguish between a part instanceId, batchId or bill of materialId based identification of a product"@en;
+    samm:dataType xsd:string;
+    samm-c:values ("partInstanceId" "batchId" "bomId").
+
