@@ -18,5 +18,6 @@ n/a
 
 ### Changed
 - fixed wrong example value for "unit"
+- updated SAMM Version from 2.0.0 to 2.1.0
 
 ### Removed
