@@ -3,12 +3,13 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [3.0.0] - 2024-02-02
+## [3.0.0] - 2024-02-06
 ### Changed
 - updated version of model
 - update reference to shared aspect address
 - update BPN-L/S/A and refer to shared model
 - delete product number
+- update copyright information
 
 
 ## [2.0.0] - 2023-08-21
