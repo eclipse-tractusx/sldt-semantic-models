@@ -3,6 +3,15 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [2.1.0] - 2024-02-12
+### Added
+- property added parentSerialNumber
+
+### Changed
+- reference to shared aspect model for BPNS was changed to latest version
+
+### Removed
+
 ## [2.0.0] - 2024-01-29
 ### Added
 - metaInformation property added to root entity
