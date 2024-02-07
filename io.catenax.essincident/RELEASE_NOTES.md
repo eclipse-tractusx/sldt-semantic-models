@@ -8,6 +8,7 @@ All notable changes to this model will be documented in this file.
 - updated version of model
 - update reference to shared aspect address
 - update BPN-L/S/A and refer to shared model
+- update IDs and refer to shared Uuidv4Characteristic
 - delete product number
 - update copyright information
 
