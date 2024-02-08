@@ -3,6 +3,12 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [3.0.0] - 2024-02-08
+### Added
+- Update based on shared aspect "uuid"
+- Update based on shared aspect "business partner number"
+- new features: Revocation Date
+
 ## [2.0.0] - 2023-11-07
 ### Added
 - Upgarde from BAMM model to SAMM model
