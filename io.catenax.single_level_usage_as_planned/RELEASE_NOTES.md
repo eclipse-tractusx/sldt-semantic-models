@@ -17,8 +17,6 @@ All notable changes to this model will be documented in this file.
 - replaced the whole `CatenaXIdTraitCharacteristi`c and its childs with the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
 - description of some objects were adjusted
 
-### Removed
-- removed duplicate `Timestamp` of the `lastModifiedOn` property (linked instead to the exisitng Timestamp property)
 
 ## [1.1.0]
 ### Added
