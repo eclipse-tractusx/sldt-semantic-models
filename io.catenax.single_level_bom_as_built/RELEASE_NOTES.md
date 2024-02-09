@@ -3,8 +3,8 @@ All notable changes to this model will be documented in this file.
 
 ## [3.0.0] - 19.02.2024
 ### Added
-- new childCatenaXId property as child of the existing childItems property
-- link of the new childCatenaXId property to the UuidV4Trait of the shared uuid 2.0.0 aspect model
+- added new childCatenaXId property as child of the existing childItems property
+- added a new link from the new childCatenaXId property to the UuidV4Trait of the shared uuid 2.0.0 aspect model
 
 ### Changed
 - replaced the quantityNumber and measurementUnit properties with the itemUnit and quantityValue properties of the shared quantity 2.0.0 aspect model
@@ -13,7 +13,7 @@ All notable changes to this model will be documented in this file.
 - description of some objects were adjusted
 
 ### Removed
-- duplicate Timestamp of the lastModifiedOn property (linked instead to the exisitng Timestamp property)
+- removed duplicate Timestamp of the lastModifiedOn property (linked instead to the exisitng Timestamp property)
 
 ## [2.0.0] - 25.09.2023
 ### Added
