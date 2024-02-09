@@ -9,9 +9,9 @@ All notable changes to this model will be documented in this file.
 
 ### Changed
 - replaced the `quantityNumber` and `measurementUnit` properties with the `itemUnit` and `quantityValue` properties of the shared quantity 2.0.0 aspect model
-- replaced the whole `CatenaXIdTraitCharacteristi`c and its childs with the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
+- replaced the whole `CatenaXIdTraitCharacteristic` and its childs with the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
 - replaced the whole `BpnTrait` and its childs with the `BpnlTrait` of the shared business_partner_number 2.0.0 aspect model
-- replaced the existing `Timestamp` characteristics of `validFrom` and `validT`o with a new `DateTimeTrait`, to permit date information excluding time
+- replaced the existing `Timestamp` characteristics of `validFrom` and `validTo` with a new `DateTimeTrait`, to permit date information excluding time
 - description of some objects were adjusted
 
 ### Removed
