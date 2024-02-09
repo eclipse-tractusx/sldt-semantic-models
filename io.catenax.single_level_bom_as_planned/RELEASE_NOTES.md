@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [3.0.0] - 19.02.2024
+## [3.0.0] - 2024-02-19
 ### Added
 - added new `childCatenaXId` property as child of the existing `childItems` property
 - added new `hasAlternatives` property as child of the existing `childItems` property including a boolean characteristic
