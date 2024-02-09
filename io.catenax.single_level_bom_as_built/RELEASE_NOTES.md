@@ -12,9 +12,6 @@ All notable changes to this model will be documented in this file.
 - replaced the whole `BpnTrait` and its childs with the `BpnlTrait` of the shared business_partner_number 2.0.0 aspect model
 - description of some objects were adjusted
 
-### Removed
-- removed duplicate `Timestamp` of the `lastModifiedOn` property (linked instead to the exisitng Timestamp property)
-
 ## [2.0.0] - 25.09.2023
 ### Added
 - property called hasAlternative
