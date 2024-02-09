@@ -1,7 +1,21 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [Unreleased]
+## [3.0.0] - 19.02.2024
+### Added
+- added new `childCatenaXId` property as child of the existing `childItems` property
+- added new `hasAlternatives` property as child of the existing `childItems` property including a boolean characteristic
+- added a new link from the new `childCatenaXId` property to the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
+
+### Changed
+- replaced the `quantityNumber` and `measurementUnit` properties with the `itemUnit` and `quantityValue` properties of the shared quantity 2.0.0 aspect model
+- replaced the whole `CatenaXIdTraitCharacteristi`c and its childs with the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
+- replaced the whole `BpnTrait` and its childs with the `BpnlTrait` of the shared business_partner_number 2.0.0 aspect model
+- replaced the existing `Timestamp` characteristics of `validFrom` and `validT`o with a new `DateTimeTrait`, to permit date information excluding time
+- description of some objects were adjusted
+
+### Removed
+- removed duplicate Timestamp of the `lastModifiedOn` property (linked instead to the exisitng Timestamp property)
 
 ## [2.0.0] - 2023-09-01
 ### Added
