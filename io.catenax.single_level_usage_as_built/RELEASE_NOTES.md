@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [3.0.0] - 19.02.2024
+## [3.0.0] - 2024-02-19
 ### Added
 - added new `parentCatenaXId` property as child of the existing `parentItems` property
 - added a new link from the new `parentCatenaXId` property to the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
