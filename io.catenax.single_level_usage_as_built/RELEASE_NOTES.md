@@ -14,7 +14,7 @@ All notable changes to this model will be documented in this file.
 - description of some objects were adjusted
 
 ### Removed
-- removed duplicate Timestamp of the `lastModifiedOn` property (linked instead to the exisitng Timestamp property)
+- removed duplicate `Timestamp` of the `lastModifiedOn` property (linked instead to the exisitng Timestamp property)
 
 ## [2.0.0] - 2023-09-01
 ### Added
