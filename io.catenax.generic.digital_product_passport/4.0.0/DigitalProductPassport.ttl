@@ -1,11 +1,11 @@
 #######################################################################
-# Copyright (c) 2023-2024 BASF Coatings GmbH
+# Copyright (c) 2023-2024 ZF Friedrichshafen AG
 # Copyright (c) 2023-2024 BMW AG
-# Copyright (c) 2023-2024 CGI Deutschland B.V. & Co. KG
+# Copyright (c) 2023-2024 BASF Coatings GmbH
 # Copyright (c) 2023-2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023-2024 CGI Deutschland B.V. & Co. KG
 # Copyright (c) 2023-2024 SAP Deutschland SE & Co.KG
 # Copyright (c) 2023-2024 T-Systems International GmbH
-# Copyright (c) 2023-2024 ZF Friedrichshafen AG
 # Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
@@ -144,7 +144,7 @@
 :IdentificationEntity a samm:Entity ;
    samm:preferredName "Identification Entity"@en ;
    samm:description "Entity with identification information of the product with part type information, local identifiers, other codes and the data carrier."@en ;
-   samm:properties ( [ samm:property :serialInformation; samm:optional true; samm:payloadName "serial" ] [ samm:property :batchInformation; samm:optional true; samm:payloadName "batch" ] :partTypeInformation :additionalCode :dataCarrier ext-classification:partClassification ) .
+   samm:properties ( [ samm:property :serialInformation; samm:optional true; samm:payloadName "serial" ] [ samm:property :batchInformation; samm:optional true; samm:payloadName "batch" ] :partTypeInformation [ samm:property :codes; samm:optional true ] :dataCarrier ext-classification:partClassification ) .
 
 :OperationEntity a samm:Entity ;
    samm:preferredName "Operation Entity"@en ;
@@ -249,9 +249,9 @@
    samm:description "Identifier on the level of a part model or type. Identifier for a serial part if available. This is mentioned in the ESPR provisional agreement from January 9th, 2024 Recital (27):\n[...] A ‘model’ usually means a version of a product of which all units share the same technical characteristics relevant for the ecodesign requirements and the same model identifier [...]."@en ;
    samm:characteristic :PartTypeCharacteristic .
 
-:additionalCode a samm:Property ;
-   samm:preferredName "Additional Code"@en ;
-   samm:description "Codes for identification can be for example commodity codes. In Europe, two commonly used codes for goods classification are the Harmonized System (HS) code and the Combined Nomenclature (CN). Other codes can also be given."@en ;
+:codes a samm:Property ;
+   samm:preferredName "Codes"@en ;
+   samm:description "Codes for identification."@en ;
    samm:characteristic :CodeList .
 
 :dataCarrier a samm:Property ;
@@ -535,7 +535,7 @@
 :PhysicalDimensionEntity a samm:Entity ;
    samm:preferredName "Physical Dimension Entity"@en ;
    samm:description "Entity for physical dimensions with linear, mass and capacity attributes."@en ;
-   samm:properties ( [ samm:property :width; samm:optional true ] [ samm:property :length; samm:optional true ] [ samm:property :diameter; samm:optional true ] [ samm:property :height; samm:optional true ] :grossWeight :grossVolume :weight :volume ) .
+   samm:properties ( [ samm:property :width; samm:optional true ] [ samm:property :length; samm:optional true ] [ samm:property :diameter; samm:optional true ] [ samm:property :height; samm:optional true ] :grossWeight [ samm:property :grossVolume; samm:optional true ] :weight [ samm:property :volume; samm:optional true ] ) .
 
 :HeaderConstraint a samm-c:LengthConstraint ;
    samm:preferredName "Header Constraint"@en ;
@@ -544,8 +544,8 @@
 
 :ProductEnvironmentalFootprintEntity a samm:Entity ;
    samm:preferredName "Product Environmental Footprint Entity"@en ;
-   samm:description "The Product Environmental Footprint Entity with sustainability information such as the different environmental footprint types, the carbon footprint explicitly, applicable rules and lifecycle stages."@en ;
-   samm:properties ( [ samm:property :environmentalFootprint; samm:optional true; samm:payloadName "environmental" ] [ samm:property :carbonFootprint; samm:payloadName "carbon" ] :materialFootprint ) .
+   samm:description "The Product Environmental Footprint Entity with sustainability information such as the different environmental footprint types, the carbon and material footprint explicitly, applicable rules and lifecycle stages."@en ;
+   samm:properties ( [ samm:property :environmentalFootprint; samm:optional true; samm:payloadName "environmental" ] [ samm:property :carbonFootprint; samm:optional true; samm:payloadName "carbon" ] [ samm:property :materialFootprint; samm:optional true; samm:payloadName "material" ] ) .
 
 :SubstanceOfConcernEntity a samm:Entity ;
    samm:preferredName "Substance Of Concern Entity"@en ;
@@ -663,32 +663,32 @@
 
 :grossVolume a samm:Property ;
    samm:preferredName "Gross Volume"@en ;
-   samm:description "The gross volume of the item measured in a specific capacity unit which can be declared in the corresponding unit attribute. Gross volume refers to the total volume of a product, including the volume of the packaging. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (i) information on the performance of the product in relation to the product parameters referred to in Annex I;\nAnnex I (i) weight and volume of the product and its packaging, and the product-to-packaging ratio."@en ;
+   samm:description "The gross volume of the item, if possible, measured in a specific capacity unit which can be declared in the corresponding unit attribute. Gross volume refers to the total volume of a product, including the volume of the packaging. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (i) information on the performance of the product in relation to the product parameters referred to in Annex I;\nAnnex I (i) weight and volume of the product and its packaging, and the product-to-packaging ratio."@en ;
    samm:characteristic ext-quantity:VolumeCharacteristic .
 
 :weight a samm:Property ;
    samm:preferredName "Weight"@en ;
-   samm:description "Weight of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (i) information on the performance of the product in relation to the product parameters referred to in Annex I;\nAnnex I (i) weight and volume of the product [...]."@en ;
+   samm:description "Weight of the product measured in a specific mass unit which can be declared in the corresponding unit attribute.  This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (i) information on the performance of the product in relation to the product parameters referred to in Annex I;\nAnnex I (i) weight and volume of the product [...]."@en ;
    samm:characteristic ext-quantity:MassCharacteristic .
 
 :volume a samm:Property ;
    samm:preferredName "Volume"@en ;
-   samm:description "Volume of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (i) information on the performance of the product in relation to the product parameters referred to in Annex I;\nAnnex I (i) weight and volume of the product [...]."@en ;
+   samm:description "Volume of the product, if possible, measured in a specific capacity unit which can be declared in the corresponding unit attribute. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(2) (b) (i) information on the performance of the product in relation to the product parameters referred to in Annex I;\nAnnex I (i) weight and volume of the product [...]."@en ;
    samm:characteristic ext-quantity:VolumeCharacteristic .
 
 :environmentalFootprint a samm:Property ;
    samm:preferredName "Environmental Footprint"@en ;
-   samm:description "The environmental footprint of the product. This attribute is mentioned in the ESPR provisional agreement from January 9th, 2024 Article 7:\n(2)(b)(i) information on the performance of the product in relation to one or more of the product parameters referred to in Annex I, including a scoring of reparability or durability, carbon footprint or environmental footprint;\nand Annex I:\n(l) the environmental footprint of the product, expressed as a quantification, in accordance with the applicable delegated act, of a product's life cycle environmental impacts, whether in relation to one or more environmental impact categories or an aggregated set of impact categories."@en ;
+   samm:description "The environmental footprint of the product. This attribute is mentioned in the ESPR provisional agreement from January 9th, 2024 Annex I:\nThe following parameters shall, as appropriate, and where necessary supplemented by others, be used, individually or combined, as a basis for improving the product aspects referred to in Article 5(1):\n(l) the environmental footprint of the product, expressed as a quantification, in accordance with the applicable delegated act, of a product's life cycle environmental impacts, whether in relation to one or more environmental impact categories or an aggregated set of impact categories.\nand Article 7:\n(2)(b)(i) information on the performance of the product in relation to one or more of the product parameters referred to in Annex I, including a scoring of reparability or durability, carbon footprint or environmental footprint;\nand defined by Article 2:\n(23) ‘environmental footprint’ means a quantification of product environmental impacts throughout its life cycle, whether in relation to a single environmental impact category or an aggregated set of impact categories based on the Product Environmental Footprint method or other scientific methods developed by international organisations and widely tested in collaboration with different industry sectors and adopted or implemented by the Commission in other Union legislation;\n(24) ‘Product Environmental Footprint method’ means the life cycle assessment method to quantify the environmental impacts of products established by Recommendation (EU) 2021/2279."@en ;
    samm:characteristic :FootprintList .
 
 :carbonFootprint a samm:Property ;
    samm:preferredName "Carbon Footprint"@en ;
-   samm:description "The carbon footprint of the product. This is mentioned in the ESPR provisional agreement from January 9th, 2024 Article 7:\n(2)(b)(i) information on the performance of the product in relation to one or more of the product parameters referred to in Annex I, including a scoring of reparability or durability, carbon footprint or environmental footprint;\nand Annex I:\n(m) the carbon footprint of the product."@en ;
+   samm:description "The carbon footprint of the product. This is mentioned in the ESPR provisional agreement from January 9th, 2024 Annex I:\nThe following parameters shall, as appropriate, and where necessary supplemented by others, be used, individually or combined, as a basis for improving the product aspects referred to in Article 5(1):\n(m) the carbon footprint of the product;\nand Article 7:\n(2)(b)(i) information on the performance of the product in relation to one or more of the product parameters referred to in Annex I, including a scoring of reparability or durability, carbon footprint or environmental footprint;\nand defined by Article 2:\n(25) ‘carbon footprint’ means the sum of greenhouse gas (GHG) emissions and GHG removals in a product system, expressed as CO2 equivalents and based on a life cycle assessment using the single impact category of climate change."@en ;
    samm:characteristic :FootprintList .
 
 :materialFootprint a samm:Property ;
    samm:preferredName "Material Footprint"@en ;
-   samm:description "The matrial footprint of the product. This is mentioned in the ESPR provisional agreement from January 9th, 2024 Annex I:\n(ma) the material footprint of the product."@en ;
+   samm:description "The matrial footprint of the product. This is mentioned in the ESPR provisional agreement from January 9th, 2024 Annex I:\n(ma) the material footprint of the product;\nand defined by Article 2:\n(25a) 'material footprint' refers to the total amount of raw materials extracted to meet final consumption demands."@en ;
    samm:characteristic :FootprintList .
 
 :substanceOfConcern a samm:Property ;
@@ -848,7 +848,7 @@
 :footprintValue a samm:Property ;
    samm:preferredName "Footprint Value"@en ;
    samm:description "The value of the footprint of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Annex I:\n(l) the environmental footprint of the product, expressed as a quantification, in accordance with the applicable delegated act, of a product's life cycle environmental impacts, whether in relation to one or more environmental impact categories or an aggregated set of impact categories;\n(m) the carbon footprint of the product;\n(ma) the material footprint of the product.\n"@en ;
-   samm:characteristic :FootprintValueCharacteristic ;
+   samm:characteristic :PositiveTrait ;
    samm:exampleValue "12.678"^^xsd:float .
 
 :footprintRulebook a samm:Property ;
@@ -906,7 +906,7 @@
 :concentration a samm:Property ;
    samm:preferredName "Concentration"@en ;
    samm:description "Concentration of the material at the level of the product. This attribute is specially mentioned for substances of concern mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...].\nOther substances are mentioned for the purporse of recycling in the ESPR provisional agreement from January 9th, 2024 Annex I:\n(d) design for recycling, ease and quality of recycling as expressed through: use of easily recyclable materials, safe, easy and non-destructive access to recyclable components and materials or components and materials containing hazardous substances and material composition and homogeneity, possibility for high-purity sorting, number of materials and components used, use of standard components, use of component and material coding standards for the identification of components and materials, number and complexity of processes and tools needed, ease of nondestructive disassembly and re-assembly, conditions for access to product data, conditions for access to or use of hardware and software needed.\n"@en ;
-   samm:characteristic :ConcentrationValue ;
+   samm:characteristic :PositiveTrait ;
    samm:exampleValue "5.3"^^xsd:float .
 
 :exemption a samm:Property ;
@@ -938,18 +938,19 @@
 
 :documentation a samm:Property ;
    samm:preferredName "Documentation"@en ;
+   samm:description "Documentation accompanying the material."@en ;
    samm:characteristic :DocumentList .
 
 :recycled a samm:Property ;
    samm:preferredName "Recycled"@en ;
    samm:description "The share of the material, which is recovered recycled content from the product. This attribute is mentioned in the ESPR provisional agreement from January 9th, 2024 Annex I:\n(h) use or content of recycled materials and recovery of materials, including critical raw materials;"@en ;
-   samm:characteristic :Share ;
+   samm:characteristic :PercentageTrait ;
    samm:exampleValue "12.5"^^xsd:float .
 
 :renewable a samm:Property ;
    samm:preferredName "Renewable"@en ;
    samm:description "The share of the material, which is from a renewable resource that can be replenished. Renewable resources are those that can be reproduced by physical, chemical, or mechanical processes. These are the kind of resources that can be regenerated throughout time. Forest wood, for example, can be grown through reforestation. This attribute is mentioned in the ESPR provisional agreement from January 9th, 2024 Annex I:\n(ha) use or content of sustainable renewable materials;\n"@en ;
-   samm:characteristic :Share ;
+   samm:characteristic :PercentageTrait ;
    samm:exampleValue "23.5"^^xsd:float .
 
 :critical a samm:Property ;
@@ -965,10 +966,11 @@
    samm-c:baseCharacteristic :IdentifierCharacteristic ;
    samm-c:constraint :EoriConstraint .
 
-:FootprintValueCharacteristic a samm-c:Quantifiable ;
-   samm:preferredName "Footprint Value Characteristic"@en ;
-   samm:description "The value corresponding to the environmental footprint associated with the unit."@en ;
-   samm:dataType xsd:float .
+:PositiveTrait a samm-c:Trait ;
+   samm:preferredName "Positive Trait"@en ;
+   samm:description "Trait for positive values."@en ;
+   samm-c:baseCharacteristic :FloatValue ;
+   samm-c:constraint :PositiveRangeConstraint .
 
 :DocumentList a samm-c:List ;
    samm:preferredName "Document List"@en ;
@@ -987,11 +989,6 @@
    samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html> ;
    samm:dataType xsd:string ;
    samm-c:values ( "unit:partPerMillion" "unit:percent" "unit:percentVolume" "unit:partPerThousand" "unit:partPerTrillionUs" "unit:partPerBillionUs" ) .
-
-:ConcentrationValue a samm-c:Quantifiable ;
-   samm:preferredName "Concentration Value"@en ;
-   samm:description "Float number representing a concentration."@en ;
-   samm:dataType xsd:float .
 
 :HazardCharacteristic a samm:Characteristic ;
    samm:preferredName "Hazard Characteristic"@en ;
@@ -1013,16 +1010,28 @@
    samm:description "List of ids for the identification."@en ;
    samm:dataType :MaterialIdEntity .
 
-:Share a samm-c:Measurement ;
-   samm:preferredName "share"@en ;
-   samm:description "The share represented in a float number in the unit percent."@en ;
-   samm:dataType xsd:float ;
-   samm-c:unit unit:percent .
+:PercentageTrait a samm-c:Trait ;
+   samm:preferredName "Percentage Trait"@en ;
+   samm:description "Trait for a positive percentage."@en ;
+   samm-c:baseCharacteristic :Share ;
+   samm-c:constraint :PercentageConstraint .
 
 :EoriConstraint a samm-c:RegularExpressionConstraint ;
    samm:preferredName "EORI Constraint"@en ;
    samm:description "Constraint with a pattern which ensures that the EORI number starts with two alphanumeric characters, followed by two alphabetic characters, and ends with 2 to 15 alphanumeric characters."@en ;
    samm:value "^[A-Z]{2}[A-Z0-9]{1,18}$" .
+
+:FloatValue a samm-c:Quantifiable ;
+   samm:preferredName "Float Value"@en ;
+   samm:description "Float number representing a positive value."@en ;
+   samm:dataType xsd:float .
+
+:PositiveRangeConstraint a samm-c:RangeConstraint ;
+   samm:preferredName "Positive Range Constraint"@en ;
+   samm:description "Contraint for only positive values."@en ;
+   samm-c:minValue "0.0"^^xsd:float ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:LESS_THAN .
 
 :DocumentationEntity a samm:Entity ;
    samm:preferredName "Documentation Entity"@en ;
@@ -1049,6 +1058,20 @@
    samm:description "Id Entity with identifier and list type."@en ;
    samm:properties ( [ samm:property :chemicalId; samm:payloadName "id" ] [ samm:property :listTypeId; samm:payloadName "type" ] ) .
 
+:Share a samm-c:Measurement ;
+   samm:preferredName "share"@en ;
+   samm:description "The share represented in a float number in the unit percent."@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit unit:percent .
+
+:PercentageConstraint a samm-c:RangeConstraint ;
+   samm:preferredName "Percentage Constraint"@en ;
+   samm:description "Range constraint for a positive percentage value."@en ;
+   samm-c:minValue "0.0"^^xsd:float ;
+   samm-c:maxValue "100.0"^^xsd:float ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:AT_MOST .
+
 :hazardCategory a samm:Property ;
    samm:preferredName "Hazard Category"@en ;
    samm:description "The hazard category of the substance of concern. Defined in Article 2 of Regulation (EC) No 1272/2008 of the European Parliament and of the Council of 16 December 2008 on classification, labelling and packaging of substances and mixtures, amending and repealing Directives 67/548/EEC and 1999/45/EC, and amending Regulation (EC) No 1907/2006:\n2. ‘hazard category’ means the division of criteria within each hazard class, specifying hazard severity."@en ;
@@ -1073,13 +1096,13 @@
 :minConcentration a samm:Property ;
    samm:preferredName "Minimum Concentration"@en ;
    samm:description "The minimum concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) [...] concentration range of the substances of concern, at the level of the product [...]."@en ;
-   samm:characteristic :ConcentrationValue ;
+   samm:characteristic :PositiveTrait ;
    samm:exampleValue "2.1"^^xsd:float .
 
 :maxConcentration a samm:Property ;
    samm:preferredName "Maximum Concentration"@en ;
    samm:description "The maximum concentration of the substance of concern at the level of the product. This attribute is mentioned in the ESPR proposal from March 30th, 2022 Article 7:\n(5) (c) the concentration, maximum concentration or concentration range of the substances of concern, at the level of the product [...]."@en ;
-   samm:characteristic :ConcentrationValue ;
+   samm:characteristic :PositiveTrait ;
    samm:exampleValue "2.6"^^xsd:float .
 
 :chemicalName a samm:Property ;
@@ -1109,8 +1132,8 @@
 :ListTypeEnumerationName a samm-c:Enumeration ;
    samm:preferredName "List Type Enumeration Name"@en ;
    samm:description "Enumeration of different systems and organizations related to the identification and classification of chemical substances in the field of chemistry. The enumeration values are IUPAC, EC or CAS."@en ;
-   samm:see <https://iupac.org/> ;
    samm:see <https://www.cas.org/cas-data/cas-registry> ;
+   samm:see <https://iupac.org/> ;
    samm:dataType xsd:string ;
    samm-c:values ( "IUPAC" "CAS" "EC" ) .
 
@@ -1120,7 +1143,4 @@
    samm:see <https://www.cas.org/cas-data/cas-registry> ;
    samm:dataType xsd:string ;
    samm-c:values ( "CAS" "EC" ) .
-
-:Characteristic2 a samm:Characteristic ;
-   samm:dataType :FacilityEntity .
 
