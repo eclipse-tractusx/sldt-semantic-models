@@ -3,6 +3,10 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [6.0.0]
+### Changed
+
+
 ## [5.0.0] 2023-12-11
 ### Changed
 - adapted as aligned with and specified by the Catena-X use case team
