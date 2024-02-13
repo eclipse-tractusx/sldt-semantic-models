@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [3.0.0] - 2024-02-08
+## [3.0.0] - 2024-02-13
 ### Added
 - Update based on shared aspect "uuid"
 - Update based on shared aspect "business partner number"
