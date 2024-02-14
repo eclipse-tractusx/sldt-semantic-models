@@ -1,0 +1,137 @@
+##########################################################################################
+# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IOSB & Fraunhofer IWU & Fraunhofer IPA)
+# Copyright (c) 2024 Siemens AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+##########################################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.shopfloor_information.provide_production_tracking:1.0.0#>.
+@prefix ext-header2: <urn:samm:io.catenax.shared.message_header:2.0.0#>.
+@prefix ext-part: <urn:samm:io.catenax.serial_part:3.0.0#>.
+
+:ProvideProductionTracking a samm:Aspect;
+    samm:preferredName "Provide Production Tracking"@en;
+    samm:description "Aspect for the production tracking response"@en;
+    samm:properties (:response ext-header2:header);
+    samm:operations ();
+    samm:events ().
+
+:response a samm:Property;
+    samm:preferredName "Response"@en;
+    samm:description "Response data for the production tracking request"@en;
+    samm:characteristic :ResponseCharacteristic.
+
+:ResponseCharacteristic a samm:Characteristic;
+    samm:preferredName "Response Characteristic"@en;
+    samm:description "Characteristic describing the response of the production tracking data model"@en;
+    samm:dataType :ResponseEntity.
+
+:ResponseEntity a samm:Entity;
+    samm:preferredName "Response Entity"@en;
+    samm:description "Entity describing the response for the production tracking request"@en;
+    samm:properties (:processStepIdentifierList ext-header2:version :identifierType :identifierNumber [ samm:property ext-part:catenaXId; samm:optional "true"^^xsd:boolean ]).
+
+:processStepIdentifierList a samm:Property;
+    samm:preferredName "Process Step Identifier List"@en;
+    samm:description "List that contains a set of process steps, where each process step provides a list with the values of the requeste parameters"@en;
+    samm:characteristic :ProcessStepIdentifierListCharacteristic.
+
+:ProcessStepIdentifierListCharacteristic a samm-c:List;
+    samm:preferredName "Process Step Identifier List Characteristic"@en;
+    samm:description "Characteristic that describes each element of the requested process steps "@en;
+    samm:dataType :ProcessStepIdentifier.
+
+:ProcessStepIdentifier a samm:Entity;
+    samm:preferredName "Process Step Identifier"@en;
+    samm:description "Data type to express process steps with corresponding paramater"@en;
+    samm:properties (:processStepId :processParameterValueList).
+
+:processStepId a samm:Property;
+    samm:preferredName "Process Step Identifier"@en;
+    samm:description "Id of a concrete process step"@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "step_id_12345".
+
+:processParameterValueList a samm:Property;
+    samm:preferredName "Process Parameter Value List"@en;
+    samm:description "A set of process parameter for the corresponsing process step, that corresponds to the requested parameters"@en;
+    samm:characteristic :ProcessParameterValueCharacteristic.
+
+:StringCharacteristic a samm:Characteristic;
+    samm:preferredName "String Characteristic"@en;
+    samm:description "Characteristic to express strings"@en;
+    samm:dataType xsd:string.
+
+:ProcessParameterValueCharacteristic a samm-c:List;
+    samm:preferredName "Process Parameter Value Characteristic"@en;
+    samm:description "Lists all requested process parameter"@en;
+    samm:dataType :ProcessParameter.
+
+:ProcessParameter a samm:Entity;
+    samm:preferredName "Process Parameter"@en;
+    samm:description "Data Type to provide process parameter with values from process step"@en;
+    samm:properties (:processParameterName :semanticId [ samm:property :processParameterValue; samm:optional "true"^^xsd:boolean ] :processParameterQuality).
+
+:processParameterName a samm:Property;
+    samm:preferredName "Process Parameter Name"@en;
+    samm:description "Name of a process parameter"@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "Drehmoment_max".
+:semanticId a samm:Property;
+
+    samm:preferredName "Semantic Identifier"@en;
+    samm:description "Reference to a global defined semantic that characterizes the process parameter. For eaxample an E-Class reference"@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "EClass123".
+
+:processParameterValue a samm:Property;
+    samm:preferredName "Process Parameter Value"@en;
+    samm:description "The concrete value of a process parameter. Becomes mandatory in case that the processParameterQuality property is not set to NoValue"@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "10".
+
+:processParameterQuality a samm:Property;
+    samm:preferredName "Process Parameter Quality"@en;
+    samm:description "Enumeration to provide additional information about the significance of the parameter."@en;
+    samm:characteristic :ProcessParameterQualityEnumeration;
+    samm:exampleValue "inexact".
+
+:ProcessParameterQualityEnumeration a samm-c:Enumeration;
+    samm:preferredName "ProcessParameterQualityEnumeration"@en;
+    samm:description "Enumeration that provides a set of characteristic of a process parameter"@en;
+    samm:dataType xsd:string;
+    samm-c:values ("ok" "inexact" "noValue").
+
+:identifierType a samm:Property;
+    samm:preferredName "Identifier Type"@en;
+    samm:description "Distinghuished between a bill of material, a part instanceId or a batchId to identify a product"@en;
+    samm:characteristic :IdentifierTypeCharacteristic;
+    samm:exampleValue "partInstanceId".
+
+:identifierNumber a samm:Property;
+    samm:preferredName "Identifier Number"@en;
+    samm:description "Identifier number of a product"@en;
+    samm:characteristic :StringCharacteristic;
+    samm:exampleValue "Deckerl-2345".
+
+:IdentifierTypeCharacteristic a samm-c:Enumeration;
+    samm:preferredName "Identifier Type Characteristic"@en;
+    samm:description "Enumeration that defines values for the identifier type"@en;
+    samm:dataType xsd:string;
+    samm-c:values ("partInstanceId" "batchId" "bomId").

@@ -1,0 +1,328 @@
+---
+openapi: 3.0.3
+info:
+  title: Get Production Tracking
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/get-production-tracking:
+    get:
+      tags:
+      - GetProductionTracking
+      operationId: getGetProductionTracking
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/GetProductionTracking'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_StringCharacteristic:
+      type: string
+      description: Characteristic to express string values
+    urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_ProcessParameter:
+      description: Entity to define process parameters
+      type: object
+      properties:
+        processParameterName:
+          description: Name of a process parameter
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_StringCharacteristic'
+        processParameterSemanticId:
+          description: Reference to a semantic that defines the unit and the data
+            type of the parameter
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_StringCharacteristic'
+      required:
+      - processParameterName
+      - processParameterSemanticId
+    urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_ProcessPartameterListCharacteristic:
+      description: "List of process parameters, whose values the requester wants to\
+        \ receive from the provider "
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_ProcessParameter'
+    urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_PartInstanceLevelCharacteristic:
+      type: string
+      description: "Enumeration that contains two values, bom and partInstanceId.\
+        \ It is used to determine whether the optinal field bill of materialId and\
+        \ billOfMaterialElementId or partInstanceId become mandatory"
+      enum:
+      - partInstanceId
+      - bomId
+    urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_ProcessIdentifier:
+      description: "Concrete identifier of a manufacturing step, either based on a\
+        \ process step identifier or a capability"
+      type: object
+      properties:
+        capabilityId:
+          description: Identifier of a capability that is required in case of a capability
+            based request
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_StringCharacteristic'
+        billOfMaterialId:
+          description: "Identifier for a bill of material, which is known by both\
+            \ partners"
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_StringCharacteristic'
+        processStepId:
+          description: "Id of a process Step, specified within an instance of a bill\
+            \ of process data model that is known to both partners"
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_StringCharacteristic'
+        processParameterList:
+          description: List of requested Process parameter
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_ProcessPartameterListCharacteristic'
+        partInstanceLevel:
+          description: "Specifies for the case of a  capability based request, whether\
+            \ the parts are identified with a serial number or with a bill of material "
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_PartInstanceLevelCharacteristic'
+        partInstanceId:
+          description: 'Identifies an instance of a part in case that the partInstanceLevel
+            property has the value partInstanceId '
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_StringCharacteristic'
+        billOfMaterialElementId:
+          description: "Identifier of an element that is part of the bill of material,\
+            \ referenced by the bill of material Id "
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_StringCharacteristic'
+      required:
+      - processParameterList
+      - partInstanceLevel
+      - partInstanceId
+      - billOfMaterialElementId
+    urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_ProcessStepIdentifierCharacteristic:
+      description: List characteristic to define the set of manufacturing steps.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_ProcessIdentifier'
+    urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_ProcessReferenceTypeCharacteristic:
+      type: string
+      description: Enumeration to distinguish between a request based on process steps
+        or a request based on capabilities
+      enum:
+      - processStep
+      - capability
+    urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlTrait:
+      type: string
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two alphanumeric letters."
+      pattern: "^BPNL[a-zA-Z0-9]{12}$"
+    urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_io.catenax.shared.message_header_2.0.0_SemanticVersioningTrait:
+      type: string
+      description: Constraint for defining a SemVer version.
+      pattern: "^(0|[1-9][0-9]*).(0|[1-9][0-9]*).(0|[1-9][0-9]*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*)(.[0-9A-Za-z-]+)*)?([0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?$"
+    urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_IdentifierTypeCharacteristic:
+      type: string
+      description: "Used to distinguish between a part instanceId, batchId or bill\
+        \ of materialId based identification of a product"
+      enum:
+      - partInstanceId
+      - batchId
+      - bomId
+    urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_RequestCharacteristic:
+      description: Characteristic for the production tracking request
+      type: object
+      properties:
+        stepIdentifierList:
+          description: List of manufacturing steps from which a set of parameter is
+            requested. The manufacturing steps are either determined by a capability
+            or a process step identifier
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_ProcessStepIdentifierCharacteristic'
+        processReferenceType:
+          description: Value of an enumeration that determines whether the request
+            is based on concrete process steps (Bill of process) or capabilities
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_ProcessReferenceTypeCharacteristic'
+        billOfProcessId:
+          description: 'Id to identify an instance of the bill of process data model '
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_StringCharacteristic'
+        customerId:
+          description: Internal customer Identification
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlTrait'
+        catenaXId:
+          description: "The fully anonymous Catena-X ID of the serialized part, valid\
+            \ for the Catena-X dataspace."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+        version:
+          description: The unique identifier of the aspect model defining the structure
+            and the semantics of the message's header. The version number should reflect
+            the versioning schema of aspect models in Catena-X.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_2.0.0_SemanticVersioningTrait'
+        identifierType:
+          description: "Identifies a product based on an identifier and distinguishes\
+            \ whether the request is based on a bill of material, part instance identifier\
+            \ oder a batch identifier."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_IdentifierTypeCharacteristic'
+        identifierNumber:
+          description: Identifier number of a product
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_StringCharacteristic'
+      required:
+      - stepIdentifierList
+      - customerId
+      - version
+      - identifierType
+      - identifierNumber
+    urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_io.catenax.shared.message_header_2.0.0_ContextCharacteristic:
+      type: string
+      description: Defining a string value for the context
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait:
+      type: string
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two uppercase letters."
+      pattern: "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$"
+    urn_samm_io.catenax.shared.message_header_2.0.0_HeaderCharacteristic:
+      description: Characteristic describing the common shared aspect Message Header
+      type: object
+      properties:
+        messageId:
+          description: "Unique ID identifying the message. The purpose of the ID is\
+            \ to uniquely identify a single message, therefore it MUST not be reused."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        context:
+          description: |-
+            Information about the context the message should be considered in.
+            The value MUST consist of two parts: an identifier of the context (e.g. business domain, etc.) followed by a version number.
+            Both the identifier and the version number MUST correspond to the content of the message.
+            If the content of a message is described by an aspect model available in the Catena-X Semantic Hub, then the unique identifier of this semantic model (e.g. urn:samm:io.catenax.<ASPECT-MODEL-NAME>:1.x.x) MUST be used as a value of the context field. This is considered the default case.
+            In all other cases the value of the context field MUST follow the pattern <domain>-<subdomain>-<object>:<[major] version> (e.g. TRACE-QM-Alert:1.x.x).
+            Versioning only refers to major versions in both default and fallback cases.
+            Note: The version of the message's header is specified in the version field.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_2.0.0_ContextCharacteristic'
+        sentDateTime:
+          description: Time zone aware timestamp holding the date and the time the
+            message was sent by the sending party. The value MUST be formatted according
+            to the ISO 8601 standard
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        senderBpn:
+          description: The Business Partner Number of the sending party. The value
+            MUST be a valid BPN. BPNA and BPNS are not allowed. Applicable constraints
+            are defined in the corresponding standard
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait'
+        receiverBpn:
+          description: The Business Partner Number of the receiving party. The value
+            MUST be a valid BPN. BPNA and BPNS are not allowed. Applicable constraints
+            are defined in the corresponding standard.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait'
+        expectedResponseBy:
+          description: Time zone aware timestamp holding the date and time by which
+            the sending party expects a certain type of response from the receiving
+            party. The meaning and interpretation of the fields's value are context-bound
+            and MUST therefore be defined by any business domain or platform capability
+            making use of it. The value MUST be formatted according to the ISO 8601
+            standard
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        relatedMessageId:
+          description: Unique ID identifying a message somehow related to the current
+            one
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+        version:
+          description: The unique identifier of the aspect model defining the structure
+            and the semantics of the message's header. The version number should reflect
+            the versioning schema of aspect models in Catena-X.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_2.0.0_SemanticVersioningTrait'
+      required:
+      - messageId
+      - context
+      - sentDateTime
+      - senderBpn
+      - receiverBpn
+      - version
+    GetProductionTracking:
+      description: Aspect to request product specific data from modular production
+      type: object
+      properties:
+        request:
+          description: Contains the data for the production tracking request
+          $ref: '#/components/schemas/urn_samm_io.catenax.shopfloor_information.get_production_tracking_1.0.0_RequestCharacteristic'
+        header:
+          description: Contains standardized attributes for message processing common
+            across several use cases.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_2.0.0_HeaderCharacteristic'
+      required:
+      - request
+      - header
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    GetProductionTracking:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetProductionTracking'
+      description: The request was successful.
+  requestBodies:
+    GetProductionTracking:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetProductionTracking'

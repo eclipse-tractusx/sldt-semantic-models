@@ -1,0 +1,257 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The requirements of a customer towards a specific supplier for a specific material. Each material demand is unique by its Customer, Supplier and Material Number.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_UUIDv4IdTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens).",
+        "pattern" : "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_BPNSTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two uppercase letters.",
+        "pattern" : "^BPNS[0-9]{8}[a-zA-Z0-9]{4}$"
+      },
+      "DemandCategoryDefault" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "0001" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategoryAfterSales" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "A1S1" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategorySeries" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "SR99" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategoryPhaseInPeriod" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "PI01" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategorySingleOrder" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "OS01" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategorySmallSeries" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "OI01" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategoryExtraordinaryDemand" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "ED01" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategoryPhaseOutPeriod" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "PO01" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_DemandCategory" : {
+        "description" : "The classification of demands used to prioritize or allocate capacities.",
+        "type" : "object",
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/DemandCategoryDefault"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategoryAfterSales"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategorySeries"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategoryPhaseInPeriod"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategorySingleOrder"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategorySmallSeries"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategoryExtraordinaryDemand"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategoryPhaseOutPeriod"
+        } ]
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_CalendarWeek" : {
+        "type" : "string",
+        "format" : "date",
+        "description" : "An ISO calendar week in which a given demand is needed. Must be given as date of the Monday in the week."
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_QuantityTrait" : {
+        "type" : "number",
+        "description" : "Constraint to ensure a non-negative value for quantities.",
+        "maximum" : 999999999999999999.999,
+        "exclusiveMaximum" : false,
+        "minimum" : 0,
+        "exclusiveMinimum" : false
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_Demand" : {
+        "description" : "A single demand for a given calendar week.",
+        "type" : "object",
+        "properties" : {
+          "calendarWeek" : {
+            "description" : "ISO Calendar Week of the given time series entry. Must be given as date of the Monday in the week.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_CalendarWeek"
+          },
+          "demand" : {
+            "description" : "Quantity of materials required in the specified calendar week.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_QuantityTrait"
+          }
+        },
+        "required" : [ "calendarWeek", "demand" ]
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_DemandTimeSeries" : {
+        "description" : "The weekly demands in a given time period.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_Demand"
+        },
+        "uniqueItems" : true
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_DemandSeries" : {
+        "description" : "Encapsulates the demand series related information.",
+        "type" : "object",
+        "properties" : {
+          "customerLocation" : {
+            "description" : "The BPNS number of the site at which the customer needs the specified material for this demand series.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_BPNSTrait"
+          },
+          "demandCategory" : {
+            "description" : "Type of demand for this demand series.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_DemandCategory"
+          },
+          "demands" : {
+            "description" : "A time series with week-based granularity along a given time period to describe the demand values for this demand series.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_DemandTimeSeries"
+          },
+          "expectedSupplierLocation" : {
+            "description" : "The BPNS number of the site from where the customer expects the supplier to fulfill the demands of the demand series. The value is used for informational purposes only and is therefore not binding for the supplier.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_BPNSTrait"
+          }
+        },
+        "required" : [ "customerLocation", "demandCategory", "demands" ]
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_DemandSeriesSet" : {
+        "description" : "A set of demand series belonging to a certain material demand. Each demand series in the set must have a unique combination of customer location and demand category.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_DemandSeries"
+        },
+        "uniqueItems" : true
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_BPNLTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the BPNL is composed of prefix 'BPNL', 10 digits and two uppercase letters.",
+        "pattern" : "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$"
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_UnitOfMeasure" : {
+        "type" : "string",
+        "description" : "The Enumeration lists a selection of allowed units of measure referenced by their official code according to Codes for Units of Measure Used in International Trade",
+        "enum" : [ "GRM", "KGM", "TNE", "STN", "ONZ", "LBR", "CMT", "MTR", "KTM", "INH", "FOT", "YRD", "CMK", "MTK", "INK", "FTK", "YDK", "CMQ", "MTQ", "INQ", "FTQ", "YDQ", "MLT", "LTR", "HLT", "H87", "SET", "PR", "ZP", "KWH", "" ]
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_MaterialNumber" : {
+        "type" : "string",
+        "description" : "The material number is a multi-character string, usually assigned by an ERP system."
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_MaterialDescription" : {
+        "type" : "string",
+        "description" : "Description of a material demand."
+      },
+      "urn_samm_io.catenax.week_based_material_demand_2.0.0_Timestamp" : {
+        "type" : "string",
+        "format" : "date-time",
+        "description" : "Point in time."
+      }
+    }
+  },
+  "properties" : {
+    "materialDemandId" : {
+      "description" : "The Material Demand ID uniquely identifies the material demand within the business relationship between a customer and its supplier.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_UUIDv4IdTrait"
+    },
+    "demandSeries" : {
+      "description" : "The weekly demands for a dedicated material in a given time period, distinguished by their demand location and demand category.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_DemandSeriesSet"
+    },
+    "customer" : {
+      "description" : "The Business Partner Number (BPNL) of the party requesting materials from a supplier.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_BPNLTrait"
+    },
+    "supplier" : {
+      "description" : "The Business Partner Number (BPNL) of the party providing materials to a customer.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_BPNLTrait"
+    },
+    "unitOfMeasure" : {
+      "description" : "Unit of measurement for demand quantities.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_UnitOfMeasure"
+    },
+    "materialNumberCustomer" : {
+      "description" : "Material identifier as assigned by customer. This material number identifies the material (as planned) in customer's database. Must be unique for each Material Demand in the customer-supplier relationship.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_MaterialNumber"
+    },
+    "materialNumberSupplier" : {
+      "description" : "Material identifier as assigned by supplier. This material number identifies the material (as planned) in supplier's database.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_MaterialNumber"
+    },
+    "materialDescriptionCustomer" : {
+      "description" : "Description of the material.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_MaterialDescription"
+    },
+    "changedAt" : {
+      "description" : "Point in time when the content (any property according to the data model) of the material demand was changed, at the customer, either by a human user or an automated process.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.week_based_material_demand_2.0.0_Timestamp"
+    }
+  },
+  "required" : [ "materialDemandId", "demandSeries", "customer", "supplier", "unitOfMeasure", "materialNumberCustomer", "materialDescriptionCustomer", "changedAt" ]
+}
