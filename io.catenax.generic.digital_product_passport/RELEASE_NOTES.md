@@ -11,6 +11,7 @@ All notable changes to this model will be documented in this file.
 - Changed reference for part classification
 - Attributes made optional (volume, grossVolume)
 - Changed structure for critical raw materials
+- Changed structure for sustainability attributes
 
 
 ### Added
@@ -19,6 +20,7 @@ All notable changes to this model will be documented in this file.
 - New attribute registrationIdentifier
 - Added constraints to allow only positive values and percentages
 - New attribute structure for material footprint (optional)
+- New attribute generalPerformanceClass (optional)
 - New attribute repairabilityScore (optional)
 - New attribute durabilityScore (optional)
 
