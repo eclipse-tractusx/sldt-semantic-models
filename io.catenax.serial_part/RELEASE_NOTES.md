@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
+## [3.0.0] 2024-02-05
+### Added
+- Integration of the new shared PartClassifcation 1.0.0 aspect model as child-property of the PartTypeInformation
+- Added possibility to add date information excluding time
+- Include additional RegEx values for the local identifier key
+
+### Changed
+- Change (shared) partSiteInformation to be a child-porperty of the manufacturerInformation
+
+  
 ## [2.0.0] 2023-12-04
 ### Added
 - integration of the sites property and its childtree of the shared PartSiteInformationAsBuilt (1.0.0) aspect model as optional content

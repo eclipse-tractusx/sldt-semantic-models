@@ -1,0 +1,67 @@
+#
+# Copyright (c) 2024 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# See the LICENSE file(s) distributed with this work for
+# additional information regarding license terms.
+#
+
+name: Upload Single Model
+on:
+  workflow_dispatch:
+    inputs:
+      modelname:
+        description: 'Path of the model to be uploaded'
+        required: true
+        default: 'model_path'
+
+jobs:
+  upload-models:
+    name: 00 Upload Models
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: set environment variables
+        run: |
+          echo "WORKSPACE_UPPERCASE=INT" >> $GITHUB_ENV
+      - name: Checkout files
+        uses: actions/checkout@v3
+      - name: validate changes from PR
+        uses: ./.github/actions/validate-single
+        with:
+          IS_MAIN: ${{ github.event.inputs.modelname }}
+      - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: toArchive
+      - name: Fetch Access Token
+        id: token_request
+        env:
+          CLIENT_ID: ${{ secrets[format('CLIENT_ID_{0}', env.WORKSPACE_UPPERCASE)] }}
+          CLIENT_SECRET: ${{ secrets[format('CLIENT_SECRET_{0}', env.WORKSPACE_UPPERCASE)] }}
+          IDP_URL: ${{ secrets[format('IDP_URL_{0}', env.WORKSPACE_UPPERCASE)] }}
+        run: |
+          response=$(curl --request POST \
+          --url "https://$IDP_URL" \
+          --header 'content-type: application/x-www-form-urlencoded' \
+          --data-urlencode grant_type=client_credentials \
+          --data-urlencode client_id=$CLIENT_ID \
+          --data-urlencode client_secret=$CLIENT_SECRET )
+          access_token=$( echo $response | jq -r '.access_token' )
+          if [ $access_token == null ]
+          then
+            echo "Error: Got empty token"
+            exit 1
+          fi
+          echo "ACCESS_TOKEN=$access_token" >> $GITHUB_ENV
+
+      - name: Upload
+        uses: ./.github/actions/upload
+        with:
+          SEMANTIC_HUB_URL: ${{ secrets[format('SEMANTIC_HUB_{0}_BASE', env.WORKSPACE_UPPERCASE)] }}
+          TOKEN: ${{ env.ACCESS_TOKEN  }}
