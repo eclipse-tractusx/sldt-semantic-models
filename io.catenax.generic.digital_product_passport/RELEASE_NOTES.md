@@ -15,7 +15,7 @@ All notable changes to this model will be documented in this file.
 
 
 ### Added
-- New attribute structure for hazard class
+- New attribute structure for hazardous classification of material (mandatory)
 - New attribute backupReference
 - New attribute registrationIdentifier
 - Added constraints to allow only positive values and percentages
