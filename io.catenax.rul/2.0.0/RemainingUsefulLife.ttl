@@ -1,0 +1,145 @@
+#######################################################################
+# Copyright (c) 2022,2024 Allgemeine Deutsche Automobil-Club (ADAC) e.V
+# Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2022,2024 Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
+# Copyright (c) 2022,2024 Siemens AG
+# Copyright (c) 2022,2024 ZF Friedrichshafen AG
+# Copyright (c) 2022,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.rul:2.0.0#> .
+
+:RemainingUsefulLife a samm:Aspect ;
+   samm:preferredName "remaining useful life"@en ;
+   samm:description """Remaining useful Life (RuL) describes the approximated life of a part, a component, an assembly, a vehicle. 
+The approximation is based on the damage due to usage and extrapolation. 
+remainingUsefulLife can be a procentual number, or expressed in remainingDistance or remaingOperationHours or remainingAge."""@en ;
+   samm:properties ( :remainingRunningDistance :remainingOperatingHours :determinationStatus :determinationLoaddataSource ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:remainingRunningDistance a samm:Property ;
+   samm:preferredName "remainingRunningDistance"@en ;
+   samm:description "Expected additional mileage for the vehicle or part might without failure."@en ;
+   samm:characteristic :RemainingMileage ;
+   samm:exampleValue "120000"^^xsd:nonNegativeInteger .
+
+:remainingOperatingHours a samm:Property ;
+   samm:preferredName "remaining operating hours"@en ;
+   samm:description "Expected additional operation hours for the vehicle or part might without failure."@en ;
+   samm:characteristic :RemainingOperatingHoursCharacteristic .
+
+:determinationStatus a samm:Property ;
+   samm:preferredName "Determination status"@en ;
+   samm:description "Remaining useful life is determined at a specific  date with  acording mileage and operating hours. This status should be stored to interpretate the calculated values remaingRunningDistance and RemainingOperatingHours."@en ;
+   samm:characteristic :StatusCharacteristic .
+
+:determinationLoaddataSource a samm:Property ;
+   samm:preferredName "loaddata source"@en ;
+   samm:description "The source of the load data used to determine the remaining useful life is stored for information/interpretation."@en ;
+   samm:characteristic :LoaddataSourceCharacteristic .
+
+:RemainingMileage a samm-c:Quantifiable ;
+   samm:preferredName "remaining mileage"@en ;
+   samm:description "Expected addition mileage"@en ;
+   samm:dataType xsd:nonNegativeInteger ;
+   samm-c:unit unit:kilometre .
+
+:RemainingOperatingHoursCharacteristic a samm-c:Quantifiable ;
+   samm:preferredName "Remaining operating hours"@en ;
+   samm:description "Expected additional operating hours"@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit unit:hour .
+
+:StatusCharacteristic a samm:Characteristic ;
+   samm:preferredName "status"@en ;
+   samm:description "Status describes the date when this aspect is filled, the according mileage and according operating hours. "@en ;
+   samm:dataType :DeterminationStatus .
+
+:LoaddataSourceCharacteristic a samm:Characteristic ;
+   samm:preferredName "loaddata source"@en ;
+   samm:description "Information on the origin of the used load spectrum. If available, the link to the load spectrum."@en ;
+   samm:dataType :LoaddataSource .
+
+:DeterminationStatus a samm:Entity ;
+   samm:preferredName "DeterminationStatus"@en ;
+   samm:description "Status describes the date when this aspect is filled, the according mileage and according operating hours. "@en ;
+   samm:properties ( :mileage :date :operatingHours ) .
+
+:LoaddataSource a samm:Entity ;
+   samm:preferredName "Input information on loaddata"@en ;
+   samm:description "Information on the origin of the used load spectrum. If available, the link to the load spectrum."@en ;
+   samm:properties ( :informationOriginLoadSpectrum [ samm:property :sourceLoadSpectrum; samm:optional true ] ) .
+
+:mileage a samm:Property ;
+   samm:preferredName "mileage"@en ;
+   samm:description "Mileage of the vehicle respectively part at date of determination."@en ;
+   samm:characteristic :Mileage ;
+   samm:exampleValue "204000"^^xsd:nonNegativeInteger .
+
+:date a samm:Property ;
+   samm:preferredName "date of determination"@en ;
+   samm:description "Date of determination."@en ;
+   samm:characteristic :Timestamp ;
+   samm:exampleValue "2022-06-15T14:23:56Z"^^xsd:dateTime .
+
+:operatingHours a samm:Property ;
+   samm:preferredName "Operating hours"@en ;
+   samm:description "Operating hours at determination."@en ;
+   samm:characteristic :OperatingHoursCharacteristic ;
+   samm:exampleValue "3456.7"^^xsd:float .
+
+:informationOriginLoadSpectrum a samm:Property ;
+   samm:preferredName "information on origin of load spectrum"@en ;
+   samm:description "A load spectrum is used to calulated the damage and the expected remaining useful for similar further usage. Information on the source of the load spectrum is stored."@en ;
+   samm:characteristic :InformationOriginLoadSpectrumCharacteristic .
+
+:sourceLoadSpectrum a samm:Property ;
+   samm:preferredName "link to origin of load spectrum"@en ;
+   samm:description "The link to the load spectrum used to determine the remaining useful life, if available."@en ;
+   samm:characteristic :SourceLoadSpectrum .
+
+:Mileage a samm-c:Measurement ;
+   samm:preferredName "mileage"@en ;
+   samm:description "Mileage of vehicle respectively part."@en ;
+   samm:dataType xsd:nonNegativeInteger ;
+   samm-c:unit unit:kilometre .
+
+:Timestamp a samm:Characteristic ;
+   samm:description "Describes a Property which contains the date and time with an optional timezone."@en ;
+   samm:dataType xsd:dateTime .
+
+:OperatingHoursCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Operating hours"@en ;
+   samm:description "Operating hours for the vehicle respectively part."@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit unit:hour .
+
+:InformationOriginLoadSpectrumCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "characteristic of origin of load spectrum"@en ;
+   samm:description "Origin of input load spectrum: measured, simulated, aggregated"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "loggedOEM" "measuredOEM" "simulatedOEM" "loggedSupplier" "measuredSupplier" "simulatedSupplier" "otherOrigin" ) .
+
+:SourceLoadSpectrum a samm:Characteristic ;
+   samm:preferredName "link to load spectrum"@en ;
+   samm:description "Link to load spectrum"@en ;
+   samm:dataType xsd:anyURI .
+
