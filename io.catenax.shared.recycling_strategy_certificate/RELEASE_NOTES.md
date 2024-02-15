@@ -4,9 +4,12 @@ All notable changes to this model will be documented in this file.
 ## [Unreleased]
 
 ## [3.0.0] - 2024-02-13
-### Added
+
+### Changed
 - Update based on shared aspect "uuid"
 - Update based on shared aspect "business partner number"
+
+### Added
 - new features: Revocation Date
 
 ## [2.0.0] - 2023-11-07
