@@ -1,0 +1,155 @@
+#######################################################################
+# Copyright (c) 2022,2024 T-Systems International GmbH
+# Copyright (c) 2023,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022,2024 Volkswagen AG
+# Copyright (c) 2022,2024 Robert Bosch GmbH
+# Copyright (c) 2022,2024 ZF Friedrichshafen AG
+# Copyright (c) 2022,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.part_as_specified:3.0.0#> .
+
+:PartAsSpecified a samm:Aspect ;
+   samm:preferredName "Part as Specified"@en ;
+   samm:description "The aspect model PartAsSpecified belongs to the Part Catalogue. A PartAsSpecified represents a certain OEM catalog part on part number level. Providing a digital representation of the part as specified by the OEM. The link to the serialized part is done via the partId, this can only be done if the respective DT was provided by the supplier within the value chain."@en ;
+   samm:properties ( :partTypeInformation [ samm:property :validityPeriod; samm:optional true ] :catenaXId ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:partTypeInformation a samm:Property ;
+   samm:preferredName "Part Type Information"@en ;
+   samm:description "Encapsulation for data related to the part type."@en ;
+   samm:characteristic :PartTypeInformationCharacteristic .
+
+:validityPeriod a samm:Property ;
+   samm:preferredName "Validity Period"@en ;
+   samm:description "Describes the validity period of a part, as some parts are just valid for a given period of time until newer versions of these parts are available"@en ;
+   samm:characteristic :ValidityPeriodCharacteristic .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X ID"@en ;
+   samm:description "The unique ID within Catena-X"@en ;
+   samm:characteristic :CatenaXIdTrait ;
+   samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9379" .
+
+:PartTypeInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Part Type Information Characteristic"@en ;
+   samm:description "The characteristic of the part type."@en ;
+   samm:dataType :PartTypeInformationEntity .
+
+:ValidityPeriodCharacteristic a samm:Characteristic ;
+   samm:preferredName "Validity Period Characteristic"@en ;
+   samm:description "The characteristic of the validity period."@en ;
+   samm:dataType :ValidityPeriodEntity .
+
+:CatenaXIdTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :Uuidv4RegularExpression .
+
+:PartTypeInformationEntity a samm:Entity ;
+   samm:preferredName "Part Type Information Entity"@en ;
+   samm:description "Encapsulation for data related to the part type"@en ;
+   samm:properties ( :partClassification :nameAtOwner :ownerPartId :partVersion :itemCategory :partDescription ) .
+
+:ValidityPeriodEntity a samm:Entity ;
+   samm:preferredName "Validity Period Entity"@en ;
+   samm:description "Encapsulation for data related to the validity period."@en ;
+   samm:properties ( [ samm:property :validFrom; samm:optional true ] [ samm:property :validTo; samm:optional true ] ) .
+
+:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Catena-X ID Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."@en ;
+   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
+
+:partClassification a samm:Property ;
+   samm:preferredName "Part Classification"@en ;
+   samm:description "The classification of the part type."@en ;
+   samm:characteristic :PartClassificationCharacteristic .
+
+:nameAtOwner a samm:Property ;
+   samm:preferredName "Name at Owner"@en ;
+   samm:description "Name of the part as assigned by the part owner."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Steering Wheel" .
+
+:ownerPartId a samm:Property ;
+   samm:preferredName "Owner PartId"@en ;
+   samm:description "PartID as assigned by the part owner. The PartID identifies the part in the part owner's data space. The PartId does not reference a specific instance of a part and thus should not be confused with the serial number."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "94A2032" .
+
+:partVersion a samm:Property ;
+   samm:preferredName "Part Version"@en ;
+   samm:description "This is the version of the part. The engineering will at times supercede an older part version by a newer one, which might have different material aspects, physical dimensions etc., still maintaining compatibility."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "05" .
+
+:itemCategory a samm:Property ;
+   samm:preferredName "Item Category"@en ;
+   samm:description "The item category (component, product, software, assembly, tool, raw material) the part belongs to"@en ;
+   samm:characteristic :ItemCategoryCharacteristic ;
+   samm:exampleValue "product" .
+
+:partDescription a samm:Property ;
+   samm:preferredName "Part Description"@en ;
+   samm:description "Description of the part of interest"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "The steering wheel is nice and round" .
+
+:validFrom a samm:Property ;
+   samm:preferredName "Valid From"@en ;
+   samm:description "Start date of the validity period."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-02-10T07:17:52.396Z"^^xsd:dateTime .
+
+:validTo a samm:Property ;
+   samm:preferredName "Valid To"@en ;
+   samm:description "End date of the validity period."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-02-10T07:17:52.396Z"^^xsd:dateTime .
+
+:PartClassificationCharacteristic a samm-c:Set ;
+   samm:preferredName "Part Classification Characteristic"@en ;
+   samm:description "The characteristic of the part classification"@en ;
+   samm:dataType :PartClassificationEntity .
+
+:ItemCategoryCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Item Category Characteristic"@en ;
+   samm:description "A part type must be placed into one of the following classes: 'component', 'product', 'software', ‘assembly’, 'tool', or 'raw material'."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "component" "product" "software" "assembly" "tool" "raw material" ) .
+
+:PartClassificationEntity a samm:Entity ;
+   samm:preferredName "Part Classification Entity"@en ;
+   samm:description "The entity encapsulating the properties of the part classification"@en ;
+   samm:properties ( :key :value ) .
+
+:key a samm:Property ;
+   samm:preferredName "Key"@en ;
+   samm:description "Key within the classification"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BMW:PartFamily" .
+
+:value a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "Value within the classification"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "STEEWHL" .
+
