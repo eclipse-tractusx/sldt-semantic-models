@@ -38,7 +38,7 @@
 :SingleLevelUsageAsBuilt a samm:Aspect;
    samm:preferredName "SingleLevelUsageAsBuilt"@en;
    samm:description "The aspect provides the information in which parent part(s)/product(s)the given item is assembled in. Could be a 1:1 relationship in terms of an e.g. a brake component or 1:n for e.g. coatings. The parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part."@en;
-   samm:properties ( :catenaXId :customers :parentItems);
+   samm:properties (:catenaXId :customers :parentItems);
    samm:operations ();
    samm:events ().
 
@@ -51,44 +51,57 @@
 :customers a samm:Property;
    samm:preferredName "Customers"@en;
    samm:description "A list of all customers of this item. If the parent items in which this item is assembled into are known, they should be listed as well.\n\nFor serialized items the list should contain only one customer with one parent item.\nAs different subsets of a batch might be sold to different customers this is a list."@en;
-   samm:characteristic :ListOfCustomersCharacteristic.
+   samm:characteristic :CustomersTrait;
+   samm:exampleValue "BPNL50096894aNXY".
 
 :parentItems a samm:Property;
    samm:preferredName "Parent Items"@en;
    samm:description "Set of parent items, in which the given child object is assembled in (one structural level up).\n\nFor serialized items the list should contain only one parent item.\nAs different subsets of a batch might be used by a customer in different items this is a list."@en;
    samm:characteristic :SetOfParentItemsCharacteristic.
 
-:ListOfCustomersCharacteristic a samm-c:List;
-   samm:preferredName "List of Customers Characteristic"@en;
-   samm:description "A list of customers and their related parent items."@en;
-   samm:dataType :Customer.
+:CustomersTrait a samm-c:Trait;
+   samm:preferredName "Customers Trait"@en;
+   samm:description "Trait to ensure the integration of the BPNL Regular Expression."@en;
+   samm-c:baseCharacteristic :ListOfCustomersCharacteristic;
+   samm-c:constraint ext-number:BpnlRegularExpression.
 
 :SetOfParentItemsCharacteristic a samm-c:Set;
    samm:preferredName "Set of Parent Items"@en;
    samm:description "Set of parent items the given child object is assembled in (one structural level up)."@en;
    samm:dataType :ParentData.
 
-:Customer a samm:Entity;
-   samm:preferredName "Customer"@en;
-   samm:description "A customer and their related items, if known."@en;
-   samm:properties ( :createdOn [ samm:property :lastModifiedOn; samm:optional true ] :businessPartner).
+:ListOfCustomersCharacteristic a samm-c:List;
+   samm:preferredName "List of Customers Characteristic"@en;
+   samm:description "A list of customers and their related parent items."@en;
+   samm:dataType xsd:string.
 
 :ParentData a samm:Entity;
    samm:preferredName "Parent Data"@en;
    samm:description "Catena-X ID and meta data of the parent item."@en;
-   samm:properties ( [ samm:property :quantity; samm:optional true ] :createdOn [ samm:property :lastModifiedOn; samm:optional true ] :isOnlyPotentialParent :parentCatenaXId :businessPartner).
+   samm:properties ([ samm:property :quantity; samm:optional true ] :createdOn [ samm:property :lastModifiedOn; samm:optional true ] :isOnlyPotentialParent :businessPartner :catenaXId).
+
+:quantity a samm:Property;
+   samm:preferredName "Quantity"@en;
+   samm:description "Quantity of which the child part is assembled into the parent part. In general it is '1' for serialized parts."@en;
+   samm:characteristic ext-quantity:MiscQuantityCharacteristic.
 
 :createdOn a samm:Property;
    samm:preferredName "Created On"@en;
    samm:description "Timestamp when the relation between the parent part and the child part was created, e.g. when the given child part was assembled into the parent part."@en;
-   samm:characteristic samm-c:Timestamp;
-   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+   samm:characteristic :DateTimeTrait;
+   samm:exampleValue "2022-02-03T14:48:54.709Z".
 
 :lastModifiedOn a samm:Property;
    samm:preferredName "Last Modification Date"@en;
-   samm:description "Timestamp when the assembly relationship between parent part and child part was last modified."@en;
-   samm:characteristic samm-c:Timestamp;
-   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+   samm:description "Timestamp when the assembly or usage relationship between parent part and child part was last modified."@en;
+   samm:characteristic :DateTimeTrait;
+   samm:exampleValue "2022-02-03T14:48:54.709Z".
+
+:isOnlyPotentialParent a samm:Property;
+   samm:preferredName "Is Only Potential Parent"@en;
+   samm:description "Expresses the certainty whether the part has been used as component or input material in the produced item. If the value is false, it can be assumed that the part has been used. If the value is true, there are alternatives for that part, and it is unknown if this part item or an alternative part item has been used.\nThis is the case when, e.g. the same item is supplied by two suppliers, and the item is only tracked by a customer part ID during assembly. Thus, these items cannot be differentiated from each other.\n"@en;
+   samm:characteristic samm-c:Boolean;
+   samm:exampleValue true.
 
 :businessPartner a samm:Property;
    samm:preferredName "Business Partner"@en;
@@ -96,27 +109,18 @@
    samm:characteristic ext-number:BpnlTrait;
    samm:exampleValue "BPNL50096894aNXY".
 
-:quantity a samm:Property;
-   samm:preferredName "Quantity"@en;
-   samm:description "Quantity of which the child part is assembled into the parent part. In general it is '1' for serialized parts."@en;
-   samm:characteristic :QuantityCharacteristic.
+:DateTimeTrait a samm-c:Trait;
+   samm:preferredName "Date Time Trait"@en;
+   samm:description "Trait to ensure regular expressions with different date and time(zone)formats."@en;
+   samm-c:baseCharacteristic :DateTimeCharacteristic;
+   samm-c:constraint :DateTimeRegularExpression.
 
-:isOnlyPotentialParent a samm:Property;
-   samm:preferredName "Is Only Potential Parent"@en;
-   samm:description "Expresses the certainty whether the part has been used as component or input material in the produced item. If the value is false, it can be assumed that the part has been used. If the value is true, there are alternatives for that part, and it is unknown if this part item or an alternative part item has been used.\nThis is the case when, e.g. the same item is supplied by two suppliers, and the item is only tracked by a customer part ID during assembly. Thus, these items cannot be differentiated from each other.\n"@en;
-   samm:characteristic samm-c:Boolean;
-   samm:exampleValue false.
+:DateTimeCharacteristic a samm:Characteristic;
+   samm:preferredName "Date Time Characteristic"@en;
+   samm:description "Describes a property which contains the date and time with an optional timezone."@en;
+   samm:dataType xsd:string.
 
-:parentCatenaXId a samm:Property;
-   samm:preferredName "Catena-X Parent ID"@en;
-   samm:description "The Catena-X ID of the parent object, into which the given child object is assembled in."@en;
-   samm:characteristic ext-uuid:UuidV4Trait;
-   samm:exampleValue "urn:uuid:43364d8c-cf38-423c-b907-6e68e0f0fe2f".
-
-:QuantityCharacteristic a samm-c:Quantifiable;
-   samm:description "Describes the quantity in which the child part is assembled in the parent object by providing a quantity value and the measurement unit in which the quantity is measured."@en;
-   samm:dataType :Quantity.
-
-:Quantity a samm:Entity;
-   samm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en;
-   samm:properties ( ext-quantity:itemUnit ext-quantity:quantityValue).
+:DateTimeRegularExpression a samm-c:RegularExpressionConstraint;
+   samm:preferredName "Date Time Regular Expression"@en;
+   samm:description "Regular Expression to enable UTC and Timezone formats and the possibility to exclude time information."@en;
+   samm:value "^(?:[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:[.][0-9]+)?Z|[0-9]{4}-[0-9]{2}-[0-9]{2}(?:T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:[.][0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2}))?)$".
