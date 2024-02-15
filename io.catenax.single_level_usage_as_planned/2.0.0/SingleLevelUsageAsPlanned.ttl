@@ -56,50 +56,46 @@
 :customers a samm:Property;
    samm:preferredName "Customers"@en;
    samm:description "A list of all customers of this item. If the parent items in which this item will be assembled into or used are known, they should be listed as well."@en;
-   samm:characteristic :ListOfCustomersCharacteristic.
+   samm:characteristic :CustomersTrait;
+   samm:exampleValue "BPNL50096894aNXY".
 
 :SetOfParentItemsCharacteristic a samm-c:Set;
    samm:preferredName "Set of Parent Items"@en;
    samm:description "Set of parent items the given child object will be assembled into or used (one structural level up)."@en;
    samm:dataType :ParentData.
 
-:ListOfCustomersCharacteristic a samm-c:List;
-   samm:preferredName "List of Customers Characteristic"@en;
-   samm:description "A list of customers and their related parent items."@en;
-   samm:dataType :Customer.
+:CustomersTrait a samm-c:Trait;
+   samm:preferredName "Customers Trait"@en;
+   samm:description "Trait to ensure the integration of the BPNL Regular Expression."@en;
+   samm-c:baseCharacteristic :ListOfCustomersCharacteristic;
+   samm-c:constraint ext-number:BpnlRegularExpression.
 
 :ParentData a samm:Entity;
    samm:preferredName "Parent Data"@en;
    samm:description "Catena-X ID and meta data of the parent part."@en;
-   samm:properties (:createdOn :quantity [ samm:property :lastModifiedOn; samm:optional true ] :parentCatenaXId [ samm:property :validityPeriod; samm:optional true ] :isOnlyPotentialParent :businessPartner).
+   samm:properties (:createdOn :quantity [ samm:property :lastModifiedOn; samm:optional true ] [ samm:property :validityPeriod; samm:optional true ] :isOnlyPotentialParent :businessPartner :catenaXId).
 
-:Customer a samm:Entity;
-   samm:preferredName "Customer"@en;
-   samm:description "A customer and their related items, if known."@en;
-   samm:properties (:lastModifiedOn :createdOn :businessPartner).
+:ListOfCustomersCharacteristic a samm:Characteristic;
+   samm:preferredName "List of Customers Characteristic"@en;
+   samm:description "A list of customers and their related parent items."@en;
+   samm:dataType xsd:string.
 
 :createdOn a samm:Property;
    samm:preferredName "Created on"@en;
    samm:description "Timestamp when the relation between the parent part and the child part was created."@en;
-   samm:characteristic samm-c:Timestamp;
-   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
+   samm:characteristic :DateTimeTrait;
+   samm:exampleValue "2022-02-03T14:48:54.709Z".
 
 :quantity a samm:Property;
    samm:preferredName "Quantity"@en;
-   samm:description "Quantity of which the child part is assembled into or used in the parent part."@en;
-   samm:characteristic :QuantityCharacteristic.
+   samm:description "Quantity of which the child part will be assembled into or used in the parent part."@en;
+   samm:characteristic ext-quantity:MiscQuantityCharacteristic.
 
 :lastModifiedOn a samm:Property;
    samm:preferredName "Last Modified on "@en;
    samm:description "Timestamp when the assembly or usage relationship between parent part and child part was last modified."@en;
-   samm:characteristic samm-c:Timestamp;
-   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime.
-
-:parentCatenaXId a samm:Property;
-   samm:preferredName "Catena-X Parent ID"@en;
-   samm:description "The Catena-X ID of the parent object, into which the given child object is assembled into or used."@en;
-   samm:characteristic ext-uuid:UuidV4Trait;
-   samm:exampleValue "urn:uuid:43364d8c-cf38-423c-b907-6e68e0f0fe2f".
+   samm:characteristic :DateTimeTrait;
+   samm:exampleValue "2022-02-03T14:48:54.709Z".
 
 :validityPeriod a samm:Property;
    samm:preferredName "Validity Period"@en;
@@ -117,43 +113,16 @@
    samm:characteristic ext-number:BpnlTrait;
    samm:exampleValue "BPNL50096894aNXY".
 
-:QuantityCharacteristic a samm-c:Quantifiable;
-   samm:preferredName "Quantity Characteristic"@en;
-   samm:description "Describes the quantity in which the child part will be assembled into or used in the production of the parent object by providing a quantity value and the measurement unit in which the quantity is measured."@en;
-   samm:dataType :Quantity.
-
-:ValidityPeriodCharacteristic a samm:Characteristic;
-   samm:preferredName "Validity Period Characteristic"@en;
-   samm:description "Characteristic  for a validity period defined by an (optional)start and an (optional)end timestamp."@en;
-   samm:dataType :ValidityPeriodEntity.
-
-:Quantity a samm:Entity;
-   samm:preferredName "Quantity"@en;
-   samm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en;
-   samm:properties (ext-quantity:quantityValue ext-quantity:itemUnit).
-
-:ValidityPeriodEntity a samm:Entity;
-   samm:preferredName "Validity Period Entity"@en;
-   samm:description "If a validity period only has a start that means that the period is valid from the start date without a (yet)defined enddate and vice versa."@en;
-   samm:properties ([ samm:property :validFrom; samm:optional true ] [ samm:property :validTo; samm:optional true ]).
-
-:validFrom a samm:Property;
-   samm:preferredName "Valid from"@en;
-   samm:description "Start date of validity period"@en;
-   samm:characteristic :DateTimeTrait;
-   samm:exampleValue "2023-03-21T08:17:29.187+01:00".
-
-:validTo a samm:Property;
-   samm:preferredName "Valid to"@en;
-   samm:description "End date of validity period"@en;
-   samm:characteristic :DateTimeTrait;
-   samm:exampleValue "2024-07-01T16:10:00.000+01:00".
-
 :DateTimeTrait a samm-c:Trait;
    samm:preferredName "Date Time Trait"@en;
    samm:description "Trait to ensure regular expressions with different date and time(zone)formats."@en;
    samm-c:baseCharacteristic :DateTimeCharacteristic;
    samm-c:constraint :DateTimeRegularExpression.
+
+:ValidityPeriodCharacteristic a samm:Characteristic;
+   samm:preferredName "Validity Period Characteristic"@en;
+   samm:description "Characteristic  for a validity period defined by an (optional)start and an (optional)end timestamp."@en;
+   samm:dataType :ValidityPeriodEntity.
 
 :DateTimeCharacteristic a samm:Characteristic;
    samm:preferredName "Date Time Characteristic"@en;
@@ -164,3 +133,20 @@
    samm:preferredName "Date Time Regular Expression"@en;
    samm:description "Regular Expression to enable UTC and Timezone formats and the possibility to exclude time information."@en;
    samm:value "^(?:[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:[.][0-9]+)?Z|[0-9]{4}-[0-9]{2}-[0-9]{2}(?:T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:[.][0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2}))?)$".
+
+:ValidityPeriodEntity a samm:Entity;
+   samm:preferredName "Validity Period Entity"@en;
+   samm:description "If a validity period only has a start that means that the period is valid from the start date without a (yet)defined enddate and vice versa."@en;
+   samm:properties ([ samm:property :validFrom; samm:optional true ] [ samm:property :validTo; samm:optional true ]).
+
+:validFrom a samm:Property;
+   samm:preferredName "Valid from"@en;
+   samm:description "Start date of validity period."@en;
+   samm:characteristic :DateTimeTrait;
+   samm:exampleValue "2023-03-21T08:17:29.187+01:00".
+
+:validTo a samm:Property;
+   samm:preferredName "Valid to"@en;
+   samm:description "End date of validity period."@en;
+   samm:characteristic :DateTimeTrait;
+   samm:exampleValue "2024-07-01T16:10:00.000+01:00".
