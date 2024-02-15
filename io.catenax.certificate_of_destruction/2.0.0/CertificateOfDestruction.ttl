@@ -1,0 +1,351 @@
+#######################################################################
+# Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022,2024 SAP SE
+# Copyright (c) 2022,2024 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2022,2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. for the institutes IPK and IPA
+# Copyright (c) 2022,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.certificate_of_destruction:2.0.0#> .
+
+:CertificateOfDestruction a samm:Aspect ;
+   samm:preferredName "Certificate of Destruction"@en ;
+   samm:description "Information on the certificate of destruction. In german: Verwertungsnachweis"@en ;
+   samm:description "Information die den Verwertungsnachweis definiert."@de ;
+   samm:see <https://www.gesetze-im-internet.de/fzv_2011/Fanlage_8.html> ;
+   samm:properties ( :dismantlingDate :serialNumber :vehicleOwnerProperties :vehicleProperties :returnPointProperties :dismantlerProperties :companyNumber ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:dismantlingDate a samm:Property ;
+   samm:preferredName "dismantling date"@en ;
+   samm:description "Date of issue of the certificate of destruction"@en ;
+   samm:characteristic :DateCharacteristic .
+
+:serialNumber a samm:Property ;
+   samm:preferredName "serial number"@en ;
+   samm:preferredName "Lfd-Nr."@de ;
+   samm:description "Serial number to identify the certificate of destruction"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "LRP1087432" .
+
+:vehicleOwnerProperties a samm:Property ;
+   samm:preferredName "vehicle owner properties"@en ;
+   samm:description "Properties under the first section of the certificate of destruction"@en ;
+   samm:characteristic :VehicleOwnerCharacteristic .
+
+:vehicleProperties a samm:Property ;
+   samm:preferredName "vehicle properties"@en ;
+   samm:description "Properties under the second section of the certificate of destruction"@en ;
+   samm:characteristic :VehicleCharacteristic .
+
+:returnPointProperties a samm:Property ;
+   samm:preferredName "return point properties"@en ;
+   samm:description "Properties under the third section of the certificate of destruction"@en ;
+   samm:characteristic :ReceivingCharacteristic .
+
+:dismantlerProperties a samm:Property ;
+   samm:preferredName "dismantler properties"@en ;
+   samm:description "Properties under the fourth section of the certificate of destruction"@en ;
+   samm:characteristic :DismantlerCharacterisitc .
+
+:companyNumber a samm:Property ;
+   samm:preferredName "company number"@en ;
+   samm:description "Company number as an dismantler"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "S30A00065" .
+
+:DateCharacteristic a samm:Characteristic ;
+   samm:preferredName "date characteristic"@en ;
+   samm:description "Date characteristic"@en ;
+   samm:dataType xsd:date .
+
+:VehicleOwnerCharacteristic a samm:Characteristic ;
+   samm:preferredName "vehicle owner characteristic"@en ;
+   samm:description "Characteristic to describe the vehicle owner attributes"@en ;
+   samm:dataType :VehicleOwnerEntity .
+
+:VehicleCharacteristic a samm:Characteristic ;
+   samm:preferredName "vehicle characteristic"@en ;
+   samm:description "Characteristic to describe the vehicle attributes"@en ;
+   samm:dataType :VehicleEntity .
+
+:ReceivingCharacteristic a samm:Characteristic ;
+   samm:preferredName "receiving characteristic"@en ;
+   samm:description "Characteristic to describe the receiving attributes"@en ;
+   samm:dataType :ReceivingEntity .
+
+:DismantlerCharacterisitc a samm:Characteristic ;
+   samm:preferredName "dismantler characterisitc"@en ;
+   samm:description "Characteristic to describe the dismantler attributes"@en ;
+   samm:dataType :DismantlerEntity .
+
+:VehicleOwnerEntity a samm:Entity ;
+   samm:preferredName "vehicle owner entity"@en ;
+   samm:properties ( :isVehicleOwnerInformationComplete :vehicleOwnerAddress :citizenship ) .
+
+:VehicleEntity a samm:Entity ;
+   samm:preferredName "vehicle entity"@en ;
+   samm:properties ( :isVehicleInformationComplete :emptyWeight :firstRegistration :licensePlate :licenseAbbreviation :identification :model :brand :class ) .
+
+:ReceivingEntity a samm:Entity ;
+   samm:preferredName "receiving entity"@en ;
+   samm:description "Receiving entity with properties to describe the respective company and auditor"@en ;
+   samm:properties ( :isVehicleWithdrawnFromService :receiverAuditorAddress :issueDate :expiryDate :receiverContact :receiverAuditorContact :receiverAddress ) .
+
+:DismantlerEntity a samm:Entity ;
+   samm:preferredName "dismantler entity"@en ;
+   samm:description "Dismantler entity with properties to describe the respective company, auditor and legal authority"@en ;
+   samm:properties ( :isVehicleWithdrawnFromService :dismantlerAddress :governmentAddress :receiverAuditorAddress :issueDate :expiryDate :dismantlerContact :dismantlerAuditorAddress :dismantlerAuditorContact ) .
+
+:isVehicleOwnerInformationComplete a samm:Property ;
+   samm:preferredName "is vehicle owner information complete"@en ;
+   samm:description "Boolean flag to indicate whether the information in the data set is complete. If the data set contains unknown fields, the value is false"@en ;
+   samm:characteristic samm-c:Boolean .
+
+:vehicleOwnerAddress a samm:Property ;
+   samm:preferredName "vehicle owner address"@en ;
+   samm:description "Address of the vehicle owner "@en ;
+   samm:characteristic :Address .
+
+:citizenship a samm:Property ;
+   samm:preferredName "citizenship"@en ;
+   samm:description "Citizenship of the vehicle owner"@en ;
+   samm:see <file:///https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FList_of_ISO_3166_country_codes> ;
+   samm:characteristic :CountryCodeTrait ;
+   samm:exampleValue "DE" .
+
+:isVehicleInformationComplete a samm:Property ;
+   samm:preferredName "is vehicle information complete"@en ;
+   samm:description "Boolean flag to indicate whether the information in the data set is complete. If the data set contains unknown fields, the value is false"@en ;
+   samm:characteristic samm-c:Boolean .
+
+:emptyWeight a samm:Property ;
+   samm:preferredName "empty weight"@en ;
+   samm:description "Empty weight in accordance with §2Abs.1 Nr.23 AltfahrzeugV"@en ;
+   samm:characteristic :Weight .
+
+:firstRegistration a samm:Property ;
+   samm:preferredName "first registration"@en ;
+   samm:description "The first time this vehicle got registered with an initial license plate"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "19.12.2014" .
+
+:licensePlate a samm:Property ;
+   samm:preferredName "license plate"@en ;
+   samm:description "Current (i.e. last) assigned number/ license plate to the vehicle"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "HAL-UI123" .
+
+:licenseAbbreviation a samm:Property ;
+   samm:preferredName "license abbreviation"@en ;
+   samm:description "The first characters on the license plate"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "HAL" .
+
+:identification a samm:Property ;
+   samm:preferredName "vehicle identification number (VIN)"@en ;
+   samm:description "The unique vehicle identification number (VIN) of the vehicle "@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "WBAAY711X0KC28153" .
+
+:model a samm:Property ;
+   samm:preferredName "model"@en ;
+   samm:description "Vehicle model"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "318 I" .
+
+:brand a samm:Property ;
+   samm:preferredName "brand"@en ;
+   samm:description "Brand name"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BMW" .
+
+:class a samm:Property ;
+   samm:preferredName "class"@en ;
+   samm:description "Vehicle class the vehicle refers to"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "01" .
+
+:isVehicleWithdrawnFromService a samm:Property ;
+   samm:preferredName "isVehicleWithdrawnFromService"@en ;
+   samm:description "True if the vehicle has been withdrawn from the service and out of circulation"@en ;
+   samm:characteristic samm-c:Boolean .
+
+:receiverAuditorAddress a samm:Property ;
+   samm:preferredName "receiver auditor address"@en ;
+   samm:description "The address of the auditor "@en ;
+   samm:characteristic :Address .
+
+:issueDate a samm:Property ;
+   samm:preferredName "issue date"@en ;
+   samm:description "The date of issue of the certificate"@en ;
+   samm:characteristic :DateCharacteristic .
+
+:expiryDate a samm:Property ;
+   samm:preferredName "expiry date"@en ;
+   samm:description "The date of expiration of the certificate"@en ;
+   samm:characteristic :DateCharacteristic .
+
+:receiverContact a samm:Property ;
+   samm:preferredName "receiver contact"@en ;
+   samm:description "Contact information of the receiving company"@en ;
+   samm:characteristic :ContactCharacteristic .
+
+:receiverAuditorContact a samm:Property ;
+   samm:preferredName "receiver auditor contact"@en ;
+   samm:description "Auditor contact information"@en ;
+   samm:characteristic :ContactCharacteristic .
+
+:receiverAddress a samm:Property ;
+   samm:preferredName "receiver address"@en ;
+   samm:description "The address of the receiver "@en ;
+   samm:characteristic :Address .
+
+:dismantlerAddress a samm:Property ;
+   samm:preferredName "dismantler address"@en ;
+   samm:description "Address for the dismantling company"@en ;
+   samm:characteristic :Address .
+
+:governmentAddress a samm:Property ;
+   samm:preferredName "government address"@en ;
+   samm:description "The address of the public government"@en ;
+   samm:characteristic :Address .
+
+:dismantlerContact a samm:Property ;
+   samm:preferredName "dismantler contact"@en ;
+   samm:description "Dismantler contact information"@en ;
+   samm:characteristic :ContactCharacteristic .
+
+:dismantlerAuditorAddress a samm:Property ;
+   samm:preferredName "dismantler auditor address"@en ;
+   samm:description "Information about the auditor address"@en ;
+   samm:characteristic :Address .
+
+:dismantlerAuditorContact a samm:Property ;
+   samm:preferredName "dismantler auditor contact"@en ;
+   samm:description "Information about the auditor contact"@en ;
+   samm:characteristic :ContactCharacteristic .
+
+:Address a samm:Characteristic ;
+   samm:preferredName "address"@en ;
+   samm:description "Address characteristic which corresponds to the information given in the certificate of destruction"@en ;
+   samm:dataType :AddressEntity .
+
+:CountryCodeTrait a samm-c:Trait ;
+   samm:preferredName "country code trait"@en ;
+   samm:description "Country code trait to restrict to the iso norm"@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :IsoCodeConstraint .
+
+:Weight a samm-c:Quantifiable ;
+   samm:preferredName "weight"@en ;
+   samm:description "weight of the vehicle"@en ;
+   samm:dataType xsd:integer ;
+   samm-c:unit unit:kilogram .
+
+:ContactCharacteristic a samm:Characteristic ;
+   samm:preferredName "contact characteristic"@en ;
+   samm:description "Contact characteristic based on the contact information available in the certificate of destruction"@en ;
+   samm:dataType :ContactEntity .
+
+:AddressEntity a samm:Entity ;
+   samm:preferredName "AddressEntity"@en ;
+   samm:description "AddressEntity"@en ;
+   samm:properties ( :street :houseNumber :zip :location :name :country ) .
+
+:IsoCodeConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "IsoCodeConstraint"@en ;
+   samm:description "Constraint to be conform with the ISO 3166-1 alpha-2 code with two upper case characters"@en ;
+   samm:value "^[A-Z]{2}$" .
+
+:ContactEntity a samm:Entity ;
+   samm:preferredName "contact entity"@en ;
+   samm:description "Contact entity"@en ;
+   samm:properties ( :phone [ samm:property :fax; samm:optional true ] ) .
+
+:street a samm:Property ;
+   samm:preferredName "street"@en ;
+   samm:description "The street name"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Bernstraße" .
+
+:houseNumber a samm:Property ;
+   samm:preferredName "house number"@en ;
+   samm:description "The house number of the address"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "45" .
+
+:zip a samm:Property ;
+   samm:preferredName "zip code"@en ;
+   samm:description "The postal code"@en ;
+   samm:characteristic :ZipTrait ;
+   samm:exampleValue "68161/12" .
+
+:location a samm:Property ;
+   samm:preferredName "location"@en ;
+   samm:description "The location or city of the address"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Mannheim" .
+
+:name a samm:Property ;
+   samm:preferredName "name"@en ;
+   samm:description "Name of the private individual, company or authority"@en ;
+   samm:characteristic samm-c:Text .
+
+:country a samm:Property ;
+   samm:preferredName "country"@en ;
+   samm:description "Country code"@en ;
+   samm:characteristic :CountryCodeTrait .
+
+:phone a samm:Property ;
+   samm:preferredName "phone"@en ;
+   samm:description "Phone number"@en ;
+   samm:characteristic :PhoneTrait .
+
+:fax a samm:Property ;
+   samm:preferredName "fax"@en ;
+   samm:description "Fax number"@en ;
+   samm:characteristic :PhoneTrait .
+
+:ZipTrait a samm-c:Trait ;
+   samm:description "Constraint to limit the zip length"@en ;
+   samm-c:baseCharacteristic :Zip ;
+   samm-c:constraint :ZipLength .
+
+:PhoneTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :PhoneConstraint .
+
+:Zip a samm:Characteristic ;
+   samm:preferredName "ZIP"@en ;
+   samm:description "Characteristic to describe the zip"@en ;
+   samm:dataType xsd:string .
+
+:ZipLength a samm-c:LengthConstraint ;
+   samm:preferredName "Zip Length"@en ;
+   samm:description "The maximal length of the the postal code is restricted to 14 chracters"@en ;
+   samm-c:maxValue "14"^^xsd:nonNegativeInteger .
+
+:PhoneConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "phone constraint"@en ;
+   samm:description "Phone constraint allow only numbers, whitespaces and an optional leading plus sign"@en ;
+   samm:value "[+]?[0-9 ]+" .
+
