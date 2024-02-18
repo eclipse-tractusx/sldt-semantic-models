@@ -20,6 +20,7 @@ n/a
 - updated materialGlobalAssetId description to point to part type twin
 - Delivery: fixed lowercase start in preferred name
 - make materialGlobalAssetId mandatory
+- fixed typo in eventType description
 
 ### Removed
 - Harmonization for Industry Core
