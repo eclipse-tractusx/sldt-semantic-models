@@ -21,6 +21,7 @@ n/a
 - Delivery: fixed lowercase start in preferred name
 - make materialGlobalAssetId mandatory
 - fixed typo in eventType description
+- dateTimeOfEvent -> use samm datatype instead of custom Characteristic
 
 ### Removed
 - Harmonization for Industry Core
