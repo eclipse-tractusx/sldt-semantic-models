@@ -1,15 +1,15 @@
 ## Changelog
 All notable changes to this model will be documented in this file.
 
-## [2.0.0] - 2024-02-19
+## [2.0.0] - 2024-02-26
 ### Added
 - added new `customers` property as child of the `SingleLevelUsageAsPlanned` aspect property including its `ListOfCustomersCharactersistics` and `Customer` entity
 - added new `businessPartner` property with its `BpnlTrait` of the shared business_partner_number 2.0.0 aspect model
 - added new `isOnlyPotentialParent` property including its boolean characteristic
 - added new links from the Customer entity to the `businesspartner`, `createdOn` and `lastModifiedOn` properties
-- added a new link from the new `parentCatenaXId` property to the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
 
 ### Changed
+- changed `parentCatenaXId` to `catenaXId` to be conform with the data chain template
 - renamed `parentParts` property to be `parentItems`
 - changed `parentItems` property to be a mandatory child of the `SingleLevelUsageBuilt` aspect property instead of a child of the `customers` property
 - replaced the `quantityNumber` and `measurementUnit` properties with the `itemUnit` and `quantityValue` properties of the shared quantity 2.0.0 aspect model
