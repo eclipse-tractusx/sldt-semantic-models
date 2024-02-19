@@ -12,6 +12,7 @@ n/a
 - lastUpdatedOnDateTime
   - move from position to AllocatedPlannedProductionOutput
   - use samm datatype instead of custom Characteristic
+- estimatedTimeOfCompletion -> use samm datatype instead of custom Characteristic
 - updated dependencies
   - io.catenax.shared.uuid
   - io.catenax.shared.quantity
