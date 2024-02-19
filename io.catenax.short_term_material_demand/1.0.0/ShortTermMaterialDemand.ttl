@@ -1,0 +1,109 @@
+#######################################################################
+# Copyright (c) 2023-2024 BASF SE
+# Copyright (c) 2023-2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023-2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML and Fraunhofer ISST)
+# Copyright (c) 2023-2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023-2024 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2023-2024 Mercedes Benz AG
+# Copyright (c) 2023-2024 SAP SE
+# Copyright (c) 2023-2024 SupplyOn AG
+# Copyright (c) 2023-2024 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2023-2024 Volkswagen AG
+# Copyright (c) 2023-2024 ZF Friedrichshafen AG
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.short_term_material_demand:1.0.0#> .
+@prefix ext-category: <urn:samm:io.catenax.shared.demand_category:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+@prefix ext-rate: <urn:samm:io.catenax.shared.demand_rate:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#>.
+
+:ShortTermMaterialDemand a samm:Aspect ;
+   samm:preferredName "Material Demand Base"@en ;
+   samm:description "The requirements of a customer towards a specific supplier for a specific material. Each material demand is unique by its Customer, Supplier and Material Number."@en ;
+   samm:properties ( :demandSeries :changedAt ext-rate:demandRate :materialGlobalAssetId) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:materialGlobalAssetId a samm:Property;
+    samm:preferredName "UUID of the Part Type Twin"@en;
+    samm:description "Identifier used uniquely to identify part type twin."@en;
+    samm:characteristic ext-uuid:UuidV4Trait;
+    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
+
+:demandSeries a samm:Property ;
+   samm:preferredName "Demand Series"@en ;
+   samm:description "The demands for a dedicated material in a given time period of a given demand rate, distinguished by their demand location and demand category."@en ;
+   samm:characteristic :DemandSeriesSet .
+
+:changedAt a samm:Property ;
+   samm:preferredName "Changed At"@en ;
+   samm:description "Point in time when the content (any property according to the data model) of the material demand was changed, at the customer, either by a human user or an automated process."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-11-05T08:15:30.123-05:00"^^xsd:dateTime .
+
+:DemandSeriesSet a samm-c:Set ;
+   samm:preferredName "Demand Series Set"@en ;
+   samm:description "A set of demand series belonging to a certain material demand. Each demand series in the set must have a unique combination of customer location and demand category."@en ;
+   samm:dataType :DemandSeries .
+
+:DemandSeries a samm:Entity ;
+   samm:preferredName "Demand Series"@en ;
+   samm:description "Encapsulates the demand series related information."@en ;
+   samm:properties ( :customerLocationBpns :demands [ samm:property :expectedSupplierLocationBpns; samm:optional true ] ext-category:demandCategory ) .
+
+:customerLocationBpns a samm:Property ;
+   samm:preferredName "Customer Location"@en ;
+   samm:description "The Business Partner Number Site (BPNS) of the site at which the customer needs the specified material for this demand series."@en ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS8888888888XX" .
+
+:demands a samm:Property ;
+   samm:preferredName "Demands"@en ;
+   samm:description "A time series with a specified demand rate along a given time period to describe the demand values for this demand series."@en ;
+   samm:characteristic :DemandTimeSeries .
+
+:expectedSupplierLocationBpns a samm:Property ;
+   samm:preferredName "Expected Supplier Location"@en ;
+   samm:description "The Business Partner Number Site (BPNS) of the site from where the customer expects the supplier to fulfill the demands of the demand series. The value is used for informational purposes only and is therefore not binding for the supplier."@en ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS8888888888XX" .
+
+:DemandTimeSeries a samm-c:SortedSet ;
+   samm:preferredName "Demand Time Series"@en ;
+   samm:description "The demands in a given time period for a given demand rate."@en ;
+   samm:dataType :Demand .
+
+:Demand a samm:Entity ;
+   samm:preferredName "Demand"@en ;
+   samm:description "A single demand for a given point in time according to the demand rate."@en ;
+   samm:properties ( :demand ext-rate:pointInTime ) .
+
+:demand a samm:Property ;
+   samm:preferredName "Demand"@en ;
+   samm:description "uantity of materials required in the specified point in time according specified demand rate. This demand should be as close as possible to demand that is derived from the actual production program."@en ;
+   samm:characteristic :DemandQuantityCharacteristic .
+
+:DemandQuantityCharacteristic a samm:Characteristic ;
+   samm:preferredName "Demand Quantity Characteristic"@en ;
+   samm:description "Demand expressed as item quantity with a unit of measure."@en ;
+   samm:dataType ext-quantity:ItemQuantityEntity .
+
