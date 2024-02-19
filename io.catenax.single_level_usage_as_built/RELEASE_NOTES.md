@@ -1,11 +1,7 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [3.0.0] - 2024-02-19
-### Added
-- added new `parentCatenaXId` property as child of the existing `parentItems` property
-- added a new link from the new `parentCatenaXId` property to the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
-
+## [3.0.0] - 2024-02-26
 ### Changed
 - changed `parentItems` property to be a mandatory child of the `SingleLevelUsageAsBuilt` aspect property instead of a child of the `customers` property
 - replaced the `quantityNumber` and `measurementUnit` properties with the `itemUnit` and `quantityValue` properties of the shared quantity 2.0.0 aspect model
