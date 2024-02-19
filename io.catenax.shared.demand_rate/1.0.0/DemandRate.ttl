@@ -1,0 +1,104 @@
+#######################################################################
+# Copyright (c) 2023-2024 BASF SE
+# Copyright (c) 2023-2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023-2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML and Fraunhofer ISST)
+# Copyright (c) 2023-2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023-2024 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2023-2024 Mercedes Benz AG
+# Copyright (c) 2023-2024 SAP SE
+# Copyright (c) 2023-2024 SupplyOn AG
+# Copyright (c) 2023-2024 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2023-2024 Volkswagen AG
+# Copyright (c) 2023-2024 ZF Friedrichshafen AG
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.shared.demand_rate:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:DemandRate a samm:Aspect ;
+   samm:preferredName "Demand Rate"@en ;
+   samm:description "Aspect Model describing the demand rate or granularity."@en ;
+   samm:properties ( :demandRate :pointInTime ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:demandRate a samm:Property ;
+   samm:preferredName "Demand Rate"@en ;
+   samm:description "Describes the demand rate or granularity of the demand information. It defines how to interpret the point in time."@en ;
+   samm:characteristic :DemandRateEnumeration .
+
+:pointInTime a samm:Property ;
+   samm:preferredName "Point in Time"@en ;
+   samm:description "Defines the start of the demand rate as a point in time. The point in time must be interpreted according to the demand rate."@en ;
+   samm:characteristic :PointInTimeCharacteristic ;
+   samm:exampleValue "2023-10-09"^^xsd:date .
+
+:DemandRateEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Demand Rate Enumeration"@en ;
+   samm:description """The demand rate specifies the time horizon of the the demand.
+- day = time between the start of the specified day till the end of the specified day (ISO-8601).
+- calendar week = time between the start of the specified calendar week till the end of the specified calendar week (ISO-8601-1:2019)."""@en ;
+   samm:dataType :DemandRateType ;
+   samm-c:values ( :DemandRateCalendarWeek :DemandRateDay ) .
+
+:PointInTimeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Point in Time Characteristic"@en ;
+   samm:description """- If demand rate is \"calendar week\": An ISO calendar week in which a given demand is needed. Must be given as date of the Monday in the week. (ISO-8601-1:2019)
+- If demand rate is \"day\": An ISO day on which a given demand is needed. Must be given as single day (consider the time zone of the customer's location). (ISO-8601)"""@en ;
+   samm:see <https://www.iso.org/iso-8601-date-and-time-format.html> ;
+   samm:see <https://www.iso.org/standard/70907.html> ;
+   samm:dataType xsd:date .
+
+:DemandRateType a samm:Entity ;
+   samm:preferredName "Demand Rate Type"@en ;
+   samm:description "Type defining the possible demand rates."@en ;
+   samm:properties ( :demandRateCode [ samm:property :demandRateName; samm:notInPayload true ] ) .
+
+:DemandRateCalendarWeek a :DemandRateType ;
+   :demandRateCode "WKS" ;
+   :demandRateName "Calendar Week"@en .
+
+:DemandRateDay a :DemandRateType ;
+   :demandRateCode "DAY" ;
+   :demandRateName "Day"@en .
+
+:demandRateCode a samm:Property ;
+   samm:preferredName "Demand Rate Code"@en ;
+   samm:description "Code identifying the demand rate."@en ;
+   samm:characteristic :DemandRateCodeCharacteristic ;
+   samm:exampleValue "WKS" .
+
+:demandRateName a samm:Property ;
+   samm:preferredName "Demand Rate Name"@en ;
+   samm:description "The name describing the demand rate."@en ;
+   samm:characteristic :DemandRateNameCharacteristic .
+
+:DemandRateCodeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Demand Rate Code Characteristic"@en ;
+   samm:description "The code that is actually used in the payload to indicate the demand rate."@en ;
+   samm:dataType xsd:string .
+
+:DemandRateNameCharacteristic a samm:Characteristic ;
+   samm:preferredName "Demand Rate Name Characteristic"@en ;
+   samm:description "The name describing the demand rate in the SAMM."@en ;
+   samm:dataType rdf:langString .
+
