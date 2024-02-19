@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [3.0.0] - 2024-02-13
+## [3.0.0] - 2024-02-19
 
 ### Changed
 - Update based on shared aspect "uuid"
@@ -14,7 +14,7 @@ All notable changes to this model will be documented in this file.
 
 ## [2.0.0] - 2023-11-07
 ### Added
-- Upgarde from BAMM model to SAMM model
+- Upgrade from BAMM model to SAMM model
 - new features: Article Number, VIN, OE number
 
 ### Changed
