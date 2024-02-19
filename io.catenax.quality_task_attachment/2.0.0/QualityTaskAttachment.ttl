@@ -1,11 +1,11 @@
 #######################################################################
-# Copyright (c) 2023 Robert Bosch GmbH
-# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
-# Copyright (c) 2023 Volkswagen AG
-# Copyright (c) 2023 ZF Friedrichshafen AG
-# Copyright (c) 2023 SAP SE
-# Copyright (c) 2023 Siemens AG
-# Copyright (c) 2023 Contributors to the Eclipse Foundation
+# Copyright (c) 2023, 2024 Robert Bosch GmbH
+# Copyright (c) 2023, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023, 2024 Volkswagen AG
+# Copyright (c) 2023, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2023, 2024 SAP SE
+# Copyright (c) 2023, 2024 Siemens AG
+# Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -26,7 +26,8 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <urn:samm:io.catenax.quality_task_attachment:1.0.0#> .
+@prefix : <urn:samm:io.catenax.quality_task_attachment:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 
 :QualityTaskAttachment a samm:Aspect ;
    samm:preferredName "Quality task attachment"@en ;
@@ -37,9 +38,9 @@
 
 :qualityTaskId a samm:Property ;
    samm:preferredName "Quality Task ID"@en ;
-   samm:description "A unique quality task identifier where these list of parts analysis belong to."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "BPN-811_2022_000001" .
+   samm:description "The fully anonymous and unique Catena-X ID of this quality task. This id is unique inside Catena-X data space."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "430f56d3-1234-1234-1234-aaaabbbbcccc" .
 
 :relatedModelType a samm:Property ;
    samm:preferredName "relatedModelType"@en ;
@@ -65,7 +66,7 @@
 :File a samm:Entity ;
    samm:preferredName "File"@en ;
    samm:description "One file attached to the quality task"@en ;
-   samm:properties ( :fileName [ samm:property :schema; samm:optional true ] :filePath :sizeInKb :fileDescription :fileExtension ) .
+   samm:properties ( :fileName [ samm:property :schema; samm:optional true ] :filePath :sizeInKbProperty :fileDescription :fileExtension ) .
 
 :fileName a samm:Property ;
    samm:preferredName "file name"@en ;
@@ -76,7 +77,7 @@
 :schema a samm:Property ;
    samm:preferredName "schema"@en ;
    samm:description "schema definition for file"@en ;
-   samm:characteristic :Schema .
+   samm:characteristic :schemaCharacteristic .
 
 :filePath a samm:Property ;
    samm:preferredName "File Path"@en ;
@@ -84,7 +85,7 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "/subfolder/Histogramm_data.csv" .
 
-:sizeInKb a samm:Property ;
+:sizeInKbProperty a samm:Property ;
    samm:preferredName "Size in Kilobyte"@en ;
    samm:description "Indicates the size of the file"@en ;
    samm:characteristic :SizeInKb ;
@@ -102,8 +103,8 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "csv" .
 
-:Schema a samm:Characteristic ;
-   samm:preferredName "Schema"@en ;
+:schemaCharacteristic a samm:Characteristic ;
+   samm:preferredName "SchemaCharacteristic"@en ;
    samm:description "Describes the schema of the values contained in the file"@en ;
    samm:dataType :SchemaDefinition .
 
@@ -116,7 +117,7 @@
 :SchemaDefinition a samm:Entity ;
    samm:preferredName "Schema"@en ;
    samm:description "Schema for the file entities"@en ;
-   samm:properties ( [ samm:property :decimalSeperator; samm:optional true ] [ samm:property :delimiter; samm:optional true ] :variables ) .
+   samm:properties ( [ samm:property :decimalSeperator; samm:optional true ] [ samm:property :delimiter; samm:optional true ] :variablesProperty ) .
 
 :decimalSeperator a samm:Property ;
    samm:preferredName "Decimal Separator Enumeration"@en ;
@@ -130,8 +131,8 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "semicolon" .
 
-:variables a samm:Property ;
-   samm:preferredName "Variables"@en ;
+:variablesProperty a samm:Property ;
+   samm:preferredName "VariablesProperty"@en ;
    samm:description "A list describing the variables contained in the file"@en ;
    samm:characteristic :Variables .
 
