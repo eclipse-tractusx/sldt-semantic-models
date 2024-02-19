@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [3.0.0] - 2024-02-06
+## [3.0.0] - 2024-02-19
 ### Changed
 - updated version of model
 - update reference to shared aspect address
