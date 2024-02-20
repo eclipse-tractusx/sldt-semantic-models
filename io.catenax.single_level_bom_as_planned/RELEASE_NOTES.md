@@ -6,7 +6,6 @@ All notable changes to this model will be documented in this file.
 - added new `hasAlternatives` property as child of the existing `childItems` property including a boolean 
 
 ### Changed
-- changed `childCatenaXId` to `catenaXId` to be conform with the data chain template
 - replaced the `quantityNumber` and `measurementUnit` properties with the `itemUnit` and `quantityValue` properties of the shared quantity 2.0.0 aspect model
 - replaced the whole `CatenaXIdTraitCharacteristic` and its childs with the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
 - replaced the whole `BpnTrait` and its childs with the `BpnlTrait` of the shared business_partner_number 2.0.0 aspect model
