@@ -1,4 +1,24 @@
-
+#######################################################################
+# Copyright (c) 2023-2024 BASF SE
+# Copyright (c) 2023-2024 BMW AG
+# Copyright (c) 2023 CGI Deutschland B.V. & Co. KG
+# Copyright (c) 2023-2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023 Robert Bosch GmbH
+# Copyright (c) 2023-2024 SAP SE
+# Copyright (c) 2023-2024 T-Systems International GmbH
+# Copyright (c) 2023-2024 ZF Friedrichshafen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
 
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
@@ -9,14 +29,13 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.battery.battery_pass:5.0.0#> .
 @prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:4.0.0#> .
-@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
 
 :BatteryPass a samm:Aspect ;
    samm:preferredName "Battery Passport"@en ;
    samm:description "The battery pass describes information collected during the lifecycle of a battery. The battery passport is heavily based on the Regulation (EU) 2023/1542 of the European Parliament and of the Council of 12 July 2023 concerning batteries and waste batteries, amending Directive 2008/98/EC and Regulation (EU) 2019/1020 and repealing Directive 2006/66/EC.\nAdditionally attributes come from the Proposal for Ecodesign for Sustainable Products Regulation."@en ;
    samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R1542&qid=1693215264963> ;
    samm:see <https://environment.ec.europa.eu/publications/proposal-ecodesign-sustainable-products-regulation_en> ;
-   samm:properties ( ext-passport:metadata :identification :generalInformation :physicalDimension :chemicalMaterial :circularity :performance :conformity :safety :sources ) ;
+   samm:properties ( ext-passport:metadata :identification :operation ext-passport:handling :characteristics :sustainability :materials :performance :conformity :safety [ samm:property :sources; samm:optional true ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -25,25 +44,23 @@
    samm:description "Battery identification involves specific battery identifiers, including those assigned locally by the manufacturer. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(a) refers to AnnexVi PartA (2) refers to Article 38 (6):\nbattery batch number or serial number or product number or another element allowing their identification."@en ;
    samm:characteristic :IdentificationCharacteristic .
 
-:generalInformation a samm:Property ;
-   samm:preferredName "general information"@en ;
-   samm:description "General information includes details such as the manufacturer's name, facility address, the date of production and commercial warranty. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) and refers to ANNEX VI Part A which refers to Article 38:\n7. Manufacturers shall indicate on the battery their name, registered trade name or registered trade mark, their postal address, indicating a single contact point, and, if available, web and e-mail address. \nFrom Annex XIII (1) (a) and found in ANNEX VI Part A :\n3. the place of manufacture (geographical location of a battery manufacturing plant).\n4. the date of manufacture (month and year).\nAnd in Annex XIII (1):\n(m) period for which the commercial warranty for the calendar life applies."@en ;
-   samm:characteristic :GeneralInformationCharacteristic .
+:operation a samm:Property ;
+   samm:preferredName "Operation"@en ;
+   samm:description "General operation information includes details such as the manufacturer's identification and the date of production. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) and refers to ANNEX VI Part A which refers to Article 38:\n7. Manufacturers shall indicate on the battery their name, registered trade name or registered trade mark, their postal address, indicating a single contact point, and, if available, web and e-mail address. \nFrom Annex XIII (1) (a) and found in ANNEX VI Part A :\n3. the place of manufacture (geographical location of a battery manufacturing plant).\n4. the date of manufacture (month and year)."@en ;
+   samm:characteristic :OperationCharacteristic .
 
-:physicalDimension a samm:Property ;
-   samm:preferredName "Physical Dimension"@en ;
-   samm:description "The weight of the battery. For calculation of the energy density, the volume is also needed. The energy density of a battery is measured in watt-hours per kilogram (Wh/kg) and watt-hours per liter (Wh/L). These measures indicate how much energy a battery can store relative to its weight and volume, respectively. Other measurements are optional.These are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(a) and refers to Annex VI Part A:\n5. the weight."@en ;
-   samm:characteristic :PhysicalDimensionCharacteristic .
+:characteristics a samm:Property ;
+   samm:characteristic :Characteristic1 .
 
-:chemicalMaterial a samm:Property ;
-   samm:preferredName "Chemical Material"@en ;
+:sustainability a samm:Property ;
+   samm:preferredName "Sustainability"@en ;
+   samm:description "Sustainability includes information on the carbon footprint, sustainability documents and the status of the battery."@en ;
+   samm:characteristic :SustainabilityCharacteristic .
+
+:materials a samm:Property ;
+   samm:preferredName "Materials"@en ;
    samm:description "Chemical materials relevant for the composition of the battery. These include active, hazardous and critical materials."@en ;
    samm:characteristic :ChemicalMaterialCharacteristic .
-
-:circularity a samm:Property ;
-   samm:preferredName "Circularity"@en ;
-   samm:description "Circularity includes information on the carbon footprint, sustainability documents, spare parts and the status of the battery."@en ;
-   samm:characteristic :CircularityCharacteristic .
 
 :performance a samm:Property ;
    samm:preferredName "Performance"@en ;
@@ -70,25 +87,23 @@
    samm:description "Battery identification involves specific battery identifiers, including those assigned locally by the manufacturer."@en ;
    samm:dataType :IdentificationEntity .
 
-:GeneralInformationCharacteristic a samm:Characteristic ;
-   samm:preferredName "General Information Characteristic"@en ;
-   samm:description "Characteristic includes details such as the manufacturer's name, facility address, and the date of production."@en ;
-   samm:dataType :GeneralInformationEntity .
+:OperationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Operation Characteristic"@en ;
+   samm:description "Characteristic includes details for operational data."@en ;
+   samm:dataType :OperationEntity .
 
-:PhysicalDimensionCharacteristic a samm:Characteristic ;
-   samm:preferredName "Physical Dimension Characteristic"@en ;
-   samm:description "Characteristic for the physical dimensions."@en ;
-   samm:dataType :PhysicalDimensionEntity .
+:Characteristic1 a samm:Characteristic ;
+   samm:dataType :Entity1 .
+
+:SustainabilityCharacteristic a samm:Characteristic ;
+   samm:preferredName "Sustainability Characteristic"@en ;
+   samm:description "Characteristic for sustainability attributes."@en ;
+   samm:dataType :SustainabilityEntity .
 
 :ChemicalMaterialCharacteristic a samm:Characteristic ;
    samm:preferredName "Chemical Material Characteristic"@en ;
    samm:description "Chemical Material Characteristic for the battery."@en ;
    samm:dataType :ChemicalMaterialEntity .
-
-:CircularityCharacteristic a samm:Characteristic ;
-   samm:preferredName "Circularity Characteristic"@en ;
-   samm:description "Characteristic for circularity attributes."@en ;
-   samm:dataType :CircularityEntity .
 
 :PerformanceCharacteristic a samm:Characteristic ;
    samm:preferredName "Performance Characteristic"@en ;
@@ -110,25 +125,23 @@
    samm:description "Entity for the identification of the battery."@en ;
    samm:properties ( [ samm:property :batteryCategory; samm:payloadName "category" ] :idDmc [ samm:property :batteryChemistry; samm:payloadName "chemistry" ] ext-passport:identification ) .
 
-:GeneralInformationEntity a samm:Entity ;
-   samm:preferredName "General Information Entity"@en ;
-   samm:description "Entity which includes details such as the manufacturer's name, facility address, the date of production and warranty details. The date of the putting into service is optional."@en ;
+:OperationEntity a samm:Entity ;
+   samm:preferredName "Operation Entity"@en ;
+   samm:description "Entity which includes details such as the manufacturer's identification and the date of production. The date of the putting into service is optional."@en ;
    samm:properties ( [ samm:property :intoServiceDate; samm:optional true ] ext-passport:manufacturer ) .
 
-:PhysicalDimensionEntity a samm:Entity ;
-   samm:preferredName "Physical Dimension Entity"@en ;
-   samm:description "Entity for the physical dimension with weight, volume and other optional values."@en ;
-   samm:properties ( :weight [ samm:property ext-passport:height; samm:optional true ] [ samm:property ext-passport:length; samm:optional true ] [ samm:property ext-passport:width; samm:optional true ] ) .
+:Entity1 a samm:Entity ;
+   samm:properties ( :warranty :physicalDimension ) .
+
+:SustainabilityEntity a samm:Entity ;
+   samm:preferredName "Sustainability Entity"@en ;
+   samm:description "Entity which includes information on the carbon footprint, sustainability documents and the status of the battery."@en ;
+   samm:properties ( [ samm:property :sustainabilityDocuments; samm:payloadName "documents" ] :carbonFootprint [ samm:property ext-passport:state; samm:payloadName "status" ] ) .
 
 :ChemicalMaterialEntity a samm:Entity ;
    samm:preferredName "Chemical Material Entity"@en ;
    samm:description "Chemical Material Entity for the battery. Included are active, hazardous and critical materials as well as a material symbol. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Article 13:\n5. All batteries containing more than 0,002 % cadmium or more than 0,004 % lead, shall be marked with the chemical symbol for the metal concerned: Cd or Pb."@en ;
    samm:properties ( :activeMaterials :hazardousSubstance :otherMaterials ) .
-
-:CircularityEntity a samm:Entity ;
-   samm:preferredName "Circularity Entity"@en ;
-   samm:description "Entity which includes information on the carbon footprint, sustainability documents, spare parts and the status of the battery."@en ;
-   samm:properties ( [ samm:property :sustainabilityDocuments; samm:payloadName "documents" ] :carbonFootprint ext-passport:spareParts [ samm:property ext-passport:state; samm:payloadName "status" ] ) .
 
 :PerformanceEntity a samm:Entity ;
    samm:preferredName "Performance Entity"@en ;
@@ -168,10 +181,25 @@
    samm:description "Putting into service is the transition from a state of readiness to actual use or operation. The date should be formatted as yyyy-mm-dd. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex VII Part B: \n1.the date of manufacture of the battery and, where appropriate, the date of putting into service;\nDefined is \"putting into service\" in Article 3:\n(18) \"putting into service\" means the first use, for its intended purpose, in the Union, of a battery, without having been previously placed on the market."@en ;
    samm:characteristic ext-passport:DateTrait .
 
-:weight a samm:Property ;
-   samm:preferredName "Weight"@en ;
-   samm:description "The weight of the battery. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(a) and refers to Annex VI Part A:\n5. the weight."@en ;
-   samm:characteristic ext-quantity:MassCharacteristic .
+:warranty a samm:Property ;
+   samm:preferredName "Warranty"@en ;
+   samm:description "The warranty of the battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in ANNEX XIII:\n(m) period for which the commercial warranty for the calendar life applies."@en ;
+   samm:characteristic :Characteristic2 .
+
+:physicalDimension a samm:Property ;
+   samm:preferredName "Physical Dimension"@en ;
+   samm:description "The weight of the battery. For calculation of the energy density, the volume is also needed. The energy density of a battery is measured in watt-hours per kilogram (Wh/kg) and watt-hours per liter (Wh/L). These measures indicate how much energy a battery can store relative to its weight and volume, respectively. Other measurements are optional.These are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(a) and refers to Annex VI Part A:\n5. the weight."@en ;
+   samm:characteristic :PhysicalDimensionCharacteristic .
+
+:sustainabilityDocuments a samm:Property ;
+   samm:preferredName "sustainability Documents"@en ;
+   samm:description "Sustainability documents of the battery."@en ;
+   samm:characteristic :SustainabilityDocumentCharacteristic .
+
+:carbonFootprint a samm:Property ;
+   samm:preferredName "Carbon Footprint"@en ;
+   samm:description "The carbon footprint of the battery calculated as kg of carbon dioxide equivalent per one kWh of the total energy provided by the battery over its expected service life. Relevant attributes are the value, the unit, the referenced rulebook, the lifecycle where applied, the declaration, the performance class, the type (PCF), the declaration and the facility. These attributes are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in several places.\nAnnex XIII (1) (c) refers to Article 7 (2) which refers to Article 7 (1)(d):\n1. For electric vehicle batteries, rechargeable industrial batteries with a capacity greater than 2 kWh and LMT batteries a carbon footprint declaration shall be drawn up for each battery model per manufacturing plant, in accordance with the implementing act referred to in the fourth subparagraph and containing, at least, the following information:\n[...] (d) the carbon footprint of the battery, calculated as kg of carbon dioxide equivalent per one kWh of the total energy provided by the battery over its expected service life;\nAnd as well in Article 7:\n2. Electric vehicle batteries, rechargeable industrial batteries with a capacity greater than 2 kWh and LMT batteries shall bear a conspicuous, clearly legible and indelible label indicating the carbon footprint of the battery referred to in paragraph 1, first subparagraph, point (d) and declaring the carbon footprint performance class to which the relevant battery model per manufacturing plant corresponds.\nFurther specified in Annex XIII (1) (c) and refers to Article 7 (1):\n[...] The Commission shall, by 18 February 2024 for electric vehicle batteries, 18 February 2025 for rechargeable industrial batteries, except those with external storage, 18 February 2027 for LMT batteries and 18 February 2029 for industrial batteries with external storage, adopt:\n(a) a delegated act in accordance with Article 89 to supplement this Regulation by establishing the methodology for the calculation and verification of the carbon footprint of the battery referred to in the first subparagraph, point (d), in accordance with the essential elements set out in Annex II;\nThese parameters are defined by Article 3:\n(21) \"carbon footprint\" means the sum of greenhouse gas emissions and greenhouse gas removals in a product system, expressed as carbon dioxide equivalents and based on a Product Environmental Footprint (PEF) study using the single impact category of climate change;\nand defined by Annex II (2):\n(e) \"life cycle\" means the consecutive and interlinked stages of a product system, from raw material acquisition or generation from natural resources to final disposal (ISO 14040:2006 or an equivalent standard)."@en ;
+   samm:characteristic ext-passport:FootprintList .
 
 :activeMaterials a samm:Property ;
    samm:preferredName "Active Materials"@en ;
@@ -187,16 +215,6 @@
    samm:preferredName "Other Materials"@en ;
    samm:description "Other materials which are necessary to describe the material composition, especially if they are active, critical or hazardous and are not mentioned otherwise. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):\n(b) the material composition of the battery, including its chemistry, hazardous substances present in the battery, other than mercury, cadmium or lead, and critical raw materials present in the battery; \n(f) the share of renewable content.\nand in Annex XIII (2):\n(a) detailed composition, including materials used in the cathode, anode and electrolyte;\nDefinition from Article 3:\n(52) \"hazardous substance\" means a substance classified as hazardous pursuant to Article 3 of Regulation (EC) No 1272/2008:\nA substance or a mixture fulfilling the criteria relating to physical hazards, health hazards or environmental hazards, laid down in Parts 2 to 5 of Annex I is hazardous and shall be classified in relation to the respective hazard classes provided for in that Annex.\nWhere, in Annex I, hazard classes are differentiated on the basis of the route of exposure or the nature of the effects, the substance or mixture shall be classified in accordance with such differentiation.\nDefined in Article 2 of Regulation (EC) No 1272/2008:\n1. hazard class\" means the nature of the physical, health or environmental hazard."@en ;
    samm:characteristic ext-passport:MaterialList .
-
-:sustainabilityDocuments a samm:Property ;
-   samm:preferredName "sustainability Documents"@en ;
-   samm:description "Sustainability documents of the battery."@en ;
-   samm:characteristic :SustainabilityDocumentCharacteristic .
-
-:carbonFootprint a samm:Property ;
-   samm:preferredName "Carbon Footprint"@en ;
-   samm:description "The carbon footprint of the battery calculated as kg of carbon dioxide equivalent per one kWh of the total energy provided by the battery over its expected service life. Relevant attributes are the value, the unit, the referenced rulebook, the lifecycle where applied, the declaration, the performance class, the type (PCF), the declaration and the facility. These attributes are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in several places.\nAnnex XIII (1) (c) refers to Article 7 (2) which refers to Article 7 (1)(d):\n1. For electric vehicle batteries, rechargeable industrial batteries with a capacity greater than 2 kWh and LMT batteries a carbon footprint declaration shall be drawn up for each battery model per manufacturing plant, in accordance with the implementing act referred to in the fourth subparagraph and containing, at least, the following information:\n[...] (d) the carbon footprint of the battery, calculated as kg of carbon dioxide equivalent per one kWh of the total energy provided by the battery over its expected service life;\nAnd as well in Article 7:\n2. Electric vehicle batteries, rechargeable industrial batteries with a capacity greater than 2 kWh and LMT batteries shall bear a conspicuous, clearly legible and indelible label indicating the carbon footprint of the battery referred to in paragraph 1, first subparagraph, point (d) and declaring the carbon footprint performance class to which the relevant battery model per manufacturing plant corresponds.\nFurther specified in Annex XIII (1) (c) and refers to Article 7 (1):\n[...] The Commission shall, by 18 February 2024 for electric vehicle batteries, 18 February 2025 for rechargeable industrial batteries, except those with external storage, 18 February 2027 for LMT batteries and 18 February 2029 for industrial batteries with external storage, adopt:\n(a) a delegated act in accordance with Article 89 to supplement this Regulation by establishing the methodology for the calculation and verification of the carbon footprint of the battery referred to in the first subparagraph, point (d), in accordance with the essential elements set out in Annex II;\nThese parameters are defined by Article 3:\n(21) \"carbon footprint\" means the sum of greenhouse gas emissions and greenhouse gas removals in a product system, expressed as carbon dioxide equivalents and based on a Product Environmental Footprint (PEF) study using the single impact category of climate change;\nand defined by Annex II (2):\n(e) \"life cycle\" means the consecutive and interlinked stages of a product system, from raw material acquisition or generation from natural resources to final disposal (ISO 14040:2006 or an equivalent standard)."@en ;
-   samm:characteristic ext-passport:FootprintList .
 
 :ratedPerformance a samm:Property ;
    samm:preferredName "Rated Performance"@en ;
@@ -269,6 +287,19 @@
    samm:dataType xsd:string ;
    samm-c:values ( "SLI" "LMT" "EV" "industrial" "portable" "incorporated" ) .
 
+:Characteristic2 a samm:Characteristic ;
+   samm:dataType :Entity2 .
+
+:PhysicalDimensionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Physical Dimension Characteristic"@en ;
+   samm:description "Characteristic for the physical dimensions."@en ;
+   samm:dataType :PhysicalDimensionEntity .
+
+:SustainabilityDocumentCharacteristic a samm:Characteristic ;
+   samm:preferredName "Sustainability Document Characteristic"@en ;
+   samm:description "Characteristic for sustainability documents of the battery."@en ;
+   samm:dataType :SustainabilityDocumentEntity .
+
 :ActiveMaterialsCharacteristic a samm:Characteristic ;
    samm:preferredName "Active Materials Characteristic"@en ;
    samm:description "Characteristic for the active materials."@en ;
@@ -278,10 +309,6 @@
    samm:preferredName "Hazardous Substance Characteristic"@en ;
    samm:description "Hazardous Substance Characteristic for the battery chemical materials."@en ;
    samm:dataType :HazardousSubstanceEntity .
-
-:SustainabilityDocumentCharacteristic a samm:Characteristic ;
-   samm:description "Characteristic for sustainability documents of the battery."@en ;
-   samm:dataType :SustainabilityDocumentEntity .
 
 :RatedPerformanceCharacteristic a samm:Characteristic ;
    samm:preferredName "Rated Performance Characteristic"@en ;
@@ -298,6 +325,19 @@
    samm:description "List of extinguish agents."@en ;
    samm:dataType :ExtinguishAgentEntity .
 
+:Entity2 a samm:Entity ;
+   samm:properties ( ext-passport:lifeValue ext-passport:lifeUnit ) .
+
+:PhysicalDimensionEntity a samm:Entity ;
+   samm:preferredName "Physical Dimension Entity"@en ;
+   samm:description "Entity for the physical dimension with weight, volume and other optional values."@en ;
+   samm:properties ( [ samm:property ext-passport:height; samm:optional true ] [ samm:property ext-passport:length; samm:optional true ] [ samm:property ext-passport:width; samm:optional true ] ext-passport:weight ) .
+
+:SustainabilityDocumentEntity a samm:Entity ;
+   samm:preferredName "Sustainability Document Entity"@en ;
+   samm:description "Sustainability Document Entity which encapsules relevant information in the form of documents."@en ;
+   samm:properties ( :separateCollection :wastePrevention [ samm:property :euTaxonomyDisclosureStatement; samm:optional true ] [ samm:property :sustainabilityReport; samm:optional true ] ) .
+
 :ActiveMaterialEntity a samm:Entity ;
    samm:preferredName "Active Material Entity"@en ;
    samm:description "Entity for the active materials included in the battery. Mandatory are nickel, lithium, cobalt and lead."@en ;
@@ -307,11 +347,6 @@
    samm:preferredName "Hazardous Substance Entity"@en ;
    samm:description "Hazardous Substance Entity for hazardous chemical materials."@en ;
    samm:properties ( [ samm:property :hazardousLead; samm:payloadName "lead" ] [ samm:property :hazardousCadmium; samm:payloadName "cadmium" ] [ samm:property :hazardousMercury; samm:payloadName "mercury" ] [ samm:property :otherMaterials; samm:optional true; samm:payloadName "other" ] ) .
-
-:SustainabilityDocumentEntity a samm:Entity ;
-   samm:preferredName "Sustainability Document Entity"@en ;
-   samm:description "Sustainability Document Entity which encapsules relevant information in the form of documents."@en ;
-   samm:properties ( :separateCollection :wastePrevention :impactOfSubstances [ samm:property :euTaxonomyDisclosureStatement; samm:optional true ] [ samm:property :sustainabilityReport; samm:optional true ] ) .
 
 :RatedPerformanceEntity a samm:Entity ;
    samm:preferredName "Rated Performance Entity"@en ;
@@ -327,6 +362,26 @@
    samm:preferredName "Extinguish Agent Entity"@en ;
    samm:description "Entity for the extinguish agents."@en ;
    samm:properties ( [ samm:property :agentDocument; samm:optional true; samm:payloadName "document" ] [ samm:property :usableExtinguishingMedia; samm:payloadName "media" ] :fireClass ) .
+
+:separateCollection a samm:Property ;
+   samm:preferredName "Separate Collection"@en ;
+   samm:description "Documentation about separate collection of batteries involve information on how to properly collect, handle, and recycle batteries to ensure environmental sustainability and compliance with regulations. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74:\n1. In addition to the information referred to in Article 8a(2) of Directive 2008/98/EC, producers or, where appointed in accordance with Article 57(1), producer responsibility organisations shall make available to end-users and distributors the following information regarding the prevention and management of waste batteries with regard to the categories of batteries that they supply within the territory of a Member State:\n(a) the role of end-users in contributing to waste prevention, including by information on good practices and recommendations concerning the use of batteries aimed at extending their use phase and the possibilities of re-use, preparation for re-use, preparation for repurposing, repurposing and remanufacturing;\n(b) the role of end-users in contributing to the separate collection of waste batteries in accordance with their obligations under Article 64 to allow their treatment;\n(c) the separate collection, take-back and collection points, preparation for re-use, preparation for repurposing and treatment available for waste batteries;\n(d) the necessary safety instructions to handle waste batteries, including in relation to the risks associated with, and the handling of, batteries containing lithium;\n(e) the meaning of the labels and symbols on batteries in accordance with Article 13 or printed on their packaging or in the documents accompanying batteries; and\n(f) the impact of substances, in particular hazardous substances, present in batteries on the environment and on human health or the safety of persons, including the impact due to inappropriate discarding of waste batteries, such as littering or discarding as unsorted municipal waste."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:wastePrevention a samm:Property ;
+   samm:preferredName "Waste Prevention"@en ;
+   samm:description "Documentation about waste prevention for batteries which include guidelines, recommendations, and information on minimizing the environmental impact associated with the use and disposal of batteries. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74 (1) which call Article 8a of Directive 2008/98/EC:\n2. Member States shall take the necessary measures to ensure that the waste holders targeted by the extended producer responsibility schemes established in accordance with Article 8 (1), are informed about waste prevention measures, centres for re-use and preparing for re-use, take-back and collection systems, and the prevention of littering. Member States shall also take measures to create incentives for the waste holders to assume their responsibility to deliver their waste into the separate collection systems in place, notably, where appropriate, through economic incentives or regulations."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:euTaxonomyDisclosureStatement a samm:Property ;
+   samm:preferredName "EU Taxonomy Disclosure Statement"@en ;
+   samm:description "Optional disclosure regarding the EU taxonomy, with the choice to voluntarily provide the EU Taxonomy disclosure through the battery passport."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:sustainabilityReport a samm:Property ;
+   samm:preferredName "Sustainability Report"@en ;
+   samm:description "Voluntarily making the Sustainability Report available via the battery passport. A report containing the information concerning the sustainability in form of a document."@en ;
+   samm:characteristic ext-passport:DocumentList .
 
 :nickel a samm:Property ;
    samm:preferredName "Nickel"@en ;
@@ -362,31 +417,6 @@
    samm:preferredName "Hazardous Mercury"@en ;
    samm:description "Information about the presence of mercury in the battery. Therefore, a concentration and the location within the battery has to be given. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) refers to Annex VI Part A: \n8. the hazardous substances present in the battery, other than mercury, cadmium or lead;\nDefined in Article 3:\n(52) \"hazardous substance\" means a substance classified as hazardous pursuant to Article 3 of Regulation (EC) No 1272/2008."@en ;
    samm:characteristic :HazardousCharacteristic .
-
-:separateCollection a samm:Property ;
-   samm:preferredName "Separate Collection"@en ;
-   samm:description "Documentation about separate collection of batteries involve information on how to properly collect, handle, and recycle batteries to ensure environmental sustainability and compliance with regulations. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74:\n1. In addition to the information referred to in Article 8a(2) of Directive 2008/98/EC, producers or, where appointed in accordance with Article 57(1), producer responsibility organisations shall make available to end-users and distributors the following information regarding the prevention and management of waste batteries with regard to the categories of batteries that they supply within the territory of a Member State:\n(a) the role of end-users in contributing to waste prevention, including by information on good practices and recommendations concerning the use of batteries aimed at extending their use phase and the possibilities of re-use, preparation for re-use, preparation for repurposing, repurposing and remanufacturing;\n(b) the role of end-users in contributing to the separate collection of waste batteries in accordance with their obligations under Article 64 to allow their treatment;\n(c) the separate collection, take-back and collection points, preparation for re-use, preparation for repurposing and treatment available for waste batteries;\n(d) the necessary safety instructions to handle waste batteries, including in relation to the risks associated with, and the handling of, batteries containing lithium;\n(e) the meaning of the labels and symbols on batteries in accordance with Article 13 or printed on their packaging or in the documents accompanying batteries; and\n(f) the impact of substances, in particular hazardous substances, present in batteries on the environment and on human health or the safety of persons, including the impact due to inappropriate discarding of waste batteries, such as littering or discarding as unsorted municipal waste."@en ;
-   samm:characteristic ext-passport:DocumentList .
-
-:wastePrevention a samm:Property ;
-   samm:preferredName "Waste Prevention"@en ;
-   samm:description "Documentation about waste prevention for batteries which include guidelines, recommendations, and information on minimizing the environmental impact associated with the use and disposal of batteries. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74 (1) which call Article 8a of Directive 2008/98/EC:\n2. Member States shall take the necessary measures to ensure that the waste holders targeted by the extended producer responsibility schemes established in accordance with Article 8 (1), are informed about waste prevention measures, centres for re-use and preparing for re-use, take-back and collection systems, and the prevention of littering. Member States shall also take measures to create incentives for the waste holders to assume their responsibility to deliver their waste into the separate collection systems in place, notably, where appropriate, through economic incentives or regulations."@en ;
-   samm:characteristic ext-passport:DocumentList .
-
-:impactOfSubstances a samm:Property ;
-   samm:preferredName "Impact of Substances"@en ;
-   samm:description "An accumulation of documents that refer to the impact, especially hazardous substances, on the battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74:\n1. In addition to the information referred to in Article 8a(2) of Directive 2008/98/EC, producers or, where appointed in accordance with Article 57(1), producer responsibility organisations shall make available to end-users and distributors the following information regarding the prevention and management of waste batteries with regard to the categories of batteries that they supply within the territory of a Member State:\n[...]\n(f) the impact of substances, in particular hazardous substances, present in batteries on the environment and on human health or the safety of persons, including the impact due to inappropriate discarding of waste batteries, such as littering or discarding as unsorted municipal waste."@en ;
-   samm:characteristic ext-passport:DocumentList .
-
-:euTaxonomyDisclosureStatement a samm:Property ;
-   samm:preferredName "EU Taxonomy Disclosure Statement"@en ;
-   samm:description "Optional disclosure regarding the EU taxonomy, with the choice to voluntarily provide the EU Taxonomy disclosure through the battery passport."@en ;
-   samm:characteristic ext-passport:DocumentList .
-
-:sustainabilityReport a samm:Property ;
-   samm:preferredName "Sustainability Report"@en ;
-   samm:description "Voluntarily making the Sustainability Report available via the battery passport. A report containing the information concerning the sustainability in form of a document."@en ;
-   samm:characteristic ext-passport:DocumentList .
 
 :voltage a samm:Property ;
    samm:preferredName "Voltage"@en ;
@@ -605,7 +635,7 @@
 :HazardousEntity a samm:Entity ;
    samm:preferredName "Hazardous Entity"@en ;
    samm:description "Material Entity to describe the material composition for hazardous materials."@en ;
-   samm:properties ( ext-passport:concentration ext-passport:location ext-passport:materialUnit ext-passport:documentation ) .
+   samm:properties ( ext-passport:concentration ext-passport:location ext-passport:materialUnit :impactOfSubstances ) .
 
 :VoltageEntity a samm:Entity ;
    samm:preferredName "Voltage Entity"@en ;
@@ -681,6 +711,11 @@
    samm:preferredName "Dynamic Energy Entity"@en ;
    samm:description "Entity for dynamic energy values."@en ;
    samm:properties ( :soce [ samm:property :remainingEnergy; samm:payloadName "remaining" ] [ samm:property :energyThroughput; samm:optional true; samm:payloadName "throughput" ] ) .
+
+:impactOfSubstances a samm:Property ;
+   samm:preferredName "Impact of Substances"@en ;
+   samm:description "An accumulation of documents that refer to the impact, especially hazardous substances, on the battery. This attribute is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (s), refers to  Article 74:\n1. In addition to the information referred to in Article 8a(2) of Directive 2008/98/EC, producers or, where appointed in accordance with Article 57(1), producer responsibility organisations shall make available to end-users and distributors the following information regarding the prevention and management of waste batteries with regard to the categories of batteries that they supply within the territory of a Member State:\n[...]\n(f) the impact of substances, in particular hazardous substances, present in batteries on the environment and on human health or the safety of persons, including the impact due to inappropriate discarding of waste batteries, such as littering or discarding as unsorted municipal waste."@en ;
+   samm:characteristic ext-passport:DocumentList .
 
 :minVoltage a samm:Property ;
    samm:preferredName "Minimum Voltage"@en ;
