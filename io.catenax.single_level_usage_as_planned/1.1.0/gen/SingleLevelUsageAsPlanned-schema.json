@@ -1,0 +1,103 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-planned lifecycle phase.\nIf multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_CatenaXIdTraitCharacteristic" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_NumberOfObjects" : {
+        "type" : "number",
+        "description" : "Quantifiable number of objects in reference to the measurementUnit"
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "description" : "Describes a Property containing a reference to one of the units in the Unit Catalog."
+      },
+      "urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_QuantityCharacteristic" : {
+        "description" : "Describes the quantity in which the child part is assembled in the parent object by providing a quantity value and the measurement unit in which the quantity is measured.",
+        "type" : "object",
+        "properties" : {
+          "quantityNumber" : {
+            "description" : "The number of objects related to the measurement unit",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_NumberOfObjects"
+          },
+          "measurementUnit" : {
+            "description" : "Unit of measurement for the quantity of objects.\nIf possible, use units from the aspect meta model unit catalog, which is based on the UNECE Recommendation No. 20 \"Codes for Units of Measure used in International Trade\"",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference"
+          }
+        },
+        "required" : [ "quantityNumber", "measurementUnit" ]
+      },
+      "urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_ValidityPeriodCharacteristic" : {
+        "description" : "Characteristic  for a validity period defined by an (optional) start and an (optional) end timestamp.",
+        "type" : "object",
+        "properties" : {
+          "validFrom" : {
+            "description" : "Start date of validity period",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "validTo" : {
+            "description" : "End date of validity period",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          }
+        }
+      },
+      "urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_ParentData" : {
+        "description" : "Catena-X ID and meta data of the parent part.",
+        "type" : "object",
+        "properties" : {
+          "createdOn" : {
+            "description" : "Timestamp when the relation between the parent part and the child part was created.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "quantity" : {
+            "description" : "Quantity of which the child part is assembled into the parent part.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_QuantityCharacteristic"
+          },
+          "lastModifiedOn" : {
+            "description" : "Timestamp when the assembly relationship between parent part and child part was last modified.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "parentCatenaXId" : {
+            "description" : "The Catena-X ID of the parent object, into which the given child object is assembled in.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_CatenaXIdTraitCharacteristic"
+          },
+          "validityPeriod" : {
+            "description" : "The period of time during which the parent-child relation is valid. This relates to whether a child part can be built into the parent part at a given time.\nIf no validity period is given the relation is considered valid at any point in time.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_ValidityPeriodCharacteristic"
+          }
+        },
+        "required" : [ "createdOn", "quantity", "parentCatenaXId" ]
+      },
+      "urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_SetOfParentPartsCharacteristic" : {
+        "description" : "Set of parent parts the given child object is assembled in (one structural level up).",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_ParentData"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "catenaXId" : {
+      "description" : "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_CatenaXIdTraitCharacteristic"
+    },
+    "parentParts" : {
+      "description" : "Set of parent parts, in which the given child object is assembled in (one structural level up).",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_usage_as_planned_1.1.0_SetOfParentPartsCharacteristic"
+    }
+  },
+  "required" : [ "catenaXId", "parentParts" ]
+}

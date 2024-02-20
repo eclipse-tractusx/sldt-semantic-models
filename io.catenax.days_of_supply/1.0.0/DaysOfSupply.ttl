@@ -1,0 +1,116 @@
+#######################################################################
+# Copyright (c) 2024 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
+# Copyright (c) 2024 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2024 Volkswagen AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.days_of_supply:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:DaysOfSupply a samm:Aspect ;
+   samm:preferredName "Days of Supply"@en ;
+   samm:description "Days of Supply refers to the amount of days where item stock is sufficient for the demand. The incoming deliveries are not considered in the main days-of-supply-equation, but they can still be included in the projection of days-of-supply for the future days."@en ;
+   samm:properties ( :materialGlobalAssetId :direction :allocatedDaysOfSupply ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:materialGlobalAssetId a samm:Property ;
+   samm:preferredName "UUID of the Part Type Twin"@en ;
+   samm:description "Identifier used uniquely to identify part type twin."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df" .
+
+:direction a samm:Property ;
+   samm:preferredName "Direction of Stock"@en ;
+   samm:description "Direction of the stock from data provider perspective."@en ;
+   samm:characteristic :DirectionCharacteristic ;
+   samm:exampleValue "OUTBOUND" .
+
+:allocatedDaysOfSupply a samm:Property ;
+   samm:preferredName "Allocated Days of Supply"@en ;
+   samm:description "Days of supply that have been already allocated to the customer. "@en ;
+   samm:characteristic :AllocatedDaysOfSupplySet .
+
+:DirectionCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Direction of Stock Characteristic"@en ;
+   samm:description """If a supplier provides stock information to a customer, use \"OUTBOUND\".
+If a customer provides stock information to a supplier, use \"INBOUND\"."""@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "INBOUND" "OUTBOUND" ) .
+
+:AllocatedDaysOfSupplySet a samm-c:Set ;
+   samm:preferredName "Allocated Days of Supply Set"@en ;
+   samm:description "Set of allocated Days of Supply that may relate to different stock locations."@en ;
+   samm:dataType :AllocatedDaysOfSupply .
+
+:AllocatedDaysOfSupply a samm:Entity ;
+   samm:preferredName "Days Of Supply Allocated to a Partner"@en ;
+   samm:description """This defines the number of days with allocated supply for an item stock in a given location that is available for the use in production or deliveries. 
+The allocated days of supply are not available for other customers."""@en ;
+   samm:properties ( :amountOfAllocatedDaysOfSupply :stockLocationBPNS :stockLocationBPNA ) .
+
+:amountOfAllocatedDaysOfSupply a samm:Property ;
+   samm:preferredName "Amount of Allocated Days Of Supply"@en ;
+   samm:description "Amount of Days of supply of a given allocated item stock in a given location."@en ;
+   samm:characteristic :QuantityCharacteristic .
+
+:stockLocationBPNS a samm:Property ;
+   samm:preferredName "BPNS of Stock Location"@en ;
+   samm:description "BPNS identifying the site the stock is located at. One stock has always one location."@en ;
+   samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf> ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS1234567890ZZ" .
+
+:stockLocationBPNA a samm:Property ;
+   samm:preferredName "BPNA of Stock Location"@en ;
+   samm:description "BPNA identifying the address the stock is located at. One stock has always one location."@en ;
+   samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf> ;
+   samm:characteristic ext-number:BpnaTrait ;
+   samm:exampleValue "BPNA1234567890ZZ" .
+
+:QuantityCharacteristic a samm-c:SortedSet ;
+   samm:preferredName "Quantity Characteristic"@en ;
+   samm:description "List of quantity of days of supply. It MUST include at least current date and it is recommended to include future dates."@en ;
+   samm:dataType :QuantityOfDaysOfSupply .
+
+:QuantityOfDaysOfSupply a samm:Entity ;
+   samm:preferredName "Quantity of Days of Supply"@en ;
+   samm:description "Days of supply for a specific date."@en ;
+   samm:properties ( :date :daysOfSupply ) .
+
+:date a samm:Property ;
+   samm:preferredName "Date of Days of Supply"@en ;
+   samm:description "Date refers to the specific calendar day (current or projected) associated with the measured (or expected) inventory level. It serves as a timestamp for calculating Days of Supply, indicating when the inventory count was taken or projected."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2024-01-01T14:23:00+01:00"^^xsd:dateTime .
+
+:daysOfSupply a samm:Property ;
+   samm:preferredName "Days of Supply"@en ;
+   samm:description """Amount of days, before the current stock is expected to be exhausted. Days of supply of a customer: Number of days where; (Stock) - Σ(daily Demand) >= 0; Days of supply of a supplier: Number of days where; (Stock) - Σ(daily Outgoing Shipments) >= 0"""@en ;
+   samm:characteristic :DaysOfSupplyCharacteristic ;
+   samm:exampleValue "3.51"^^xsd:double .
+
+:DaysOfSupplyCharacteristic a samm:Characteristic ;
+   samm:preferredName "Days of Supply Characteristic"@en ;
+   samm:description "Provides days of supply"@en ;
+   samm:dataType xsd:double .
+
