@@ -4,7 +4,7 @@ All notable changes to this model will be documented in this file.
 ## [Unreleased]
 - Version 2.0.0 of model is deprecated. It has a wrong regex for BPNS validation from the old shared model for BPNS trait.
 
-## [2.1.0] - 2024-02-12
+## [2.1.0] - 2024-02-19
 ### Added
 
 ### Changed
