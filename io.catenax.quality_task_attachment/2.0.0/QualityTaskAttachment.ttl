@@ -1,0 +1,173 @@
+#######################################################################
+# Copyright (c) 2023, 2024 Robert Bosch GmbH
+# Copyright (c) 2023, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023, 2024 Volkswagen AG
+# Copyright (c) 2023, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2023, 2024 SAP SE
+# Copyright (c) 2023, 2024 Siemens AG
+# Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.quality_task_attachment:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:QualityTaskAttachment a samm:Aspect ;
+   samm:preferredName "Quality task attachment"@en ;
+   samm:description "Additional data for quality task"@en ;
+   samm:properties ( :qualityTaskId :relatedModelType :files ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:qualityTaskId a samm:Property ;
+   samm:preferredName "Quality Task ID"@en ;
+   samm:description "The fully anonymous and unique Catena-X ID of this quality task. This id is unique inside Catena-X data space."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "430f56d3-1234-1234-1234-aaaabbbbcccc" .
+
+:relatedModelType a samm:Property ;
+   samm:preferredName "relatedModelType"@en ;
+   samm:description "Indicates which aspect model these additional files are to be added to"@en ;
+   samm:characteristic :QualityModelType .
+
+:files a samm:Property ;
+   samm:preferredName "files"@en ;
+   samm:description "A list of files within the ZIP-folder, which are needed for a specific quality task"@en ;
+   samm:characteristic :ListOfFiles .
+
+:QualityModelType a samm-c:Enumeration ;
+   samm:preferredName "QualityModelType"@en ;
+   samm:description "Enumeration of released quality aspect models"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "fleet.claim_data" "fleet.diagnostic_data" "manufactured_parts_quality_information" "parts_analyses" "quality_task" "vehicle.product_description" ) .
+
+:ListOfFiles a samm-c:List ;
+   samm:preferredName "List of files"@en ;
+   samm:description "List of files attached to a quality task"@en ;
+   samm:dataType :File .
+
+:File a samm:Entity ;
+   samm:preferredName "File"@en ;
+   samm:description "One file attached to the quality task"@en ;
+   samm:properties ( :fileName [ samm:property :schema; samm:optional true ] :filePath :sizeInKbProperty :fileDescription :fileExtension ) .
+
+:fileName a samm:Property ;
+   samm:preferredName "file name"@en ;
+   samm:description "The name of the described file"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Histogramm_data.csv" .
+
+:schema a samm:Property ;
+   samm:preferredName "schema"@en ;
+   samm:description "schema definition for file"@en ;
+   samm:characteristic :schemaCharacteristic .
+
+:filePath a samm:Property ;
+   samm:preferredName "File Path"@en ;
+   samm:description "Indicates where the file is located within the ZIP-folder"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "/subfolder/Histogramm_data.csv" .
+
+:sizeInKbProperty a samm:Property ;
+   samm:preferredName "Size in Kilobyte"@en ;
+   samm:description "Indicates the size of the file"@en ;
+   samm:characteristic :SizeInKb ;
+   samm:exampleValue "615"^^xsd:positiveInteger .
+
+:fileDescription a samm:Property ;
+   samm:preferredName "File Description"@en ;
+   samm:description "A description of the file content"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Price list for various components" .
+
+:fileExtension a samm:Property ;
+   samm:preferredName "File Extension"@en ;
+   samm:description "Indicates which file format the file has"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "csv" .
+
+:schemaCharacteristic a samm:Characteristic ;
+   samm:preferredName "SchemaCharacteristic"@en ;
+   samm:description "Describes the schema of the values contained in the file"@en ;
+   samm:dataType :SchemaDefinition .
+
+:SizeInKb a samm-c:Measurement ;
+   samm:preferredName "Size in Kilobyte"@en ;
+   samm:description "Indicates the size of the file"@en ;
+   samm:dataType xsd:positiveInteger ;
+   samm-c:unit unit:kilobyte .
+
+:SchemaDefinition a samm:Entity ;
+   samm:preferredName "Schema"@en ;
+   samm:description "Schema for the file entities"@en ;
+   samm:properties ( [ samm:property :decimalSeperator; samm:optional true ] [ samm:property :delimiter; samm:optional true ] :variablesProperty ) .
+
+:decimalSeperator a samm:Property ;
+   samm:preferredName "Decimal Separator Enumeration"@en ;
+   samm:description "Enumeration types to be used for the decimal separators"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "\"comma\", \"dot\"" .
+
+:delimiter a samm:Property ;
+   samm:preferredName "Delimiter"@en ;
+   samm:description "Indicates whether a semicolon, comma or tab is used as a delimiter between data points"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "semicolon" .
+
+:variablesProperty a samm:Property ;
+   samm:preferredName "VariablesProperty"@en ;
+   samm:description "A list describing the variables contained in the file"@en ;
+   samm:characteristic :Variables .
+
+:Variables a samm-c:List ;
+   samm:preferredName "Variables"@en ;
+   samm:description "A list describing the variables contained in the file"@en ;
+   samm:dataType :VariableAttribute .
+
+:VariableAttribute a samm:Entity ;
+   samm:preferredName "VariableAttribute"@en ;
+   samm:description "A list describing the variables contained in the file"@en ;
+   samm:properties ( :variableName :dataType :unit [ samm:property :variableDescription; samm:optional true ] ) .
+
+:variableName a samm:Property ;
+   samm:preferredName "Variable name"@en ;
+   samm:description "The name of the column"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Price" .
+
+:dataType a samm:Property ;
+   samm:preferredName "Variable data type"@en ;
+   samm:description "The data type of the data contained in the column"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "double" .
+
+:unit a samm:Property ;
+   samm:preferredName "Unit"@en ;
+   samm:description "The unit of the data contained in the column (used for numeric values)"@en ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "unit:degreeCelsiusPerHour"^^samm:curie ;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/appendix/unitcatalog.html> .
+
+:variableDescription a samm:Property ;
+   samm:preferredName "Variable description"@en ;
+   samm:description "A description of the data contained in the column"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "This column contains the hourly temperature of a part" .
+
