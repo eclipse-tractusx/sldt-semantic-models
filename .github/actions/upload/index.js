@@ -43,7 +43,7 @@ function uploadAspect(aspect, hub, token) {
         var options = {
             'method': 'POST',
             'host': hub,
-            'path': '/hub/api/v1/models?type=BAMM&status=' + aspect.status,
+            'path': '/hub/api/v1/models?type=SAMM&status=' + aspect.status,
             'headers': {
               'Authorization': 'Bearer ' + token, 
               'Content-Type': 'text/plain'

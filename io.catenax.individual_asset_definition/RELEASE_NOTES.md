@@ -3,6 +3,15 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.0] - 2024-02-02
+
+### Added
+
+### Changed
+- converted from Bamm to Samm
+
+### Removed
+
 ## [1.0.0] - 2023-02-22
 
 ### Added

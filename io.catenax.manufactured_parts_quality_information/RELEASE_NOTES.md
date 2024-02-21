@@ -2,6 +2,16 @@
 All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
+- Version 2.0.0 of model is deprecated. It has a wrong regex for BPNS validation from the old shared model for BPNS trait.
+
+## [2.1.0] - 2024-02-19
+### Added
+- optional properties added: parentSerialNumber and parentPartNumber
+
+### Changed
+- reference to shared aspect model for BPNS was changed to latest version
+
+### Removed
 
 ## [2.0.0] - 2024-01-29
 ### Added
