@@ -1,0 +1,260 @@
+#######################################################################
+# Copyright (c) 2023,2024 T-Systems International GmbH
+# Copyright (c) 2023,2024 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2023,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.shared.address_characteristic:4.0.0#> .
+
+:AddressAspect a samm:Aspect ;
+   samm:preferredName "Address Aspect"@en ;
+   samm:description "Aspect used for the Characteristic :PostalAddress to reference address data."@en ;
+   samm:properties ( :address ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:address a samm:Property ;
+   samm:preferredName "Address"@en ;
+   samm:description "The address of the data provider."@en ;
+   samm:characteristic :PostalAddress .
+
+:PostalAddress a samm:Characteristic ;
+   samm:preferredName "PostalAddress"@en ;
+   samm:description "A characteristic to express the postal address and which is intended to be referenced by other aspects."@en ;
+   samm:dataType :AddressEntity .
+
+:AddressEntity a samm:Entity ;
+   samm:preferredName "Address Entity"@en ;
+   samm:description "Entity of an address. Model follows specification of BPDM (Business Partner Data Management)."@en ;
+   samm:properties ( :thoroughfare :locality [ samm:property :premise; samm:optional true ] [ samm:property :postalDeliveryPoint; samm:optional true ] :country :postCode ) .
+
+:thoroughfare a samm:Property ;
+   samm:preferredName "Thoroughfare"@en ;
+   samm:description "Street or thorough road name."@en ;
+   samm:characteristic :ThoroughfareCharacteristic .
+
+:locality a samm:Property ;
+   samm:preferredName "Locality"@en ;
+   samm:description "Locality belonging to an address."@en ;
+   samm:characteristic :LocalityCharacteristic .
+
+:premise a samm:Property ;
+   samm:preferredName "Premise"@en ;
+   samm:description "Premise of an address, e.g. a specific \"BUILDING\" but can also be used for naming a particular site."@en ;
+   samm:characteristic :PremiseCharacteristic .
+
+:postalDeliveryPoint a samm:Property ;
+   samm:preferredName "Postal Delivery Point"@en ;
+   samm:description "Delivery point, e.g. designation of a gate."@en ;
+   samm:characteristic :PostalDeliveryPointCharacteristic .
+
+:country a samm:Property ;
+   samm:preferredName "Country"@en ;
+   samm:description "Country of an address."@en ;
+   samm:characteristic :CountryCharacteristic .
+
+:postCode a samm:Property ;
+   samm:preferredName "Post Code"@en ;
+   samm:description "Postal code of the address."@en ;
+   samm:characteristic :PostCodeCharacteristic .
+
+:ThoroughfareCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Thoroughfare Characteristic"@en ;
+   samm:description "Characteristic for defining a thoroughfare which can consist of a type (e.g. \"STREET\"), value (e.g. \"Bernstra?e\") and number (e.g. \"45\"). Model follows the specification of BPDM."@en ;
+   samm:dataType :ThoroughfareEntity .
+
+:LocalityCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Locality Characteristic"@en ;
+   samm:description "Characteristic for defining a locality which belongs to an address and which consists of a type (e.g. \"CITY\") and value (e.g. \"Mannheim\"). Model follows the specification of BPDM."@en ;
+   samm:dataType :LocalityEntity .
+
+:PremiseCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Premise Characteristic"@en ;
+   samm:description "Characteristic for defining a premise which consists of a technical key (e.g. \"BUILDING\" or \"OTHER\") and a value (e.g. \"Werk 1\")."@en ;
+   samm:dataType :PremiseEntity .
+
+:PostalDeliveryPointCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Postal Delivery Point Characteristic"@en ;
+   samm:description "Characteristic for defining a postal delivery point which consists of a technical key (e.g. \"MAILBOX\" or \"OTHER\") and a value. Model follows the specification of BPDM."@en ;
+   samm:dataType :PostalDeliveryPointEntity .
+
+:CountryCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Country Characteristic"@en ;
+   samm:description "Characteristic of a country belonging to an address"@en ;
+   samm:dataType :CountryEntity .
+
+:PostCodeCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "PostCode Characteristic"@en ;
+   samm:description "Characteristic for defining a postcode which can consist of a type (e.g. \"REGULAR\" for zip codes) and a value (e.g. \"98765-4321\"). Model follows the specification of BPDM."@en ;
+   samm:dataType :PostCodeEntity .
+
+:ThoroughfareEntity a samm:Entity ;
+   samm:preferredName "Thoroughfare Entity"@en ;
+   samm:description "Entity for a thoroughfare which consists of a type, value and number."@en ;
+   samm:properties ( [ samm:property :thoroughfareTechnicalKey; samm:payloadName "technicalKey" ] [ samm:property :thoroughfareValue; samm:payloadName "value" ] [ samm:property :thoroughfareNumber; samm:payloadName "number" ] ) .
+
+:LocalityEntity a samm:Entity ;
+   samm:preferredName "Locality Entity"@en ;
+   samm:description "Entity for a locality which consists of a key and a value."@en ;
+   samm:properties ( [ samm:property :localityTechnicalKey; samm:payloadName "technicalKey" ] [ samm:property :localityValue; samm:payloadName "value" ] ) .
+
+:PremiseEntity a samm:Entity ;
+   samm:preferredName "Premise Entity"@en ;
+   samm:description "Entity for a premise which consists of a type (technical key) and a value."@en ;
+   samm:properties ( [ samm:property :premiseTechnicalKey; samm:payloadName "technicalKey" ] [ samm:property :premiseValue; samm:payloadName "value" ] ) .
+
+:PostalDeliveryPointEntity a samm:Entity ;
+   samm:preferredName "Postal Delivery Point Entity"@en ;
+   samm:description "Entity for a postal delivery point which consists of a technical key and a value."@en ;
+   samm:properties ( [ samm:property :postalDeliveryPointTechnicalKey; samm:payloadName "technicalKey" ] [ samm:property :postalDeliveryPointValue; samm:payloadName "value" ] ) .
+
+:CountryEntity a samm:Entity ;
+   samm:preferredName "Country Entity"@en ;
+   samm:description "Entity definition for a country."@en ;
+   samm:properties ( [ samm:property :countryShortName; samm:payloadName "shortName" ] ) .
+
+:PostCodeEntity a samm:Entity ;
+   samm:preferredName "PostCode Entity"@en ;
+   samm:description "Entity for a postcode which consists of a type plus a value."@en ;
+   samm:properties ( [ samm:property :postCodeValue; samm:payloadName "value" ] [ samm:property :postCodeTechnicalKey; samm:payloadName "technicalKey" ] ) .
+
+:thoroughfareTechnicalKey a samm:Property ;
+   samm:preferredName "Thoroughfare Technical Key"@en ;
+   samm:description "Technical key of a thoroughfare. As specified by BPDM, this can be a \"STREET\" or a different type."@en ;
+   samm:characteristic :ThoroughfareTechnicalKeyCharacteristic ;
+   samm:exampleValue "STREET" .
+
+:thoroughfareValue a samm:Property ;
+   samm:preferredName "Value Thoroughfare"@en ;
+   samm:description "Value of a thoroughfare, e.g. name of a street."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Bernstrasse" .
+
+:thoroughfareNumber a samm:Property ;
+   samm:preferredName "Thoroughfare Number"@en ;
+   samm:description "Number of a thoroughfare. As used differently in international context, this number can contain both numerical and alphanumerical values."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "45" .
+
+:localityTechnicalKey a samm:Property ;
+   samm:preferredName "Locality Technical Key"@en ;
+   samm:description "Technical key of a locality."@en ;
+   samm:characteristic :LocalityTechnicalKeyCharacteristic ;
+   samm:exampleValue "CITY" .
+
+:localityValue a samm:Property ;
+   samm:preferredName "Locality Value"@en ;
+   samm:description "Value of a locality, e.g. name of a city (\"Mannheim\")."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Mannheim" .
+
+:premiseTechnicalKey a samm:Property ;
+   samm:preferredName "Premise Technical Key"@en ;
+   samm:description "Technical key of a premise."@en ;
+   samm:characteristic :PremiseTechnicalKeyCharacteristic ;
+   samm:exampleValue "OTHER" .
+
+:premiseValue a samm:Property ;
+   samm:preferredName "Premise Value"@en ;
+   samm:description "Value of a premise, e.g. name or designation of a particular site."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Werk 1" .
+
+:postalDeliveryPointTechnicalKey a samm:Property ;
+   samm:preferredName "Postal Delivery Point Technical Key"@en ;
+   samm:description "Technical key of a postal delivery point."@en ;
+   samm:characteristic :PostalDeliveryPointTechnicalKeyCharacteristic ;
+   samm:exampleValue "OTHER" .
+
+:postalDeliveryPointValue a samm:Property ;
+   samm:preferredName "Postal Delivery Point Value"@en ;
+   samm:description "Value of a postal delivery point, e.g. designation of a gate."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Tor 1" .
+
+:countryShortName a samm:Property ;
+   samm:preferredName "Country Short Name"@en ;
+   samm:description "The short variation of the name of the country."@en ;
+   samm:characteristic :CountryTrait .
+
+:postCodeValue a samm:Property ;
+   samm:preferredName "Post Code Value"@en ;
+   samm:description "The value of a post code."@en ;
+   samm:characteristic :PostCodeTrait ;
+   samm:exampleValue "98765-4321" .
+
+:postCodeTechnicalKey a samm:Property ;
+   samm:preferredName "Post Code Technical Key"@en ;
+   samm:description "The technical key of a post code."@en ;
+   samm:characteristic :PostCodeTechnicalKeyCharacteristic .
+
+:ThoroughfareTechnicalKeyCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Thoroughfare Technical Key Characteristic"@en ;
+   samm:description "Characteristic of the technical key of a thoroughfare."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "STREET" "INDUSTRIAL_ZONE" "OTHER" "RIVER" "SQUARE" ) .
+
+:LocalityTechnicalKeyCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Locality Technical Key Characteristic"@en ;
+   samm:description "Characteristic of the technical key of a locality"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "BLOCK" "CITY" "DISTRICT" "OTHER" "POST_OFFICE_CITY" "QUARTER" ) .
+
+:PremiseTechnicalKeyCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Premise Technical Key Characteristic"@en ;
+   samm:description "Characteristic of the technical key of a premise."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "BUILDING" "HARBOUR" "LEVEL" "OTHER" "ROOM" "SUITE" "UNIT" "WAREHOUSE" ) .
+
+:PostalDeliveryPointTechnicalKeyCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Postal Delivery Point Technical Key Characteristic"@en ;
+   samm:description "Characteristic of the technical key of a postal delivery point."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "INTERURBAN_DELIVERY_POINT" "MAIL_STATION" "MAILBOX" "OTHER" "POST_OFFICE_BOX" ) .
+
+:CountryTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :CountryShortNameCharacteristic ;
+   samm-c:constraint :CountryShortNameConstraint .
+
+:PostCodeTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :PostCodeConstraint .
+
+:PostCodeTechnicalKeyCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Post Code Technical Key Characteristic"@en ;
+   samm:description "Characteristic for the technical key of a post code."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "CEDEX" "LARGE_MAIL_USER" "OTHER" "POST_BOX" "REGULAR" ) .
+
+:CountryShortNameCharacteristic a samm:Characteristic ;
+   samm:preferredName "Country Short Name Characteristic"@en ;
+   samm:description "Characteristic for a short name of a country belonging to an address."@en ;
+   samm:dataType xsd:string .
+
+:CountryShortNameConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "CountryShortNameConstraint"@en ;
+   samm:description "Regular expression for designation of a short name of a country as defined in ISO 3166-2."@en ;
+   samm:value "([A-Z]{2}-[A-Z0-9]{1,3}|)" .
+
+:PostCodeConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Post Code Constraint"@en ;
+   samm:description "Regular expression for post codes."@en ;
+   samm:value "^[a-z0-9][a-z0-9\\- ]{0,10}$" .
+

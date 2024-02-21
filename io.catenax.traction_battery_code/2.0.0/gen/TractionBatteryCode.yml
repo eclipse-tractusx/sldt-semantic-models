@@ -1,0 +1,193 @@
+---
+openapi: 3.0.3
+info:
+  title: Traction Battery Code
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/traction-battery-code:
+    get:
+      tags:
+      - TractionBatteryCode
+      operationId: getTractionBatteryCode
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/TractionBatteryCode'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TractionBatteryCode'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.traction_battery_code_2.0.0_TractionBatteryCodeTrait:
+      type: string
+      description: The traction battery code as required by the National Standard
+        of the People's Republic of China according to GB/T 34014-2017 published by
+        the Standardization Administration of China (SAC). It can have a length of
+        either 24 or 18 characters.
+      pattern: "(^[A-Z0-9]{3}[PMC]{1}[A-GZ]{1}[A-Z0-9]{2}[A-Z0-9]{7}[1-9A-GH-NPR-Y]{1}[1-9A-C]{1}[0-9A-GH-NPR-Y]{1}[0-9]{7}$)|(^[A-Z0-9]{3}[PMC]{1}[A-GZ]{1}[A-Z0-9]{2}[1-9A-GH-NPR-Y]{1}[1-9A-C]{1}[0-9A-GH-NPR-Y]{1}[0-9]{7}[R]{1}[PMC]{1}$)"
+    urn_samm_io.catenax.traction_battery_code_2.0.0_ComponentTypeCharacterstic:
+      type: string
+      enum:
+      - pack
+      - module
+      - cell
+    urn_samm_io.catenax.traction_battery_code_2.0.0_TractionBatteryComponent:
+      description: A battery component like a cell or a module.
+      type: object
+      properties:
+        tractionBatteryCode:
+          description: "Traction Battery Code identifying a single traction battery\
+            \ component like a pack, module or cell. "
+          $ref: '#/components/schemas/urn_samm_io.catenax.traction_battery_code_2.0.0_TractionBatteryCodeTrait'
+        subcomponents:
+          description: "Subcomponents of the component, if applicable. The relationship\
+            \ between traction battery codes are as follows:\n\nIf this traction battery\
+            \ code is given for a cell subcomponents are not required. \nIf this traction\
+            \ battery code is given for a battery module a list of cells are required\
+            \ to be registered as subcomponents.\nIf this traction battery code is\
+            \ given for a battery pack a list of modules are required to be registered\
+            \ as subcomponents (containing each a list of cell subcomponents respectively)."
+          $ref: '#/components/schemas/urn_samm_io.catenax.traction_battery_code_2.0.0_ComponentList'
+        productType:
+          description: "The type of the battery component, e.g. a pack, a module or\
+            \ a cell."
+          $ref: '#/components/schemas/urn_samm_io.catenax.traction_battery_code_2.0.0_ComponentTypeCharacterstic'
+      required:
+      - tractionBatteryCode
+      - productType
+    urn_samm_io.catenax.traction_battery_code_2.0.0_ComponentList:
+      description: A list of battery components like modules or cells.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.traction_battery_code_2.0.0_TractionBatteryComponent'
+    TractionBatteryCode:
+      description: "The traction battery code is an identification code for any automotive\
+        \ traction battery, ultracapacitor and other reachargeble energy storage device.\
+        \ It allows to carry information as required by the National Standard of the\
+        \ People's Republic of China according to GB/T 34014-2017 published by the\
+        \ Standardization Administration of China (SAC)."
+      type: object
+      properties:
+        tractionBatteryCode:
+          description: "Traction Battery Code identifying a single traction battery\
+            \ component like a pack, module or cell. "
+          $ref: '#/components/schemas/urn_samm_io.catenax.traction_battery_code_2.0.0_TractionBatteryCodeTrait'
+        subcomponents:
+          description: "Subcomponents of the component, if applicable. The relationship\
+            \ between traction battery codes are as follows:\n\nIf this traction battery\
+            \ code is given for a cell subcomponents are not required. \nIf this traction\
+            \ battery code is given for a battery module a list of cells are required\
+            \ to be registered as subcomponents.\nIf this traction battery code is\
+            \ given for a battery pack a list of modules are required to be registered\
+            \ as subcomponents (containing each a list of cell subcomponents respectively)."
+          $ref: '#/components/schemas/urn_samm_io.catenax.traction_battery_code_2.0.0_ComponentList'
+        productType:
+          description: "The type of the battery component, e.g. a pack, a module or\
+            \ a cell."
+          $ref: '#/components/schemas/urn_samm_io.catenax.traction_battery_code_2.0.0_ComponentTypeCharacterstic'
+      required:
+      - tractionBatteryCode
+      - productType
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TractionBatteryCode:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    TractionBatteryCode:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TractionBatteryCode'

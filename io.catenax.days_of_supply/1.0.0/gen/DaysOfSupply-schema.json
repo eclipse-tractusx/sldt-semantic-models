@@ -1,0 +1,103 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Days of Supply refers to the amount of days where item stock is sufficient for the demand. The incoming deliveries are not considered in the main days-of-supply-equation, but they can still be included in the projection of days-of-supply for the future days.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_samm_io.catenax.days_of_supply_1.0.0_DirectionCharacteristic" : {
+        "type" : "string",
+        "description" : "If a supplier provides stock information to a customer, use \"OUTBOUND\".\nIf a customer provides stock information to a supplier, use \"INBOUND\".",
+        "enum" : [ "INBOUND", "OUTBOUND" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_io.catenax.days_of_supply_1.0.0_DaysOfSupplyCharacteristic" : {
+        "type" : "number",
+        "description" : "Provides days of supply"
+      },
+      "urn_samm_io.catenax.days_of_supply_1.0.0_QuantityOfDaysOfSupply" : {
+        "description" : "Days of supply for a specific date.",
+        "type" : "object",
+        "properties" : {
+          "date" : {
+            "description" : "Date refers to the specific calendar day (current or projected) associated with the measured (or expected) inventory level. It serves as a timestamp for calculating Days of Supply, indicating when the inventory count was taken or projected.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "daysOfSupply" : {
+            "description" : "Amount of days, before the current stock is expected to be exhausted. Days of supply of a customer: Number of days where; (Stock) - Σ(daily Demand) >= 0; Days of supply of a supplier: Number of days where; (Stock) - Σ(daily Outgoing Shipments) >= 0",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.days_of_supply_1.0.0_DaysOfSupplyCharacteristic"
+          }
+        },
+        "required" : [ "date", "daysOfSupply" ]
+      },
+      "urn_samm_io.catenax.days_of_supply_1.0.0_QuantityCharacteristic" : {
+        "description" : "List of quantity of days of supply. It MUST include at least current date and it is recommended to include future dates.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.days_of_supply_1.0.0_QuantityOfDaysOfSupply"
+        },
+        "uniqueItems" : true
+      },
+      "urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two alphanumeric letters.",
+        "pattern" : "^BPNS[a-zA-Z0-9]{12}$"
+      },
+      "urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnaTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the BPNA is composed of prefix 'BPNA', 10 digits and two alphanumeric letters.",
+        "pattern" : "^BPNA[a-zA-Z0-9]{12}$"
+      },
+      "urn_samm_io.catenax.days_of_supply_1.0.0_AllocatedDaysOfSupply" : {
+        "description" : "This defines the number of days with allocated supply for an item stock in a given location that is available for the use in production or deliveries. \nThe allocated days of supply are not available for other customers.",
+        "type" : "object",
+        "properties" : {
+          "amountOfAllocatedDaysOfSupply" : {
+            "description" : "Amount of Days of supply of a given allocated item stock in a given location.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.days_of_supply_1.0.0_QuantityCharacteristic"
+          },
+          "stockLocationBPNS" : {
+            "description" : "BPNS identifying the site the stock is located at. One stock has always one location.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait"
+          },
+          "stockLocationBPNA" : {
+            "description" : "BPNA identifying the address the stock is located at. One stock has always one location.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnaTrait"
+          }
+        },
+        "required" : [ "amountOfAllocatedDaysOfSupply", "stockLocationBPNS", "stockLocationBPNA" ]
+      },
+      "urn_samm_io.catenax.days_of_supply_1.0.0_AllocatedDaysOfSupplySet" : {
+        "description" : "Set of allocated Days of Supply that may relate to different stock locations.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.days_of_supply_1.0.0_AllocatedDaysOfSupply"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "materialGlobalAssetId" : {
+      "description" : "Identifier used uniquely to identify part type twin.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait"
+    },
+    "direction" : {
+      "description" : "Direction of the stock from data provider perspective.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.days_of_supply_1.0.0_DirectionCharacteristic"
+    },
+    "allocatedDaysOfSupply" : {
+      "description" : "Days of supply that have been already allocated to the customer. ",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.days_of_supply_1.0.0_AllocatedDaysOfSupplySet"
+    }
+  },
+  "required" : [ "materialGlobalAssetId", "direction", "allocatedDaysOfSupply" ]
+}

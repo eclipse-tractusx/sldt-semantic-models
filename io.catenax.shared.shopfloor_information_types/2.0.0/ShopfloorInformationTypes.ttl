@@ -1,0 +1,81 @@
+##########################################################################################
+# Copyright (c) 2023-2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IOSB & Fraunhofer IWU & Fraunhofer IPA)
+# Copyright (c) 2023-2024 Siemens AG
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+##########################################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.shared.shopfloor_information_types:2.0.0#>.
+@prefix ext-header: <urn:samm:io.catenax.shared.message_header:2.0.0#>.
+
+:ShopfloorInformationTypes a samm:Aspect;
+   samm:preferredName "Shopfloor Information Types"@en;
+   samm:description "Collection of types used in multiple data models of the Shopfloor Information Service"@en;
+   samm:properties ( :communicationMode :timeValue );
+   samm:operations ( );
+   samm:events ( ).
+
+:communicationMode a samm:Property;
+   samm:preferredName "Communication Mode"@en;
+   samm:description "Specification of the communication mode"@en;
+   samm:characteristic :CommunicationModeEnum;
+   samm:exampleValue "synchronous".
+
+:timeValue a samm:Property;
+   samm:preferredName "Time Value"@en;
+   samm:description "A time Value property"@en;
+   samm:characteristic :TimeValueCharacteristic.
+
+:CommunicationModeEnum a samm-c:Enumeration;
+   samm:preferredName "Communication Mode Enumeration"@en;
+   samm:description "Enumerates all possible communication modes"@en;
+   samm:dataType xsd:string;
+   samm-c:values ( "synchronous" "cyclic" "notification" ).
+
+:TimeValueCharacteristic a samm:Characteristic;
+   samm:preferredName "Time Value Characteristic"@en;
+   samm:description "Link to the  TimeUnit Data Type"@en;
+   samm:dataType :TimeValue.
+
+:TimeValue a samm:Entity;
+   samm:preferredName "Time Value"@en;
+   samm:description "Datatype to express a time value"@en;
+   samm:properties ( :timeUnit :value ).
+
+:timeUnit a samm:Property;
+   samm:preferredName "Time Unit"@en;
+   samm:description "Specifies the unit in which the time is represented"@en;
+   samm:characteristic :TimeUnitEnum.
+
+:value a samm:Property;
+   samm:preferredName "Value"@en;
+   samm:description "The amount of timeUnits considered"@en;
+   samm:characteristic :IntegerValueCharacteristic;
+   samm:exampleValue 12.
+
+:TimeUnitEnum a samm-c:Enumeration;
+   samm:preferredName "Time Unit Enum"@en;
+   samm:description "Enumerates all time units"@en;
+   samm:dataType samm:curie;
+   samm-c:values ( "unit:secondUnitOfTime"^^samm:curie "unit:minuteUnitOfTime"^^samm:curie "unit:hour"^^samm:curie "unit:day"^^samm:curie "unit:week"^^samm:curie "unit:month"^^samm:curie "unit:year"^^samm:curie ).
+
+:IntegerValueCharacteristic a samm:Characteristic;
+   samm:preferredName "Integer Value Characteristic"@en;
+   samm:description "The value of the specified timeUnit as an integer value"@en;
+   samm:dataType xsd:integer.
+

@@ -1,0 +1,393 @@
+#######################################################################
+# Copyright (c) 2022, 2024 Robert Bosch GmbH
+# Copyright (c) 2022, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022, 2024 Volkswagen AG
+# Copyright (c) 2022, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2022, 2024 SAP SE
+# Copyright (c) 2022, 2024 Siemens AG
+# Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2022 Mercedes Benz AG
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.fleet.claim_data:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
+
+:ClaimData a samm:Aspect ;
+   samm:preferredName "ClaimData"@en ;
+   samm:description "Claim data from a fleet"@en ;
+   samm:properties ( :listOfClaims [ samm:property :metaInformation; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:listOfClaims a samm:Property ;
+   samm:preferredName "list Of Claims"@en ;
+   samm:description "A list of customer complaints or workshop repairs that belong to one or more quality tasks."@en ;
+   samm:characteristic :ClaimList .
+
+:metaInformation a samm:Property ;
+   samm:preferredName "Meta information"@en ;
+   samm:description "This meta information is valid for all entries in this data set. The meta information is used to tell the data consumer which selection criteria were applied by the data provider. "@en ;
+   samm:characteristic :MetaCharacteristic .
+
+:ClaimList a samm-c:List ;
+   samm:preferredName "Claims"@en ;
+   samm:description "A list of claims."@en ;
+   samm:dataType :Claim .
+
+:MetaCharacteristic a samm:Characteristic ;
+   samm:preferredName "MetaCharacteristic"@en ;
+   samm:description "Characteristic for the meta information."@en ;
+   samm:dataType :MetaInformation .
+
+:Claim a samm:Entity ;
+   samm:preferredName "Claim"@en ;
+   samm:description "A claim is when a customer has a problem with his vehicle and goes to the workshop to get this problem fixed. Sometimes potentially faulty parts are exchanged."@en ;
+   samm:properties ( [ samm:property :recordStatus; samm:optional true ] [ samm:property :anonymizedVIN; samm:optional true ] [ samm:property :catenaXQualityTaskId; samm:optional true ] [ samm:property :catenaXVehicleId; samm:optional true ] :claimId [ samm:property :countryCode; samm:optional true ] [ samm:property :customerComment; samm:optional true ] [ samm:property :damageCode; samm:optional true ] [ samm:property :repairCountryCode; samm:optional true ] [ samm:property :repairDate; samm:optional true ] [ samm:property :repairMileage; samm:optional true ] [ samm:property :technicianComment; samm:optional true ] [ samm:property :workshop; samm:optional true ] [ samm:property :listOfParts; samm:optional true ] [ samm:property :listOfDiagnosticSessions; samm:optional true ] ) .
+
+:MetaInformation a samm:Entity ;
+   samm:preferredName "Meta Information"@en ;
+   samm:description "This entity groups all meta information properties. Meta information properties give hints for a Catena-X data consumer to better understand, how this data set was created on the Catena-X data provider side."@en ;
+   samm:properties ( :selectionCriteria [ samm:property :selectionStart; samm:optional true ] [ samm:property :selectionEnd; samm:optional true ] ) .
+
+:recordStatus a samm:Property ;
+   samm:preferredName "Record status"@en ;
+   samm:description "The record operation enumeration can be used to realize delta update concept.\nDelta update concept means:\n- You transfer an initial load of data\n- After the first week only the delta to the initial load is transferred\n\n\nThe record status describes whether this record is:\n- new=>This record is transferred the first time\n- update=> Some properties of this record have changed compared to a previous transfer\n- delete=> This record was transferred in the initial load or in a previous delta update, but is not used any more and therefore it should be deleted on data consumer side\n- same=> This record was transferred in the initial load or in a previous delta update"@en ;
+   samm:characteristic :RecordStatusEnumeration ;
+   samm:exampleValue "update" .
+
+:anonymizedVIN a samm:Property ;
+   samm:preferredName "Anonymized VIN"@en ;
+   samm:description "OEM-specific hashed VIN. Unique within OEM."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "3747429FGH382923934abcf74682" .
+
+:catenaXQualityTaskId a samm:Property ;
+   samm:preferredName "Quality Task ID"@en ;
+   samm:description "The fully anonymous and unique Catena-X ID of this quality task. This id is unique inside Catena-X data space."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "430f56d3-1234-1234-1234-aaaabbbbcccc" .
+
+:catenaXVehicleId a samm:Property ;
+   samm:preferredName "Vehicle Catena-X Identifier"@en ;
+   samm:description "A unique identifier for the vehicle in the Catena-X data space."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "580d3adf-1978-44a0-a214-13d6ceed9379" .
+
+:claimId a samm:Property ;
+   samm:preferredName "ClaimID"@en ;
+   samm:description "Claim ID: Unique for each OEM"@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "a214-13d6" .
+
+:countryCode a samm:Property ;
+   samm:preferredName "Country code"@en ;
+   samm:description "Country code in  ISO 3166-1 alpha-3 codes where this session took place"@en ;
+   samm:characteristic :CountryCodeTrait ;
+   samm:exampleValue "DEU" .
+
+:customerComment a samm:Property ;
+   samm:preferredName "CustomerComment"@en ;
+   samm:description "short description of the claim from customer view"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Defect steering. Does not work properly during parking." .
+
+:damageCode a samm:Property ;
+   samm:preferredName "DamageCode"@en ;
+   samm:description "OEM-specific damage code"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Steering adapter" .
+
+:repairCountryCode a samm:Property ;
+   samm:preferredName "Repair Country code"@en ;
+   samm:description "Country code where this repair took place."@en ;
+   samm:characteristic :CountryCodeTrait ;
+   samm:exampleValue "DEU" .
+
+:repairDate a samm:Property ;
+   samm:preferredName "RepairDate"@en ;
+   samm:description "references the date when claim was initially reported"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2022-02-04T14:48:54"^^xsd:dateTime .
+
+:repairMileage a samm:Property ;
+   samm:preferredName "Repair mileage"@en ;
+   samm:description "mileage of the car when the claim was reported"@en ;
+   samm:characteristic :MileageCounter ;
+   samm:exampleValue "10251"^^xsd:nonNegativeInteger .
+
+:technicianComment a samm:Property ;
+   samm:preferredName "TechnicianComment"@en ;
+   samm:description "short description of the claim from the technicians"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Defect steering." .
+
+:workshop a samm:Property ;
+   samm:preferredName "Workshop"@en ;
+   samm:description "Groups workshop-related properties"@en ;
+   samm:characteristic :WorkshopCharacteristic .
+
+:listOfParts a samm:Property ;
+   samm:preferredName "ListOfParts"@en ;
+   samm:description "a list of parts which will be replaced or repaired"@en ;
+   samm:characteristic :PartsListCharacteristic .
+
+:listOfDiagnosticSessions a samm:Property ;
+   samm:preferredName "Diagnostic sessions"@en ;
+   samm:description "A list of diagnostic sessions linked to this claim."@en ;
+   samm:characteristic :DiagnosticSessionsList .
+
+:selectionCriteria a samm:Property ;
+   samm:preferredName "Selection criteria"@en ;
+   samm:description "Describes the selection criteria a Catena-X data provider has applied to create this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Export of claim data set that belongs to one or more Catena-X Quality tasks." .
+
+:selectionStart a samm:Property ;
+   samm:preferredName "Selection start"@en ;
+   samm:description "Describes the starting point for providing records in this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2023-01-01T00:00:00" .
+
+:selectionEnd a samm:Property ;
+   samm:preferredName "Selection end"@en ;
+   samm:description "Describes the end point for providing records in this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2023-12-31T23:59:59" .
+
+:RecordStatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Record status enumeration"@en ;
+   samm:description "Defining the enumeration for the record status"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "update" "delete" "same" ) .
+
+:UniqueID a samm:Characteristic ;
+   samm:preferredName "unique ID"@en ;
+   samm:description "This Characteristic describes a property that is truly unique either inside the Company that is providing the data or even in Catena-X data space. Only one property in a semantic entity should be a uniqueID. Unique IDs can be used to link a data set with other semantic models."@en ;
+   samm:dataType xsd:string .
+
+:CountryCodeTrait a samm-c:Trait ;
+   samm:preferredName "Production Country Code Trait"@en ;
+   samm:description "Trait to ensure standard data format for country code"@en ;
+   samm-c:baseCharacteristic :CountryCodeCharacteristic ;
+   samm-c:constraint :CountryCodeRegularExpression .
+
+:MileageCounter a samm-c:Measurement ;
+   samm:preferredName "Mileage"@en ;
+   samm:description "The mileage counter of the car."@en ;
+   samm:dataType xsd:nonNegativeInteger ;
+   samm-c:unit unit:kilometre .
+
+:WorkshopCharacteristic a samm:Characteristic ;
+   samm:preferredName "Workshop properties"@en ;
+   samm:description "Groups all workshop properties."@en ;
+   samm:dataType :WorkshopProperties .
+
+:PartsListCharacteristic a samm-c:List ;
+   samm:preferredName "Parts list characteristic"@en ;
+   samm:description "Characteristic for a list of parts that are linked to a claim."@en ;
+   samm:dataType :ClaimedPart .
+
+:DiagnosticSessionsList a samm-c:List ;
+   samm:preferredName "Diagnostic sessions"@en ;
+   samm:description "A list of diagnostic sessions that are linked to this claim."@en ;
+   samm:dataType :DiagnosticSession .
+
+:CountryCodeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Country Code Characteristic"@en ;
+   samm:description "ISO 3166-1 alpha-3 – three-letter country codes "@en ;
+   samm:see <https://www.iso.org/iso-3166-country-codes.html> ;
+   samm:dataType xsd:string .
+
+:CountryCodeRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Country Code Regular Expression"@en ;
+   samm:description "Regular Expression that ensures a three-letter code "@en ;
+   samm:value "^[A-Z][A-Z][A-Z]$" .
+
+:WorkshopProperties a samm:Entity ;
+   samm:preferredName "Workshop Properties"@en ;
+   samm:description "All properties to clearly identify a workshop."@en ;
+   samm:properties ( :workShopId [ samm:property :latitude; samm:optional true ] [ samm:property :longitude; samm:optional true ] ) .
+
+:ClaimedPart a samm:Entity ;
+   samm:preferredName "Part"@en ;
+   samm:description "one specific part"@en ;
+   samm:properties ( [ samm:property :amountOfReplacedParts; samm:optional true ] [ samm:property :catenaXClaimPartId; samm:optional true ] [ samm:property :isPartCausal; samm:optional true ] [ samm:property :isPartReplaced; samm:optional true ] [ samm:property :partName; samm:optional true ] [ samm:property :partNumber; samm:optional true ] [ samm:property :partTreatment; samm:optional true ] [ samm:property :serialNumber; samm:optional true ] [ samm:property :spareParts; samm:optional true ] [ samm:property :supplierId; samm:optional true ] ) .
+
+:DiagnosticSession a samm:Entity ;
+   samm:preferredName "Diagnostic Session"@en ;
+   samm:description "One diagnostic session of one vehicle: Either this is a diagnostic session done in a workshop or via over-the-air diagnostic."@en ;
+   samm:properties ( :sessionId ) .
+
+:workShopId a samm:Property ;
+   samm:preferredName "OEM Workshop ID"@en ;
+   samm:description "OEM-specific identifier for a workshop."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "workshop-4563328" .
+
+:latitude a samm:Property ;
+   samm:preferredName "Latitude"@en ;
+   samm:description "Latitude property for GPS coordinates."@en ;
+   samm:characteristic :LatitudeTrait ;
+   samm:exampleValue "9.165877215355193"^^xsd:float .
+
+:longitude a samm:Property ;
+   samm:preferredName "Longitude"@en ;
+   samm:description "Longitude property for GPS coordinates."@en ;
+   samm:characteristic :LongitudeTrait ;
+   samm:exampleValue "48.81109356017604"^^xsd:float .
+
+:amountOfReplacedParts a samm:Property ;
+   samm:preferredName "AmountOfReplacedParts"@en ;
+   samm:description "counter for non-serial parts which have been replaced"@en ;
+   samm:characteristic :AmountOfReplacedPartsCharacteristic ;
+   samm:exampleValue "1"^^xsd:nonNegativeInteger .
+
+:catenaXClaimPartId a samm:Property ;
+   samm:preferredName "Catena-X Claim Part ID"@en ;
+   samm:description "Catena-X ID of the part that is involved in the claim."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9000" .
+
+:isPartCausal a samm:Property ;
+   samm:preferredName "IsPartCausal"@en ;
+   samm:description "Flag is set to true if part was causing the problem-otherwise false."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:isPartReplaced a samm:Property ;
+   samm:preferredName "IsPartReplaced"@en ;
+   samm:description "Flag is set to true if part was replaced-otherwise false."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:partName a samm:Property ;
+   samm:preferredName "Part name"@en ;
+   samm:description "Part name of this part."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Gear box control unit." .
+
+:partNumber a samm:Property ;
+   samm:preferredName "Part number"@en ;
+   samm:description "Internal part number of the part. A part number is NOT unique."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "12345" .
+
+:partTreatment a samm:Property ;
+   samm:preferredName "Part treatment"@en ;
+   samm:description "Describes what happened to this part in the claim."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Part was defect and replaced by a spare part." .
+
+:serialNumber a samm:Property ;
+   samm:preferredName "Serial number"@en ;
+   samm:description "Serial number of the part."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ECU20646005020221" .
+
+:spareParts a samm:Property ;
+   samm:preferredName "Spare Parts"@en ;
+   samm:description "The spare parts that were built into the vehicle."@en ;
+   samm:characteristic :SparePartsList .
+
+:supplierId a samm:Property ;
+   samm:preferredName "SupplierID"@en ;
+   samm:description "Specific ID of the supplier that manufactured the part that was put out - available if known"@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ZF2064600502" .
+
+:sessionId a samm:Property ;
+   samm:preferredName "Session identifier"@en ;
+   samm:description "A oem-specific session identifier that is unique in this company."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "3747429FGH382923974682_Session_2023-11-04T08:00:45" .
+
+:LatitudeTrait a samm-c:Trait ;
+   samm:preferredName "Latitude Trait"@en ;
+   samm:description "Trait to define the latitude."@en ;
+   samm-c:baseCharacteristic :Float ;
+   samm-c:constraint :ConstraintLatitude .
+
+:LongitudeTrait a samm-c:Trait ;
+   samm:preferredName "Longitude Trait"@en ;
+   samm:description "Trait to define the longitude."@en ;
+   samm-c:baseCharacteristic :Float ;
+   samm-c:constraint :ConstraintLongitude .
+
+:AmountOfReplacedPartsCharacteristic a samm:Characteristic ;
+   samm:preferredName "Amount of replaced Parts"@en ;
+   samm:description "counter for non-serial parts"@en ;
+   samm:dataType xsd:nonNegativeInteger .
+
+:SparePartsList a samm-c:List ;
+   samm:preferredName "Spare parts list"@en ;
+   samm:description "A list of spare parts."@en ;
+   samm:dataType :SparePart .
+
+:Float a samm:Characteristic ;
+   samm:preferredName "Float"@en ;
+   samm:description "Characteristic of a float value."@en ;
+   samm:dataType xsd:float .
+
+:ConstraintLatitude a samm-c:RangeConstraint ;
+   samm-c:minValue "-90.0"^^xsd:float ;
+   samm-c:maxValue "90.0"^^xsd:float ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:AT_MOST .
+
+:ConstraintLongitude a samm-c:RangeConstraint ;
+   samm-c:minValue "-180.0"^^xsd:float ;
+   samm-c:maxValue "180.0"^^xsd:float ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:AT_MOST .
+
+:SparePart a samm:Entity ;
+   samm:preferredName "Spare part"@en ;
+   samm:description "A generic description to identify a spare part."@en ;
+   samm:properties ( [ samm:property :catenaXSparePartId; samm:optional true ] [ samm:property :sparePartName; samm:optional true ] [ samm:property :sparePartNumber; samm:optional true ] [ samm:property :sparePartSerialNumber; samm:optional true ] [ samm:property :sparePartSupplierId; samm:optional true ] ) .
+
+:catenaXSparePartId a samm:Property ;
+   samm:preferredName "Catena-X spare part ID"@en ;
+   samm:description "Catena-X ID of the spare part that was put into the vehicle."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:580d3adf-1981-4711-4711-13d6ceed9000" .
+
+:sparePartName a samm:Property ;
+   samm:preferredName "Spare part name"@en ;
+   samm:description "Spare part name of this part."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Gear box control unit V2." .
+
+:sparePartNumber a samm:Property ;
+   samm:preferredName "Spare part number"@en ;
+   samm:description "Internal spare part number of the part. A spare part number is NOT unique."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "12346" .
+
+:sparePartSerialNumber a samm:Property ;
+   samm:preferredName "Spare part serial number"@en ;
+   samm:description "Serial number of the spare part."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ECU565657485020221" .
+
+:sparePartSupplierId a samm:Property ;
+   samm:preferredName "Spare part supplier ID"@en ;
+   samm:description "A unique identifier for the spare part supplier."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ZF2064600502" .
+

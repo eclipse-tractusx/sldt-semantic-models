@@ -1,0 +1,235 @@
+#######################################################################
+# Copyright (c) 2023,2024 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2023,2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
+# Copyright (c) 2023,2024 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2023,2024 Volkswagen AG
+# Copyright (c) 2023,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.product_stock:2.0.0#> .
+
+:ProductStock a samm:Aspect ;
+   samm:preferredName "Stock of Products of a Supplier"@en ;
+   samm:description "This aspect represents the latest quantities of a supplier's products that are on stock. The stock represent the build-to-order (BTO) stocks already available for the customer."@en ;
+   samm:properties ( :positions :materialNumberCustomer [ samm:property :materialNumberCatenaX; samm:optional true ] [ samm:property :materialNumberSupplier; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:positions a samm:Property ;
+   samm:preferredName "Positions"@en ;
+   samm:description "The positions refer to positions within an order that refer to the given product (see materialNumberSupplier, materialNumberCustomer and materialNumberDataSpace) for which the stocks are transferred. The positions are differentiated by the orderPositionReference."@en ;
+   samm:characteristic :PositionsCollection .
+
+:materialNumberCustomer a samm:Property ;
+   samm:preferredName "Customer Material Number"@en ;
+   samm:description "Material identifier as assigned by customer. This material number identifies the material (as planned) in customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the materialNumberSupplier should be set in this field, too."@en ;
+   samm:characteristic :MaterialNumber ;
+   samm:exampleValue "MNR-7307-AU340474.002" .
+
+:materialNumberCatenaX a samm:Property ;
+   samm:preferredName "Material UUID Used in Catena-X"@en ;
+   samm:description "Material identifier used uniquely within Catena-X to identify the Material (e.g. PartAsPlanned)."@en ;
+   samm:characteristic :CatenaXIdTraitCharacteristic ;
+   samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df" .
+
+:materialNumberSupplier a samm:Property ;
+   samm:preferredName "Supplier Material Number"@en ;
+   samm:description "Material identifier as assigned by supplier. This material number identifies the material (as planned) in supplier's database."@en ;
+   samm:characteristic :MaterialNumber ;
+   samm:exampleValue "MNR-8101-ID146955.001" .
+
+:PositionsCollection a samm-c:Collection ;
+   samm:preferredName "Positions Collection"@en ;
+   samm:description "If any stock is available, then there is at least one position. If the supplier does differentiate the stock according to the order positions (an OrderPositionReference is set), then multiple positions can be given. There could also be only one position without an OrderPositionReference indicating an anonymous stock which is allocated to the customer."@en ;
+   samm:dataType :Position .
+
+:MaterialNumber a samm:Characteristic ;
+   samm:preferredName "Material Number"@en ;
+   samm:description "The material number is a multi-character string, usually assigned by an ERP system."@en ;
+   samm:dataType xsd:string .
+
+:CatenaXIdTraitCharacteristic a samm-c:Trait ;
+   samm:preferredName "Catena-X ID Trait"@en ;
+   samm:description "Trait to ensure UUID v4 data format"@en ;
+   samm-c:baseCharacteristic :Uuidv4Characteristic ;
+   samm-c:constraint :Uuidv4RegularExpression .
+
+:Position a samm:Entity ;
+   samm:preferredName "Position"@en ;
+   samm:description "The Position can be located at several stocks. A position may be anonymous or may reference an position within an order."@en ;
+   samm:properties ( [ samm:property :orderPositionReference; samm:optional true ] :lastUpdatedOnDateTime :allocatedStocks ) .
+
+:Uuidv4Characteristic a samm:Characteristic ;
+   samm:preferredName "UUID v4"@en ;
+   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
+   samm:see <https://tools.ietf.org/html/rfc4122> ;
+   samm:dataType xsd:string .
+
+:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Catena-X ID Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
+
+:orderPositionReference a samm:Property ;
+   samm:preferredName "Order Position Reference"@en ;
+   samm:description "The order position reference contains information to identify a position within an order."@en ;
+   samm:characteristic :OrderPositionReferenceCharacteristic .
+
+:lastUpdatedOnDateTime a samm:Property ;
+   samm:preferredName "Lasted Updated on Date"@en ;
+   samm:description "Date and time at which the position has been updated by the supplier's systems. Date and time are set according to a timezone."@en ;
+   samm:characteristic :DateTimeStamp ;
+   samm:exampleValue "2023-04-01T14:23:00"^^xsd:date .
+
+:allocatedStocks a samm:Property ;
+   samm:preferredName "Allocated Stocks"@en ;
+   samm:description "Stocks already allocated to the customer. There is one AllocatedStock per supplierStockLocation."@en ;
+   samm:characteristic :AllocatedStockCollection .
+
+:OrderPositionReferenceCharacteristic a samm:Characteristic ;
+   samm:preferredName "Order Position Reference Characteristic"@en ;
+   samm:description "The order position reference includes reference numbers for the order and the ID. As these information are meant for the customer, the customer reference numbers are mandatory."@en ;
+   samm:dataType :OrderPositionReference .
+
+:DateTimeStamp a samm:Characteristic ;
+   samm:preferredName "Date Time Stamp Characteristic"@en ;
+   samm:description "The Date with the the timezone of the involved site."@en ;
+   samm:see <https://www.iso.org/iso-8601-date-and-time-format.html> ;
+   samm:dataType xsd:date .
+
+:AllocatedStockCollection a samm-c:Collection ;
+   samm:preferredName "Allocated Stock Collection"@en ;
+   samm:description "Collection of AllocatedStocks that may relate to different supplierStockLocations."@en ;
+   samm:dataType :AllocatedStock .
+
+:OrderPositionReference a samm:Entity ;
+   samm:preferredName "Reference to Order Position"@en ;
+   samm:description "Encapsulates the references to identify a position within an order."@en ;
+   samm:properties ( [ samm:property :supplierOrderId; samm:optional true ] :customerOrderId :customerOrderPositionId ) .
+
+:AllocatedStock a samm:Entity ;
+   samm:preferredName "Stock Allocated to Customer"@en ;
+   samm:description "This is the quantity of already produced goods at a given location that has not yet been shipped. The allocated stock is the stock available for the customer and may refer to a given position (see OrderPositionReference). Quantities of Materials belonging to this stock are not available for other positions or customers. This stock consists only of the good parts."@en ;
+   samm:properties ( :quantityOnAllocatedStock :supplierStockLocationId ) .
+
+:supplierOrderId a samm:Property ;
+   samm:preferredName "Supplier Order ID"@en ;
+   samm:description "This is the order number on the supplier side that is given by e.g., the supplier's enterprise resource planning system."@en ;
+   samm:characteristic :OrderIdCharacteristic ;
+   samm:exampleValue "M-Nbr-4711" .
+
+:customerOrderId a samm:Property ;
+   samm:preferredName "Customer Order ID"@en ;
+   samm:description "This is the order number on the customer side that can be given by e.g., the customer's enterprise resource planning system."@en ;
+   samm:characteristic :OrderIdCharacteristic ;
+   samm:exampleValue "C-Nbr-4711" .
+
+:customerOrderPositionId a samm:Property ;
+   samm:preferredName "Customer Order Position ID"@en ;
+   samm:description "This is an identifier for the position of an order defined by the customer. It's not a technical identifier, such as an UUID. This identifier is used within the business context when talking about the position."@en ;
+   samm:characteristic :OrderPositionIdCharacteristic ;
+   samm:exampleValue "PositionId-01" .
+
+:quantityOnAllocatedStock a samm:Property ;
+   samm:preferredName "Quantity on Allocated Stock"@en ;
+   samm:description "This is the quantity of the material within the position that is already ready to be delivered."@en ;
+   samm:characteristic :QuantityCharacteristic .
+
+:supplierStockLocationId a samm:Property ;
+   samm:preferredName "Location ID of Supplier's Stock"@en ;
+   samm:description "One stock has always one location. The location is identified using BPNs. The location can be identified differently depending on the partner."@en ;
+   samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf> ;
+   samm:characteristic :SupplierStockLocationIDCharacteristic .
+
+:OrderIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "Order ID Characteristic"@en ;
+   samm:description "This is a proprietary order ID, generated by either the supplier side or customer side."@en ;
+   samm:dataType xsd:string .
+
+:OrderPositionIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "Position ID within Order"@en ;
+   samm:description "The position ID is unique for an order and used within business context to refer to a position."@en ;
+   samm:dataType xsd:string .
+
+:QuantityCharacteristic a samm-c:Quantifiable ;
+   samm:preferredName "Quantity Characteristic"@en ;
+   samm:description "Describes the quantity in which the child part is assembled in the given parent object by providing a quantity value and the measurement unit in which the quantity is measured."@en ;
+   samm:dataType :Quantity .
+
+:SupplierStockLocationIDCharacteristic a samm:Characteristic ;
+   samm:preferredName "Location ID Characteristic of Supplier's Stock"@en ;
+   samm:description "This is the location where the stock is located."@en ;
+   samm:dataType :LocationId .
+
+:Quantity a samm:Entity ;
+   samm:preferredName "Quantity"@en ;
+   samm:description "Comprises the number of objects and the unit of measurement for the respective child objects"@en ;
+   samm:properties ( :quantityNumber :measurementUnit ) .
+
+:LocationId a samm:Entity ;
+   samm:preferredName "Location ID"@en ;
+   samm:description "A location can be described by different kinds of identifiers. Within Catena-X, a location can either be described by a BPNS or BPNA."@en ;
+   samm:properties ( :locationIdType :locationId ) .
+
+:quantityNumber a samm:Property ;
+   samm:preferredName "Quantity Number"@en ;
+   samm:description "The number of objects related to the measurement unit"@en ;
+   samm:characteristic :NumberofObjects ;
+   samm:exampleValue "2.5"^^xsd:double .
+
+:measurementUnit a samm:Property ;
+   samm:preferredName "Measurement Unit"@en ;
+   samm:description """Unit of measurement for the quantity of objects.
+If possible, use units from the aspect meta model unit catalog, which is based on the UNECE Recommendation No. 20 \"Codes for Units of Measure used in International Trade\"."""@en ;
+   samm:see <https://github.com/eclipse-esmf/esmf-semantic-aspect-meta-model/blob/main/esmf-semantic-aspect-meta-model/src/main/resources/samm/unit/2.0.0/units.ttl> ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "unit:litre"^^samm:curie .
+
+:locationIdType a samm:Property ;
+   samm:preferredName "Type of Location ID"@en ;
+   samm:description "Type of the location's ID."@en ;
+   samm:characteristic :LocationIdTypeEnum ;
+   samm:exampleValue "BPNS" .
+
+:locationId a samm:Property ;
+   samm:preferredName "Location ID"@en ;
+   samm:description "The actual ID reflecting the type (locationIdType) of the location."@en ;
+   samm:characteristic :LocationIdCharacteristic ;
+   samm:exampleValue "BPNS0123456789ZZ" .
+
+:NumberofObjects a samm:Characteristic ;
+   samm:preferredName "Number of Objects"@en ;
+   samm:description "Quantifiable number of objects in reference to the measurementUnit"@en ;
+   samm:dataType xsd:double .
+
+:LocationIdTypeEnum a samm-c:Enumeration ;
+   samm:preferredName "Location ID Type Enum"@en ;
+   samm:description "Enumeration specifying types of keys for locations within Catena-X."@en ;
+   samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf> ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "BPNS" "BPNA" ) .
+
+:LocationIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "Location ID Characteristic"@en ;
+   samm:description "The actual key based on the type."@en ;
+   samm:see <https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Update_PDF_Maerz/5_BPDM/CX_-_0010_BUSINESS_PARTNER_NUMBER_PlatformCapabilityBPDM_v_1.0.1.pdf> ;
+   samm:dataType xsd:string .
+

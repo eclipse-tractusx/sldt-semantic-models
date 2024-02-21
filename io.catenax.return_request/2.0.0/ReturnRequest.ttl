@@ -1,0 +1,205 @@
+#######################################################################
+# Copyright (c) 2023-2024 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2023-2024 Robert Bosch GmbH
+# Copyright (c) 2023-2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023-2024 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2023-2024 SAP SE
+# Copyright (c) 2023-2024 ZF Friedrichshafen AG
+# Copyright (c) 2023-2024 Circular Economy Solutions GmbH (C-ECO)
+# Copyright (c) 2023-2024 T-Systems International GmbH
+# Copyright (c) 2023-2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the 
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license, 
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.return_request:2.0.0#> .
+@prefix ext-characteristic: <urn:samm:io.catenax.shared.address_characteristic:3.0.0#> .
+@prefix ext-classification: <urn:samm:io.catenax.shared.part_classification:1.0.0#> .
+@prefix ext-part: <urn:samm:io.catenax.serial_part:3.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+
+:ReturnRequest a samm:Aspect ;
+   samm:preferredName "return request"@en ;
+   samm:description "Aspect to indicate if there is a return request for a product."@en ;
+   samm:properties ( :needsReturn :returnConditions :requestDate :latestReturnDate :productConditions :marketplaceProduct :quantity :validityPeriod :isRecall :identification :deliveryAddress :areaOfUsage :arrivalDateAtCustomer ext-part:date ext-part:nameAtCustomer ext-classification:partClassification ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:needsReturn a samm:Property ;
+   samm:preferredName "needs return"@en ;
+   samm:description "Describes the fact whether a vehicle, assembly or part needs to be returned to requestor."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:returnConditions a samm:Property ;
+   samm:preferredName "return conditions"@en ;
+   samm:description "Describes WHY a vehicle, assembly or part needs to be returned to the requestor and under which conditions."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Wishes to buy" .
+
+:requestDate a samm:Property ;
+   samm:preferredName "request date"@en ;
+   samm:description "Describes date when the return request was placed."@en ;
+   samm:characteristic :DateTimestamp ;
+   samm:exampleValue "2022-01-01"^^xsd:date .
+
+:latestReturnDate a samm:Property ;
+   samm:preferredName "latest return date"@en ;
+   samm:description "Describes until when the return request is valid."@en ;
+   samm:characteristic :DateTimestamp ;
+   samm:exampleValue "2025-01-01"^^xsd:date .
+
+:productConditions a samm:Property ;
+   samm:preferredName "product conditions"@en ;
+   samm:description "textual description of the product conditions"@en ;
+   samm:characteristic :ProductConditionsCharacteristic .
+
+:marketplaceProduct a samm:Property ;
+   samm:preferredName "marketplace product"@en ;
+   samm:description "The description of the product within the marketplace that might differ from the digital twin."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BMW 318i E46 Coupe Bj.2000 Bremssattel hinten links" .
+
+:quantity a samm:Property ;
+   samm:preferredName "quantity"@en ;
+   samm:description "The desired quantity of the on the marketplace offered product in SKU."@en ;
+   samm:characteristic ext-quantity:ItemQuantityCharacteristic .
+
+:validityPeriod a samm:Property ;
+   samm:preferredName "validity period"@en ;
+   samm:description "Specifies the time period when the need exists"@en ;
+   samm:characteristic :TimePeriod .
+
+:isRecall a samm:Property ;
+   samm:preferredName "is recall"@en ;
+   samm:description "Depicts if the manufacturer issued a recall (e.g. for security reasons). In conjunction with property needsReturn it can be expressed if the item has to be returned or can directly be destroyed."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
+:identification a samm:Property ;
+   samm:preferredName "identification"@en ;
+   samm:description "The unique identifier of the product (via manufacturingPartID, OeNumber and/or serialNumber)\n"@en ;
+   samm:characteristic :IdentificationCharacteristic .
+
+:deliveryAddress a samm:Property ;
+   samm:preferredName "delivery address"@en ;
+   samm:description "The address that the product should be delivered to"@en ;
+   samm:characteristic ext-characteristic:PostalAddress .
+
+:areaOfUsage a samm:Property ;
+   samm:preferredName "area of usage"@en ;
+   samm:description "Information, in which countries/areas the component has been in use"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Sahara, extreme dry and high temperature" .
+
+:arrivalDateAtCustomer a samm:Property ;
+   samm:preferredName "arrival date at customer"@en ;
+   samm:description "Until when should the product arrive (if known)"@en ;
+   samm:characteristic :DateTimestamp ;
+   samm:exampleValue "2023-12-01"^^xsd:date .
+
+:DateTimestamp a samm:Characteristic ;
+   samm:preferredName "date timestamp"@en ;
+   samm:description "Timestamp for dates"@en ;
+   samm:dataType xsd:date .
+
+:ProductConditionsCharacteristic a samm:Characteristic ;
+   samm:preferredName "product conditions characteristic"@en ;
+   samm:description "Criteria describing the state of a product on the marketplace."@en ;
+   samm:dataType :ProductConditionsEntity .
+
+:TimePeriod a samm-c:SortedSet ;
+   samm:preferredName "time period"@en ;
+   samm:description "Depicts a time period by specifying start and end date"@en ;
+   samm:dataType :TimePeriodEntity .
+
+:IdentificationCharacteristic a samm:Characteristic ;
+   samm:preferredName "identification characteristic"@en ;
+   samm:description "The unique identifier of the product (via manufacturingPartID, OeNumber and/or serialNumber)\n"@en ;
+   samm:dataType :IdentificationEntity .
+
+:ProductConditionsEntity a samm:Entity ;
+   samm:preferredName "product conditions entity"@en ;
+   samm:description "Entity encapsulating the conditions the product is in."@en ;
+   samm:properties ( [ samm:property :missingParts; samm:optional true ] [ samm:property :dismantled; samm:optional true ] [ samm:property :mechanicalDamage; samm:optional true ] [ samm:property :corroded; samm:optional true ] [ samm:property :discolored; samm:optional true ] :mileage ) .
+
+:TimePeriodEntity a samm:Entity ;
+   samm:preferredName "time period"@en ;
+   samm:description "Entity defining a range of dates to define a time period."@en ;
+   samm:properties ( :startDate :endDate ) .
+
+:IdentificationEntity a samm:Entity ;
+   samm:preferredName "identification entity"@en ;
+   samm:description "Entity encapsulating different unique identifier of the product (manufacturingPartID, OeNumber and/or serialNumber)"@en ;
+   samm:properties ( ext-part:localIdentifiers ext-part:manufacturerPartId ext-part:customerPartId ) .
+
+:missingParts a samm:Property ;
+   samm:preferredName "missing parts"@en ;
+   samm:description "Completeness of the product, e.g. missing parts are not acceptable."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:dismantled a samm:Property ;
+   samm:preferredName "dismantled"@en ;
+   samm:description "Information on whether the product has been dismantled."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:mechanicalDamage a samm:Property ;
+   samm:preferredName "mechanical damage"@en ;
+   samm:description "Information on mechanical damage to the part, e.g. two broken ribs or part deformation indicate mechanical damage."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:corroded a samm:Property ;
+   samm:preferredName "corroded"@en ;
+   samm:description "Information on whether the product has corrosion."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:discolored a samm:Property ;
+   samm:preferredName "discolored"@en ;
+   samm:description "Information on whether the product has been discoloured."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:mileage a samm:Property ;
+   samm:preferredName "mileage"@en ;
+   samm:description "Current mileage of the component"@en ;
+   samm:characteristic :NumericValueofMileage ;
+   samm:exampleValue 89000 .
+
+:startDate a samm:Property ;
+   samm:preferredName "start date"@en ;
+   samm:description "The first day of the period"@en ;
+   samm:characteristic :DateTimestamp ;
+   samm:exampleValue "2019-01-01"^^xsd:date .
+
+:endDate a samm:Property ;
+   samm:preferredName "end date"@en ;
+   samm:description "The last day of the period."@en ;
+   samm:characteristic :DateTimestamp ;
+   samm:exampleValue "2030-09-30"^^xsd:date .
+
+:NumericValueofMileage a samm-c:Measurement ;
+   samm:preferredName "value of mileage"@en ;
+   samm:description "Represents the value of mileage."@en ;
+   samm:dataType xsd:integer ;
+   samm-c:unit unit:kilometre .
+
