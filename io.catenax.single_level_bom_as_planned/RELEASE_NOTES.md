@@ -2,9 +2,6 @@
 All notable changes to this model will be documented in this file.
 
 ## [3.0.0] - 2024-02-26
-### Added
-- added new `hasAlternatives` property as child of the existing `childItems` property including a boolean 
-
 ### Changed
 - replaced the `quantityNumber` and `measurementUnit` properties with the `itemUnit` and `quantityValue` properties of the shared quantity 2.0.0 aspect model
 - replaced the whole `CatenaXIdTraitCharacteristic` and its childs with the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
