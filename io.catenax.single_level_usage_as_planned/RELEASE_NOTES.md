@@ -5,8 +5,7 @@ All notable changes to this model will be documented in this file.
 ### Added
 - added new `customers` property as child of the `SingleLevelUsageAsPlanned` aspect property including its `ListOfCustomersCharactersistics` and `Customer` entity
 - added new `businessPartner` property with its `BpnlTrait` of the shared business_partner_number 2.0.0 aspect model
-- added new `isOnlyPotentialParent` property including its boolean characteristic
-- added new links from the Customer entity to the `businesspartner`, `createdOn` and `lastModifiedOn` properties
+- added new links from the `customers` entity to the `businesspartner`, `createdOn` and `lastModifiedOn` properties
 
 ### Changed
 - changed `parentCatenaXId` to `catenaXId` to be conform with the data chain template
