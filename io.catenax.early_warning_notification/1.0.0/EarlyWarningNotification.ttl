@@ -27,6 +27,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.early_warning_notification:1.0.0#> .
 @prefix ext-header: <urn:samm:io.catenax.shared.message_header:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 
 :EarlyWarningNotification a samm:Aspect ;
    samm:preferredName "Early Warning Notification"@en ;
@@ -90,7 +91,7 @@
    samm:preferredName "Severity"@en ;
    samm:description "Describes the severity of a quality issue."@en ;
    samm:dataType xsd:string ;
-   samm-c:values ( "MINOR" "MAJOR" "CRITICAL" "LIFE-THREATENiNG" ) .
+   samm-c:values ( "MINOR" "MAJOR" "CRITICAL" "LIFE-THREATENING" ) .
 
 :AffectedItemsCharacteristic a samm-c:List ;
    samm:preferredName "Affected Items Characteristic"@en ;
@@ -105,31 +106,18 @@
 :Items a samm:Entity ;
    samm:preferredName "Items"@en ;
    samm:description "A unique identifier"@en ;
-   samm:properties ( [ samm:property :anonymizedVIN; samm:optional true ] [ samm:property :catenaXId; samm:optional true ] [ samm:property :serialPartNumber; samm:optional true ] ) .
+   samm:properties ([ samm:property :catenaXId; samm:optional true ]) .
 
 :PopulationFilter a samm:Entity ;
    samm:preferredName "Population Filter"@en ;
    samm:description "Population filter for the early warning data"@en ;
-   samm:properties ( :aspectProperty :aspectModel [ samm:property :rangeFrom; samm:optional true ] [ samm:property :rangeTo; samm:optional true ] :dataType [ samm:property :values; samm:optional true ] ) .
-
-:anonymizedVIN a samm:Property ;
-   samm:preferredName "VAN"@en ;
-   samm:description "A unique but anonymized identifier for a vehicle"@en ;
-   samm:see <urn:samm:io.catenax.vehicle.product_description:3.0.0> ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "3747429FGH382923974682" .
+   samm:properties ( :aspectProperty :aspectModel [ samm:property :rangeFrom; samm:optional true ] [ samm:property :rangeTo; samm:optional true ] [ samm:property :valueList; samm:optional true ] ) .
 
 :catenaXId a samm:Property ;
    samm:preferredName "Catena-X ID"@en ;
    samm:description "A unique identifier for a part or a vehicle. The identifier relates to a Catena-X digital twin"@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:ed85f17e-29dd-473c-9cb8-d7ad1dc44d2f" .
-
-:serialPartNumber a samm:Property ;
-   samm:preferredName "Serial Part Number"@en ;
-   samm:description "A unique serial number for a produced part"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "436347347.4343884384.FTG.538348" .
 
 :aspectProperty a samm:Property ;
    samm:preferredName "Aspect Property"@en ;
@@ -155,18 +143,12 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "2019-07-30T23:59:59" .
 
-:dataType a samm:Property ;
-   samm:preferredName "Data Type"@en ;
-   samm:description "Data type for the aspect propoerty"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "date" .
-
-:values a samm:Property ;
+:valueList a samm:Property ;
    samm:preferredName "List of Values"@en ;
    samm:description "A list of values for the aspect property"@en ;
    samm:characteristic :ValuesCharacteristic .
 
 :ValuesCharacteristic a samm-c:List ;
    samm:preferredName "Values Characteristic"@en ;
-   samm:description "Characteristic for the list of values"@en ;
+   samm:description "Characteristic for the values in the value list"@en ;
    samm:dataType xsd:string .
