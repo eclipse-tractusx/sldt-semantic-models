@@ -287,8 +287,8 @@
    samm:preferredName "Quantity Trait"@en ;
    samm:description "Defining the data type for a capacity key figure."@en ;
    samm-c:baseCharacteristic :Quantity ;
-   samm-c:constraint :QuantityRange ;
-   samm-c:constraint :QuantityFixedPoint .
+   samm-c:constraint :QuantityFixedPoint ;
+   samm-c:constraint :QuantityRange .
 
 :DeltaProductionResultCharacteristic a samm:Characteristic ;
    samm:preferredName "Delta Production Result Characteristic"@en ;
@@ -348,6 +348,12 @@
    samm:description "Quantity of weekly actual or maximum capacity."@en ;
    samm:dataType xsd:decimal .
 
+:QuantityFixedPoint a samm-c:FixedPointConstraint ;
+   samm:preferredName "Quantity Fixed Point"@en ;
+   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
+   samm-c:integer "15"^^xsd:positiveInteger ;
+   samm-c:scale "1000"^^xsd:positiveInteger .
+
 :QuantityRange a samm-c:RangeConstraint ;
    samm:preferredName "Quantity Range"@en ;
    samm:description "Constraint to ensure a non-negative value for quantities."@en ;
@@ -355,12 +361,6 @@
    samm-c:maxValue "999999999999999999.999"^^xsd:decimal ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:AT_MOST .
-
-:QuantityFixedPoint a samm-c:FixedPointConstraint ;
-   samm:preferredName "Quantity Fixed Point"@en ;
-   samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
-   samm-c:integer "15"^^xsd:positiveInteger ;
-   samm-c:scale "1000"^^xsd:positiveInteger .
 
 :Integer a samm:Characteristic ;
    samm:preferredName "Integer"@en ;
@@ -407,13 +407,13 @@
 :relativePositiveDeviation a samm:Property ;
    samm:preferredName "Relative Positive Deviation"@en ;
    samm:description "Relative positive deviation threshold which triggers an alert; 20% = 0,2"@en ;
-   samm:characteristic :RelativeDeviationTrait ;
+   samm:characteristic :Decimal ;
    samm:exampleValue "0.2"^^xsd:decimal .
 
 :relativeNegativeDeviation a samm:Property ;
    samm:preferredName "Relative Negative Deviation"@en ;
    samm:description "Relative negative deviation threshold which triggers an alert; -30% = 0,3"@en ;
-   samm:characteristic :RelativeDeviationTrait ;
+   samm:characteristic :RelativeNegativeDeviationTrait ;
    samm:exampleValue "0.3"^^xsd:decimal .
 
 :absolutePositiveDeviation a samm:Property ;
@@ -433,19 +433,19 @@
    samm:description "The code identifying a demand category."@en ;
    samm:dataType xsd:string .
 
-:RelativeDeviationTrait a samm-c:Trait ;
-   samm:preferredName "Relative Deviation Trait"@en ;
-   samm:description "Defining the data type for a relative deviation key figure."@en ;
-   samm-c:baseCharacteristic :Decimal ;
-   samm-c:constraint :RelativeDeviationRange .
-
 :Decimal a samm:Characteristic ;
    samm:preferredName "Decimal"@en ;
    samm:description "Property which is defined by a decimal value"@en ;
    samm:dataType xsd:decimal .
 
-:RelativeDeviationRange a samm-c:RangeConstraint ;
-   samm:preferredName "Relative Deviation Range"@en ;
+:RelativeNegativeDeviationTrait a samm-c:Trait ;
+   samm:preferredName "Relative Negative Deviation Trait"@en ;
+   samm:description "Defining the data type for the relative negative deviation key figure."@en ;
+   samm-c:baseCharacteristic :Decimal ;
+   samm-c:constraint :RelativeNegativeDeviationRange .
+
+:RelativeNegativeDeviationRange a samm-c:RangeConstraint ;
+   samm:preferredName "Relative Negative Deviation Range"@en ;
    samm:description "Constraint to be a value between 0 and 1."@en ;
    samm-c:minValue "0"^^xsd:decimal ;
    samm-c:maxValue "1"^^xsd:decimal ;
