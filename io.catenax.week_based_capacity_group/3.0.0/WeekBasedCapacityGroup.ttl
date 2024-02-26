@@ -253,7 +253,7 @@
 :measurementInterval a samm:Property ;
    samm:preferredName "Measurement Interval"@en ;
    samm:description "Indicates the length of intervals in weeks.\nThe first interval starts with the point in time given by the “startReferenceDateTime”. The second interval starts [Value] week (s) after this. And so on."@en ;
-   samm:characteristic :Integer ;
+   samm:characteristic :MeasurementTrait ;
    samm:exampleValue "4"^^xsd:int .
 
 :rollingHorizonAlertThresholds a samm:Property ;
@@ -287,18 +287,19 @@
    samm:preferredName "Quantity Trait"@en ;
    samm:description "Defining the data type for a capacity key figure."@en ;
    samm-c:baseCharacteristic :Quantity ;
-   samm-c:constraint :QuantityFixedPoint ;
-   samm-c:constraint :QuantityRange .
+   samm-c:constraint :QuantityRange ;
+   samm-c:constraint :QuantityFixedPoint .
 
 :DeltaProductionResultCharacteristic a samm:Characteristic ;
    samm:preferredName "Delta Production Result Characteristic"@en ;
    samm:description "Describes data type of a delta production result information."@en ;
    samm:dataType xsd:decimal .
 
-:Integer a samm:Characteristic ;
-   samm:preferredName "Integer"@en ;
-   samm:description "Describes a property which is defined by an Integer value"@en ;
-   samm:dataType xsd:int .
+:MeasurementTrait a samm-c:Trait ;
+   samm:preferredName "Measurement Trait"@en ;
+   samm:description "Defining the data type for a measurement parameter."@en ;
+   samm-c:baseCharacteristic :Integer ;
+   samm-c:constraint :MeasurementParametersRange .
 
 :RollingHorizonAlertThresholdsSet a samm-c:Set ;
    samm:preferredName "Rolling Horizon Alert Thresholds Set"@en ;
@@ -347,17 +348,30 @@
    samm:description "Quantity of weekly actual or maximum capacity."@en ;
    samm:dataType xsd:decimal .
 
+:QuantityRange a samm-c:RangeConstraint ;
+   samm:preferredName "Quantity Range"@en ;
+   samm:description "Constraint to ensure a non-negative value for quantities."@en ;
+   samm-c:minValue "0"^^xsd:decimal ;
+   samm-c:maxValue "999999999999999999.999"^^xsd:decimal ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:AT_MOST .
+
 :QuantityFixedPoint a samm-c:FixedPointConstraint ;
    samm:preferredName "Quantity Fixed Point"@en ;
    samm:description "Constraint to ensure size of quantities: 12 digits plus 3 decimal places."@en ;
    samm-c:integer "15"^^xsd:positiveInteger ;
    samm-c:scale "1000"^^xsd:positiveInteger .
 
-:QuantityRange a samm-c:RangeConstraint ;
-   samm:preferredName "Quantity Range"@en ;
-   samm:description "Constraint to ensure a non-negative value for quantities."@en ;
-   samm-c:minValue "0"^^xsd:decimal ;
-   samm-c:maxValue "999999999999999999.999"^^xsd:decimal ;
+:Integer a samm:Characteristic ;
+   samm:preferredName "Integer"@en ;
+   samm:description "Describes a property which is defined by an Integer value"@en ;
+   samm:dataType xsd:int .
+
+:MeasurementParametersRange a samm-c:RangeConstraint ;
+   samm:preferredName "Measurement Parameters Range"@en ;
+   samm:description "Trait for measurement parameters to be an integer > 0"@en ;
+   samm-c:minValue "1"^^xsd:int ;
+   samm-c:maxValue "999"^^xsd:int ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:AT_MOST .
 
@@ -381,26 +395,26 @@
 :sequenceNumber a samm:Property ;
    samm:preferredName "Sequence Number"@en ;
    samm:description "Sequence number of the subhorizon  \n(positive int values)"@en ;
-   samm:characteristic :Integer ;
+   samm:characteristic :MeasurementTrait ;
    samm:exampleValue "1"^^xsd:int .
 
 :subhorizonLength a samm:Property ;
    samm:preferredName "Subhorizon Length"@en ;
    samm:description "Length of the subhorizon in weeks. (Value must be >= 1) As a subhorizon can not be shorter than one week."@en ;
-   samm:characteristic :Integer ;
+   samm:characteristic :MeasurementTrait ;
    samm:exampleValue "4"^^xsd:int .
 
 :relativePositiveDeviation a samm:Property ;
    samm:preferredName "Relative Positive Deviation"@en ;
-   samm:description "Relative positive deviation threshold which triggers an alert; 100% = 1,00, 150% = 1,5"@en ;
-   samm:characteristic :Decimal ;
-   samm:exampleValue "1.00"^^xsd:decimal .
+   samm:description "Relative positive deviation threshold which triggers an alert; 20% = 0,2"@en ;
+   samm:characteristic :RelativeDeviationTrait ;
+   samm:exampleValue "0.2"^^xsd:decimal .
 
 :relativeNegativeDeviation a samm:Property ;
    samm:preferredName "Relative Negative Deviation"@en ;
-   samm:description "Relative negative deviation threshold which triggers an alert; -100% = 1,00, -150% = 1,5"@en ;
-   samm:characteristic :Decimal ;
-   samm:exampleValue "1.5"^^xsd:decimal .
+   samm:description "Relative negative deviation threshold which triggers an alert; -30% = 0,3"@en ;
+   samm:characteristic :RelativeDeviationTrait ;
+   samm:exampleValue "0.3"^^xsd:decimal .
 
 :absolutePositiveDeviation a samm:Property ;
    samm:preferredName "Absolute Positive Deviation"@en ;
@@ -419,8 +433,22 @@
    samm:description "The code identifying a demand category."@en ;
    samm:dataType xsd:string .
 
+:RelativeDeviationTrait a samm-c:Trait ;
+   samm:preferredName "Relative Deviation Trait"@en ;
+   samm:description "Defining the data type for a relative deviation key figure."@en ;
+   samm-c:baseCharacteristic :Decimal ;
+   samm-c:constraint :DeviationRange .
+
 :Decimal a samm:Characteristic ;
    samm:preferredName "Decimal"@en ;
    samm:description "Property which is defined by a decimal value"@en ;
    samm:dataType xsd:decimal .
+
+:DeviationRange a samm-c:RangeConstraint ;
+   samm:preferredName "Deviation Range"@en ;
+   samm:description "Constraint to be a value between 0 and 1."@en ;
+   samm-c:minValue "0"^^xsd:decimal ;
+   samm-c:maxValue "1"^^xsd:decimal ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:AT_MOST .
 
