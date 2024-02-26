@@ -1,0 +1,189 @@
+---
+openapi: 3.0.3
+info:
+  title: remaining useful life
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/remaining-useful-life:
+    get:
+      tags:
+      - RemainingUsefulLife
+      operationId: getRemainingUsefulLife
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/RemainingUsefulLife'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_samm_io.catenax.rul_2.0.0_RemainingMileage:
+      type: number
+      minimum: 0
+      description: Expected addition mileage
+    urn_samm_io.catenax.rul_2.0.0_RemainingOperatingHoursCharacteristic:
+      type: number
+      description: Expected additional operating hours
+    urn_samm_io.catenax.rul_2.0.0_Mileage:
+      type: number
+      minimum: 0
+      description: Mileage of vehicle respectively part.
+    urn_samm_io.catenax.rul_2.0.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.rul_2.0.0_OperatingHoursCharacteristic:
+      type: number
+      description: Operating hours for the vehicle respectively part.
+    urn_samm_io.catenax.rul_2.0.0_StatusCharacteristic:
+      description: "Status describes the date when this aspect is filled, the according\
+        \ mileage and according operating hours. "
+      type: object
+      properties:
+        mileage:
+          description: Mileage of the vehicle respectively part at date of determination.
+          $ref: '#/components/schemas/urn_samm_io.catenax.rul_2.0.0_Mileage'
+        date:
+          description: Date of determination.
+          $ref: '#/components/schemas/urn_samm_io.catenax.rul_2.0.0_Timestamp'
+        operatingHours:
+          description: Operating hours at determination.
+          $ref: '#/components/schemas/urn_samm_io.catenax.rul_2.0.0_OperatingHoursCharacteristic'
+      required:
+      - mileage
+      - date
+      - operatingHours
+    urn_samm_io.catenax.rul_2.0.0_InformationOriginLoadSpectrumCharacteristic:
+      type: string
+      description: "Origin of input load spectrum: measured, simulated, aggregated"
+      enum:
+      - loggedOEM
+      - measuredOEM
+      - simulatedOEM
+      - loggedSupplier
+      - measuredSupplier
+      - simulatedSupplier
+      - otherOrigin
+    urn_samm_io.catenax.rul_2.0.0_SourceLoadSpectrum:
+      type: string
+      format: uri
+      description: Link to load spectrum
+    urn_samm_io.catenax.rul_2.0.0_LoaddataSourceCharacteristic:
+      description: "Information on the origin of the used load spectrum. If available,\
+        \ the link to the load spectrum."
+      type: object
+      properties:
+        informationOriginLoadSpectrum:
+          description: A load spectrum is used to calulated the damage and the expected
+            remaining useful for similar further usage. Information on the source
+            of the load spectrum is stored.
+          $ref: '#/components/schemas/urn_samm_io.catenax.rul_2.0.0_InformationOriginLoadSpectrumCharacteristic'
+        sourceLoadSpectrum:
+          description: "The link to the load spectrum used to determine the remaining\
+            \ useful life, if available."
+          $ref: '#/components/schemas/urn_samm_io.catenax.rul_2.0.0_SourceLoadSpectrum'
+      required:
+      - informationOriginLoadSpectrum
+    RemainingUsefulLife:
+      description: "Remaining useful Life (RuL) describes the approximated life of\
+        \ a part, a component, an assembly, a vehicle. \nThe approximation is based\
+        \ on the damage due to usage and extrapolation. \nremainingUsefulLife can\
+        \ be a procentual number, or expressed in remainingDistance or remaingOperationHours\
+        \ or remainingAge."
+      type: object
+      properties:
+        remainingRunningDistance:
+          description: Expected additional mileage for the vehicle or part might without
+            failure.
+          $ref: '#/components/schemas/urn_samm_io.catenax.rul_2.0.0_RemainingMileage'
+        remainingOperatingHours:
+          description: Expected additional operation hours for the vehicle or part
+            might without failure.
+          $ref: '#/components/schemas/urn_samm_io.catenax.rul_2.0.0_RemainingOperatingHoursCharacteristic'
+        determinationStatus:
+          description: Remaining useful life is determined at a specific  date with  acording
+            mileage and operating hours. This status should be stored to interpretate
+            the calculated values remaingRunningDistance and RemainingOperatingHours.
+          $ref: '#/components/schemas/urn_samm_io.catenax.rul_2.0.0_StatusCharacteristic'
+        determinationLoaddataSource:
+          description: The source of the load data used to determine the remaining
+            useful life is stored for information/interpretation.
+          $ref: '#/components/schemas/urn_samm_io.catenax.rul_2.0.0_LoaddataSourceCharacteristic'
+      required:
+      - remainingRunningDistance
+      - remainingOperatingHours
+      - determinationStatus
+      - determinationLoaddataSource
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RemainingUsefulLife:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemainingUsefulLife'
+      description: The request was successful.
+  requestBodies:
+    RemainingUsefulLife:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemainingUsefulLife'
