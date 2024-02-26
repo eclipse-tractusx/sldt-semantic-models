@@ -33,9 +33,9 @@
 :BatteryPass a samm:Aspect ;
    samm:preferredName "Battery Passport"@en ;
    samm:description "The battery pass describes information collected during the lifecycle of a battery. The battery passport is heavily based on the Regulation (EU) 2023/1542 of the European Parliament and of the Council of 12 July 2023 concerning batteries and waste batteries, amending Directive 2008/98/EC and Regulation (EU) 2019/1020 and repealing Directive 2006/66/EC.\nAdditionally attributes come from the Proposal for Ecodesign for Sustainable Products Regulation."@en ;
-   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R1542&qid=1693215264963> ;
    samm:see <https://environment.ec.europa.eu/publications/proposal-ecodesign-sustainable-products-regulation_en> ;
-   samm:properties ( ext-passport:metadata :identification :operation ext-passport:handling :characteristics :sustainability :materials :performance :conformity :safety [ samm:property :sources; samm:optional true ] ) ;
+   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R1542&qid=1693215264963> ;
+   samm:properties ( :identification :operation :characteristics :sustainability :materials :performance :conformity :safety [ samm:property :sources; samm:optional true ] ext-passport:metadata ext-passport:handling ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -141,7 +141,7 @@
 :ChemicalMaterialEntity a samm:Entity ;
    samm:preferredName "Chemical Material Entity"@en ;
    samm:description "Chemical Material Entity for the battery. Included are active, hazardous and critical materials as well as a material symbol. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Article 13:\n5. All batteries containing more than 0,002 % cadmium or more than 0,004 % lead, shall be marked with the chemical symbol for the metal concerned: Cd or Pb."@en ;
-   samm:properties ( :activeMaterials :hazardousSubstance :otherMaterials ) .
+   samm:properties ( [ samm:property :activeMaterials; samm:payloadName "active" ] [ samm:property :hazardousSubstance; samm:payloadName "hazardous" ] [ samm:property :materialComposition; samm:payloadName "composition" ] ) .
 
 :PerformanceEntity a samm:Entity ;
    samm:preferredName "Performance Entity"@en ;
@@ -203,7 +203,7 @@
 
 :activeMaterials a samm:Property ;
    samm:preferredName "Active Materials"@en ;
-   samm:description "The active materials included in the battery. Mandatory are nickel, lithium, cobalt and lead. Others are optional."@en ;
+   samm:description "The active materials included in the battery. Mandatory are nickel, lithium, cobalt and lead. Others are optional. Defined by the Battery regulation 2023/1542 from 12 July 2023 in Article 3 Definitions:\n(5) ‘active material’ means a material which reacts chemically to produce electric energy when the battery cell discharges or to store electric energy when the battery is being charged."@en ;
    samm:characteristic :ActiveMaterialsCharacteristic .
 
 :hazardousSubstance a samm:Property ;
@@ -211,10 +211,10 @@
    samm:description "Hazardous substances like lead, cadmium and mercury."@en ;
    samm:characteristic :HazardousSubstanceCharacteristic .
 
-:otherMaterials a samm:Property ;
-   samm:preferredName "Other Materials"@en ;
+:materialComposition a samm:Property ;
+   samm:preferredName "Material Composition"@en ;
    samm:description "Other materials which are necessary to describe the material composition, especially if they are active, critical or hazardous and are not mentioned otherwise. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1):\n(b) the material composition of the battery, including its chemistry, hazardous substances present in the battery, other than mercury, cadmium or lead, and critical raw materials present in the battery; \n(f) the share of renewable content.\nand in Annex XIII (2):\n(a) detailed composition, including materials used in the cathode, anode and electrolyte;\nDefinition from Article 3:\n(52) \"hazardous substance\" means a substance classified as hazardous pursuant to Article 3 of Regulation (EC) No 1272/2008:\nA substance or a mixture fulfilling the criteria relating to physical hazards, health hazards or environmental hazards, laid down in Parts 2 to 5 of Annex I is hazardous and shall be classified in relation to the respective hazard classes provided for in that Annex.\nWhere, in Annex I, hazard classes are differentiated on the basis of the route of exposure or the nature of the effects, the substance or mixture shall be classified in accordance with such differentiation.\nDefined in Article 2 of Regulation (EC) No 1272/2008:\n1. hazard class\" means the nature of the physical, health or environmental hazard."@en ;
-   samm:characteristic ext-passport:MaterialList .
+   samm:characteristic :Characteristic5 .
 
 :ratedPerformance a samm:Property ;
    samm:preferredName "Rated Performance"@en ;
@@ -310,6 +310,9 @@
    samm:description "Hazardous Substance Characteristic for the battery chemical materials."@en ;
    samm:dataType :HazardousSubstanceEntity .
 
+:Characteristic5 a samm-c:List ;
+   samm:dataType :Entity5 .
+
 :RatedPerformanceCharacteristic a samm:Characteristic ;
    samm:preferredName "Rated Performance Characteristic"@en ;
    samm:description "Characteristic for rated performance values of the battery."@en ;
@@ -341,12 +344,15 @@
 :ActiveMaterialEntity a samm:Entity ;
    samm:preferredName "Active Material Entity"@en ;
    samm:description "Entity for the active materials included in the battery. Mandatory are nickel, lithium, cobalt and lead."@en ;
-   samm:properties ( :nickel :lithium :cobalt :lead [ samm:property :otherMaterials; samm:optional true ] ) .
+   samm:properties ( :nickel :lithium :cobalt :lead [ samm:property :otherActiveMaterials; samm:optional true; samm:payloadName "other" ] ) .
 
 :HazardousSubstanceEntity a samm:Entity ;
    samm:preferredName "Hazardous Substance Entity"@en ;
    samm:description "Hazardous Substance Entity for hazardous chemical materials."@en ;
-   samm:properties ( [ samm:property :hazardousLead; samm:payloadName "lead" ] [ samm:property :hazardousCadmium; samm:payloadName "cadmium" ] [ samm:property :hazardousMercury; samm:payloadName "mercury" ] [ samm:property :otherMaterials; samm:optional true; samm:payloadName "other" ] ) .
+   samm:properties ( [ samm:property :hazardousLead; samm:payloadName "lead" ] [ samm:property :hazardousCadmium; samm:payloadName "cadmium" ] [ samm:property :hazardousMercury; samm:payloadName "mercury" ] [ samm:property :otherHazardousMaterial; samm:optional true; samm:payloadName "other" ] ) .
+
+:Entity5 a samm:Entity ;
+   samm:properties ( [ samm:property ext-passport:materialName; samm:payloadName "name" ] [ samm:property ext-passport:materialIdentification; samm:payloadName "id" ] ext-passport:concentration [ samm:property ext-passport:materialUnit; samm:payloadName "unit" ] ext-passport:critical ext-passport:documentation ext-passport:recycled ext-passport:location ext-passport:renewable ) .
 
 :RatedPerformanceEntity a samm:Entity ;
    samm:preferredName "Rated Performance Entity"@en ;
@@ -385,7 +391,7 @@
 
 :nickel a samm:Property ;
    samm:preferredName "Nickel"@en ;
-   samm:description "Information about the percentage of recovered nickel from waste. Either (left) a entity with the recycled share, the location and possible supporting documents, or (right) an enumeration where \"not applicable\" can be chosen. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:\n1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant."@en ;
+   samm:description "Information about the percentage of recovered nickel from waste. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:\n1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant."@en ;
    samm:characteristic :MaterialActive .
 
 :lithium a samm:Property ;
@@ -403,6 +409,11 @@
    samm:description "Information about the percentage of recovered lead from waste. The recycled share, the location and possible supporting documents. These attribute are mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1)(e) refers to Article 8:\n1. From 18 August 2028 or 24 months after the date of entry into force of the delegated act referred to in the third subparagraph, whichever is the latest, industrial batteries with a capacity greater than 2 kWh, except those with exclusively external storage, electric vehicle batteries and SLI batteries that contain cobalt, lead, lithium or nickel in active materials, shall be accompanied by documentation containing information about the percentage share of cobalt, lithium or nickel that is present in active materials and that has been recovered from battery manufacturing waste or post-consumer waste, and the percentage share of lead that is present in the battery and that has been recovered from waste, for each battery model per year and per manufacturing plant.\nAdditionally in Article 13:\n5. All batteries containing more than 0,002 % cadmium or more than 0,004 % lead, shall be marked with the chemical symbol for the metal concerned: Cd or Pb."@en ;
    samm:characteristic :MaterialActive .
 
+:otherActiveMaterials a samm:Property ;
+   samm:preferredName "Other Active Materials"@en ;
+   samm:description "Other active materials in the battery."@en ;
+   samm:characteristic :Characteristic3 .
+
 :hazardousLead a samm:Property ;
    samm:preferredName "Hazardous Lead"@en ;
    samm:description "Information about the presence of lead in the battery. Therefore, a concentration and the location within the battery has to be given. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) refers to Annex VI Part A: \n8. the hazardous substances present in the battery, other than mercury, cadmium or lead;\nDefined in Article 3:\n(52) \"hazardous substance\" means a substance classified as hazardous pursuant to Article 3 of Regulation (EC) No 1272/2008."@en ;
@@ -417,6 +428,10 @@
    samm:preferredName "Hazardous Mercury"@en ;
    samm:description "Information about the presence of mercury in the battery. Therefore, a concentration and the location within the battery has to be given. This is mentioned in the Battery regulation 2023/1542 from 12 July 2023 in Annex XIII (1) (a) refers to Annex VI Part A: \n8. the hazardous substances present in the battery, other than mercury, cadmium or lead;\nDefined in Article 3:\n(52) \"hazardous substance\" means a substance classified as hazardous pursuant to Article 3 of Regulation (EC) No 1272/2008."@en ;
    samm:characteristic :HazardousCharacteristic .
+
+:otherHazardousMaterial a samm:Property ;
+   samm:preferredName "Other Hazardous Material"@en ;
+   samm:characteristic :Characteristic4 .
 
 :voltage a samm:Property ;
    samm:preferredName "Voltage"@en ;
@@ -541,10 +556,16 @@
    samm:description "Characteristic to describe the active material."@en ;
    samm:dataType :MaterialActiveEntity .
 
+:Characteristic3 a samm-c:List ;
+   samm:dataType :Entity3 .
+
 :HazardousCharacteristic a samm:Characteristic ;
    samm:preferredName "Hazardous Characteristic"@en ;
    samm:description "Material attributes for hazardous materials."@en ;
    samm:dataType :HazardousEntity .
+
+:Characteristic4 a samm-c:List ;
+   samm:dataType :Entity4 .
 
 :VoltageCharacteristic a samm:Characteristic ;
    samm:preferredName "Voltage Characteristic"@en ;
@@ -630,12 +651,18 @@
 :MaterialActiveEntity a samm:Entity ;
    samm:preferredName "Material Active Entity"@en ;
    samm:description "The information on the active material with the recycled share, location and supporting document(s)."@en ;
-   samm:properties ( ext-passport:location ext-passport:recycled [ samm:property ext-passport:documentation; samm:optional true ] ) .
+   samm:properties ( ext-passport:location ext-passport:recycled ext-passport:documentation ext-passport:critical ) .
+
+:Entity3 a samm:Entity ;
+   samm:properties ( ext-passport:location ext-passport:recycled ext-passport:documentation ext-passport:critical ext-passport:materialName ext-passport:materialIdentification ) .
 
 :HazardousEntity a samm:Entity ;
    samm:preferredName "Hazardous Entity"@en ;
    samm:description "Material Entity to describe the material composition for hazardous materials."@en ;
-   samm:properties ( ext-passport:concentration ext-passport:location ext-passport:materialUnit :impactOfSubstances ) .
+   samm:properties ( :impactOfSubstances ext-passport:concentration ext-passport:location ext-passport:materialUnit ext-passport:critical ext-passport:documentation ) .
+
+:Entity4 a samm:Entity ;
+   samm:properties ( ext-passport:materialUnit ext-passport:concentration :impactOfSubstances ext-passport:materialIdentification ext-passport:materialName ext-passport:documentation ext-passport:critical ext-passport:location ) .
 
 :VoltageEntity a samm:Entity ;
    samm:preferredName "Voltage Entity"@en ;
