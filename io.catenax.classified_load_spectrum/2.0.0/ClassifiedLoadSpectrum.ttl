@@ -1,0 +1,336 @@
+#######################################################################
+# Copyright (c) 2022,2024 Allgemeine Deutsche Automobil-Club (ADAC) e.V
+# Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2022,2024 Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
+# Copyright (c) 2022,2024 Siemens AG
+# Copyright (c) 2022,2024 ZF Friedrichshafen AG
+# Copyright (c) 2022,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.classified_load_spectrum:2.0.0#> .
+
+:ClassifiedLoadSpectrum a samm:Aspect ;
+   samm:preferredName "Classified Load Spectrum"@en ;
+   samm:description "load spectrum with classified loads "@en ;
+   samm:properties ( :header :body :metadata :targetComponentID [ samm:property :residuum; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:header a samm:Property ;
+   samm:preferredName "Header Classified Load Spectrum"@en ;
+   samm:description "Information on the classified load spectrum including kind of classification, Classes, Limits"@en ;
+   samm:characteristic :HeaderCharacteristic .
+
+:body a samm:Property ;
+   samm:preferredName "Body classified load spectrum"@en ;
+   samm:description "List of load channel classes and corresponding counts"@en ;
+   samm:characteristic :BodyCharacteristic .
+
+:metadata a samm:Property ;
+   samm:preferredName "metadata"@en ;
+   samm:description "all information describing the source, purpose and application of the load spectrum."@en ;
+   samm:characteristic :MetadataCharacteristic .
+
+:targetComponentID a samm:Property ;
+   samm:description "CX-ID /AAS-ID des Zwilling "@en ;
+   samm:characteristic :TargetComponentIDCharacteristic .
+
+:residuum a samm:Property ;
+   samm:preferredName "Residuum"@en ;
+   samm:description "Residuum of load history i case of rainflow counting"@en ;
+   samm:characteristic :ResiduumCharacteristic .
+
+:HeaderCharacteristic a samm:Characteristic ;
+   samm:preferredName "Header"@en ;
+   samm:description "Information on the classified load spectrum including kind of classification, Classes, Limits"@en ;
+   samm:dataType :HeaderEntity .
+
+:BodyCharacteristic a samm-c:SingleEntity ;
+   samm:description "Set for channelclasses and counts"@en ;
+   samm:dataType :BodySets .
+
+:MetadataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Metadata"@en ;
+   samm:description "All information decribing the source, purpose and application of the load spectrum."@en ;
+   samm:dataType :Metadata .
+
+:TargetComponentIDCharacteristic a samm:Characteristic ;
+   samm:preferredName "TargetComponentID"@en ;
+   samm:description "Asset ID of the specific parent: vehicle or gearbox or battery"@en ;
+   samm:dataType xsd:anyURI .
+
+:ResiduumCharacteristic a samm:Characteristic ;
+   samm:preferredName "Residuum"@en ;
+   samm:description "Rainflow counting is restricted to one channel. Unclosed hystereses are described as list of classes."@en ;
+   samm:dataType :ResiduumEntity .
+
+:HeaderEntity a samm:Entity ;
+   samm:preferredName "Header Classified Load Spectrum"@en ;
+   samm:description "Information on the classified load spectrum including kind of classificationen, Classes, Limits"@en ;
+   samm:properties ( :channels :countingMethod [ samm:property :countingValue; samm:optional true ] :countingUnit ) .
+
+:BodySets a samm:Entity ;
+   samm:description "Body contains the data lists of load channel classes and the corresponding countings."@en ;
+   samm:properties ( :classes :counts ) .
+
+:Metadata a samm:Entity ;
+   samm:preferredName "metadata"@en ;
+   samm:description "All information decribing the source, purpose and application of the load spectrum."@en ;
+   samm:properties ( :componentDescription :routeDescription :projectDescription :status ) .
+
+:ResiduumEntity a samm:Entity ;
+   samm:preferredName "Residuum"@en ;
+   samm:description "Rainflow counting is restricted to one channel. Unclosed hystereses are described as list of classes."@en ;
+   samm:properties ( :residuumClassName :residuumList ) .
+
+:channels a samm:Property ;
+   samm:preferredName "Channels"@en ;
+   samm:description "Full information on loadchannel including name, unit, limits, classes"@en ;
+   samm:characteristic :ChannelList .
+
+:countingMethod a samm:Property ;
+   samm:preferredName "counting method"@en ;
+   samm:description "Type of classification: rainflow or event counting or load revolution distribution"@en ;
+   samm:characteristic :CountingMethodCharacteristic ;
+   samm:exampleValue "TimeAtLevel" .
+
+:countingValue a samm:Property ;
+   samm:preferredName "counting value"@en ;
+   samm:description "Optional. By default, the number of for example events or peaks are counted. Value should be given if for example time or revolutions are counted."@en ;
+   samm:characteristic :CountedValueCharacteristic ;
+   samm:exampleValue "Time" .
+
+:countingUnit a samm:Property ;
+   samm:preferredName "counting unit"@en ;
+   samm:description "depending on counted value: if revolutions are counted, counted unit might be 1/min or 1/s.  Required, default is \"/\", which means no unit. "@en ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "s"^^samm:curie .
+
+:classes a samm:Property ;
+   samm:description "Several load channel classes  are sorted in a list. For rainflow counting, a load channel has two channel class lists, from-class and to-class. "@en ;
+   samm:characteristic :ClassesList .
+
+:counts a samm:Property ;
+   samm:description "List of counts according to the load channel lists."@en ;
+   samm:characteristic :CountsCharacteristic .
+
+:componentDescription a samm:Property ;
+   samm:preferredName "component"@en ;
+   samm:description "Component or assembly the load spectrum is valid for. A ZF_lrd counted load spectrum  belomgs to a gear set while a temperature load spectrum belong to the part where the temperature is measured (gear oil or IGBT). "@en ;
+   samm:characteristic :ComponentCharacteristic ;
+   samm:exampleValue "gear set" .
+
+:routeDescription a samm:Property ;
+   samm:preferredName "route description"@en ;
+   samm:description "Information on the route which the load spectrum is representing. For example \"city munich heavy trailer\" or \"motorway light trailer agil driver\"."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "\"city munich heavy trailer\"" .
+
+:projectDescription a samm:Property ;
+   samm:preferredName "project description"@en ;
+   samm:description "Further information on the vehicle /assembly/component."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "\"projectnumber pqr12345\"" .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "Identification of vehicle status"@en ;
+   samm:characteristic :StatusCharacteristic .
+
+:residuumClassName a samm:Property ;
+   samm:description "Name of the load channel extended by -class"@en ;
+   samm:characteristic :ResiduumClassNameCharacteristic ;
+   samm:exampleValue "Temp_Oil-class" .
+
+:residuumList a samm:Property ;
+   samm:preferredName "Residuum list"@en ;
+   samm:description "List of load-classes not defining a closed hysterese."@en ;
+   samm:characteristic :ResiduumListCharacteristic ;
+   samm:exampleValue "6"^^xsd:positiveInteger .
+
+:ChannelList a samm-c:List ;
+   samm:description "Full information on loadchannel including name, unit, limits, classes"@en ;
+   samm:dataType :LoadChannelEntity .
+
+:CountingMethodCharacteristic a samm-c:Enumeration ;
+   samm:description "Specification of counting method. EventCount, PeakCount, MaximunCount  specify the number of events. RangeCount specify the amplitudes of load cycles, Rangedifference of load classes Rainflow describes the number of closed hystersis fron one class to another class. Different procedures exists , the default is 4-point-method. If 3-point-method or HCM method is used, the corresponding values should be used. LRD means load revolution distribution describing the load spectra for gear sets.  "@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Rainflow" "LRD" "EventCount" "TimeAtLevel" "RangeCount" "PeakCount" "MaximumCount" "Rainflow3Point" "Rainflow" "RainflowHCM" ) .
+
+:CountedValueCharacteristic a samm:Characteristic ;
+   samm:description "By default, the number of for example events or peaks are counted. Value should be given if for example time or revolutions are counted."@en ;
+   samm:dataType xsd:string .
+
+:ClassesList a samm-c:List ;
+   samm:description "Several load channel classes  are sorted in a list. For rainflow counting, a load channel has two channel class lists, from-class and to-class. "@en ;
+   samm:dataType :ClassesListEntity .
+
+:CountsCharacteristic a samm:Characteristic ;
+   samm:description "List of counts according to the load channel lists."@en ;
+   samm:dataType :CountsEntity .
+
+:ComponentCharacteristic a samm:Characteristic ;
+   samm:description "Component or assembly the load spectrum is valid for. A ZF_lrd counted load spectrum  belomgs to a gear set while a temperature load spectrum belong to the part where the temperature is measured (gear oil or IGBT). "@en ;
+   samm:dataType xsd:string .
+
+:StatusCharacteristic a samm:Characteristic ;
+   samm:preferredName "Status Characteristic"@en ;
+   samm:description "Status describes the date when this aspect is filled, the according mileage and according operating time. "@en ;
+   samm:dataType :StatusEntity .
+
+:ResiduumClassNameCharacteristic a samm:Characteristic ;
+   samm:description "Channelname extended by -class"@en ;
+   samm:dataType xsd:string .
+
+:ResiduumListCharacteristic a samm-c:List ;
+   samm:description "List of load-classes not defining a closed hysterese."@en ;
+   samm:dataType xsd:positiveInteger .
+
+:LoadChannelEntity a samm:Entity ;
+   samm:description "Full information on loadchannel including name, unit, limits, classes"@en ;
+   samm:properties ( :channelName :unit :lowerLimit :upperLimit :numberOfBins [ samm:property :binLimits; samm:optional true ] ) .
+
+:ClassesListEntity a samm:Entity ;
+   samm:description "Each channel class list are identified by the name and contains the list of classes describing the load."@en ;
+   samm:properties ( :classList :className ) .
+
+:CountsEntity a samm:Entity ;
+   samm:description "List of counts according to the load channel lists."@en ;
+   samm:properties ( :countsName :countsList ) .
+
+:StatusEntity a samm:Entity ;
+   samm:preferredName "status of aggregate"@en ;
+   samm:description "Status describes the date when this aspect is filled, the according mileage and according operating time. "@en ;
+   samm:properties ( [ samm:property :mileage; samm:optional true ] :date [ samm:property :operatingHours; samm:optional true ] ) .
+
+:channelName a samm:Property ;
+   samm:preferredName "channel name"@en ;
+   samm:description "identifier of the load channel, needed to combine the loading with the damage calculation"@en ;
+   samm:characteristic :ChannelNameCharacteristic ;
+   samm:exampleValue "TorqueInputshaft" .
+
+:unit a samm:Property ;
+   samm:description "unit of the corresponding load channel"@en ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "Nm"^^samm:curie .
+
+:lowerLimit a samm:Property ;
+   samm:description "for classification, a range of load values must be set. The limits and the number of bins decribe the classes. "@en ;
+   samm:characteristic :LimitCharacteristic ;
+   samm:exampleValue "-500.0"^^xsd:float .
+
+:upperLimit a samm:Property ;
+   samm:description "for classification, a range of load values must be set. The limits and the number of bins decribe the classes. "@en ;
+   samm:characteristic :LimitCharacteristic ;
+   samm:exampleValue "1500.0"^^xsd:float .
+
+:numberOfBins a samm:Property ;
+   samm:description "for classification, a range of load values must be set. The limits and the number of bins decribe the classes. "@en ;
+   samm:characteristic :NumberOfBinsCharacteristic ;
+   samm:exampleValue "10"^^xsd:positiveInteger .
+
+:binLimits a samm:Property ;
+   samm:preferredName "bin limits"@en ;
+   samm:description "In case of non- equidistant classes, the limits of the intervalls are given here. Optional, but if given, this list will be used. List must start with lowerLimit and end with upperLimit."@en ;
+   samm:characteristic :BinLimitsList .
+
+:classList a samm:Property ;
+   samm:description "The class list contains the classes describing the load. The loading is the combination of all load channel classes, therefore, duplicates are possible."@en ;
+   samm:characteristic :ClassListCharacteristic ;
+   samm:exampleValue "5"^^xsd:positiveInteger .
+
+:className a samm:Property ;
+   samm:description "Channel name extended by \"-class\". In case of rainflow counting, the extention is from-class and to-class."@en ;
+   samm:characteristic :ClassNameCharacteristic ;
+   samm:exampleValue "Torque_Inputshaft-class" .
+
+:countsName a samm:Property ;
+   samm:preferredName "counting value"@en ;
+   samm:description "Name of the counted value: \"Counts\" or \"Time\" or\" Revolutions\""@en ;
+   samm:characteristic :CountsNameCharacteristic ;
+   samm:exampleValue "Time" .
+
+:countsList a samm:Property ;
+   samm:description "List of counts according to the load channel lists."@en ;
+   samm:characteristic :Counts ;
+   samm:exampleValue "7.9"^^xsd:double .
+
+:mileage a samm:Property ;
+   samm:preferredName "Mileage"@en ;
+   samm:description "Mileage of the vehicle respectively part."@en ;
+   samm:characteristic :Mileage ;
+   samm:exampleValue "123456"^^xsd:nonNegativeInteger .
+
+:date a samm:Property ;
+   samm:description "date representing the load spectrum"@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:operatingHours a samm:Property ;
+   samm:preferredName "operating Hours"@en ;
+   samm:description "Operating hours covered by the load spectrum."@en ;
+   samm:characteristic :OperatingHoursCharacteristic ;
+   samm:exampleValue "3456.2"^^xsd:float .
+
+:ChannelNameCharacteristic a samm:Characteristic ;
+   samm:description "Identifier of channel"@en ;
+   samm:dataType xsd:string .
+
+:LimitCharacteristic a samm:Characteristic ;
+   samm:description "Min and max value of classified load range"@en ;
+   samm:dataType xsd:float .
+
+:NumberOfBinsCharacteristic a samm:Characteristic ;
+   samm:description "Number of classes "@en ;
+   samm:dataType xsd:positiveInteger .
+
+:BinLimitsList a samm-c:List ;
+   samm:preferredName "bin limits list"@en ;
+   samm:description "list of class limits"@en ;
+   samm:dataType xsd:float .
+
+:ClassListCharacteristic a samm-c:List ;
+   samm:description "List of load classes "@en ;
+   samm:dataType xsd:positiveInteger .
+
+:ClassNameCharacteristic a samm:Characteristic ;
+   samm:description "Name of the load channel class"@en ;
+   samm:dataType xsd:string .
+
+:CountsNameCharacteristic a samm:Characteristic ;
+   samm:description "Name of countings, \"Counts\" or \"Time\"  or \"revolutions\"."@en ;
+   samm:dataType xsd:string .
+
+:Counts a samm-c:List ;
+   samm:preferredName "Counts"@en ;
+   samm:description "Counts of loads in the respective loadingclass. might be event counts, time counting or revolution counts - depending on the CountingMethod and CountingUnit"@en ;
+   samm:dataType xsd:double .
+
+:Mileage a samm-c:Measurement ;
+   samm:preferredName "mileage"@en ;
+   samm:description "Mileage of the vehicle respectively part."@en ;
+   samm:dataType xsd:nonNegativeInteger ;
+   samm-c:unit unit:kilometre .
+
+:OperatingHoursCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Operating Hours"@en ;
+   samm:description "Operating hours for the vehicle respectively part."@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit unit:hour .
+

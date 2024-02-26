@@ -1,0 +1,246 @@
+#######################################################################
+# Copyright (c) 2023,2024 Allgemeine Deutsche Automobil-Club (ADAC) e.V
+# Copyright (c) 2023,2024 ZF Friedrichshafen AG
+# Copyright (c) 2023,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.user_estimated_loading:2.0.0#> .
+
+:UserEstimatedLoading a samm:Aspect ;
+   samm:preferredName "User defined loading"@en ;
+   samm:description "User defined list of usage with percentage, driving style, eniviroment (hilliness, city_use, trailer_use)"@en ;
+   samm:properties ( :vehicleStatus :vehicleData :history :future ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:vehicleStatus a samm:Property ;
+   samm:preferredName "Current status of vehicle"@en ;
+   samm:description "Current status of vehicle: age, mileage"@en ;
+   samm:characteristic :VehicleStatusCharacteristic .
+
+:vehicleData a samm:Property ;
+   samm:preferredName "Technical vehicle data"@en ;
+   samm:description "Basic technical data of the vehicle"@en ;
+   samm:characteristic :VehicleDataCharacteristic .
+
+:history a samm:Property ;
+   samm:preferredName "History user profiles"@en ;
+   samm:description "User profiles of previous use"@en ;
+   samm:characteristic :HistoryProfileList .
+
+:future a samm:Property ;
+   samm:preferredName "Future usage"@en ;
+   samm:description "Collection of future usages"@en ;
+   samm:characteristic :FutureList .
+
+:VehicleStatusCharacteristic a samm:Characteristic ;
+   samm:preferredName "Vehicle status characteristic"@en ;
+   samm:description "Characteristic decribing the vehicle status"@en ;
+   samm:dataType :VehicleStatusEntity .
+
+:VehicleDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Vehicle data characteristic"@en ;
+   samm:description "Characteristic describing the basic technical data of the vehicle "@en ;
+   samm:dataType :VehicleDataEntity .
+
+:HistoryProfileList a samm-c:List ;
+   samm:preferredName "History profile list"@en ;
+   samm:description "Characteristic of historie profile list"@en ;
+   samm:dataType :HistoryProfilesEnity .
+
+:FutureList a samm-c:List ;
+   samm:preferredName "Future usage list"@en ;
+   samm:description "Characteristic of future usages"@en ;
+   samm:dataType :FutureScenarioEntity .
+
+:VehicleStatusEntity a samm:Entity ;
+   samm:preferredName "Vehicle status entity"@en ;
+   samm:description "Vehicle status is basically described by mileage and age"@en ;
+   samm:properties ( [ samm:property :mileage; samm:optional true ] [ samm:property :ageInMonth; samm:optional true ] ) .
+
+:VehicleDataEntity a samm:Entity ;
+   samm:preferredName "Vehicle data entity"@en ;
+   samm:description "Basic technical data of the vehicle as specified in KBA data"@en ;
+   samm:properties ( [ samm:property :vehicleType; samm:optional true ] [ samm:property :numberOfDriveAxle; samm:optional true ] [ samm:property :energySourceCode; samm:optional true ] :powerKW :grossVehicleWeightKG ) .
+
+:HistoryProfilesEnity a samm:Entity ;
+   samm:preferredName "History profiles entity"@en ;
+   samm:description "Collection of previous usage profiles "@en ;
+   samm:properties ( :percentage [ samm:property :trailerUse; samm:optional true ] [ samm:property :cityDriving; samm:optional true ] :drivingStyle :hilliness :curviness ) .
+
+:FutureScenarioEntity a samm:Entity ;
+   samm:preferredName "Future scenario list entity"@en ;
+   samm:description "List of future scenarios"@en ;
+   samm:properties ( :futureScenario :futureScenarioId ) .
+
+:mileage a samm:Property ;
+   samm:preferredName "Mileage @en"@en ;
+   samm:description "Distance the vehicle has travelled in kilometre"@en ;
+   samm:characteristic :Mileage ;
+   samm:exampleValue "123456"^^xsd:positiveInteger .
+
+:ageInMonth a samm:Property ;
+   samm:preferredName "Vehicle age"@en ;
+   samm:description "Age of the vehicle in month"@en ;
+   samm:characteristic :AgeInMonths ;
+   samm:exampleValue "42"^^xsd:nonNegativeInteger .
+
+:vehicleType a samm:Property ;
+   samm:preferredName "Vehicle variant"@en ;
+   samm:description "Vehicle variant - body shapes like SUV, Van, Limousine"@en ;
+   samm:characteristic :KbaVariant ;
+   samm:exampleValue "SUV" .
+
+:numberOfDriveAxle a samm:Property ;
+   samm:preferredName "Number of drive axles"@en ;
+   samm:description "Identification of 4WD, default 1: 2WD"@en ;
+   samm:characteristic :NumberOfDriveAxle ;
+   samm:exampleValue "2"^^xsd:positiveInteger .
+
+:energySourceCode a samm:Property ;
+   samm:preferredName "Energy source code"@en ;
+   samm:description "The code for the energy source respectively fuel type of the vehicle according to KBA list"@en ;
+   samm:characteristic :EnergySource ;
+   samm:exampleValue "0002" .
+
+:powerKW a samm:Property ;
+   samm:preferredName "Power @en"@en ;
+   samm:description "Engine power is the power that an engine can put out in kW"@en ;
+   samm:characteristic :EnginePowerKW ;
+   samm:exampleValue 145 .
+
+:grossVehicleWeightKG a samm:Property ;
+   samm:preferredName "Gross vehicle weight"@en ;
+   samm:description "Technical permissable maximum weight of the vehicle in kg"@en ;
+   samm:characteristic :Weight .
+
+:percentage a samm:Property ;
+   samm:preferredName "Weightfactor in percantage"@en ;
+   samm:description "Weighfactor of the different profiles, a user has. Different profiles indicates different user as well as different usages of like profiles for daily work routes or for caravan holiday."@en ;
+   samm:characteristic :Percentage ;
+   samm:exampleValue "23.5"^^xsd:decimal .
+
+:trailerUse a samm:Property ;
+   samm:preferredName "Trailer use switch"@en ;
+   samm:description "Usage of trailer like caravan. "@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:cityDriving a samm:Property ;
+   samm:preferredName "City driving switch"@en ;
+   samm:description "City driving means a short distances."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:drivingStyle a samm:Property ;
+   samm:preferredName "Driving style assessment"@en ;
+   samm:description "Numerical value between 1 and 100 describing the driving style. 1 for extreme economic driving, about 30 for normal driving, about 65 for sportive driving, 100 for aggressive driving."@en ;
+   samm:characteristic :WeightFactor ;
+   samm:exampleValue "45.5"^^xsd:decimal .
+
+:hilliness a samm:Property ;
+   samm:preferredName "Hilliness assessment"@en ;
+   samm:description """Numerical value between 1 and 100 to describe the hilliness.
+1: absolut flat region, 100 steep mountain roads"""@en ;
+   samm:characteristic :WeightFactor ;
+   samm:exampleValue "75.2"^^xsd:decimal .
+
+:curviness a samm:Property ;
+   samm:preferredName "Curviness assessment"@en ;
+   samm:description "Numerical value between 1 and 100 describing the curviness (1: straight road ... 100: very curvy road."@en ;
+   samm:characteristic :WeightFactor ;
+   samm:exampleValue "60.0"^^xsd:decimal .
+
+:futureScenario a samm:Property ;
+   samm:preferredName "Future scenario"@en ;
+   samm:description "The future scenario cotains one or more future usage profiles where the sum of percentage is 100"@en ;
+   samm:characteristic :FutureScenarioList .
+
+:futureScenarioId a samm:Property ;
+   samm:preferredName "Future scenario ID"@en ;
+   samm:description "Identification number of future scenarios"@en ;
+   samm:characteristic :PositiveInteger ;
+   samm:exampleValue "1"^^xsd:positiveInteger .
+
+:Mileage a samm-c:Measurement ;
+   samm:preferredName "Mileage @en"@en ;
+   samm:description "Distance in kilometre"@en ;
+   samm:dataType xsd:positiveInteger ;
+   samm-c:unit unit:kilometre .
+
+:AgeInMonths a samm-c:Duration ;
+   samm:preferredName "Age in months"@en ;
+   samm:description "Age of vehicle in month"@en ;
+   samm:dataType xsd:nonNegativeInteger ;
+   samm-c:unit unit:month .
+
+:KbaVariant a samm-c:Enumeration ;
+   samm:preferredName "KBA Variant @en"@en ;
+   samm:description "Current version of the Enumeration is sub-set of list defined from the German Federal Office for motor vehicles."@en ;
+   samm:see <https://www.kba.de/DE/Statistik/Verzeichnisse/systematische_verzeichnisse_inhalt.html?nn=3505666> ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Limousine" "Kombilimousine" "Pick-up" "Van" "SUV" "andere" ) .
+
+:NumberOfDriveAxle a samm:Characteristic ;
+   samm:preferredName "Number of drive axles"@en ;
+   samm:description "Characteristic of number of drive axles"@en ;
+   samm:dataType xsd:positiveInteger .
+
+:EnergySource a samm-c:Enumeration ;
+   samm:preferredName "Energy Source"@en ;
+   samm:description "Enumeration of possible energy sources/fuel types of a vehicle. The list is defined from the German Federal Office for motor vehicles."@en ;
+   samm:see <https://www.kba.de/DE/Statistik/Verzeichnisse/systematische_verzeichnisse_inhalt.html?nn=3505666> ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Unbekannt" "Diesel" "Benzin" "LPG" "Hybr.Benzin/E" "Hybr.Diesel/E" "0001" "0002" "0003" "0005" "0006" "0007" "0008" "0009" "0010" "0019" "0022" "0023" "0024" "0025" "0026" "0027" "0029" "0030" "0000" "Vielstoff" "Benzin/LPG" "Benzin/komp.Erdgas" "Erdgas NG" "Hybr.Vielstoff/E" "Hybr.Erdgas/E" "Benzin/Ethanol" "Hybr.LPG/E" "Hybr.B/E plug-in" "Hybr.D/E plug-in" "Hybr.LPG/E plug-in" "Hybr.V/E plug-in" "Hybr.NG/E plug-in" ) .
+
+:EnginePowerKW a samm-c:Measurement ;
+   samm:preferredName "Engine Power @en"@en ;
+   samm:description "Engine power expressed in kilowatt"@en ;
+   samm:dataType xsd:integer ;
+   samm-c:unit unit:kilowatt .
+
+:Weight a samm-c:Measurement ;
+   samm:preferredName "Weight"@en ;
+   samm:description "Weight of an object"@en ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:kilogram .
+
+:Percentage a samm:Characteristic ;
+   samm:dataType xsd:decimal .
+
+:WeightFactor a samm:Characteristic ;
+   samm:description "Weightfactor is a number between 1 and 100 weightening the hilliness or curviness or driving style."@en ;
+   samm:dataType xsd:decimal .
+
+:FutureScenarioList a samm-c:Collection ;
+   samm:preferredName "Future scenario list"@en ;
+   samm:description "Characteristic of future scenario"@en ;
+   samm:dataType :FutureProfilesEntity .
+
+:PositiveInteger a samm:Characteristic ;
+   samm:preferredName "Positive integer"@en ;
+   samm:description "Positive integer number without unit"@en ;
+   samm:dataType xsd:positiveInteger .
+
+:FutureProfilesEntity a samm:Entity ;
+   samm:preferredName "Future profiles entity"@en ;
+   samm:description "Future scenario: collection of usage profiles"@en ;
+   samm:properties ( :curviness :hilliness :drivingStyle [ samm:property :cityDriving; samm:optional true ] [ samm:property :trailerUse; samm:optional true ] :percentage ) .
+

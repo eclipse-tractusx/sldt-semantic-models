@@ -1,6 +1,31 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
+## [4.0.0] - 2023-02-19
+### Changed
+- Either-or possibilities are deleted in order to only allow one possible verifiable input
+- Changed descriptions to reference the latest regulation from January 9th, 2024.
+- Changed general structure
+- Changed structure for some document links to reuse existing structure
+- Changed the way how to refer to serial, batch and model information through shared aspects
+- Changed reference for part classification
+- Attributes made optional (volume, grossVolume)
+- Changed structure for critical raw materials
+- Changed structure for sustainability attributes
+
+
+### Added
+- New attribute structure for hazardous classification of material (mandatory)
+- New attribute backupReference
+- New attribute registrationIdentifier
+- Added constraints to allow only positive values and percentages
+- New attribute structure for material footprint (optional)
+- New attribute generalPerformanceClass (optional)
+- New attribute repairabilityScore (optional)
+- New attribute durabilityScore (optional)
+
+
+
 ## [3.0.0] - 2023-12-04
 ### Added
 General
