@@ -30,15 +30,15 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-@prefix : <urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#>.
+@prefix : <urn:samm:io.catenax.single_level_usage_as_planned:2.0.0#>.
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#>.
 @prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#>.
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#>.
 
-:SingleLevelBomAsPlanned a samm:Aspect;
-   samm:preferredName "Single Level Bill of Material as Planned"@en;
-   samm:description "The single-level bill of material (BoM)represents one sub-level of an assembly and does not include any lower-level subassemblies. In the As-Planned lifecycle state all variants are covered (\"120% BoM\").\nIf multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM.\nIf there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM."@en;
-   samm:properties (:catenaXId :childItems);
+:SingleLevelUsageAsPlanned a samm:Aspect;
+   samm:preferredName "Single Level Usage as Planned"@en;
+   samm:description "The aspect provides the information in which parent part(s)/product(s)the given item is to be assembled into or used. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from the as-planned lifecycle phase.\nIf multiple versions of parent parts exist that the child part can be assembled into or used, all versions of the parent part are included in the usage list."@en;
+   samm:properties (:catenaXId :parentItems :customers);
    samm:operations ();
    samm:events ().
 
@@ -48,41 +48,52 @@
    samm:characteristic ext-uuid:UuidV4Trait;
    samm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d".
 
-:childItems a samm:Property;
-   samm:preferredName "Child Items"@en;
-   samm:description "Set of child items in As-Planned lifecycle phase, of which the given parent object is assembled by (one structural level down)."@en;
-   samm:characteristic :SetOfChildItemsCharacteristic.
+:parentItems a samm:Property;
+   samm:preferredName "Parent Items"@en;
+   samm:description "Set of parent parts, in which the given child object will be assembled into or used (one structural level up)."@en;
+   samm:characteristic :SetOfParentItemsCharacteristic.
 
-:SetOfChildItemsCharacteristic a samm-c:Set;
-   samm:preferredName "Set of Child Items"@en;
-   samm:description "Set of child items the parent object will be assembled by (one structural level down)."@en;
-   samm:dataType :ChildData.
+:customers a samm:Property;
+   samm:preferredName "Customers"@en;
+   samm:description "A list of all customers of this item. If the parent items in which this item will be assembled into or used are known, they should be listed as well."@en;
+   samm:characteristic :ListOfCustomersCharacteristic;
+   samm:exampleValue "BPNL50096894aNXY".
 
-:ChildData a samm:Entity;
-   samm:preferredName "Child Data"@en;
-   samm:description "Catena-X ID and meta data of the assembled child item."@en;
+:SetOfParentItemsCharacteristic a samm-c:Set;
+   samm:preferredName "Set of Parent Items"@en;
+   samm:description "Set of parent items the given child object will be assembled into or used (one structural level up)."@en;
+   samm:dataType :ParentData.
+
+:ListOfCustomersCharacteristic a samm-c:List;
+   samm:preferredName "List of Customers Characteristic"@en;
+   samm:description "A list of customers and their related parent items."@en;
+   samm-c:elementCharacteristic ext-number:BpnlTrait.
+
+:ParentData a samm:Entity;
+   samm:preferredName "Parent Data"@en;
+   samm:description "Catena-X ID and meta data of the parent part."@en;
    samm:properties (:createdOn :quantity [ samm:property :lastModifiedOn; samm:optional true ] [ samm:property :validityPeriod; samm:optional true ] :businessPartner :catenaXId).
 
 :createdOn a samm:Property;
    samm:preferredName "Created on"@en;
-   samm:description "Timestamp when the relation between the parent part and the child part was created"@en;
+   samm:description "Timestamp when the relation between the parent part and the child part was created."@en;
    samm:characteristic :DateTimeTrait;
    samm:exampleValue "2022-02-03T14:48:54.709Z".
 
 :quantity a samm:Property;
    samm:preferredName "Quantity"@en;
-   samm:description "Quantity of which the child part will be assembled into the parent part."@en;
+   samm:description "Quantity of which the child part will be assembled into or used in the parent part."@en;
    samm:characteristic ext-quantity:MiscQuantityCharacteristic.
 
 :lastModifiedOn a samm:Property;
-   samm:preferredName "Last Modified on"@en;
-   samm:description "Timestamp when the relationship between parent part and child part was last modified."@en;
+   samm:preferredName "Last Modified on "@en;
+   samm:description "Timestamp when the assembly or usage relationship between parent part and child part was last modified."@en;
    samm:characteristic :DateTimeTrait;
    samm:exampleValue "2022-02-03T14:48:54.709Z".
 
 :validityPeriod a samm:Property;
    samm:preferredName "Validity Period"@en;
-   samm:description "The period of time during which the parent-child relation is valid. This relates to whether a child part can be built into the parent part at a given time.\nIf no validity period is given the relation is considered valid at any point in time."@en;
+   samm:description "The period of time during which the parent-child relation is valid. This relates to whether a child part can be built into or used in the production of the parent part at a given time.\nIf no validity period is given the relation is considered valid at any point in time."@en;
    samm:characteristic :ValidityPeriodCharacteristic.
 
 :businessPartner a samm:Property;
@@ -99,7 +110,7 @@
 
 :ValidityPeriodCharacteristic a samm:Characteristic;
    samm:preferredName "Validity Period Characteristic"@en;
-   samm:description "Characteristic for a validity period defined by an (optional)start and an (optional)end timestamp."@en;
+   samm:description "Characteristic  for a validity period defined by an (optional)start and an (optional)end timestamp."@en;
    samm:dataType :ValidityPeriodEntity.
 
 :DateTimeCharacteristic a samm:Characteristic;
