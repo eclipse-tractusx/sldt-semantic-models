@@ -1,0 +1,189 @@
+#######################################################################
+# Copyright (c) 2022,2024 tec4U Ingenieurgesellschaft mbH
+# Copyright (c) 2022,2024 BASF SE
+# Copyright (c) 2022,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.material_for_homologation:2.0.0#> .
+@prefix address-c: <urn:samm:io.catenax.shared.address_characteristic:1.0.0#> .
+
+:MaterialForHomologation a samm:Aspect ;
+   samm:preferredName "material for homologation"@en ;
+   samm:description "Model to depict materials that describe and calculate the recycling quota for the homologation of a vehicle type."@en ;
+   samm:properties ( :materialForHomologation ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:materialForHomologation a samm:Property ;
+   samm:preferredName "material for homologation"@en ;
+   samm:description "Property that references the material that describes and calculate the recycling quota for the homologation of a vehicle type."@en ;
+   samm:characteristic :MaterialForHomologationCharacteristic .
+
+:MaterialForHomologationCharacteristic a samm-c:Set ;
+   samm:preferredName "material for homologation characteristic"@en ;
+   samm:description "Characteristic to describe a set of materials that describe and calculate the recycling quota for the homologation of a vehicle type."@en ;
+   samm:dataType :MaterialForHomologationEntity .
+
+:MaterialForHomologationEntity a samm:Entity ;
+   samm:preferredName "material for homologation entity"@en ;
+   samm:description "Entity that represents the material that describes and calculates the recycling quota for the homologation of a vehicle type."@en ;
+   samm:properties ( :itemNumber :share :vdaStandardId :name :standard :materialNumber ) .
+
+:itemNumber a samm:Property ;
+   samm:preferredName "item number"@en ;
+   samm:description "Individual component to which the materials belong (no materials are assigned to nodes)."@en ;
+   samm:characteristic :ItemNumber1Trait ;
+   samm:exampleValue "1.l.222.3333" .
+
+:share a samm:Property ;
+   samm:preferredName "share"@en ;
+   samm:description "Proportion of the material."@en ;
+   samm:characteristic :ShareCharacteristic ;
+   samm:exampleValue "20.1"^^xsd:double .
+
+:vdaStandardId a samm:Property ;
+   samm:preferredName "vda standard id"@en ;
+   samm:description "German quality management system standard."@en ;
+   samm:characteristic :VDAStandardIdCharacteristic .
+
+:name a samm:Property ;
+   samm:preferredName "name"@en ;
+   samm:description "Designation of the material."@en ;
+   samm:characteristic :NameTrait1 ;
+   samm:exampleValue "WTSt 37-2" .
+
+:standard a samm:Property ;
+   samm:preferredName "standard"@en ;
+   samm:description "Standard in which the material is listed."@en ;
+   samm:characteristic :StandardTrait1 ;
+   samm:exampleValue "SEW 087 : 1981-06" .
+
+:materialNumber a samm:Property ;
+   samm:preferredName "material number"@en ;
+   samm:description "The number of the material in the standard."@en ;
+   samm:characteristic :MaterialNumberTrait1 ;
+   samm:exampleValue "1.8960" .
+
+:ItemNumber1Trait a samm-c:Trait ;
+   samm-c:baseCharacteristic :ItemNumberCharacteristic ;
+   samm-c:constraint :ItemNumberConstraint .
+
+:ShareCharacteristic a samm-c:Measurement ;
+   samm:preferredName "share characteristic"@en ;
+   samm:description "Characteristic to represent the proportion of the material."@en ;
+   samm:dataType xsd:double ;
+   samm-c:unit unit:percent .
+
+:VDAStandardIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "vda standard id characteristic"@en ;
+   samm:description "Characteristic to describe the classification of a VDA standard ID."@en ;
+   samm:dataType :VDAStandardIdEntity .
+
+:NameTrait1 a samm-c:Trait ;
+   samm-c:baseCharacteristic :NameCharacteristic ;
+   samm-c:constraint :NameConstraint .
+
+:StandardTrait1 a samm-c:Trait ;
+   samm-c:baseCharacteristic :StandardCharacteristic ;
+   samm-c:constraint :StandardConstraint .
+
+:MaterialNumberTrait1 a samm-c:Trait ;
+   samm-c:baseCharacteristic :MaterialNumberCharacteristic ;
+   samm-c:constraint :MaterialConstraint .
+
+:ItemNumberCharacteristic a samm:Characteristic ;
+   samm:preferredName "item number characteristic"@en ;
+   samm:description "Characteristic to describe the individual component to which the materials belong."@en ;
+   samm:dataType xsd:string .
+
+:ItemNumberConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "item number constraint"@en ;
+   samm-c:maxValue "200"^^xsd:nonNegativeInteger .
+
+:VDAStandardIdEntity a samm:Entity ;
+   samm:preferredName "vda standard id entity"@en ;
+   samm:description "Entity to classify a VDA standard ID."@en ;
+   samm:properties ( :mainGroup :subgroup ) .
+
+:NameCharacteristic a samm:Characteristic ;
+   samm:preferredName "name characteristic"@en ;
+   samm:description "Characteristic to designate the material."@en ;
+   samm:dataType xsd:string .
+
+:NameConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "name constraint"@en ;
+   samm-c:maxValue "50"^^xsd:nonNegativeInteger .
+
+:StandardCharacteristic a samm:Characteristic ;
+   samm:preferredName "standard characteristic"@en ;
+   samm:description "Describes the standard in which the material is listed."@en ;
+   samm:dataType xsd:string .
+
+:StandardConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "standard constraint"@en ;
+   samm-c:maxValue "20"^^xsd:nonNegativeInteger .
+
+:MaterialNumberCharacteristic a samm:Characteristic ;
+   samm:preferredName "material number characteristic"@en ;
+   samm:description "Characteristic to represent the number of the material in the standard."@en ;
+   samm:dataType xsd:string .
+
+:MaterialConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "material constraint"@en ;
+   samm-c:maxValue "20"^^xsd:nonNegativeInteger .
+
+:mainGroup a samm:Property ;
+   samm:preferredName "main group"@en ;
+   samm:description "Main group according to material classification VDA 231-10."@en ;
+   samm:characteristic :MainGroupTrait1 ;
+   samm:exampleValue "1" .
+
+:subgroup a samm:Property ;
+   samm:preferredName "subgroup"@en ;
+   samm:description "First subgroup according to material classification VDA 231-11."@en ;
+   samm:characteristic :SubgroupTrait1 ;
+   samm:exampleValue "1.1" .
+
+:MainGroupTrait1 a samm-c:Trait ;
+   samm-c:baseCharacteristic :MainGroupCharacteristic ;
+   samm-c:constraint :MainGroupConstraint .
+
+:SubgroupTrait1 a samm-c:Trait ;
+   samm-c:baseCharacteristic :SubgroupCharacteristic ;
+   samm-c:constraint :SubgroupConstraint .
+
+:MainGroupCharacteristic a samm:Characteristic ;
+   samm:preferredName "main group characteristic"@en ;
+   samm:description "Characteristic to describe the main group classification of the VDA standard 231-10."@en ;
+   samm:dataType xsd:string .
+
+:MainGroupConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "main group constraint"@en ;
+   samm-c:maxValue "2"^^xsd:nonNegativeInteger .
+
+:SubgroupCharacteristic a samm:Characteristic ;
+   samm:preferredName "subgroup characteristic"@en ;
+   samm:description "Characteristic to describe the first subgroup classification of the VDA standard 231-11."@en ;
+   samm:dataType xsd:string .
+
+:SubgroupConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "subgroup constraint"@en ;
+   samm-c:maxValue "3"^^xsd:nonNegativeInteger .
+
