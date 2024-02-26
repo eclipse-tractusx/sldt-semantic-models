@@ -8,6 +8,6 @@ removed positions collection and refined allocatedStocks into allocatedDaysOfSup
 QuantityCharacteristic changed from Collection to SortedSet to reflect the date-daysOfSupply sorted pair
 definitions for aspect model provided
 
-## [1.1.0] - 2024-02-26
+## [2.0.0] - 2024-03-04
 ### Added
 lastUpdatedOnDateTime property (samm-c:Timestamp) to describe when the data was last updated
