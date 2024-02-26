@@ -1,0 +1,360 @@
+---
+openapi: 3.0.3
+info:
+  title: User defined loading
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/user-estimated-loading:
+    get:
+      tags:
+      - UserEstimatedLoading
+      operationId: getUserEstimatedLoading
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/UserEstimatedLoading'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserEstimatedLoading'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_Mileage:
+      type: number
+      minimum: 1
+      description: Distance in kilometre
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_AgeInMonths:
+      type: number
+      minimum: 0
+      description: Age of vehicle in month
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_VehicleStatusCharacteristic:
+      description: Characteristic decribing the vehicle status
+      type: object
+      properties:
+        mileage:
+          description: Distance the vehicle has travelled in kilometre
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_Mileage'
+        ageInMonth:
+          description: Age of the vehicle in month
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_AgeInMonths'
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_KbaVariant:
+      type: string
+      description: Current version of the Enumeration is sub-set of list defined from
+        the German Federal Office for motor vehicles.
+      enum:
+      - Limousine
+      - Kombilimousine
+      - Pick-up
+      - Van
+      - SUV
+      - andere
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_NumberOfDriveAxle:
+      type: number
+      minimum: 1
+      description: Characteristic of number of drive axles
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_EnergySource:
+      type: string
+      description: Enumeration of possible energy sources/fuel types of a vehicle.
+        The list is defined from the German Federal Office for motor vehicles.
+      enum:
+      - Unbekannt
+      - Diesel
+      - Benzin
+      - LPG
+      - Hybr.Benzin/E
+      - Hybr.Diesel/E
+      - '0001'
+      - '0002'
+      - '0003'
+      - '0005'
+      - '0006'
+      - '0007'
+      - '0008'
+      - '0009'
+      - '0010'
+      - '0019'
+      - '0022'
+      - '0023'
+      - '0024'
+      - '0025'
+      - '0026'
+      - '0027'
+      - '0029'
+      - '0030'
+      - '0000'
+      - Vielstoff
+      - Benzin/LPG
+      - Benzin/komp.Erdgas
+      - Erdgas NG
+      - Hybr.Vielstoff/E
+      - Hybr.Erdgas/E
+      - Benzin/Ethanol
+      - Hybr.LPG/E
+      - Hybr.B/E plug-in
+      - Hybr.D/E plug-in
+      - Hybr.LPG/E plug-in
+      - Hybr.V/E plug-in
+      - Hybr.NG/E plug-in
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_EnginePowerKW:
+      type: number
+      description: Engine power expressed in kilowatt
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_Weight:
+      type: number
+      description: Weight of an object
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_VehicleDataCharacteristic:
+      description: 'Characteristic describing the basic technical data of the vehicle '
+      type: object
+      properties:
+        vehicleType:
+          description: "Vehicle variant - body shapes like SUV, Van, Limousine"
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_KbaVariant'
+        numberOfDriveAxle:
+          description: "Identification of 4WD, default 1: 2WD"
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_NumberOfDriveAxle'
+        energySourceCode:
+          description: The code for the energy source respectively fuel type of the
+            vehicle according to KBA list
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_EnergySource'
+        powerKW:
+          description: Engine power is the power that an engine can put out in kW
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_EnginePowerKW'
+        grossVehicleWeightKG:
+          description: Technical permissable maximum weight of the vehicle in kg
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_Weight'
+      required:
+      - powerKW
+      - grossVehicleWeightKG
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_Percentage:
+      type: number
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean:
+      type: boolean
+      description: Represents a boolean value (i.e. a "flag").
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_WeightFactor:
+      type: number
+      description: Weightfactor is a number between 1 and 100 weightening the hilliness
+        or curviness or driving style.
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_HistoryProfilesEnity:
+      description: 'Collection of previous usage profiles '
+      type: object
+      properties:
+        percentage:
+          description: "Weighfactor of the different profiles, a user has. Different\
+            \ profiles indicates different user as well as different usages of like\
+            \ profiles for daily work routes or for caravan holiday."
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_Percentage'
+        trailerUse:
+          description: 'Usage of trailer like caravan. '
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        cityDriving:
+          description: City driving means a short distances.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        drivingStyle:
+          description: "Numerical value between 1 and 100 describing the driving style.\
+            \ 1 for extreme economic driving, about 30 for normal driving, about 65\
+            \ for sportive driving, 100 for aggressive driving."
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_WeightFactor'
+        hilliness:
+          description: |-
+            Numerical value between 1 and 100 to describe the hilliness.
+            1: absolut flat region, 100 steep mountain roads
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_WeightFactor'
+        curviness:
+          description: "Numerical value between 1 and 100 describing the curviness\
+            \ (1: straight road ... 100: very curvy road."
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_WeightFactor'
+      required:
+      - percentage
+      - drivingStyle
+      - hilliness
+      - curviness
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_HistoryProfileList:
+      description: Characteristic of historie profile list
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_HistoryProfilesEnity'
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_FutureProfilesEntity:
+      description: "Future scenario: collection of usage profiles"
+      type: object
+      properties:
+        curviness:
+          description: "Numerical value between 1 and 100 describing the curviness\
+            \ (1: straight road ... 100: very curvy road."
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_WeightFactor'
+        hilliness:
+          description: |-
+            Numerical value between 1 and 100 to describe the hilliness.
+            1: absolut flat region, 100 steep mountain roads
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_WeightFactor'
+        drivingStyle:
+          description: "Numerical value between 1 and 100 describing the driving style.\
+            \ 1 for extreme economic driving, about 30 for normal driving, about 65\
+            \ for sportive driving, 100 for aggressive driving."
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_WeightFactor'
+        cityDriving:
+          description: City driving means a short distances.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        trailerUse:
+          description: 'Usage of trailer like caravan. '
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        percentage:
+          description: "Weighfactor of the different profiles, a user has. Different\
+            \ profiles indicates different user as well as different usages of like\
+            \ profiles for daily work routes or for caravan holiday."
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_Percentage'
+      required:
+      - curviness
+      - hilliness
+      - drivingStyle
+      - percentage
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_FutureScenarioList:
+      description: Characteristic of future scenario
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_FutureProfilesEntity'
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_PositiveInteger:
+      type: number
+      minimum: 1
+      description: Positive integer number without unit
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_FutureScenarioEntity:
+      description: List of future scenarios
+      type: object
+      properties:
+        futureScenario:
+          description: The future scenario cotains one or more future usage profiles
+            where the sum of percentage is 100
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_FutureScenarioList'
+        futureScenarioId:
+          description: Identification number of future scenarios
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_PositiveInteger'
+      required:
+      - futureScenario
+      - futureScenarioId
+    urn_samm_io.catenax.user_estimated_loading_2.0.0_FutureList:
+      description: Characteristic of future usages
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_FutureScenarioEntity'
+    UserEstimatedLoading:
+      description: "User defined list of usage with percentage, driving style, eniviroment\
+        \ (hilliness, city_use, trailer_use)"
+      type: object
+      properties:
+        vehicleStatus:
+          description: "Current status of vehicle: age, mileage"
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_VehicleStatusCharacteristic'
+        vehicleData:
+          description: Basic technical data of the vehicle
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_VehicleDataCharacteristic'
+        history:
+          description: User profiles of previous use
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_HistoryProfileList'
+        future:
+          description: Collection of future usages
+          $ref: '#/components/schemas/urn_samm_io.catenax.user_estimated_loading_2.0.0_FutureList'
+      required:
+      - vehicleStatus
+      - vehicleData
+      - history
+      - future
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UserEstimatedLoading:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    UserEstimatedLoading:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserEstimatedLoading'
