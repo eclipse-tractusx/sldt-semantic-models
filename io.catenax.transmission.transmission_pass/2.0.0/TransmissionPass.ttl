@@ -1,0 +1,240 @@
+#######################################################################
+# Copyright (c) 2023-2024 BASF SE
+# Copyright (c) 2023-2024 BMW AG
+# Copyright (c) 2024 CGI Deutschland B.V. & Co. KG
+# Copyright (c) 2023-2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023 Robert Bosch GmbH
+# Copyright (c) 2023-2024 SAP SE
+# Copyright (c) 2023-2024 T-Systems International GmbH
+# Copyright (c) 2023-2024 ZF Friedrichshafen AG
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.transmission.transmission_pass:2.0.0#> .
+@prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:4.0.0#> .
+
+:TransmissionPass a samm:Aspect ;
+   samm:preferredName "Transmission Pass"@en ;
+   samm:description "The transmission passport corresponds to the digital product passport information required by the proposed Ecodesign Regulation (ESPR-2022) and describes the data that is collected and available during the lifespan of a transmission."@en ;
+   samm:properties ( :productSpecificParameters :productUnspecificParameters ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:productSpecificParameters a samm:Property ;
+   samm:preferredName "Product Specific Parameters"@en ;
+   samm:description "Product specific parameters of the transmission."@en ;
+   samm:characteristic :ProductSpecificParameters .
+
+:productUnspecificParameters a samm:Property ;
+   samm:preferredName "Product Unspecific Parameters"@en ;
+   samm:description "The product unspecific parameters. These are defined by the Digital Product Passport proposal from the ESPR. The main basis is provided by the document \"Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL establishing a framework for setting ecodesign requirements for sustainable products and repealing Directive 2009/125/EC\" from March 30th, 2022. The latest version of the document was the provisional agreement between the EU Council and the Parliament from January 9th, 2024."@en ;
+   samm:characteristic :UnspecificCharacteristic .
+
+:ProductSpecificParameters a samm:Characteristic ;
+   samm:preferredName "Product Specific Parameters Characteristic"@en ;
+   samm:description "The Characteristic to describe product specific parameters of the transmission."@en ;
+   samm:dataType :ProductSpecificParametersEntity .
+
+:UnspecificCharacteristic a samm:Characteristic ;
+   samm:preferredName "Unspecific Characteristic"@en ;
+   samm:description "Characteristic for the product unspecific parameters."@en ;
+   samm:dataType :UnspecificEntity .
+
+:ProductSpecificParametersEntity a samm:Entity ;
+   samm:preferredName "Product Specific Parameters Entity"@en ;
+   samm:description "The entity describing various product specific parameters of the transmission."@en ;
+   samm:properties ( :driveType :torque :power [ samm:property :torqueConverter; samm:optional true ] [ samm:property :speedResistance; samm:optional true ] :standardGearRatio :spreading :oilCapacity :oilType [ samm:property :electricPerformance; samm:optional true ] [ samm:property :serviceHistory; samm:optional true ] ) .
+
+:UnspecificEntity a samm:Entity ;
+   samm:preferredName "Unspecific Entity"@en ;
+   samm:description "Entity for the product unspecific parameters."@en ;
+   samm:properties ( ext-passport:metadata ext-passport:identification ext-passport:operation ext-passport:handling ext-passport:characteristics ext-passport:commercial ext-passport:materials ext-passport:sustainability ext-passport:sources ) .
+
+:driveType a samm:Property ;
+   samm:preferredName "Drive Type"@en ;
+   samm:description "The type of transmission drive (combustion engine, hybrid drive or purely electric drive)."@en ;
+   samm:characteristic :DriveTypeEnumeration ;
+   samm:exampleValue "hybrid drive" .
+
+:torque a samm:Property ;
+   samm:preferredName "Torque Performance"@en ;
+   samm:description "The maximum input torque in newton meters (the operating characteristics of the transmission)."@en ;
+   samm:see <https://eclass.eu/eclass-standard/content-suche/show?tx_eclasssearch_ecsearch[cc2prdat]=0173-1#02-ABE835#001&tx_eclasssearch_ecsearch[discharge]=0&tx_eclasssearch_ecsearch[id]=-1&tx_eclasssearch_ecsearch[language]=1&tx_eclasssearch_ecsearch[option]=pr&tx_eclasssearch_ecsearch[searchtxt]=0173-1#02-ABE835#001&tx_eclasssearch_ecsearch[version]=12.0&cHash=4a7d386fbdca6eb1be51134bfeafeac7> ;
+   samm:characteristic :TorqueNewtonMetre ;
+   samm:exampleValue "500.0"^^xsd:decimal .
+
+:power a samm:Property ;
+   samm:preferredName "Power"@en ;
+   samm:description "The maximum power in kilowatt (the operating characteristics of the transmission)."@en ;
+   samm:characteristic :PerformancePower ;
+   samm:exampleValue "300.0"^^xsd:decimal .
+
+:torqueConverter a samm:Property ;
+   samm:preferredName "Torque Converter"@en ;
+   samm:description "A list of the used transmission damper technology (depending on the transmission type). For example NW 200 TTD and NW 200 ZDW"@en ;
+   samm:characteristic :StringList ;
+   samm:exampleValue "NW 200 TTD" .
+
+:speedResistance a samm:Property ;
+   samm:preferredName "Speed Resistance"@en ;
+   samm:description "The permissible maximum input speed in the respective gear (depending on the transmission type). For example 1 : max 7800min-1; 2 : max 7800min-1; 3 : max 7800min-1; 4 : max 7800min-1; 5 : max 7800min-1; 6 : max 7800min-1; 7 : max 6800min-1; 8 : max 5800min-1; R : max 2000min-1."@en ;
+   samm:characteristic :SpeedResistanceList .
+
+:standardGearRatio a samm:Property ;
+   samm:preferredName "Standard Gear Ratio"@en ;
+   samm:description "The ratio in the respective gear (ratio between transmission input speed and transmission output speed). For example 1 : 4.1567; 2 : 3.898; 3 : 2.887; 4 : 2.7783; 5 : 1.811; 6 : 1.6545; 7 : 0.4377; 8 : 0.6121; R : -2.2183."@en ;
+   samm:see <https://eclass.eu/en/eclass-standard/search-content/show?tx_eclasssearch_ecsearch[cc2prdat]=0173-1#02-AAO991#001&tx_eclasssearch_ecsearch[discharge]=0&tx_eclasssearch_ecsearch[id]=-1&tx_eclasssearch_ecsearch[language]=0&tx_eclasssearch_ecsearch[option]=pr&tx_eclasssearch_ecsearch[searchtxt]=Getriebe&tx_eclasssearch_ecsearch[version]=12.0&cHash=7a98266f172bac7785ef10714da390f9> ;
+   samm:characteristic :StandardGearRatio .
+
+:spreading a samm:Property ;
+   samm:preferredName "Spreading"@en ;
+   samm:description "The transmission spreading coefficient. The ratio between the smallest (shortest gear) and the largest (longest gear) ratio."@en ;
+   samm:characteristic :TransmissionSpreading ;
+   samm:exampleValue "6.79"^^xsd:decimal .
+
+:oilCapacity a samm:Property ;
+   samm:preferredName "Oil Capacity"@en ;
+   samm:description "The recommended oil volume in the transmission."@en ;
+   samm:see <https://eclass.eu/eclass-standard/content-suche/show?tx_eclasssearch_ecsearch%5Bcc2prdat%5D=0173-1%2302-AAA593%23006&tx_eclasssearch_ecsearch%5Bdischarge%5D=0&tx_eclasssearch_ecsearch%5Bid%5D=-1&tx_eclasssearch_ecsearch%5Blanguage%5D=1&tx_eclasssearch_ecsearch%5Boption%5D=pr&tx_eclasssearch_ecsearch%5Bsearchtxt%5D=0173-1%2302-AAA593%23006%20&tx_eclasssearch_ecsearch%5Bversion%5D=12.0&cHash=caf252fbc0edd471b4b4678699683e3f> ;
+   samm:characteristic :Capacity ;
+   samm:exampleValue "8.9"^^xsd:decimal .
+
+:oilType a samm:Property ;
+   samm:preferredName "Oil Type"@en ;
+   samm:description "The suitable type of the oil for the transmission."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ZF Lifeguard Hybrid 2" .
+
+:electricPerformance a samm:Property ;
+   samm:preferredName "Electric Performance"@en ;
+   samm:description "The electric machine performance (the operating characteristics of the electric motor). Values are the kilowatt, volt and newtonmetre. An example could be 22 kW; 49 V and 150 Nm."@en ;
+   samm:characteristic :Characteristic2 .
+
+:serviceHistory a samm:Property ;
+   samm:preferredName "Service History"@en ;
+   samm:description "Documentation of the service history of the transmission."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:DriveTypeEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Drive Type Enumeration"@en ;
+   samm:description "Enumeration of the drive types with the values combustion engine, hybrid drive and electric drive."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "combustion engine" "hybrid drive" "electric drive" ) .
+
+:TorqueNewtonMetre a samm-c:Measurement ;
+   samm:preferredName "Torque Newton Metre Characteristic"@en ;
+   samm:description "Characteristic to describe the maximum input torque in newton meters."@en ;
+   samm:dataType xsd:decimal ;
+   samm-c:unit unit:newtonMetre .
+
+:PerformancePower a samm-c:Measurement ;
+   samm:preferredName "Performance Power Characteristic"@en ;
+   samm:description "The performance power in kilowatt as decimal."@en ;
+   samm:dataType xsd:decimal ;
+   samm-c:unit unit:kilowatt .
+
+:StringList a samm-c:List ;
+   samm:preferredName "String Characteristic"@en ;
+   samm:description "A list with the data types string."@en ;
+   samm:dataType xsd:string .
+
+:SpeedResistanceList a samm-c:List ;
+   samm:preferredName "Speed Resistance List"@en ;
+   samm:description "The speed resistance characteristic."@en ;
+   samm:dataType :SpeedResistanceEntity .
+
+:StandardGearRatio a samm-c:Set ;
+   samm:preferredName "Standard Gear Ratio Set"@en ;
+   samm:description "The set of ratio in the respective gear."@en ;
+   samm:dataType :GearRatio .
+
+:TransmissionSpreading a samm-c:Quantifiable ;
+   samm:preferredName "Transmission Spreading Characteristic"@en ;
+   samm:description "The transmission spreading coefficient. The ratio between the smallest (shortest gear) and the largest (longest gear) ratio as decimal with no unit."@en ;
+   samm:dataType xsd:decimal .
+
+:Capacity a samm-c:Quantifiable ;
+   samm:preferredName "Capacity Characteristic"@en ;
+   samm:description "The oil capacity in dm³."@en ;
+   samm:dataType xsd:decimal ;
+   samm-c:unit unit:cubicDecimetre .
+
+:Characteristic2 a samm-c:List ;
+   samm:dataType :Entity2 .
+
+:SpeedResistanceEntity a samm:Entity ;
+   samm:preferredName "Speed Resistance Entity"@en ;
+   samm:description "The speed resistance entity. Includes the gear and the speed as separate properties."@en ;
+   samm:properties ( :gear :speed ) .
+
+:GearRatio a samm:Entity ;
+   samm:preferredName "Gear Ratio Entity"@en ;
+   samm:description "Entity for the ratio in the respective gear. Includes the gear and the ratio as separate properties."@en ;
+   samm:properties ( :gear :ratio ) .
+
+:Entity2 a samm:Entity ;
+   samm:properties ( :value :unit ) .
+
+:gear a samm:Property ;
+   samm:preferredName "Gear"@en ;
+   samm:description "Respective gear for the speed resistance."@en ;
+   samm:characteristic :GearTrait ;
+   samm:exampleValue "1" .
+
+:speed a samm:Property ;
+   samm:preferredName "Speed"@en ;
+   samm:description "The permissible maximum input speed (rpm)."@en ;
+   samm:characteristic :RevolutionsPerMinute ;
+   samm:exampleValue 7800 .
+
+:ratio a samm:Property ;
+   samm:preferredName "Ratio"@en ;
+   samm:description "The ratio in the respective gear (ratio between transmission input speed and transmission output speed)."@en ;
+   samm:characteristic :Ratio ;
+   samm:exampleValue "4.1567"^^xsd:double .
+
+:value a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:unit a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:GearTrait a samm-c:Trait ;
+   samm:preferredName "Gear Trait"@en ;
+   samm:description "Constraint to match a gear from 1 to 99 or R (reverse)."@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :GearConstraint .
+
+:RevolutionsPerMinute a samm-c:Measurement ;
+   samm:preferredName "Revolutions "@en ;
+   samm:description "The permissible maximum input speed in revolutions per minute in the respective gear."@en ;
+   samm:dataType xsd:integer ;
+   samm-c:unit unit:revolutionsPerMinute .
+
+:Ratio a samm-c:Quantifiable ;
+   samm:preferredName "Ratio Characteristic"@en ;
+   samm:description "The ratio in the respective gear."@en ;
+   samm:dataType xsd:double .
+
+:GearConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Gear Constraint"@en ;
+   samm:description "Constraint to match a gear from 1 to 99 or R (reverse)."@en ;
+   samm:value "^\\d{1,2}|R$" .
+
