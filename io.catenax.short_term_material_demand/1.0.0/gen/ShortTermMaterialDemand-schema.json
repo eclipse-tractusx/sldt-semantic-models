@@ -1,0 +1,232 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The requirements of a customer towards a specific supplier for a specific material. Each material demand is unique by its Customer, Supplier and Material Number.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.shared.quantity_2.0.0_QuantityValueCharacteristic" : {
+        "type" : "number",
+        "description" : "The quantity value associated with the unit expressed as float."
+      },
+      "urn_samm_io.catenax.shared.quantity_2.0.0_ItemUnitEnumeration" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "description" : "Enumeration for common item units.",
+        "enum" : [ "unit:piece", "unit:set", "unit:pair", "unit:page", "unit:cycle", "unit:kilowattHour", "unit:gram", "unit:kilogram", "unit:tonneMetricTon", "unit:tonUsOrShortTonUkorus", "unit:ounceAvoirdupois", "unit:pound", "unit:metre", "unit:centimetre", "unit:kilometre", "unit:inch", "unit:foot", "unit:yard", "unit:squareCentimetre", "unit:squareMetre", "unit:squareInch", "unit:squareFoot", "unit:squareYard", "unit:cubicCentimetre", "unit:cubicMetre", "unit:cubicInch", "unit:cubicFoot", "unit:cubicYard", "unit:litre", "unit:millilitre", "unit:hectolitre", "unit:secondUnitOfTime", "unit:minuteUnitOfTime", "unit:hourUnitOfTime", "unit:day" ]
+      },
+      "urn_samm_io.catenax.short_term_material_demand_1.0.0_DemandQuantityCharacteristic" : {
+        "description" : "Demand expressed as item quantity with a unit of measure.",
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "description" : "The quantity value associated with the unit.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_QuantityValueCharacteristic"
+          },
+          "unit" : {
+            "description" : "The unit of an item. Common units may be related to mass, count, linear, area, volume or misc.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_ItemUnitEnumeration"
+          }
+        },
+        "required" : [ "value", "unit" ]
+      },
+      "urn_samm_io.catenax.short_term_material_demand_1.0.0_DateCharacteristic" : {
+        "type" : "string",
+        "format" : "date",
+        "description" : "An ISO date on which a given demand is needed. Must be given as single day (consider the time zone of the customer's location)."
+      },
+      "urn_samm_io.catenax.short_term_material_demand_1.0.0_Demand" : {
+        "description" : "A single demand for a day.",
+        "type" : "object",
+        "properties" : {
+          "demand" : {
+            "description" : "Quantity of materials required on a specific day. This demand is not a call-off and should be as close as possible to the actual production program.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.short_term_material_demand_1.0.0_DemandQuantityCharacteristic"
+          },
+          "day" : {
+            "description" : "Day of the demanded quantity.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.short_term_material_demand_1.0.0_DateCharacteristic"
+          }
+        },
+        "required" : [ "demand", "day" ]
+      },
+      "urn_samm_io.catenax.short_term_material_demand_1.0.0_DemandTimeSeries" : {
+        "description" : "The demands in a given time period.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.short_term_material_demand_1.0.0_Demand"
+        },
+        "uniqueItems" : true
+      },
+      "DemandCategoryDefault" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "0001" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategoryAfterSales" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "A1S1" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategorySeries" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "SR99" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategoryPhaseInPeriod" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "PI01" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategorySingleOrder" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "OS01" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategorySmallSeries" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "OI01" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategoryExtraordinaryDemand" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "ED01" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "DemandCategoryPhaseOutPeriod" : {
+        "type" : "object",
+        "properties" : {
+          "demandCategoryCode" : {
+            "description" : "The code identifying a demand category.",
+            "type" : "string",
+            "enum" : [ "PO01" ]
+          }
+        },
+        "required" : [ "demandCategoryCode" ]
+      },
+      "urn_samm_io.catenax.short_term_material_demand_1.0.0_DemandCategoryCharacteristic" : {
+        "description" : "The classification of demands used for prioritization or allocation.",
+        "type" : "object",
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/DemandCategoryDefault"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategoryAfterSales"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategorySeries"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategoryPhaseInPeriod"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategorySingleOrder"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategorySmallSeries"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategoryExtraordinaryDemand"
+        }, {
+          "$ref" : "#/components/schemas/DemandCategoryPhaseOutPeriod"
+        } ]
+      },
+      "urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two alphanumeric letters.",
+        "pattern" : "^BPNS[a-zA-Z0-9]{12}$"
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_io.catenax.short_term_material_demand_1.0.0_DemandSeries" : {
+        "description" : "Encapsulates the demand series related information.",
+        "type" : "object",
+        "properties" : {
+          "demands" : {
+            "description" : "A time series on a daily basis along a given time period to describe the demand values for this demand series.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.short_term_material_demand_1.0.0_DemandTimeSeries"
+          },
+          "demandCategory" : {
+            "description" : "Type of demand for this demand series.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.short_term_material_demand_1.0.0_DemandCategoryCharacteristic"
+          },
+          "expectedSupplierLocationBpns" : {
+            "description" : "The Business Partner Number Site (BPNS) of the site from where the customer expects the supplier to fulfill the demands of the demand series. The value is used for informational purposes only and is therefore not binding for the supplier.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait"
+          },
+          "customerLocationBpns" : {
+            "description" : "The Business Partner Number Site (BPNS) of the site at which the customer needs the specified material for this demand series.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait"
+          },
+          "lastUpdatedOnDateTime" : {
+            "description" : "Date and time at which the DemandSeries has been updated by the reporting partner's system. Date and time are set according to a timezone.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          }
+        },
+        "required" : [ "demands", "demandCategory", "customerLocationBpns", "lastUpdatedOnDateTime" ]
+      },
+      "urn_samm_io.catenax.short_term_material_demand_1.0.0_DemandSeriesSet" : {
+        "description" : "A set of demand series belonging to a certain material demand. Each demand series in the set must have a unique combination of customer location and demand category.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.short_term_material_demand_1.0.0_DemandSeries"
+        },
+        "uniqueItems" : true
+      },
+      "urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      }
+    }
+  },
+  "properties" : {
+    "demandSeries" : {
+      "description" : "The demands for a dedicated material in a given time period, distinguished by their demand location and demand category.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.short_term_material_demand_1.0.0_DemandSeriesSet"
+    },
+    "materialGlobalAssetId" : {
+      "description" : "Identifier used uniquely to identify part type twin.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait"
+    }
+  },
+  "required" : [ "demandSeries", "materialGlobalAssetId" ]
+}
