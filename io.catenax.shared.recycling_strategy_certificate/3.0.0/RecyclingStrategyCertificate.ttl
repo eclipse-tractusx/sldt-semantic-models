@@ -24,9 +24,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.shared.recycling_strategy_certificate:3.0.0#> .
-@prefix ext-information: <urn:samm:io.catenax.part_type_information:1.0.0#> .
 @prefix ext-number2: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
-@prefix ext-part: <urn:samm:io.catenax.serial_part:3.0.0#> .
 @prefix ext-uuid2: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 
 :RecyclingStrategyCertificate a samm:Aspect ;
@@ -49,7 +47,7 @@
 :RecyclingStrategyCertificateEntity a samm:Entity ;
    samm:preferredName "Recycling Strategy Certificate"@en ;
    samm:description "Encapsulates the recycling strategy certificate  relevant attributes."@en ;
-   samm:properties ( :supplier :issueDate :catenaXIdPreviousLife :catenaXId :articleNumber :revocationDate ext-information:manufacturerPartId ext-part:localIdentifiers ) .
+   samm:properties ( :supplier :issueDate [ samm:property :catenaXIdPreviousLife; samm:optional true ] :catenaXId [ samm:property :articleNumber; samm:optional true ] :revocationDate [ samm:property :van; samm:optional true ] :originalEquipmentNumber [ samm:property :vehicleCatenaXId; samm:optional true ] ) .
 
 :supplier a samm:Property ;
    samm:preferredName "Supplier"@en ;
@@ -87,8 +85,24 @@
    samm:characteristic :Date ;
    samm:exampleValue "2024-01-01"^^xsd:date .
 
+:van a samm:Property ;
+   samm:preferredName "VAN"@en ;
+   samm:description "Vehicle Anonymized Number of vehicle of which this component has been dismantled."@en ;
+   samm:characteristic samm-c:Text .
+
+:originalEquipmentNumber a samm:Property ;
+   samm:preferredName "Original Equipment Number"@en ;
+   samm:description "Original Equipment Number"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "736 49 28 - 02" .
+
+:vehicleCatenaXId a samm:Property ;
+   samm:preferredName "Vehicle Catena X ID"@en ;
+   samm:description "Catena X ID of the Vehicle from which this component has been dismantled."@en ;
+   samm:characteristic ext-uuid2:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d" .
+
 :Date a samm:Characteristic ;
    samm:preferredName "Date"@en ;
    samm:description "Describes a Property which contains the date."@en ;
    samm:dataType xsd:date .
-

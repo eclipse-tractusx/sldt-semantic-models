@@ -3,20 +3,23 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [3.0.0] - 2024-02-27
+## [3.0.0] - 2024-02-28
 
 ### Changed
 - Update based on shared aspect "uuid"
 - Update based on shared aspect "business partner number"
 - Renamed "issuer" to "supplier"
+- Changed VIN to VAN (optional)
+- made article number optional
+- made catena x id previous life optional
+- Renamed OE Number to Original Equipment Number
 
 ### Added
 - new features: Revocation Date
-- new features: using manufacturerPartId from aspect "part_type_information"
-- new features: using localIdentifiers from aspect "serial_part"
+- new features: (Optional) Vehicle Catena X ID
 
 ### Removed
-- removed features: OE Number ,VIN 
+
 
 ## [2.0.0] - 2023-11-07
 ### Added
