@@ -3,6 +3,10 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [2.1.0] - 2024-02-28
+### Changed
+- Update based on shared aspect "recycling strategy certificate"
+
 ## [2.0.0] - 2023-12-04
 ### Added
 - Upgrade from BAMM model to SAMM model
