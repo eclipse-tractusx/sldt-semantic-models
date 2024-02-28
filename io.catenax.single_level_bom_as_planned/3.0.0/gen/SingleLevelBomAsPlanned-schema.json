@@ -1,0 +1,113 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The single-level bill of material (BoM)represents one sub-level of an assembly and does not include any lower-level subassemblies. In the As-Planned lifecycle state all variants are covered (\"120% BoM\").\nIf multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM.\nIf there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_DateTimeTrait" : {
+        "type" : "string",
+        "description" : "Regular Expression to enable UTC and Timezone formats and the possibility to exclude time information.",
+        "pattern" : "^-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])(T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?)?$"
+      },
+      "urn_samm_io.catenax.shared.quantity_2.0.0_QuantityValueCharacteristic" : {
+        "type" : "number",
+        "description" : "The quantity value associated with the unit expressed as float."
+      },
+      "urn_samm_io.catenax.shared.quantity_2.0.0_ItemUnitEnumeration" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "description" : "Enumeration for common item units.",
+        "enum" : [ "unit:piece", "unit:set", "unit:pair", "unit:page", "unit:cycle", "unit:kilowattHour", "unit:gram", "unit:kilogram", "unit:tonneMetricTon", "unit:tonUsOrShortTonUkorus", "unit:ounceAvoirdupois", "unit:pound", "unit:metre", "unit:centimetre", "unit:kilometre", "unit:inch", "unit:foot", "unit:yard", "unit:squareCentimetre", "unit:squareMetre", "unit:squareInch", "unit:squareFoot", "unit:squareYard", "unit:cubicCentimetre", "unit:cubicMetre", "unit:cubicInch", "unit:cubicFoot", "unit:cubicYard", "unit:litre", "unit:millilitre", "unit:hectolitre", "unit:secondUnitOfTime", "unit:minuteUnitOfTime", "unit:hourUnitOfTime", "unit:day" ]
+      },
+      "urn_samm_io.catenax.shared.quantity_2.0.0_ItemQuantityCharacteristic" : {
+        "description" : "Characteristic for measurements of an item (mass, count, linear, area, volume, misc).",
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "description" : "The quantity value associated with the unit.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_QuantityValueCharacteristic"
+          },
+          "unit" : {
+            "description" : "The unit of an item. Common units may be related to mass, count, linear, area, volume or misc.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_ItemUnitEnumeration"
+          }
+        },
+        "required" : [ "value", "unit" ]
+      },
+      "urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_ValidityPeriodCharacteristic" : {
+        "description" : "Characteristic for a validity period defined by an (optional)start and an (optional)end timestamp.",
+        "type" : "object",
+        "properties" : {
+          "validFrom" : {
+            "description" : "Start date of validity period.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_DateTimeTrait"
+          },
+          "validTo" : {
+            "description" : "End date of validity period.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_DateTimeTrait"
+          }
+        }
+      },
+      "urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the BPNL is composed of prefix 'BPNL', 10 digits and two alphanumeric letters.",
+        "pattern" : "^BPNL[a-zA-Z0-9]{12}$"
+      },
+      "urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_ChildData" : {
+        "description" : "Catena-X ID and meta data of the assembled child item.",
+        "type" : "object",
+        "properties" : {
+          "createdOn" : {
+            "description" : "Timestamp when the relation between the parent part and the child part was created",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_DateTimeTrait"
+          },
+          "quantity" : {
+            "description" : "Quantity of which the child part will be assembled into the parent part.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_ItemQuantityCharacteristic"
+          },
+          "lastModifiedOn" : {
+            "description" : "Timestamp when the relationship between parent part and child part was last modified.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_DateTimeTrait"
+          },
+          "validityPeriod" : {
+            "description" : "The period of time during which the parent-child relation is valid. This relates to whether a child part can be built into the parent part at a given time.\nIf no validity period is given the relation is considered valid at any point in time.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_ValidityPeriodCharacteristic"
+          },
+          "businessPartner" : {
+            "description" : "The supplier of the given child item.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlTrait"
+          },
+          "catenaXId" : {
+            "description" : "The Catena-X ID of the given part (e.g. the component), valid for the Catena-X dataspace.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait"
+          }
+        },
+        "required" : [ "createdOn", "quantity", "businessPartner", "catenaXId" ]
+      },
+      "urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_SetOfChildItemsCharacteristic" : {
+        "description" : "Set of child items the parent object will be assembled by (one structural level down).",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_ChildData"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "catenaXId" : {
+      "description" : "The Catena-X ID of the given part (e.g. the component), valid for the Catena-X dataspace.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait"
+    },
+    "childItems" : {
+      "description" : "Set of child items in As-Planned lifecycle phase, of which the given parent object is assembled by (one structural level down).",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_planned_3.0.0_SetOfChildItemsCharacteristic"
+    }
+  },
+  "required" : [ "catenaXId", "childItems" ]
+}
