@@ -1,10 +1,10 @@
 #######################################################################
-# Copyright (c) 2024 SAP SE
-# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft
-# Copyright (c) 2024 LRP Autorecycling Leipzig GmbH
-# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
-# Copyright (c) 2024 ZF Friedrichshafen AG
-# Copyright (c) 2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2023, 2024 SAP SE
+# Copyright (c) 2023, 2024 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2023, 2024 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2023, 2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
+# Copyright (c) 2023, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -31,7 +31,7 @@
 :MandatoryDismantling a samm:Aspect ;
    samm:preferredName "MandatoryDismantling"@en ;
    samm:description "The mandatory dismantling data model is intended to ensure that end-of-life vehicles are disposed of properly. It defines components, parts and materials that must be mandatorily dismantled, as well as the necessary provision of information on those components, parts and materials to be dismantled"@en ;
-   samm:properties ( :catenaXId :vin :bbpNumberDismantler :substanceOfConcern :depollutionRequirement :depollutionRecord :digitallyCodedComponent :mandatoryRemoval ) ;
+   samm:properties ( [ samm:property :catenaXId; samm:optional true ] :van :bbpNumberDismantler :substanceOfConcern :depollutionRequirement :depollutionRecord :digitallyCodedComponent :mandatoryRemoval ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -41,15 +41,15 @@
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9379" .
 
-:vin a samm:Property ;
-   samm:preferredName "VIN"@en ;
-   samm:description "Vehicle Identification Number. Remark: this should be deducted from a reference to the vehicle TWIN"@en ;
+:van a samm:Property ;
+   samm:preferredName "VAN"@en ;
+   samm:description "Vehicle Anonymiyed Number. This should be deducted from a reference to the vehicle TWIN"@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "WBA41DU060S228332" .
 
 :bbpNumberDismantler a samm:Property ;
    samm:preferredName "BBP Number Dismantler"@en ;
-   samm:description "The aim of BPDM with its BPN is to define a set of rules for a unique ID for cross-company communication and identification of Business Partners. "@en ;
+   samm:description "The aim of BPDM with its BPN is to define a set of rules for a unique ID for cross-company communication and identification of Business Partners.?"@en ;
    samm:characteristic ext-number:BpnlTrait ;
    samm:exampleValue "BPNL8888888888XX" .
 
@@ -106,17 +106,17 @@
 :SubstanceOfConcernEntity a samm:Entity ;
    samm:preferredName "Substance Of Concern Entity"@en ;
    samm:description "Encapsulates list of  relevant attributes for substance of concern."@en ;
-   samm:properties ( :pollutant :number :part :location ) .
+   samm:properties ( :pollutant :number :part :location :weight :minimumConcentration :pollutantConcentration :weightOfPart ) .
 
 :DepollutionRequirementsEntity a samm:Entity ;
    samm:preferredName "Depollution Requirements Entity"@en ;
    samm:description "Encapsulates the depollution requirement relevant attributes"@en ;
-   samm:properties ( :fluids :component ) .
+   samm:properties ( :fluid :component ) .
 
 :DepollutionRecordEntity a samm:Entity ;
    samm:preferredName "Depollution Record Entity"@en ;
    samm:description "Encapsulates the depollution record relevant attributes"@en ;
-   samm:properties ( :time :date :depollutionType :quantity :optionalWasteTransporterBPN :optionalFinalDisposalSiteBPN ) .
+   samm:properties ( :time :date :depollutionType [ samm:property :quantity; samm:optional true ] [ samm:property :wasteTransporterBPN; samm:optional true ] [ samm:property :finalDisposalSiteBPN; samm:optional true ] ) .
 
 :DigitallyCodedComponentEntity a samm:Entity ;
    samm:preferredName "Digitally Coded Component Entity"@en ;
@@ -136,7 +136,7 @@
 
 :number a samm:Property ;
    samm:preferredName "Number"@en ;
-   samm:description "Number of specific pollutants detected."@en ;
+   samm:description "Number of specific pollutant, component or part."@en ;
    samm:characteristic :QuantityCharacteristic ;
    samm:exampleValue 1 .
 
@@ -152,9 +152,33 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Front Right Panel" .
 
-:fluids a samm:Property ;
-   samm:preferredName "Fluids"@en ;
-   samm:description "information on the different fluids and liquids available in the asset"@en ;
+:weight a samm:Property ;
+   samm:preferredName "Weight"@en ;
+   samm:description "Weight of the part that contains the specific pollutant in grams"@en ;
+   samm:characteristic :WeightCharacteristic ;
+   samm:exampleValue 20 .
+
+:minimumConcentration a samm:Property ;
+   samm:preferredName "Minimum Concentration"@en ;
+   samm:description "Minimum weight percentage of pollutant concentration to be dismantled"@en ;
+   samm:characteristic :ConcentrationCharacteristic ;
+   samm:exampleValue "0.4"^^xsd:float .
+
+:pollutantConcentration a samm:Property ;
+   samm:preferredName "Pollutant Concentration"@en ;
+   samm:description "weight percentage of pollutant concentration"@en ;
+   samm:characteristic :ConcentrationCharacteristic ;
+   samm:exampleValue "0.5"^^xsd:float .
+
+:weightOfPart a samm:Property ;
+   samm:preferredName "Weight Of Part"@en ;
+   samm:description "Weight of part containing pollutant in gram"@en ;
+   samm:characteristic :WeightCharacteristic ;
+   samm:exampleValue 500 .
+
+:fluid a samm:Property ;
+   samm:preferredName "Fluid"@en ;
+   samm:description "Information on the different fluid and liquid available in the asset"@en ;
    samm:characteristic :FluidCharacteristic .
 
 :component a samm:Property ;
@@ -181,19 +205,19 @@
    samm:exampleValue "Diesel" .
 
 :quantity a samm:Property ;
-   samm:preferredName "Fuel Quantity"@en ;
+   samm:preferredName "Quantity"@en ;
    samm:description "Quantity of the specific depollutant (e.g., Diesel) in liters."@en ;
    samm:characteristic :Number ;
    samm:exampleValue 23 .
 
-:optionalWasteTransporterBPN a samm:Property ;
-   samm:preferredName "Optional Waste Transporter BPN"@en ;
+:wasteTransporterBPN a samm:Property ;
+   samm:preferredName "Waste Transporter BPN"@en ;
    samm:description "Identity of the final waste transporter BPNDetox Ltd. (optional)."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Detox Ltd." .
 
-:optionalFinalDisposalSiteBPN a samm:Property ;
-   samm:preferredName "Optional Final Disposal Site BPN"@en ;
+:finalDisposalSiteBPN a samm:Property ;
+   samm:preferredName "Final Disposal Site BPN"@en ;
    samm:description " Identity of the final disposal site BPNDestroy GmbH (optional)."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Destroy GmbH" .
@@ -330,6 +354,18 @@
    samm:preferredName "Quantity Characteristic"@en ;
    samm:description "Describes a Property which contains a number."@en ;
    samm:dataType xsd:integer .
+
+:WeightCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Weight Characteristic"@en ;
+   samm:description "The characteristics of the weight."@en ;
+   samm:dataType xsd:integer ;
+   samm-c:unit unit:gram .
+
+:ConcentrationCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Concentration Characteristic"@en ;
+   samm:description "The characteristic of Concentration."@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit unit:percent .
 
 :FluidCharacteristic a samm:Characteristic ;
    samm:preferredName "Fluid Characteristic"@en ;
@@ -799,52 +835,52 @@
 :FuelEntity a samm:Entity ;
    samm:preferredName "Fuel Entity"@en ;
    samm:description "Encapsulates the fuel details"@en ;
-   samm:properties ( :itemType :itemDetail ) .
+   samm:properties ( :itemType ) .
 
 :MotorOilEntity a samm:Entity ;
    samm:preferredName "Motor Oil Entity"@en ;
    samm:description "Encapsulates the Motor Oil details"@en ;
-   samm:properties ( :isPresent :itemDetail ) .
+   samm:properties ( :isPresent ) .
 
 :TransmissionOilEntity a samm:Entity ;
    samm:preferredName "Transmission Oil Entity"@en ;
    samm:description "Encapsulates the Transmission Oil details"@en ;
-   samm:properties ( :isPresent :itemDetail ) .
+   samm:properties ( :isPresent ) .
 
 :GearboxOilEntity a samm:Entity ;
    samm:preferredName "Gearbox Oil Entity"@en ;
    samm:description "Encapsulates the Gearbox oil details"@en ;
-   samm:properties ( :isPresent :itemDetail ) .
+   samm:properties ( :isPresent ) .
 
 :HydraulicOilEntity a samm:Entity ;
    samm:preferredName "Hydraulic Oil Entity"@en ;
    samm:description "Encapsulates the Hydraulic Oil details"@en ;
-   samm:properties ( :isPresent :itemDetail ) .
+   samm:properties ( :isPresent ) .
 
 :CoolingLiquidEntity a samm:Entity ;
    samm:preferredName "Cooling Liquid Entity"@en ;
    samm:description "Encapsulates the Cooling Liquid details"@en ;
-   samm:properties ( :itemDetail :isPresent ) .
+   samm:properties ( :isPresent ) .
 
 :AntifreezeEntity a samm:Entity ;
    samm:preferredName "Antifreeze Entity"@en ;
    samm:description "Encapsulates the Antifreeze details"@en ;
-   samm:properties ( :isPresent :itemDetail ) .
+   samm:properties ( :isPresent ) .
 
 :BrakeFluidEntity a samm:Entity ;
    samm:preferredName "Brake Fluid Entity"@en ;
    samm:description "Encapsulates the Brake Fluid details"@en ;
-   samm:properties ( :isPresent :itemDetail ) .
+   samm:properties ( :isPresent ) .
 
 :AirConditioningFluidEntity a samm:Entity ;
    samm:preferredName "Air Conditioning Fluid Entity"@en ;
    samm:description "Encapsulates the Air Conditioning Fluid details"@en ;
-   samm:properties ( :itemType :itemDetail ) .
+   samm:properties ( :itemType ) .
 
 :OtherFluidEntity a samm:Entity ;
    samm:preferredName "Other Fluid Entity"@en ;
    samm:description "Encapsulates the other Fluid details"@en ;
-   samm:properties ( :itemType :itemDetail ) .
+   samm:properties ( :itemType ) .
 
 :AirbagEntity a samm:Entity ;
    samm:preferredName "Airbag Entity"@en ;
@@ -899,7 +935,7 @@
 :MotorDetailEntity a samm:Entity ;
    samm:preferredName "Motor Detail Entity"@en ;
    samm:description "Encapsulates the Motor detail."@en ;
-   samm:properties ( :weight :requiredTool :treatmentTechnique :permanentMagnet ) .
+   samm:properties ( :weight :requiredTool :permanentMagnet ) .
 
 :itemType a samm:Property ;
    samm:preferredName "itemType"@en ;
@@ -909,12 +945,12 @@
 
 :itemDetail a samm:Property ;
    samm:preferredName "ItemDetail"@en ;
-   samm:description "A property of the model, named item detail."@en ;
+   samm:description "A property of the model, with details of parent item."@en ;
    samm:characteristic :ItemDetailCharacteristics .
 
 :batteryType a samm:Property ;
    samm:preferredName "Battery Type"@en ;
-   samm:description "type of battery chemistry of electric vehicle batteries"@en ;
+   samm:description "Type of battery chemistry of electric vehicle batteries"@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Lithium-Ion" .
 
@@ -930,21 +966,9 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Torque wrench, safety gloves" .
 
-:weight a samm:Property ;
-   samm:preferredName "Weight"@en ;
-   samm:description "Weight of the part that contains the specific pollutant in grams"@en ;
-   samm:characteristic :WeightCharacteristic ;
-   samm:exampleValue 250 .
-
-:treatmentTechnique a samm:Property ;
-   samm:preferredName "Treatment Technique"@en ;
-   samm:description "availability of best treatment techniques"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Available" .
-
 :permanentMagnet a samm:Property ;
    samm:preferredName "Permanent Magnet"@en ;
-   samm:description "types of permanent magnets present in e-drive motors, if they belong to the following types: Neodymium-Iron-Boron, Samarium-Cobalt, Aluminium-Nickel-Cobalt, Ferrite"@en ;
+   samm:description "types of permanent magnets present in e-drive motors, if they belong to the following types: Neodymium-Iron-Boron, Samarium-Cobalt, Aluminium-Nickel-Cobalt, Ferrite"@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Neodymium-Iron-Boron" .
 
@@ -953,19 +977,18 @@
    samm:description "The characteristics of the item detail."@en ;
    samm:dataType :ItemDetailEntity .
 
-:WeightCharacteristic a samm-c:Quantifiable ;
-   samm:preferredName "Weight Characteristic"@en ;
-   samm:description "The characteristics of the weight."@en ;
-   samm:dataType xsd:integer .
-
 :ItemDetailEntity a samm:Entity ;
    samm:preferredName "Item Detail Entity"@en ;
-   samm:description "Encapsulates information on pollutants/parts, including type, number, location, weight, and removal instructions"@en ;
-   samm:properties ( :pollutantType :number :location :weight :removalInstruction ) .
+   samm:description "Encapsulates information of parts, including number, location, weight, removal instructions and treatment techniques"@en ;
+   samm:properties ( :number :location :weight :removalInstruction :treatmentTechnique ) .
 
-:pollutantType a samm:Property ;
-   samm:preferredName "Pollutant Type"@en ;
-   samm:description "Type of pollutant (e.g., Pb, Hg, Cd, CrVI)"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Hg" .
+:treatmentTechnique a samm:Property ;
+   samm:preferredName "Treatment Technique"@en ;
+   samm:description "availability of best treatment techniques"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Available" .
 
+:Text a samm:Characteristic ;
+   samm:preferredName "Text"@en ;
+   samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+   samm:dataType xsd:string .
