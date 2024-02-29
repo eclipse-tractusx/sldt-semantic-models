@@ -3,9 +3,14 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.1.0] - 2024-02-28
+## [2.1.0] - 2024-02-29
 ### Changed
 - Update based on shared aspect "recycling strategy certificate"
+
+### Added
+- New Feature : partInstanceId
+
+### Removed
 
 ## [2.0.0] - 2023-12-04
 ### Added
