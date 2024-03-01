@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [1.0.0] - 2024-03-4
+## [2.0.0] - 2024-03-4
 ### Added
 - import of io.catenax.generic.digital_product_passport 4.0.0
 
