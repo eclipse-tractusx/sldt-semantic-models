@@ -2,6 +2,6 @@
 
 All notable changes to this model will be documented in this file.
 
-## [1.0.0] 23.02.2024
+## [1.0.0] 04.03.2024
 
 - initial version of the aspect model for Business Partner Certificate.
