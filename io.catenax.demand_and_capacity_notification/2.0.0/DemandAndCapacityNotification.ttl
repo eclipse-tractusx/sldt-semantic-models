@@ -34,10 +34,39 @@
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 
+#######################################################################
+# Copyright (c) 2024 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
+# Copyright (c) 2024 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2024 Volkswagen AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.demand_and_capacity_notification:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
 :DemandAndCapacityNotification a samm:Aspect ;
    samm:preferredName "Demand and Capacity Notification"@en ;
    samm:description "This aspect model defines the standard for demand and capacity notification exchange between business partners. Demand and Capacity Notifications refer to specific events within the supply chain which affect production or demand."@en ;
-   samm:properties ( [ samm:property :affectedSitesSender; samm:optional true ] [ samm:property :affectedSitesRecipient; samm:optional true ] :leadingRootCause :effect [ samm:property :text; samm:optional true ] [ samm:property :materialGlobalAssetId; samm:optional true ] :startDateOfEffect [ samm:property :expectedEndDateOfEffect; samm:optional true ] :status :contentChangedAt [ samm:property :relatedSourceNotificationId; samm:optional true ] [ samm:property :materialNumberSupplier; samm:optional true ] [ samm:property :materialNumberCustomer; samm:optional true ] :notificationId :relatedNotificationId ) ;
+   samm:properties ( [ samm:property :affectedSitesSender; samm:optional true ] [ samm:property :affectedSitesRecipient; samm:optional true ] :leadingRootCause :effect [ samm:property :text; samm:optional true ] [ samm:property :materialGlobalAssetId; samm:optional true ] :startDateOfEffect [ samm:property :expectedEndDateOfEffect; samm:optional true ] :status :contentChangedAt [ samm:property :sourceNotificationId; samm:optional true ] [ samm:property :materialNumberSupplier; samm:optional true ] [ samm:property :materialNumberCustomer; samm:optional true ] :notificationId [ samm:property :relatedNotificationId; samm:optional true ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -101,9 +130,9 @@
    samm:characteristic samm-c:Timestamp ;
    samm:exampleValue "2023-12-13T15:00:00+01:00"^^xsd:dateTime .
 
-:relatedSourceNotificationId a samm:Property ;
-   samm:preferredName "Related Source Notification ID"@en ;
-   samm:description "Unique ID identifying the source message that started the notification thread."@en ;
+:sourceNotificationId a samm:Property ;
+   samm:preferredName "Source Notification ID"@en ;
+   samm:description "Unique ID identifying the source notification that started the notification thread."@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:d8b6b4ca-ca9c-42d9-8a34-f62591a1c68a" .
 
@@ -123,11 +152,13 @@
 
 :notificationId a samm:Property ;
    samm:preferredName "Notification ID"@en ;
+   samm:description "Unique ID identifying the notification."@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:d8b6b4ca-ca9c-42d9-8a34-f62591a1c68a" .
 
 :relatedNotificationId a samm:Property ;
    samm:preferredName "Related Notification ID"@en ;
+   samm:description "Unique ID identifying another notification somehow related to the current one."@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:d8b6b4ca-ca9c-42d9-8a34-f62591a1c68a" .
 
