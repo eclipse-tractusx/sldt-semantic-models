@@ -1,3 +1,5 @@
+
+
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -9,34 +11,216 @@
 
 :FailurePattern a samm:Aspect ;
    samm:description "Semantic model for a quality failure pattern."@en ;
-   samm:properties ( :referenceToAspectModel :failurePatternDefinition ) ;
+   samm:properties ( :failurePatternDefinition ) ;
    samm:operations ( ) ;
    samm:events ( ) .
+
+:failurePatternDefinition a samm:Property ;
+   samm:preferredName "Pattern definition"@en ;
+   samm:description "The definition of a failure pattern"@en ;
+   samm:characteristic :ListOfExpressions .
+
+:ListOfExpressions a samm-c:List ;
+   samm:preferredName "List of expresions"@en ;
+   samm:description "A List containing multiple expressions to describe a failure patterns"@en ;
+   samm:dataType :Expression .
+
+:Expression a samm:Entity ;
+   samm:preferredName "Expression"@en ;
+   samm:description "This entity describes a single expression for an failure pattern"@en ;
+   samm:properties ( [ samm:property :stringExpression; samm:optional true ] [ samm:property :booleanExpression; samm:optional true ] [ samm:property :subExpressionList; samm:optional true ] [ samm:property :timestampExpression; samm:optional true ] [ samm:property :numericExpression; samm:optional true ] [ samm:property :expressionConnector; samm:optional true ] ) .
+
+:stringExpression a samm:Property ;
+   samm:preferredName "String Expression"@en ;
+   samm:description "Describes an expression to compare string values"@en ;
+   samm:characteristic :StringExpressionCharacteristic .
+
+:booleanExpression a samm:Property ;
+   samm:preferredName "Boolean Expression"@en ;
+   samm:description "Describes an expression to compare boolean values"@en ;
+   samm:characteristic :BooleanExpressionCharacteristic .
+
+:subExpressionList a samm:Property ;
+   samm:preferredName "Sub Expression List"@en ;
+   samm:description "A List of Expressions which is inside of an expression to be able to describe complex expressions"@en ;
+   samm:characteristic :ListOfExpressions .
+
+:timestampExpression a samm:Property ;
+   samm:preferredName "Timestamp Expression"@en ;
+   samm:description "Describes an expression to compare timestamp values"@en ;
+   samm:characteristic :TimestampExpressionCharacteristic .
+
+:numericExpression a samm:Property ;
+   samm:preferredName "Numeric Expression"@en ;
+   samm:description "Describes an expression to compare numeric values"@en ;
+   samm:characteristic :NumericExpressionCharacteristic .
+
+:expressionConnector a samm:Property ;
+   samm:preferredName "Expression Connector"@en ;
+   samm:description "Describes how multiple expressions of a failure pattern are connected to eachother"@en ;
+   samm:characteristic :ExpressionConnectorEnumeration .
+
+:StringExpressionCharacteristic a samm:Characteristic ;
+   samm:preferredName "String expression characteristic"@en ;
+   samm:description "Characteristic to describe string expressions"@en ;
+   samm:dataType :StringExpression .
+
+:BooleanExpressionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Boolean expression characteristic"@en ;
+   samm:description "Characteristic to describe boolean expressions"@en ;
+   samm:dataType :BooleanExpression .
+
+:TimestampExpressionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Timestamp expression characteristic"@en ;
+   samm:description "Characteristic to describe timestamp expressions"@en ;
+   samm:dataType :TimestampExpression .
+
+:NumericExpressionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Numeric expression characteristic"@en ;
+   samm:description "Characteristic to describe numeric expressions"@en ;
+   samm:dataType :NumericExpression .
+
+:ExpressionConnectorEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Expression connector enumeration"@en ;
+   samm:description "Provides a selection of several connectors for the expressions"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "AND" "OR" "XOR" ) .
+
+:StringExpression a samm:Entity ;
+   samm:preferredName "String expression"@en ;
+   samm:description "Describes the content of a string expression"@en ;
+   samm:properties ( :stringPropertyName :stringInsideOperator :stringValue :referenceToAspectModel ) .
+
+:BooleanExpression a samm:Entity ;
+   samm:preferredName "Boolean expression"@en ;
+   samm:description "Describes the content of a boolean expression"@en ;
+   samm:properties ( :booleanPropertyName :booleanInsideOperator :booleanValue :referenceToAspectModel ) .
+
+:TimestampExpression a samm:Entity ;
+   samm:preferredName "Timestamp expression"@en ;
+   samm:description "Describes the content of a timestamp expression"@en ;
+   samm:properties ( :timestampPropertyName :timestampInsideOperator :timestampValue :referenceToAspectModel ) .
+
+:NumericExpression a samm:Entity ;
+   samm:preferredName "Numeric expression"@en ;
+   samm:description "Describes the content of a numeric expression"@en ;
+   samm:properties ( :numericPropertyName :numericInsideOperator :numericValue :referenceToAspectModel ) .
+
+:stringPropertyName a samm:Property ;
+   samm:preferredName "String property name"@en ;
+   samm:description "A property name of type string from the model."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "vehicleSeries" .
+
+:stringInsideOperator a samm:Property ;
+   samm:preferredName "String inside operator"@en ;
+   samm:description "Describes the logical connector inside of a string expression"@en ;
+   samm:characteristic :StringInsideOperatorEnumeration ;
+   samm:exampleValue "equal" .
+
+:stringValue a samm:Property ;
+   samm:preferredName "String value"@en ;
+   samm:description "The value that is used within the string expression and with which it is to be compared"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "EA189" .
 
 :referenceToAspectModel a samm:Property ;
    samm:preferredName "Reference to aspect model"@en ;
    samm:description "This property describes the underlying aspect model to which this failure pattern definition should be applied to."@en ;
    samm:characteristic :LinkToAspectModel .
 
-:failurePatternDefinition a samm:Property ;
-   samm:preferredName "Pattern definition"@en ;
-   samm:characteristic :ListOfPatterns .
+:booleanPropertyName a samm:Property ;
+   samm:preferredName "Boolean property name"@en ;
+   samm:description "A property name of type booleanfrom the model."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ecuList_dtcs_isMilOn" .
+
+:booleanInsideOperator a samm:Property ;
+   samm:preferredName "Boolean inside operator"@en ;
+   samm:description "Describes the logical connector inside of a boolean expression"@en ;
+   samm:characteristic :BooleanInsideOperatorEnumerator ;
+   samm:exampleValue "equal" .
+
+:booleanValue a samm:Property ;
+   samm:preferredName "Boolean value"@en ;
+   samm:description "The value that is used within the boolean expression and with which it is to be compared"@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:timestampPropertyName a samm:Property ;
+   samm:preferredName "Timestamp property name"@en ;
+   samm:description "A property name of type timestamp from the model."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "productionDate" .
+
+:timestampInsideOperator a samm:Property ;
+   samm:preferredName "Timestamp inside operator"@en ;
+   samm:description "Describes the logical connector inside of a timestamp expression"@en ;
+   samm:characteristic :TimtstampInsideOperatorEnumeration ;
+   samm:exampleValue "after" .
+
+:timestampValue a samm:Property ;
+   samm:preferredName "Timestamp value"@en ;
+   samm:description "The value that is used within the timestamp expression and with which it is to be compared"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2024-01-01T00:00:00"^^xsd:dateTime .
+
+:numericPropertyName a samm:Property ;
+   samm:preferredName "Numeric property name"@en ;
+   samm:description "A property name of a numeric type from the model."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "repairMileage" .
+
+:numericInsideOperator a samm:Property ;
+   samm:preferredName "Numeric inside operator"@en ;
+   samm:description "Describes the logical connector inside of a numeric expression"@en ;
+   samm:characteristic :NumericInsideOperatorEnumeration ;
+   samm:exampleValue "higher" .
+
+:numericValue a samm:Property ;
+   samm:preferredName "Numeric value"@en ;
+   samm:description "The value that is used within the numeric expression and with which it is to be compared"@en ;
+   samm:characteristic :NumericValueCharacteristic ;
+   samm:exampleValue "100"^^xsd:double .
+
+:StringInsideOperatorEnumeration a samm-c:Enumeration ;
+   samm:preferredName "String inside operator enumeration"@en ;
+   samm:description "Provides a selection of several logical operators for string expressions"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "equal" "not_equal" "like" ) .
 
 :LinkToAspectModel a samm:Characteristic ;
    samm:preferredName "Link to aspect model"@en ;
    samm:description "This characteristic groups all necessary properties to refer to an existing Catena-X aspect model."@en ;
    samm:dataType :AspectModel .
 
-:ListOfPatterns a samm-c:List ;
-   samm:dataType :Pattern .
+:BooleanInsideOperatorEnumerator a samm-c:Enumeration ;
+   samm:preferredName "Boolean inside operator enumeration"@en ;
+   samm:description "Provides a selection of several logical operators for boolean expressions"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "equal" "not_equal" ) .
+
+:TimtstampInsideOperatorEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Timestamp inside operator enumeration"@en ;
+   samm:description "Provides a selection of several logical operators for timestamp expressions"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "after" "before" "equal" "not_equal" ) .
+
+:NumericInsideOperatorEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Numeric inside operator enumeration"@en ;
+   samm:description "Provides a selection of several logical operators for numeric expressions"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "equal" "not_equal" "higher" "higher_equal" "lower" "lower_equal" ) .
+
+:NumericValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "Numeric value characteristic"@en ;
+   samm:description "The characteristic to describe numeric values as double"@en ;
+   samm:dataType xsd:double .
 
 :AspectModel a samm:Entity ;
    samm:preferredName "Aspect model"@en ;
    samm:description "One existing Catena-X aspect model"@en ;
    samm:properties ( :nameSpace :ttlFile :modelVersion ) .
-
-:Pattern a samm:Entity ;
-   samm:properties ( [ samm:property :stringExpressions; samm:optional true ] [ samm:property :booleanExpressions; samm:optional true ] [ samm:property :childPattern; samm:optional true ] [ samm:property :dateRangeExpressions; samm:optional true ] ) .
 
 :nameSpace a samm:Property ;
    samm:preferredName "Name space"@en ;
@@ -57,18 +241,6 @@
    samm:characteristic :ModelVersionTrait ;
    samm:exampleValue "2.1.0" .
 
-:stringExpressions a samm:Property ;
-   samm:characteristic :StringExpressionList .
-
-:booleanExpressions a samm:Property ;
-   samm:characteristic :BooleanExpressionList .
-
-:childPattern a samm:Property ;
-   samm:characteristic :ListOfPatterns .
-
-:dateRangeExpressions a samm:Property ;
-   samm:characteristic :DateRangeExpressionList .
-
 :QAXNamespaces a samm-c:Enumeration ;
    samm:preferredName "Aspect model from CX use case quality."@en ;
    samm:description "A list to all existing qax namespaces."@en ;
@@ -81,87 +253,21 @@
    samm-c:baseCharacteristic samm-c:Text ;
    samm-c:constraint :RegexForAspectModelVersions .
 
-:StringExpressionList a samm-c:List ;
-   samm:dataType :StringExpression .
-
-:BooleanExpressionList a samm-c:List ;
-   samm:dataType :BooleanExpression .
-
-:DateRangeExpressionList a samm-c:List ;
-   samm:dataType :DateRangeExpression .
-
 :RegexForAspectModelVersions a samm-c:RegularExpressionConstraint ;
    samm:preferredName "Regex for aspect model versions"@en ;
    samm:description "This regular expression ensures that the version is [1-9].[0-9].[0.9]"@en ;
    samm:value "^[1-9].[0-9].[0-9]$" .
 
-:StringExpression a samm:Entity ;
-   samm:properties ( [ samm:property :outsideOperator; samm:optional true ] :stringPropertyName :stringInsideOperator :stringValue ) .
+:StringExpressionList a samm-c:List ;
+   samm:dataType :StringExpression .
 
-:BooleanExpression a samm:Entity ;
-   samm:properties ( [ samm:property :outsideOperator; samm:optional true ] :booleanPropertyName :booleanInsideOperator :booleanValue ) .
+:DateExpressionList a samm-c:List ;
+   samm:dataType :TimestampExpression .
 
-:DateRangeExpression a samm:Entity ;
-   samm:properties ( [ samm:property :outsideOperator; samm:optional true ] :datePropertyName :dateRangeInsideOperator :dateFrom :dateTo ) .
-
-:outsideOperator a samm:Property ;
-   samm:description "The outside operator can be AND or OR."@en ;
-   samm:characteristic :OutsideOperatorEnumeration .
-
-:stringPropertyName a samm:Property ;
-   samm:description "A property name of type string from the model."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "vehicleSeries" .
-
-:stringInsideOperator a samm:Property ;
-   samm:characteristic :StringInsideOperatorEnumeration ;
-   samm:exampleValue "equal" .
-
-:stringValue a samm:Property ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "EA189" .
-
-:booleanPropertyName a samm:Property ;
-   samm:description "A property name of type booleanfrom the model."@en ;
-   samm:characteristic samm-c:Text .
-
-:booleanInsideOperator a samm:Property ;
-   samm:characteristic :BooleanInsideOperatorEnumerator ;
-   samm:exampleValue "equal" .
-
-:booleanValue a samm:Property ;
-   samm:characteristic samm-c:Boolean ;
-   samm:exampleValue true .
-
-:datePropertyName a samm:Property ;
-   samm:description "A property name of type timestamp from the model."@en ;
-   samm:characteristic samm-c:Text .
-
-:dateRangeInsideOperator a samm:Property ;
-   samm:characteristic :DateRangeInsideOperatorEnumeration ;
-   samm:exampleValue "from_to" .
-
-:dateFrom a samm:Property ;
-   samm:characteristic samm-c:Timestamp ;
-   samm:exampleValue "2024-01-01T00:00:00"^^xsd:dateTime .
-
-:dateTo a samm:Property ;
-   samm:characteristic samm-c:Timestamp ;
-   samm:exampleValue "2024-12-01T00:00:00"^^xsd:dateTime .
+:BooleanExpressionList a samm-c:List ;
+   samm:dataType :BooleanExpression .
 
 :OutsideOperatorEnumeration a samm-c:Enumeration ;
    samm:dataType xsd:string ;
    samm-c:values ( "and" "or" ) .
-
-:StringInsideOperatorEnumeration a samm-c:Enumeration ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "equal" "not" "like" ) .
-
-:BooleanInsideOperatorEnumerator a samm-c:Enumeration ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "equal" "not_equal" ) .
-
-:DateRangeInsideOperatorEnumeration a samm-c:Enumeration ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "from_to" "not_from_to" ) .
 
