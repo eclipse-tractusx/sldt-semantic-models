@@ -30,11 +30,11 @@
 
 
 # Adjust if SAMM CLI version changes
-JARNAME=samm-cli-2.5.1.jar
+JARNAME=samm-cli-2.6.0.jar
 SAMMFOLDER=.SAMMCLI/
 SAMMCLI=$SAMMFOLDER$JARNAME
 # Adjust if SAMM CLI version changes
-SAMMCLIURL=https://github.com/eclipse-esmf/esmf-sdk/releases/download/v2.5.1/samm-cli-2.5.1.jar
+SAMMCLIURL=https://github.com/eclipse-esmf/esmf-sdk/releases/download/v2.6.0/samm-cli-2.6.0.jar
 
 CATENAXCSS=$SAMMFOLDER/catena-template.css
 CATENAXCUSTOMCSSURL=https://raw.githubusercontent.com/eclipse-tractusx/sldt-semantic-hub/main/backend/src/main/resources/catena-template.css
@@ -59,8 +59,8 @@ MODELNAME="$(basename $1 .ttl)"
 DIR="$(dirname "$1")"
 PATHTEMPLATE=$DIR"/gen/"$MODELNAME
 
-commands=(aas aas schema json openapi html)
-endings=(-aas.xml .aasx -schema.json .json .yml .html)
+commands=(aas aas)
+endings=(-aas.xml .aasx)
 toggles=("-f xml" "-f aasx" "" "" "-b=catenax.io" "-c $CATENAXCSS")
 
 for i in ${!commands[@]}; do
