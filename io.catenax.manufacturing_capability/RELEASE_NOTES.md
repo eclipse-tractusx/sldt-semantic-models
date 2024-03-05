@@ -2,7 +2,7 @@
 
 All notable changes to this model will be documented in this file.
 
-## [3.1.0] - 2024-02-21
+## [3.1.0] - 2024-03-04
 ### Changed
 - Fixed hierarchical element representation by letting it extend abstract element representation
 
