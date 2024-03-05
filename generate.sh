@@ -59,8 +59,8 @@ MODELNAME="$(basename $1 .ttl)"
 DIR="$(dirname "$1")"
 PATHTEMPLATE=$DIR"/gen/"$MODELNAME
 
-commands=(aas aas schema json openapi html)
-endings=(-aas.xml .aasx -schema.json .json .yml .html)
+commands=(aas aas)
+endings=(-aas.xml .aasx)
 toggles=("-f xml" "-f aasx" "" "" "-b=catenax.io" "-c $CATENAXCSS")
 
 for i in ${!commands[@]}; do
