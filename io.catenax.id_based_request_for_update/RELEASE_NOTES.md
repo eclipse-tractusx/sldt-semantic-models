@@ -2,7 +2,7 @@
 
 All notable changes to this model will be documented in this file.
 
-## [3.0.0] - 2024-03-04
+## [3.0.0] - 2024-03-11
 
 ### Added
 
