@@ -2,6 +2,10 @@
 All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
+## [5.0.0] - 2024-03-04
+### Changed
+- import of the new samm:io.catenax.generic.digital_product_passport:4.0.0
+- deletion of either-or possibilities
 
 ## [4.0.0] - 2023-12-11
 ### Changed

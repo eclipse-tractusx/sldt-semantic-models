@@ -1,0 +1,127 @@
+#######################################################################
+# Copyright (c) 2022,2024 T-Systems International GmbH
+# Copyright (c) 2022,2024 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.idconversion:2.0.0#> .
+
+:IdConversion a samm:Aspect ;
+   samm:preferredName "Id Conversion"@en ;
+   samm:description "The IdConversion aspect deals with the Conversion of (vehicle, global) Identifiers like VINs into Pseudonyms which are located in an OEM domain (VANs, UUIDs and other concepts) and vice versa. As there are multiple options for representing Identifiers and performing Pseudonymization, this model uses a combination of unqualified values for identifiers paired with namespaces (domains, keys)."@en ;
+   samm:properties ( ) ;
+   samm:operations ( :ConvertOperation :ReidentificationOperation ) ;
+   samm:events ( ) .
+
+:ConvertOperation a samm:Operation ;
+   samm:preferredName "Convert"@en ;
+   samm:description "The Convert operation converts from Identifiers into Pseudonyms of the respective domains. It is transactional in a sense that either all given identifiers could be converted or none (in which case the output will be empty). In all other cases, the converted identifier at index i of the output corresponds to the original identifier at index i of the input."@en ;
+   samm:input ( :targetDomain :conversionInput ) ;
+   samm:output :conversionOutput .
+
+:ReidentificationOperation a samm:Operation ;
+   samm:preferredName "Reidentification"@en ;
+   samm:description "The Reidentification operation converts from Pseudonyms back into Identifiers of the respective domains. It is transactional in a sense that either all given identifiers could be converted or none (in which case the output will be empty). In all other cases, the converted identifier at index i of the output corresponds to the original identifier at index i of the input."@en ;
+   samm:input ( :sourceDomain :conversionInput ) ;
+   samm:output :conversionOutput .
+
+:targetDomain a samm:Property ;
+   samm:preferredName "Target Domain"@en ;
+   samm:description "The Target Domain of a Conversion is an input parameter which qualifies the desired target pseudonyms/identifiers. In cases where the Conversion has only a single target domain and this is crystal-clear from the context, it may be ommited."@en ;
+   samm:characteristic :UrnCharacteristic ;
+   samm:exampleValue "urn:VAN:com.bmw:1.0.0#"^^xsd:anyURI .
+
+:conversionInput a samm:Property ;
+   samm:preferredName "Conversion Input"@en ;
+   samm:description "The Conversion Input lists the (qualified) source identifiers or pseudonyms which should be covered by the Convert operation."@en ;
+   samm:characteristic :QualifiedBatchOfIdentifiersEither ;
+   samm:exampleValue "[{'key':'urn:standard:org.iso:9721#','value':'2HNYD28297H520948'},{'key':'urn:standard:org.iso:9721#','value':'1GCGG25V631131538'},{'key':'urn:standard:org.iso:9721#','value':'5FNRL38778B035407'}]" .
+
+:conversionOutput a samm:Property ;
+   samm:preferredName "Conversion Output"@en ;
+   samm:description "The Conversion Output lists the (qualified) target identifiers or pseudonyms which have been computed by the Convert operation."@en ;
+   samm:characteristic :QualifiedBatchOfIdentifiersEither ;
+   samm:exampleValue "[{'key':'urn:VAN:com.bmw:1.0.0#','value':'670efca0-892c-4626-b870-d6d49799cdb0'},{'key':'urn:VAN:com.bmw:1.0.0#','value':'618bc46b-9f85-4de8-96ad-6da79390d766'},{'key':'urn:VAN:com.bmw:1.0.0#','value':'d42311ea-e461-48e5-bf85-31b1d8f45c03'}]" .
+
+:sourceDomain a samm:Property ;
+   samm:preferredName "Source Domain"@en ;
+   samm:description "The Source Domain of a Reidentification is an input parameter which qualifies the desired target identifiers. In cases where the Reidentification has only a single source domain and this is crystal-clear from the context, it may be ommited."@en ;
+   samm:characteristic :UrnCharacteristic ;
+   samm:exampleValue "urn:standard:org.iso:9721#"^^xsd:anyURI .
+
+:UrnCharacteristic a samm:Characteristic ;
+   samm:preferredName "A Urn"@en ;
+   samm:description "A Unique Resource Name (URN) preferrably in IRI syntax (with a trailing #)"@en ;
+   samm:dataType xsd:anyURI .
+
+:QualifiedBatchOfIdentifiersEither a samm-c:Either ;
+   samm:preferredName "A Qualified Batch of Identifiers"@en ;
+   samm:description "A Qualified Batch of Identifiers (and Pseudonyms) has two representations. Either it lists a set of unqualified Identifiers under a common domain/key. Or it lists a set of individually qualified Identifiers."@en ;
+   samm-c:left :QualifiedListOfIdentifiersSingleEntity ;
+   samm-c:right :QualifiedIdentifiersList .
+
+:QualifiedListOfIdentifiersSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "A Qualified List of Identifiers"@en ;
+   samm:description "In a Qualified List of (unqualified) Identifiers, any Identifier belongs to the same domain."@en ;
+   samm:dataType :QualifiedListOfIdentifiersEntity .
+
+:QualifiedIdentifiersList a samm-c:List ;
+   samm:preferredName "A List of Qualified Identifiers"@en ;
+   samm:description "In a List of Qualified Identifiers, any Identifier can belong to its own domain."@en ;
+   samm:dataType :QualifiedIdentifierEntity .
+
+:QualifiedListOfIdentifiersEntity a samm:Entity ;
+   samm:preferredName "Qualified List of Identifiers"@en ;
+   samm:description "Combines a domain with a list of unqualified Identifiers"@en ;
+   samm:properties ( :key :values ) .
+
+:QualifiedIdentifierEntity a samm:Entity ;
+   samm:preferredName "Qualified Identifier"@en ;
+   samm:description "Qualified Identifier is an entity which combines a namespace (key) and a local name (value) component."@en ;
+   samm:properties ( :key :value ) .
+
+:key a samm:Property ;
+   samm:preferredName "Key"@en ;
+   samm:description "The key hints to the type (identifier of a specific origin, pseudonym of a given domain)."@en ;
+   samm:characteristic :UrnCharacteristic ;
+   samm:exampleValue "urn:standard:org.iso:9721#"^^xsd:anyURI .
+
+:values a samm:Property ;
+   samm:preferredName "Values"@en ;
+   samm:description "The Values property hosts a list of (unqualified) identifiers or pseudonyms. The format and type of the value depends on the key property."@en ;
+   samm:characteristic :IdList ;
+   samm:exampleValue "['2HNYD28297H520948','1GCGG25V631131538', '5FNRL38778B035407']'" .
+
+:value a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "The value property is either a local identifier or pseudonym. The format and type of the value depends on the key property."@en ;
+   samm:characteristic :IdCharacteristic ;
+   samm:exampleValue "2HNYD28297H520948" .
+
+:IdList a samm-c:List ;
+   samm:preferredName "A List of Ids"@en ;
+   samm:description "A list of (unqualified) identifiers. This characteristic should be constrained in concrete implementations and in correspondence with associated domains of the Convert operation."@en ;
+   samm:dataType xsd:string .
+
+:IdCharacteristic a samm:Characteristic ;
+   samm:preferredName "An Id"@en ;
+   samm:description "An (unqualified) Identifier. This characteristic should be constrained in concrete implementations and in correspondence with associated domains of the Convert operation."@en ;
+   samm:dataType xsd:string .
+

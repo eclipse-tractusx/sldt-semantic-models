@@ -1,0 +1,334 @@
+---
+openapi: 3.0.3
+info:
+  title: Certificate of Destruction
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/certificate-of-destruction:
+    get:
+      tags:
+      - CertificateOfDestruction
+      operationId: getCertificateOfDestruction
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/CertificateOfDestruction'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_DateCharacteristic:
+      type: string
+      format: date
+      description: Date characteristic
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean:
+      type: boolean
+      description: Represents a boolean value (i.e. a "flag").
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_ZipTrait:
+      type: string
+      description: The maximal length of the the postal code is restricted to 14 chracters
+      maxLength: 14
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_CountryCodeTrait:
+      type: string
+      description: Constraint to be conform with the ISO 3166-1 alpha-2 code with
+        two upper case characters
+      pattern: "^[A-Z]{2}$"
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_Address:
+      description: Address characteristic which corresponds to the information given
+        in the certificate of destruction
+      type: object
+      properties:
+        street:
+          description: The street name
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        houseNumber:
+          description: The house number of the address
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        zip:
+          description: The postal code
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_ZipTrait'
+        location:
+          description: The location or city of the address
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        name:
+          description: "Name of the private individual, company or authority"
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        country:
+          description: Country code
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_CountryCodeTrait'
+      required:
+      - street
+      - houseNumber
+      - zip
+      - location
+      - name
+      - country
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_VehicleOwnerCharacteristic:
+      type: object
+      properties:
+        isVehicleOwnerInformationComplete:
+          description: "Boolean flag to indicate whether the information in the data\
+            \ set is complete. If the data set contains unknown fields, the value\
+            \ is false"
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        vehicleOwnerAddress:
+          description: 'Address of the vehicle owner '
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_Address'
+        citizenship:
+          description: Citizenship of the vehicle owner
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_CountryCodeTrait'
+      required:
+      - isVehicleOwnerInformationComplete
+      - vehicleOwnerAddress
+      - citizenship
+      description: Characteristic to describe the vehicle owner attributes
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_Weight:
+      type: number
+      description: weight of the vehicle
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_VehicleCharacteristic:
+      type: object
+      properties:
+        isVehicleInformationComplete:
+          description: "Boolean flag to indicate whether the information in the data\
+            \ set is complete. If the data set contains unknown fields, the value\
+            \ is false"
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        emptyWeight:
+          description: Empty weight in accordance with §2Abs.1 Nr.23 AltfahrzeugV
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_Weight'
+        firstRegistration:
+          description: The first time this vehicle got registered with an initial
+            license plate
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        licensePlate:
+          description: Current (i.e. last) assigned number/ license plate to the vehicle
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        licenseAbbreviation:
+          description: The first characters on the license plate
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        identification:
+          description: 'The unique vehicle identification number (VIN) of the vehicle '
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        model:
+          description: Vehicle model
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        brand:
+          description: Brand name
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        class:
+          description: Vehicle class the vehicle refers to
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - isVehicleInformationComplete
+      - emptyWeight
+      - firstRegistration
+      - licensePlate
+      - licenseAbbreviation
+      - identification
+      - model
+      - brand
+      - class
+      description: Characteristic to describe the vehicle attributes
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_PhoneTrait:
+      type: string
+      description: "Phone constraint allow only numbers, whitespaces and an optional\
+        \ leading plus sign"
+      pattern: "[+]?[0-9 ]+"
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_ContactCharacteristic:
+      description: Contact characteristic based on the contact information available
+        in the certificate of destruction
+      type: object
+      properties:
+        phone:
+          description: Phone number
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_PhoneTrait'
+        fax:
+          description: Fax number
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_PhoneTrait'
+      required:
+      - phone
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_ReceivingCharacteristic:
+      description: Characteristic to describe the receiving attributes
+      type: object
+      properties:
+        isVehicleWithdrawnFromService:
+          description: True if the vehicle has been withdrawn from the service and
+            out of circulation
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        receiverAuditorAddress:
+          description: 'The address of the auditor '
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_Address'
+        issueDate:
+          description: The date of issue of the certificate
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_DateCharacteristic'
+        expiryDate:
+          description: The date of expiration of the certificate
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_DateCharacteristic'
+        receiverContact:
+          description: Contact information of the receiving company
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_ContactCharacteristic'
+        receiverAuditorContact:
+          description: Auditor contact information
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_ContactCharacteristic'
+        receiverAddress:
+          description: 'The address of the receiver '
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_Address'
+      required:
+      - isVehicleWithdrawnFromService
+      - receiverAuditorAddress
+      - issueDate
+      - expiryDate
+      - receiverContact
+      - receiverAuditorContact
+      - receiverAddress
+    urn_samm_io.catenax.certificate_of_destruction_2.0.0_DismantlerCharacterisitc:
+      description: Characteristic to describe the dismantler attributes
+      type: object
+      properties:
+        isVehicleWithdrawnFromService:
+          description: True if the vehicle has been withdrawn from the service and
+            out of circulation
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        dismantlerAddress:
+          description: Address for the dismantling company
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_Address'
+        governmentAddress:
+          description: The address of the public government
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_Address'
+        receiverAuditorAddress:
+          description: 'The address of the auditor '
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_Address'
+        issueDate:
+          description: The date of issue of the certificate
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_DateCharacteristic'
+        expiryDate:
+          description: The date of expiration of the certificate
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_DateCharacteristic'
+        dismantlerContact:
+          description: Dismantler contact information
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_ContactCharacteristic'
+        dismantlerAuditorAddress:
+          description: Information about the auditor address
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_Address'
+        dismantlerAuditorContact:
+          description: Information about the auditor contact
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_ContactCharacteristic'
+      required:
+      - isVehicleWithdrawnFromService
+      - dismantlerAddress
+      - governmentAddress
+      - receiverAuditorAddress
+      - issueDate
+      - expiryDate
+      - dismantlerContact
+      - dismantlerAuditorAddress
+      - dismantlerAuditorContact
+    CertificateOfDestruction:
+      description: "Information on the certificate of destruction. In german: Verwertungsnachweis"
+      type: object
+      properties:
+        dismantlingDate:
+          description: Date of issue of the certificate of destruction
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_DateCharacteristic'
+        serialNumber:
+          description: Serial number to identify the certificate of destruction
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        vehicleOwnerProperties:
+          description: Properties under the first section of the certificate of destruction
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_VehicleOwnerCharacteristic'
+        vehicleProperties:
+          description: Properties under the second section of the certificate of destruction
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_VehicleCharacteristic'
+        returnPointProperties:
+          description: Properties under the third section of the certificate of destruction
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_ReceivingCharacteristic'
+        dismantlerProperties:
+          description: Properties under the fourth section of the certificate of destruction
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_of_destruction_2.0.0_DismantlerCharacterisitc'
+        companyNumber:
+          description: Company number as an dismantler
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - dismantlingDate
+      - serialNumber
+      - vehicleOwnerProperties
+      - vehicleProperties
+      - returnPointProperties
+      - dismantlerProperties
+      - companyNumber
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    CertificateOfDestruction:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CertificateOfDestruction'
+      description: The request was successful.
+  requestBodies:
+    CertificateOfDestruction:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CertificateOfDestruction'

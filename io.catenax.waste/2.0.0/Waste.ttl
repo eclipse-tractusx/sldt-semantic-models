@@ -1,0 +1,356 @@
+# Copyright (c) 2022,2024 Henkel AG & Co. KGaA
+# Copyright (c) 2022,2024 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2022,2024 SAP SE
+# Copyright (c) 2022,2024 ZF Friedrichshafen AG
+# Copyright (c) 2022,2024 Circular Economy Solutions GmbH (C-ECO)
+# Copyright (c) 2022,2024 Fraunhofer-Institut für Produktionstechnik und Automatisierung
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.waste:2.0.0#> .
+
+:Waste a samm:Aspect ;
+   samm:preferredName "waste"@en ;
+   samm:description "Waste materials which occurs from disassembly or production waste."@en ;
+   samm:properties ( :identification :materialProperties :currentMarketPrice :packagingType :riskPotential :formFactor :wasteDisposalDate ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:identification a samm:Property ;
+   samm:preferredName "identification"@en ;
+   samm:description "Identification and description of waste"@en ;
+   samm:characteristic :IdentificationCharacteristic .
+
+:materialProperties a samm:Property ;
+   samm:preferredName "material properties"@en ;
+   samm:description "The composition and materials waste consists of."@en ;
+   samm:characteristic :MaterialPropertiesCharacterisitc .
+
+:currentMarketPrice a samm:Property ;
+   samm:preferredName "current market price"@en ;
+   samm:description "The current market price for a material (not to be mistaken with the actual offer price of the waste material)."@en ;
+   samm:characteristic :CurrentMarketPriceCharacteristic .
+
+:packagingType a samm:Property ;
+   samm:preferredName "packaging type"@en ;
+   samm:description "Packaging type for the product."@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Container, bins, drum, IBC" .
+
+:riskPotential a samm:Property ;
+   samm:preferredName "risk potential"@en ;
+   samm:description "Potential risks of the waste like hazardusness, odor and pH value."@en ;
+   samm:characteristic :RiskPotentialCharacterisitc .
+
+:formFactor a samm:Property ;
+   samm:preferredName "form factor"@en ;
+   samm:description "The product form factor."@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Aluminum sheets pressed, stacked, round, square" .
+
+:wasteDisposalDate a samm:Property ;
+   samm:preferredName "waste disposal date"@en ;
+   samm:description "Date on which waste was incurred"@en ;
+   samm:characteristic :DateStamp .
+
+:IdentificationCharacteristic a samm:Characteristic ;
+   samm:preferredName "identification"@en ;
+   samm:description "Identification and description of waste"@en ;
+   samm:dataType :IdentificationEntity .
+
+:MaterialPropertiesCharacterisitc a samm:Characteristic ;
+   samm:preferredName "material properties"@en ;
+   samm:description "The composition and materials waste consists of."@en ;
+   samm:dataType :MaterialPropertiesEntity .
+
+:CurrentMarketPriceCharacteristic a samm:Characteristic ;
+   samm:preferredName "current market price"@en ;
+   samm:description "The current market price for a material (not to be mistaken with the actual offer price of the waste material)."@en ;
+   samm:dataType :CurrentMarketPriceEntity .
+
+:Text a samm:Characteristic ;
+   samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+   samm:dataType xsd:string .
+
+:RiskPotentialCharacterisitc a samm:Characteristic ;
+   samm:preferredName "risk potential"@en ;
+   samm:description "Potential risks of the waste like hazardusness, odor and pH value."@en ;
+   samm:dataType :RiskPotentialEntity .
+
+:DateStamp a samm:Characteristic ;
+   samm:preferredName "date stamp"@en ;
+   samm:description "Date on which waste was incurred"@en ;
+   samm:dataType xsd:date .
+
+:IdentificationEntity a samm:Entity ;
+   samm:preferredName "identification"@en ;
+   samm:description "Entity encapsulating the describing details of waste"@en ;
+   samm:properties ( :wasteCode :wasteCodeDescription [ samm:property :metalScrapIdentificationCode; samm:optional true ] :wasteCodeJurisdiction ) .
+
+:MaterialPropertiesEntity a samm:Entity ;
+   samm:preferredName "material properties"@en ;
+   samm:description "Entity encapsulating the details of the material properties of waste."@en ;
+   samm:properties ( :productComposition :productPurity :density ) .
+
+:CurrentMarketPriceEntity a samm:Entity ;
+   samm:preferredName "current market price"@en ;
+   samm:description "Entity encapsulating the details of the price of waste."@en ;
+   samm:properties ( :marketIndexMaterialPrice :marketIndexCurrency ) .
+
+:RiskPotentialEntity a samm:Entity ;
+   samm:preferredName "risk potential"@en ;
+   samm:description "Entity encapsulating the details of the risk potential of waste."@en ;
+   samm:properties ( :hazardousness :phValue :odor :contamination ) .
+
+:wasteCode a samm:Property ;
+   samm:preferredName "Waste code"@en ;
+   samm:description "The waste code identifying the waste type"@en ;
+   samm:see <https://www.gesetze-im-internet.de/avv/anlage.html> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "02 01 10" .
+
+:wasteCodeDescription a samm:Property ;
+   samm:preferredName "Waste Code Description"@en ;
+   samm:description "The waste code description"@en ;
+   samm:see <https://www.gesetze-im-internet.de/avv/anlage.html> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "metal waste" .
+
+:metalScrapIdentificationCode a samm:Property ;
+   samm:preferredName "waste code jurisdiction"@en ;
+   samm:description "The jurisdiction in which the waste code is valid (country, EU,...)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "02 01 10" .
+
+:wasteCodeJurisdiction a samm:Property ;
+   samm:preferredName "waste code jurisdiction"@en ;
+   samm:description "The jurisdiction in which the waste code is valid (country, EU,...)"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "EU" .
+
+:productComposition a samm:Property ;
+   samm:preferredName "Product Composition"@en ;
+   samm:description "Product material composition."@en ;
+   samm:characteristic :ProductCompositionCharacteristic .
+
+:productPurity a samm:Property ;
+   samm:preferredName "product purity"@en ;
+   samm:description "Material purity"@en ;
+   samm:characteristic :ProductPurityCharacteristic .
+
+:density a samm:Property ;
+   samm:preferredName "Density"@en ;
+   samm:description "The product density."@en ;
+   samm:characteristic :DensityCharacteristic ;
+   samm:exampleValue "3"^^xsd:decimal .
+
+:marketIndexMaterialPrice a samm:Property ;
+   samm:preferredName "Market Index Material Price"@en ;
+   samm:description "The market index for a material predominating material composition of a product (relevant for production waste/scrap)."@en ;
+   samm:see <https://www.bdsv.org/unser-service/markt-preise/> ;
+   samm:characteristic :MarketIndexMaterialPriceCharacterisitic .
+
+:marketIndexCurrency a samm:Property ;
+   samm:preferredName "Market Index Currency"@en ;
+   samm:description "The currency in which market index is calculated. According to: ISO 4217"@en ;
+   samm:see <https://www.bdsv.org/unser-service/markt-preise/> ;
+   samm:characteristic :MarketIndexCurrencyTrait ;
+   samm:exampleValue "EUR" .
+
+:hazardousness a samm:Property ;
+   samm:preferredName "Hazardousness"@en ;
+   samm:description "If the product can be classified as hazardous"@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:phValue a samm:Property ;
+   samm:preferredName "Ph-Value"@en ;
+   samm:description "The pH-value for liquids."@en ;
+   samm:characteristic :PhValueCharacterisitc ;
+   samm:exampleValue "5.5"^^xsd:double .
+
+:odor a samm:Property ;
+   samm:preferredName "Odor"@en ;
+   samm:description "The product odor."@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Foul-smelling, sweetish" .
+
+:contamination a samm:Property ;
+   samm:preferredName "Contamination"@en ;
+   samm:description "Possible contamination, e.g. with oil"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Light oil contamination, Stark verschmutzt" .
+
+:ProductCompositionCharacteristic a samm-c:List ;
+   samm:preferredName "product composition"@en ;
+   samm:description "Product material composition."@en ;
+   samm:dataType :ProductCompositionEntity .
+
+:ProductPurityCharacteristic a samm:Characteristic ;
+   samm:preferredName "product purity"@en ;
+   samm:description "Material purity"@en ;
+   samm:dataType :ProductCompositionEntity .
+
+:DensityCharacteristic a samm-c:Measurement ;
+   samm:dataType xsd:decimal ;
+   samm-c:unit unit:kilogramPerCubicMetre .
+
+:MarketIndexMaterialPriceCharacterisitic a samm:Characteristic ;
+   samm:preferredName "market index material price"@en ;
+   samm:dataType :MarketIndexMaterialPriceEntity .
+
+:MarketIndexCurrencyTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :LengthConstraint .
+
+:PhValueCharacterisitc a samm:Characteristic ;
+   samm:preferredName "pH value"@en ;
+   samm:dataType xsd:double .
+
+:ProductCompositionEntity a samm:Entity ;
+   samm:preferredName "product composition"@en ;
+   samm:description "Entity encapsulating the details of the product material properties (name and weight percentage) the waste consists of"@en ;
+   samm:properties ( :materialName :materialWeightPercentage ) .
+
+:MarketIndexMaterialPriceEntity a samm:Entity ;
+   samm:preferredName "market index material price"@en ;
+   samm:description "Entity encapsulating the details of the price of waste in regards of weight, volume, area or piece/amount."@en ;
+   samm:properties ( [ samm:property :pricePerWeightInGram; samm:optional true ] [ samm:property :pricePerWeightInKiloGram; samm:optional true ] [ samm:property :pricePerVolumeInLitre; samm:optional true ] [ samm:property :pricePerVolumeInMillilitre; samm:optional true ] [ samm:property :pricePerAreaInSquareMeter; samm:optional true ] [ samm:property :pricePerAreaInSquareMillimeter; samm:optional true ] [ samm:property :pricePerLengthInMeter; samm:optional true ] [ samm:property :pricePerLengthInMillimeter; samm:optional true ] [ samm:property :pricePerPiece; samm:optional true ] ) .
+
+:LengthConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "length constraint"@en ;
+   samm-c:minValue "3"^^xsd:nonNegativeInteger ;
+   samm-c:maxValue "3"^^xsd:nonNegativeInteger .
+
+:materialName a samm:Property ;
+   samm:preferredName "material name"@en ;
+   samm:description "Name of the material"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Cobalt" .
+
+:materialWeightPercentage a samm:Property ;
+   samm:preferredName "material weight percentage"@en ;
+   samm:description "The weight percentage of a specific material of the waste in percent."@en ;
+   samm:characteristic :PercentCharacterisitic ;
+   samm:exampleValue "30"^^xsd:decimal .
+
+:pricePerWeightInGram a samm:Property ;
+   samm:preferredName "price per weight in gram"@en ;
+   samm:description "Price per weight in gram of waste material"@en ;
+   samm:characteristic :PricePerWeightInGramCharacteristic ;
+   samm:exampleValue "300"^^xsd:decimal .
+
+:pricePerWeightInKiloGram a samm:Property ;
+   samm:preferredName "price per weight in kilo gram"@en ;
+   samm:description "Price per weight in kilo gram of waste material"@en ;
+   samm:characteristic :PricePerWeightInKiloGramCharacterisitic ;
+   samm:exampleValue "1250"^^xsd:decimal .
+
+:pricePerVolumeInLitre a samm:Property ;
+   samm:preferredName "price per volume in litre"@en ;
+   samm:description "Price per volume in litre of waste material"@en ;
+   samm:characteristic :PricePerVolumeInLitreCharacteristic ;
+   samm:exampleValue "1250"^^xsd:decimal .
+
+:pricePerVolumeInMillilitre a samm:Property ;
+   samm:preferredName "price per volume in millilitre"@en ;
+   samm:description "Price per volume in millilitre of waste material"@en ;
+   samm:characteristic :PricePerVolumeInMillilitreCharacteristic ;
+   samm:exampleValue "300"^^xsd:decimal .
+
+:pricePerAreaInSquareMeter a samm:Property ;
+   samm:preferredName "price per area in square meter"@en ;
+   samm:description "Price per area in square meter of waste material"@en ;
+   samm:characteristic :PricePerAreaInSquareMeterCharacteristic ;
+   samm:exampleValue "1250"^^xsd:decimal .
+
+:pricePerAreaInSquareMillimeter a samm:Property ;
+   samm:preferredName "price per area in square millimeter"@en ;
+   samm:description "Price per area in square millimeter of waste material"@en ;
+   samm:characteristic :PricePerAreaInSquareMillimeterCharacteristic ;
+   samm:exampleValue "300"^^xsd:decimal .
+
+:pricePerLengthInMeter a samm:Property ;
+   samm:preferredName "price per length in meter"@en ;
+   samm:description "Price per length in meter of waste material"@en ;
+   samm:characteristic :PricePerLengthInMeterCharacteristic ;
+   samm:exampleValue "1250"^^xsd:decimal .
+
+:pricePerLengthInMillimeter a samm:Property ;
+   samm:preferredName "price per length in millimeter"@en ;
+   samm:description "Price per length in millimeter of waste material"@en ;
+   samm:characteristic :PricePerLengthInMillimeterCharacteristic ;
+   samm:exampleValue "300"^^xsd:decimal .
+
+:pricePerPiece a samm:Property ;
+   samm:preferredName "price per piece"@en ;
+   samm:description "Price per piece of waste material"@en ;
+   samm:characteristic :PricePerPieceCharacteristic ;
+   samm:exampleValue "2750"^^xsd:decimal .
+
+:PercentCharacterisitic a samm-c:Measurement ;
+   samm:preferredName "percent characterisitic"@en ;
+   samm:dataType xsd:decimal ;
+   samm-c:unit unit:percent .
+
+:PricePerWeightInGramCharacteristic a samm:Characteristic ;
+   samm:preferredName "price per weight in gram"@en ;
+   samm:description "Price per weight in gram of waste material"@en ;
+   samm:dataType xsd:decimal .
+
+:PricePerWeightInKiloGramCharacterisitic a samm:Characteristic ;
+   samm:preferredName "price per weight in kilo gram"@en ;
+   samm:description "Price per weight in kilo gram of waste material"@en ;
+   samm:dataType xsd:decimal .
+
+:PricePerVolumeInLitreCharacteristic a samm:Characteristic ;
+   samm:preferredName "price per volume in litre"@en ;
+   samm:description "Price per volume in litre gram of waste material"@en ;
+   samm:dataType xsd:decimal .
+
+:PricePerVolumeInMillilitreCharacteristic a samm:Characteristic ;
+   samm:preferredName "price per volume in millilitre"@en ;
+   samm:description "Price per volume in millilitre of waste material"@en ;
+   samm:dataType xsd:decimal .
+
+:PricePerAreaInSquareMeterCharacteristic a samm:Characteristic ;
+   samm:preferredName "price per area in square meter"@en ;
+   samm:description "Price per area in square meter of waste material"@en ;
+   samm:dataType xsd:decimal .
+
+:PricePerAreaInSquareMillimeterCharacteristic a samm:Characteristic ;
+   samm:preferredName "price per area in square millimeter"@en ;
+   samm:description "Price per area in square millimeter of waste material"@en ;
+   samm:dataType xsd:decimal .
+
+:PricePerLengthInMeterCharacteristic a samm:Characteristic ;
+   samm:preferredName "Price per length in meter of waste material"@en ;
+   samm:description "Price per length in meter of waste material"@en ;
+   samm:dataType xsd:decimal .
+
+:PricePerLengthInMillimeterCharacteristic a samm:Characteristic ;
+   samm:preferredName "price per length in millimeter"@en ;
+   samm:description "Price per length in millimeter of waste material"@en ;
+   samm:dataType xsd:decimal .
+
+:PricePerPieceCharacteristic a samm:Characteristic ;
+   samm:preferredName "price per piece"@en ;
+   samm:description "Price per piece of waste material"@en ;
+   samm:dataType xsd:decimal .
+
