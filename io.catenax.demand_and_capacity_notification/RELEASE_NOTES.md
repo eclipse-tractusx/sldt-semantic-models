@@ -11,6 +11,7 @@ All notable changes to this model will be documented in this file.
 ### Changed
 
 - relatedSourceMessageId: renamed to sourceNotificationId and reframed semantics
+- preferredName of TextLengthConstraint was CamelCase
 
 ### Removed
 
