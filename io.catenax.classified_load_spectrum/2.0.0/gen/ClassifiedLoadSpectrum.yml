@@ -1,0 +1,391 @@
+---
+openapi: 3.0.3
+info:
+  title: Classified Load Spectrum
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/classified-load-spectrum:
+    get:
+      tags:
+      - ClassifiedLoadSpectrum
+      operationId: getClassifiedLoadSpectrum
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/ClassifiedLoadSpectrum'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_ChannelNameCharacteristic:
+      type: string
+      description: Identifier of channel
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: Describes a Property containing a reference to one of the units
+        in the Unit Catalog.
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_LimitCharacteristic:
+      type: number
+      description: Min and max value of classified load range
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_NumberOfBinsCharacteristic:
+      type: number
+      minimum: 1
+      description: 'Number of classes '
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_BinLimitsList:
+      description: list of class limits
+      type: array
+      items:
+        type: number
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_LoadChannelEntity:
+      description: "Full information on loadchannel including name, unit, limits,\
+        \ classes"
+      type: object
+      properties:
+        channelName:
+          description: "identifier of the load channel, needed to combine the loading\
+            \ with the damage calculation"
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_ChannelNameCharacteristic'
+        unit:
+          description: unit of the corresponding load channel
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference'
+        lowerLimit:
+          description: "for classification, a range of load values must be set. The\
+            \ limits and the number of bins decribe the classes. "
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_LimitCharacteristic'
+        upperLimit:
+          description: "for classification, a range of load values must be set. The\
+            \ limits and the number of bins decribe the classes. "
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_LimitCharacteristic'
+        numberOfBins:
+          description: "for classification, a range of load values must be set. The\
+            \ limits and the number of bins decribe the classes. "
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_NumberOfBinsCharacteristic'
+        binLimits:
+          description: "In case of non- equidistant classes, the limits of the intervalls\
+            \ are given here. Optional, but if given, this list will be used. List\
+            \ must start with lowerLimit and end with upperLimit."
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_BinLimitsList'
+      required:
+      - channelName
+      - unit
+      - lowerLimit
+      - upperLimit
+      - numberOfBins
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_ChannelList:
+      description: "Full information on loadchannel including name, unit, limits,\
+        \ classes"
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_LoadChannelEntity'
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_CountingMethodCharacteristic:
+      type: string
+      description: "Specification of counting method. EventCount, PeakCount, MaximunCount\
+        \  specify the number of events. RangeCount specify the amplitudes of load\
+        \ cycles, Rangedifference of load classes Rainflow describes the number of\
+        \ closed hystersis fron one class to another class. Different procedures exists\
+        \ , the default is 4-point-method. If 3-point-method or HCM method is used,\
+        \ the corresponding values should be used. LRD means load revolution distribution\
+        \ describing the load spectra for gear sets.  "
+      enum:
+      - Rainflow
+      - LRD
+      - EventCount
+      - TimeAtLevel
+      - RangeCount
+      - PeakCount
+      - MaximumCount
+      - Rainflow3Point
+      - Rainflow
+      - RainflowHCM
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_CountedValueCharacteristic:
+      type: string
+      description: "By default, the number of for example events or peaks are counted.\
+        \ Value should be given if for example time or revolutions are counted."
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_HeaderCharacteristic:
+      description: "Information on the classified load spectrum including kind of\
+        \ classification, Classes, Limits"
+      type: object
+      properties:
+        channels:
+          description: "Full information on loadchannel including name, unit, limits,\
+            \ classes"
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_ChannelList'
+        countingMethod:
+          description: "Type of classification: rainflow or event counting or load\
+            \ revolution distribution"
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_CountingMethodCharacteristic'
+        countingValue:
+          description: "Optional. By default, the number of for example events or\
+            \ peaks are counted. Value should be given if for example time or revolutions\
+            \ are counted."
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_CountedValueCharacteristic'
+        countingUnit:
+          description: "depending on counted value: if revolutions are counted, counted\
+            \ unit might be 1/min or 1/s.  Required, default is \"/\", which means\
+            \ no unit. "
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference'
+      required:
+      - channels
+      - countingMethod
+      - countingUnit
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_ClassListCharacteristic:
+      description: 'List of load classes '
+      type: array
+      items:
+        type: number
+        minimum: 1
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_ClassNameCharacteristic:
+      type: string
+      description: Name of the load channel class
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_ClassesListEntity:
+      description: Each channel class list are identified by the name and contains
+        the list of classes describing the load.
+      type: object
+      properties:
+        classList:
+          description: "The class list contains the classes describing the load. The\
+            \ loading is the combination of all load channel classes, therefore, duplicates\
+            \ are possible."
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_ClassListCharacteristic'
+        className:
+          description: "Channel name extended by \"-class\". In case of rainflow counting,\
+            \ the extention is from-class and to-class."
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_ClassNameCharacteristic'
+      required:
+      - classList
+      - className
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_ClassesList:
+      description: "Several load channel classes  are sorted in a list. For rainflow\
+        \ counting, a load channel has two channel class lists, from-class and to-class. "
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_ClassesListEntity'
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_CountsNameCharacteristic:
+      type: string
+      description: "Name of countings, \"Counts\" or \"Time\"  or \"revolutions\"."
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_Counts:
+      description: "Counts of loads in the respective loadingclass. might be event\
+        \ counts, time counting or revolution counts - depending on the CountingMethod\
+        \ and CountingUnit"
+      type: array
+      items:
+        type: number
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_CountsCharacteristic:
+      description: List of counts according to the load channel lists.
+      type: object
+      properties:
+        countsName:
+          description: "Name of the counted value: \"Counts\" or \"Time\" or\" Revolutions\""
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_CountsNameCharacteristic'
+        countsList:
+          description: List of counts according to the load channel lists.
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_Counts'
+      required:
+      - countsName
+      - countsList
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_BodySets:
+      description: Set for channelclasses and counts
+      type: object
+      properties:
+        classes:
+          description: "Several load channel classes  are sorted in a list. For rainflow\
+            \ counting, a load channel has two channel class lists, from-class and\
+            \ to-class. "
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_ClassesList'
+        counts:
+          description: List of counts according to the load channel lists.
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_CountsCharacteristic'
+      required:
+      - classes
+      - counts
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_ComponentCharacteristic:
+      type: string
+      description: 'Component or assembly the load spectrum is valid for. A ZF_lrd
+        counted load spectrum  belomgs to a gear set while a temperature load spectrum
+        belong to the part where the temperature is measured (gear oil or IGBT). '
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_Mileage:
+      type: number
+      minimum: 0
+      description: Mileage of the vehicle respectively part.
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_OperatingHoursCharacteristic:
+      type: number
+      description: Operating hours for the vehicle respectively part.
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_StatusCharacteristic:
+      description: "Status describes the date when this aspect is filled, the according\
+        \ mileage and according operating time. "
+      type: object
+      properties:
+        mileage:
+          description: Mileage of the vehicle respectively part.
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_Mileage'
+        date:
+          description: date representing the load spectrum
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        operatingHours:
+          description: Operating hours covered by the load spectrum.
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_OperatingHoursCharacteristic'
+      required:
+      - date
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_MetadataCharacteristic:
+      description: "All information decribing the source, purpose and application\
+        \ of the load spectrum."
+      type: object
+      properties:
+        componentDescription:
+          description: 'Component or assembly the load spectrum is valid for. A ZF_lrd
+            counted load spectrum  belomgs to a gear set while a temperature load
+            spectrum belong to the part where the temperature is measured (gear oil
+            or IGBT). '
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_ComponentCharacteristic'
+        routeDescription:
+          description: Information on the route which the load spectrum is representing.
+            For example "city munich heavy trailer" or "motorway light trailer agil
+            driver".
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        projectDescription:
+          description: Further information on the vehicle /assembly/component.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        status:
+          description: Identification of vehicle status
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_StatusCharacteristic'
+      required:
+      - componentDescription
+      - routeDescription
+      - projectDescription
+      - status
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_TargetComponentIDCharacteristic:
+      type: string
+      format: uri
+      description: "Asset ID of the specific parent: vehicle or gearbox or battery"
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_ResiduumClassNameCharacteristic:
+      type: string
+      description: Channelname extended by -class
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_ResiduumListCharacteristic:
+      description: List of load-classes not defining a closed hysterese.
+      type: array
+      items:
+        type: number
+        minimum: 1
+    urn_samm_io.catenax.classified_load_spectrum_2.0.0_ResiduumCharacteristic:
+      description: Rainflow counting is restricted to one channel. Unclosed hystereses
+        are described as list of classes.
+      type: object
+      properties:
+        residuumClassName:
+          description: Name of the load channel extended by -class
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_ResiduumClassNameCharacteristic'
+        residuumList:
+          description: List of load-classes not defining a closed hysterese.
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_ResiduumListCharacteristic'
+      required:
+      - residuumClassName
+      - residuumList
+    ClassifiedLoadSpectrum:
+      description: 'load spectrum with classified loads '
+      type: object
+      properties:
+        header:
+          description: "Information on the classified load spectrum including kind\
+            \ of classification, Classes, Limits"
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_HeaderCharacteristic'
+        body:
+          description: List of load channel classes and corresponding counts
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_BodySets'
+        metadata:
+          description: "all information describing the source, purpose and application\
+            \ of the load spectrum."
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_MetadataCharacteristic'
+        targetComponentID:
+          description: 'CX-ID /AAS-ID des Zwilling '
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_TargetComponentIDCharacteristic'
+        residuum:
+          description: Residuum of load history i case of rainflow counting
+          $ref: '#/components/schemas/urn_samm_io.catenax.classified_load_spectrum_2.0.0_ResiduumCharacteristic'
+      required:
+      - header
+      - body
+      - metadata
+      - targetComponentID
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ClassifiedLoadSpectrum:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClassifiedLoadSpectrum'
+      description: The request was successful.
+  requestBodies:
+    ClassifiedLoadSpectrum:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClassifiedLoadSpectrum'

@@ -1,0 +1,185 @@
+#######################################################################
+# Copyright (c) 2024 BASF SE
+# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML and Fraunhofer ISST)
+# Copyright (c) 2024 Henkel AG & Co. KGaA
+# Copyright (c) 2024 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2024 Mercedes Benz AG
+# Copyright (c) 2024 SAP SE
+# Copyright (c) 2024 SupplyOn AG
+# Copyright (c) 2024 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2024 Volkswagen AG
+# Copyright (c) 2024 ZF Friedrichshafen AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.short_term_material_demand:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:ShortTermMaterialDemand a samm:Aspect ;
+   samm:preferredName "Short Term Material Demand"@en ;
+   samm:description "The requirements of a customer towards a specific supplier for a specific material. Each material demand is unique by its Customer, Supplier and Material Number."@en ;
+   samm:properties ( :demandSeries :materialGlobalAssetId ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:demandSeries a samm:Property ;
+   samm:preferredName "Demand Series"@en ;
+   samm:description "The demands for a dedicated material in a given time period, distinguished by their demand location and demand category."@en ;
+   samm:characteristic :DemandSeriesSet .
+
+:materialGlobalAssetId a samm:Property ;
+   samm:preferredName "UUID of the Part Type Twin"@en ;
+   samm:description "Identifier used uniquely to identify part type twin."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df" .
+
+:DemandSeriesSet a samm-c:Set ;
+   samm:preferredName "Demand Series Set"@en ;
+   samm:description "A set of demand series belonging to a certain material demand. Each demand series in the set must have a unique combination of customer location and demand category."@en ;
+   samm:dataType :DemandSeries .
+
+:DemandSeries a samm:Entity ;
+   samm:preferredName "Demand Series"@en ;
+   samm:description "Encapsulates the demand series related information."@en ;
+   samm:properties ( :demands :demandCategory [ samm:property :expectedSupplierLocationBpns; samm:optional true ] :customerLocationBpns :lastUpdatedOnDateTime ) .
+
+:demands a samm:Property ;
+   samm:preferredName "Demands"@en ;
+   samm:description "A time series on a daily basis along a given time period to describe the demand values for this demand series."@en ;
+   samm:characteristic :DemandTimeSeries .
+
+:demandCategory a samm:Property ;
+   samm:preferredName "Demand Category"@en ;
+   samm:description "Type of demand for this demand series."@en ;
+   samm:characteristic :DemandCategoryCharacteristic .
+
+:expectedSupplierLocationBpns a samm:Property ;
+   samm:preferredName "Expected Supplier Location"@en ;
+   samm:description "The Business Partner Number Site (BPNS) of the site from where the customer expects the supplier to fulfill the demands of the demand series. The value is used for informational purposes only and is therefore not binding for the supplier."@en ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS8888888888XX" .
+
+:customerLocationBpns a samm:Property ;
+   samm:preferredName "Customer Location"@en ;
+   samm:description "The Business Partner Number Site (BPNS) of the site at which the customer needs the specified material for this demand series."@en ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS8888888888XX" .
+
+:lastUpdatedOnDateTime a samm:Property ;
+   samm:preferredName "Lasted Updated on Date"@en ;
+   samm:description "Date and time at which the DemandSeries has been updated by the reporting partner's system. Date and time are set according to a timezone."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-11-05T08:15:30.123-05:00"^^xsd:dateTime .
+
+:DemandTimeSeries a samm-c:SortedSet ;
+   samm:preferredName "Demand Time Series"@en ;
+   samm:description "The demands in a given time period."@en ;
+   samm:dataType :Demand .
+
+:DemandCategoryCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Demand Category Characteristic"@en ;
+   samm:description "The classification of demands used for prioritization or allocation."@en ;
+   samm:dataType :DemandCategoryType ;
+   samm-c:values ( :DemandCategoryDefault :DemandCategoryAfterSales :DemandCategorySeries :DemandCategoryPhaseInPeriod :DemandCategorySingleOrder :DemandCategorySmallSeries :DemandCategoryExtraordinaryDemand :DemandCategoryPhaseOutPeriod ) .
+
+:Demand a samm:Entity ;
+   samm:preferredName "Demand"@en ;
+   samm:description "A single demand for a day."@en ;
+   samm:properties ( :demand :day ) .
+
+:DemandCategoryType a samm:Entity ;
+   samm:preferredName "Demand Category Type"@en ;
+   samm:description "Describes the type of a demand category."@en ;
+   samm:properties ( :demandCategoryCode [ samm:property :demandCategoryName; samm:notInPayload true ] ) .
+
+:DemandCategoryDefault a :DemandCategoryType ;
+   :demandCategoryCode "0001" ;
+   :demandCategoryName "Default"@en .
+
+:DemandCategoryAfterSales a :DemandCategoryType ;
+   :demandCategoryCode "A1S1" ;
+   :demandCategoryName "After-Sales"@en .
+
+:DemandCategorySeries a :DemandCategoryType ;
+   :demandCategoryCode "SR99" ;
+   :demandCategoryName "Series"@en .
+
+:DemandCategoryPhaseInPeriod a :DemandCategoryType ;
+   :demandCategoryCode "PI01" ;
+   :demandCategoryName "Phase-In Period"@en .
+
+:DemandCategorySingleOrder a :DemandCategoryType ;
+   :demandCategoryCode "OS01" ;
+   :demandCategoryName "Single Order"@en .
+
+:DemandCategorySmallSeries a :DemandCategoryType ;
+   :demandCategoryCode "OI01" ;
+   :demandCategoryName "Small Series"@en .
+
+:DemandCategoryExtraordinaryDemand a :DemandCategoryType ;
+   :demandCategoryCode "ED01" ;
+   :demandCategoryName "Extraordinary Demand"@en .
+
+:DemandCategoryPhaseOutPeriod a :DemandCategoryType ;
+   :demandCategoryCode "PO01" ;
+   :demandCategoryName "Phase-Out Period"@en .
+
+:demand a samm:Property ;
+   samm:preferredName "Demand"@en ;
+   samm:description "Quantity of materials required on a specific day. This demand is not a call-off and should be as close as possible to the actual production program."@en ;
+   samm:characteristic :DemandQuantityCharacteristic .
+
+:day a samm:Property ;
+   samm:preferredName "Day"@en ;
+   samm:description "Day of the demanded quantity."@en ;
+   samm:characteristic :DateCharacteristic ;
+   samm:exampleValue "2023-10-09"^^xsd:date .
+
+:demandCategoryCode a samm:Property ;
+   samm:preferredName "Demand Category Code"@en ;
+   samm:description "The code identifying a demand category."@en ;
+   samm:characteristic :DemandCategoryCodeCharacteristic ;
+   samm:exampleValue "0001" .
+
+:demandCategoryName a samm:Property ;
+   samm:preferredName "Demand Category Name"@en ;
+   samm:description "The name describing a demand category."@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "Default"@en .
+
+:DemandQuantityCharacteristic a samm:Characteristic ;
+   samm:preferredName "Demand Quantity Characteristic"@en ;
+   samm:description "Demand expressed as item quantity with a unit of measure."@en ;
+   samm:dataType ext-quantity:ItemQuantityEntity .
+
+:DateCharacteristic a samm:Characteristic ;
+   samm:preferredName "Date Characteristic"@en ;
+   samm:description "An ISO date on which a given demand is needed. Must be given as single day (consider the time zone of the customer's location)."@en ;
+   samm:see <https://www.iso.org/iso-8601-date-and-time-format.html> ;
+   samm:dataType xsd:date .
+
+:DemandCategoryCodeCharacteristic a samm-c:Code ;
+   samm:preferredName "Demand Category Code Characteristic"@en ;
+   samm:description "The code identifying a demand category."@en ;
+   samm:dataType xsd:string .
+
