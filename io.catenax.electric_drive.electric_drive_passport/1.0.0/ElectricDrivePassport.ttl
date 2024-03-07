@@ -29,18 +29,17 @@
 @prefix : <urn:samm:io.catenax.electric_drive.electric_drive_passport:1.0.0#> .
 @prefix ext-pass: <urn:samm:io.catenax.transmission.transmission_pass:2.0.0#> .
 @prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:4.0.0#> .
-@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
 
 :ElectricDrivePassport a samm:Aspect ;
-   samm:preferredName "Transmission Pass"@en ;
-   samm:description "The transmission passport corresponds to the digital product passport information required by the proposed Ecodesign Regulation (ESPR-2022) and describes the data that is collected and available during the lifespan of a transmission."@en ;
-   samm:properties ( :productSpecificParameters :productUnspecificParameters ) ;
+   samm:preferredName "Electric Drive Passport"@en ;
+   samm:description "The electric drive passport corresponds to the digital product passport information required by the proposed Ecodesign Regulation (ESPR-2022) and describes the data that is collected and available during the lifespan of an electric drive."@en ;
+   samm:properties ( [ samm:property :productSpecificParameters; samm:payloadName "specific" ] [ samm:property :productUnspecificParameters; samm:payloadName "unspecific" ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
 :productSpecificParameters a samm:Property ;
    samm:preferredName "Product Specific Parameters"@en ;
-   samm:description "Product specific parameters of the transmission."@en ;
+   samm:description "Product specific parameters of the electric drive."@en ;
    samm:characteristic :SpecificCharacteristic .
 
 :productUnspecificParameters a samm:Property ;
@@ -50,7 +49,7 @@
 
 :SpecificCharacteristic a samm:Characteristic ;
    samm:preferredName "Specific Characteristic"@en ;
-   samm:description "The Characteristic to describe product specific parameters of the transmission."@en ;
+   samm:description "The Characteristic to describe product specific parameters of the electric drive."@en ;
    samm:dataType :SpecificEntity .
 
 :UnspecificCharacteristic a samm:Characteristic ;
@@ -60,7 +59,7 @@
 
 :SpecificEntity a samm:Entity ;
    samm:preferredName "Specific Entity"@en ;
-   samm:properties ( :generalInformation :emachine :transmission :coolingAndLubricants :inverter :systemAndPerformance :documents ) .
+   samm:properties ( :generalInformation :emachine :coolingAndLubricants :inverter :systemAndPerformance :transmission :electricDriveDocuments ) .
 
 :UnspecificEntity a samm:Entity ;
    samm:preferredName "Unspecific Entity"@en ;
@@ -75,10 +74,6 @@
    samm:preferredName "E-Machine"@en ;
    samm:characteristic :Characteristic3 .
 
-:transmission a samm:Property ;
-   samm:preferredName "Transmission"@en ;
-   samm:characteristic :Characteristic5 .
-
 :coolingAndLubricants a samm:Property ;
    samm:preferredName "Cooling and Lubricants"@en ;
    samm:characteristic :Characteristic4 .
@@ -91,8 +86,11 @@
    samm:preferredName "System and Performance"@en ;
    samm:characteristic :Characteristic7 .
 
-:documents a samm:Property ;
-   samm:preferredName "Documents"@en ;
+:transmission a samm:Property ;
+   samm:preferredName "Transmission"@en ;
+   samm:characteristic :Characteristic5 .
+
+:electricDriveDocuments a samm:Property ;
    samm:characteristic :Characteristic8 .
 
 :Characteristic1 a samm:Characteristic ;
@@ -100,9 +98,6 @@
 
 :Characteristic3 a samm:Characteristic ;
    samm:dataType :Entity2 .
-
-:Characteristic5 a samm:Characteristic ;
-   samm:dataType :Entity3 .
 
 :Characteristic4 a samm:Characteristic ;
    samm:dataType :Entity4 .
@@ -113,6 +108,9 @@
 :Characteristic7 a samm:Characteristic ;
    samm:dataType :Entity6 .
 
+:Characteristic5 a samm:Characteristic ;
+   samm:dataType :Entity3 .
+
 :Characteristic8 a samm:Characteristic ;
    samm:dataType :Entity7 .
 
@@ -120,25 +118,25 @@
    samm:properties ( :compatibleVehicleTypes :service ) .
 
 :Entity2 a samm:Entity ;
-   samm:properties ( :eMachineId :eMachineTechnology :eMachineWeight :permanentMagnetType :ratedSpeed :statorDiameter ) .
-
-:Entity3 a samm:Entity ;
-   samm:properties ( :transmissionId :gearboxStructure ext-pass:oil ) .
+   samm:properties ( [ samm:property :eMachineId; samm:payloadName "id" ] [ samm:property :eMachineWeight; samm:payloadName "Weight" ] :permanentMagnetType :ratedSpeed :statorDiameter [ samm:property :eMachineTechnology; samm:payloadName "technology" ] ) .
 
 :Entity4 a samm:Entity ;
-   samm:properties ( :coolingTopology :oilCapacityEdrive :oilTypeEdrive :minOilPressure :maxOilPressure :oilModule :maxOilTemperature ) .
+   samm:properties ( :coolingTopology :oilCapacityEdrive :oilTypeEdrive :minOilPressure :maxOilPressure :oilModule ) .
 
 :Entity5 a samm:Entity ;
    samm:properties ( :inverterCurrent :maximumPhaseCurrent :softwareVersion ) .
 
 :Entity6 a samm:Entity ;
-   samm:properties ( :systemVoltage :power :torque ) .
+   samm:properties ( :systemVoltage :power :torque :gearRatio ) .
+
+:Entity3 a samm:Entity ;
+   samm:properties ( :transmissionId :gearboxStructure ext-pass:oil ) .
 
 :Entity7 a samm:Entity ;
    samm:properties ( :technicalDismantlingInstructions :requiredToolsForDismantling ) .
 
 :compatibleVehicleTypes a samm:Property ;
-   samm:preferredName "CompatiblevVehiclevTypes"@en ;
+   samm:preferredName "Compatible Vehicle Types"@en ;
    samm:characteristic :StringList .
 
 :service a samm:Property ;
@@ -148,11 +146,8 @@
 :eMachineId a samm:Property ;
    samm:characteristic :IdentifierCharacteristic .
 
-:eMachineTechnology a samm:Property ;
-   samm:characteristic :TechnologyEnumeration .
-
 :eMachineWeight a samm:Property ;
-   samm:characteristic ext-quantity:MassCharacteristic .
+   samm:characteristic samm-c:Text .
 
 :permanentMagnetType a samm:Property ;
    samm:characteristic samm-c:Text .
@@ -163,11 +158,8 @@
 :statorDiameter a samm:Property ;
    samm:characteristic :MillimetersMeasurement .
 
-:transmissionId a samm:Property ;
-   samm:characteristic :IdentifierCharacteristic .
-
-:gearboxStructure a samm:Property ;
-   samm:characteristic samm-c:Text .
+:eMachineTechnology a samm:Property ;
+   samm:characteristic :Characteristic17 .
 
 :coolingTopology a samm:Property ;
    samm:characteristic samm-c:Text .
@@ -186,9 +178,6 @@
 
 :oilModule a samm:Property ;
    samm:characteristic samm-c:Boolean .
-
-:maxOilTemperature a samm:Property ;
-   samm:characteristic :CelsiusMeasurement .
 
 :inverterCurrent a samm:Property ;
    samm:characteristic :AmpereMeasurement .
@@ -210,16 +199,23 @@
 :torque a samm:Property ;
    samm:characteristic :Characteristic12 .
 
+:gearRatio a samm:Property ;
+   samm:characteristic :RevolutionsMeasurement .
+
+:transmissionId a samm:Property ;
+   samm:characteristic :IdentifierCharacteristic .
+
+:gearboxStructure a samm:Property ;
+   samm:characteristic samm-c:Text .
+
 :technicalDismantlingInstructions a samm:Property ;
-   samm:preferredName "Technical Dismantling Instructions"@en ;
    samm:characteristic ext-passport:DocumentList .
 
 :requiredToolsForDismantling a samm:Property ;
-   samm:preferredName "Required Tools for Dismantling"@en ;
    samm:characteristic ext-passport:DocumentList .
 
 :StringList a samm-c:List ;
-   samm:preferredName "String List"@en .
+   samm:dataType xsd:string .
 
 :Characteristic10 a samm:Characteristic ;
    samm:dataType :Entity8 .
@@ -228,15 +224,17 @@
    samm:preferredName "Identifier Characteristic"@en ;
    samm:dataType xsd:string .
 
-:TechnologyEnumeration a samm-c:Enumeration ;
-   samm-c:values ( "ASM" "PSM" "ESM" ) .
-
 :RevolutionsMeasurement a samm-c:Measurement ;
    samm:dataType xsd:float ;
    samm-c:unit unit:revolutionPerMinute .
 
 :MillimetersMeasurement a samm-c:Measurement ;
+   samm:dataType xsd:float ;
    samm-c:unit unit:millimetre .
+
+:Characteristic17 a samm-c:Enumeration ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "ESM" "ASM" "PSM" ) .
 
 :CubicDecimetreMeasurement a samm-c:Measurement ;
    samm:dataType xsd:float ;
@@ -244,10 +242,6 @@
 
 :Characteristic15 a samm:Characteristic ;
    samm:dataType :Entity15 .
-
-:CelsiusMeasurement a samm-c:Measurement ;
-   samm:dataType xsd:float ;
-   samm-c:unit unit:degreeCelsius .
 
 :AmpereMeasurement a samm-c:Measurement ;
    samm:preferredName "Ampere Measurement"@en ;
@@ -269,27 +263,27 @@
    samm:properties ( :serviceHistory :lastServiceDate ) .
 
 :Entity15 a samm:Entity ;
-   samm:properties ( :oilValue :oilTimeStamp ) .
+   samm:properties ( :oilTimeStamp :oilValue ) .
 
 :Entity9 a samm:Entity ;
-   samm:properties ( :maxPower :continuousPower :continuousRegeneratedPower :maxRegeneratedPower ) .
+   samm:properties ( [ samm:property :maxPower; samm:payloadName "maximum" ] [ samm:property :continuousPower; samm:payloadName "continuous" ] [ samm:property :continuousRegeneratedPower; samm:payloadName "continuousRegenerated" ] [ samm:property :maxRegeneratedPower; samm:payloadName "maxRegenerated" ] ) .
 
 :Entity12 a samm:Entity ;
-   samm:properties ( :maxTorque :continuousTorque :maxAxleTorque :gearRatio ) .
+   samm:properties ( [ samm:property :maxTorque; samm:payloadName "maximum" ] [ samm:property :continuousTorque; samm:payloadName "continuous" ] [ samm:property :maxAxleTorque; samm:payloadName "maxAxle" ] ) .
 
 :serviceHistory a samm:Property ;
    samm:preferredName "Service History"@en ;
-   samm:characteristic :StringList .
+   samm:characteristic :DateList .
 
 :lastServiceDate a samm:Property ;
    samm:preferredName "Last Service Date"@en ;
-   samm:characteristic samm-c:Text .
-
-:oilValue a samm:Property ;
-   samm:characteristic :BarMeasurement .
+   samm:characteristic :DateCharacteristic .
 
 :oilTimeStamp a samm:Property ;
    samm:characteristic samm-c:Timestamp .
+
+:oilValue a samm:Property ;
+   samm:characteristic :Characteristic16 .
 
 :maxPower a samm:Property ;
    samm:preferredName "Maximum Power"@en ;
@@ -316,11 +310,14 @@
 :maxAxleTorque a samm:Property ;
    samm:characteristic :Characteristic14 .
 
-:gearRatio a samm:Property ;
-   samm:characteristic samm-c:Text .
+:DateList a samm-c:List ;
+   samm:dataType xsd:date .
 
-:BarMeasurement a samm-c:Measurement ;
-   samm:preferredName "Bar Measurement"@en ;
+:DateCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:date .
+
+:Characteristic16 a samm-c:Measurement ;
+   samm:dataType xsd:float ;
    samm-c:unit unit:barUnitOfPressure .
 
 :Characteristic9 a samm:Characteristic ;
@@ -346,21 +343,21 @@
    samm:dataType :Entity14 .
 
 :Entity10 a samm:Entity ;
-   samm:properties ( :maxValue :maxPeroid :maxPowerECER85 ) .
+   samm:properties ( [ samm:property :maxValue; samm:payloadName "max" ] [ samm:property :maxPeriod; samm:payloadName "period" ] [ samm:property :maxPowerECER85; samm:payloadName "ECER85" ] ) .
 
 :Entity11 a samm:Entity ;
-   samm:properties ( :maxRegeneratedValue :maxRegeneratedPowerPeriod ) .
+   samm:properties ( [ samm:property :maxRegeneratedValue; samm:payloadName "max" ] [ samm:property :maxRegeneratedPowerPeriod; samm:payloadName "period" ] ) .
 
 :Entity13 a samm:Entity ;
-   samm:properties ( :maxTorqueValue :maxTorquePeriod ) .
+   samm:properties ( [ samm:property :maxTorqueValue; samm:payloadName "value" ] [ samm:property :maxTorquePeriod; samm:payloadName "period" ] ) .
 
 :Entity14 a samm:Entity ;
-   samm:properties ( :maxAxleTorqueValue :maxAxleTorquePeriod ) .
+   samm:properties ( [ samm:property :maxAxleTorqueValue; samm:payloadName "value" ] [ samm:property :maxAxleTorquePeriod; samm:payloadName "period" ] ) .
 
 :maxValue a samm:Property ;
    samm:characteristic :KilowattMeasurement .
 
-:maxPeroid a samm:Property ;
+:maxPeriod a samm:Property ;
    samm:characteristic :SecondsMeasurement .
 
 :maxPowerECER85 a samm:Property ;
