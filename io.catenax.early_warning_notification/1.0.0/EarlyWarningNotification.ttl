@@ -1,0 +1,154 @@
+#######################################################################
+# Copyright (c) 2024 Robert Bosch GmbH
+# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2024 Volkswagen AG
+# Copyright (c) 2024 ZF Friedrichshafen AG
+# Copyright (c) 2024 SAP SE
+# Copyright (c) 2024 Siemens AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.early_warning_notification:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> . 
+
+
+:EarlyWarningNotification a samm:Aspect ;
+   samm:preferredName "Early Warning Notification"@en ;
+   samm:properties ( :notificationId :relatedQualityTaskID [ samm:property :information; samm:optional true ] :status :severity :listOfAffectedItems [ samm:property :poulationFilterList; samm:optional true ] [ samm:property :earlyWarningAttachmentLink; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:notificationId a samm:Property ;
+   samm:preferredName "Notification Id"@en ;
+   samm:description "A unique ID for the EW notification "@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "c2801472-5f87-41a7-9a25-b0939c4e0dff" .
+
+:relatedQualityTaskID a samm:Property ;
+   samm:preferredName "Related Quality Task ID"@en ;
+   samm:description "An ID to reference an existing early warning project and its data"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BPN-811_2022_000001" .
+
+:information a samm:Property ;
+   samm:preferredName "Information"@en ;
+   samm:description "Some text describing the detected anomaly in the data"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "There is an unusual number of DTCs occuring in the population described by the property qualityAppFiilter" .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "A status information about the current status of the quality process triggered by this notification."@en ;
+   samm:characteristic :Status ;
+   samm:exampleValue "ACCEPTED" .
+
+:severity a samm:Property ;
+   samm:preferredName "Severity"@en ;
+   samm:description "A flag indicating the severity of the quality issue"@en ;
+   samm:characteristic :Severity ;
+   samm:exampleValue "MINOR" .
+
+:listOfAffectedItems a samm:Property ;
+   samm:preferredName "List Of Affected Items"@en ;
+   samm:description "List of unique identifiers to explicitly specify parts or vehicles exhibiting the issue described in the property \"Information\""@en ;
+   samm:characteristic :AffectedItemsCharacteristic .
+
+:poulationFilterList a samm:Property ;
+   samm:preferredName "Population Filter List"@en ;
+   samm:description "A set of Population Filters"@en ;
+   samm:characteristic :PopulationFilterListCharacteristic .
+
+:earlyWarningAttachmentLink a samm:Property ;
+   samm:preferredName "Additional Quality Data Link"@en ;
+   samm:description "This property provides a reference to an EDC asset that will contain a zip file organized according to the specification CX-0092 and the model defined in io.catenax.quality_task_attachment:1.0.0. The zip file will contain additional data describing the early warning case."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "subprotocolBody: catalogEndpoint=https://test.com/catalog;dataset=79afc338-f7ea-4255-a17d-ba6faf40d2b5" .
+
+:Status a samm-c:Enumeration ;
+   samm:preferredName "Status  "@en ;
+   samm:description "A status infomration d´selected from a predefined set of possible states."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "ACKNOWLEDGED" "ACCEPTED" "DECLINED" "CLOSED" ) .
+
+:Severity a samm-c:Enumeration ;
+   samm:preferredName "Severity"@en ;
+   samm:description "Describes the severity of a quality issue."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "MINOR" "MAJOR" "CRITICAL" "LIFE-THREATENING" ) .
+
+:AffectedItemsCharacteristic a samm-c:List ;
+   samm:preferredName "Affected Items Characteristic"@en ;
+   samm:description "Characteristic for the UIDs defining the affected items"@en ;
+   samm:dataType :Items .
+
+:PopulationFilterListCharacteristic a samm-c:List ;
+   samm:preferredName "Population Filter List Characteristic"@en ;
+   samm:description "Characteristic for a List of Population Filters"@en ;
+   samm:dataType :PopulationFilter .
+
+:Items a samm:Entity ;
+   samm:preferredName "Items"@en ;
+   samm:description "A unique identifier"@en ;
+   samm:properties ([ samm:property :catenaXId; samm:optional true ]) .
+
+:PopulationFilter a samm:Entity ;
+   samm:preferredName "Population Filter"@en ;
+   samm:description "Population filter for the early warning data"@en ;
+   samm:properties ( :aspectProperty :aspectModel [ samm:property :rangeFrom; samm:optional true ] [ samm:property :rangeTo; samm:optional true ] [ samm:property :valueList; samm:optional true ] ) .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X ID"@en ;
+   samm:description "A unique identifier for a part or a vehicle. The identifier relates to a Catena-X digital twin"@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:ed85f17e-29dd-473c-9cb8-d7ad1dc44d2f" .
+
+:aspectProperty a samm:Property ;
+   samm:preferredName "Aspect Property"@en ;
+   samm:description "A property from the aspect model referenced by \"aspectModel\""@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "production.productionDate" .
+
+:aspectModel a samm:Property ;
+   samm:preferredName "Aspect Model"@en ;
+   samm:description "A reference to an aspect model standardized by Catena-X for the quality use case"@en ;
+   samm:characteristic samm-c:ResourcePath ;
+   samm:exampleValue "urn:bamm:io.catenax.manufactured_parts_quality_information:1.0.0"^^xsd:anyURI .
+
+:rangeFrom a samm:Property ;
+   samm:preferredName "Value Range From"@en ;
+   samm:description "Start value of a value range for an aspect property "@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2019-02-01T00:00:00" .
+
+:rangeTo a samm:Property ;
+   samm:preferredName "Value Range To"@en ;
+   samm:description "End value of a value range for an aspect property "@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2019-07-30T23:59:59" .
+
+:valueList a samm:Property ;
+   samm:preferredName "List of Values"@en ;
+   samm:description "A list of values for the aspect property"@en ;
+   samm:characteristic :ValuesCharacteristic .
+
+:ValuesCharacteristic a samm-c:List ;
+   samm:preferredName "Values Characteristic"@en ;
+   samm:description "Characteristic for the values in the value list"@en ;
+   samm:dataType xsd:string .

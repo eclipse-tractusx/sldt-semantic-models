@@ -1,0 +1,130 @@
+#######################################################################
+# Copyright (c) 2022,2023, 2024 BASF SE
+# Copyright (c) 2022,2023, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022,2023, 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2022,2023, 2024 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2022,2023, 2024 Henkel AG & Co. KGaA
+# Copyright (c) 2022,2023, 2024 Mercedes Benz AG
+# Copyright (c) 2022,2023, 2024 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2022,2023, 2024 SAP SE
+# Copyright (c) 2022,2023, 2024 Siemens AG
+# Copyright (c) 2022,2023, 2024 T-Systems International GmbH
+# Copyright (c) 2022,2023, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2022,2023, 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#>.
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#>.
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#>.
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#>.
+
+:SingleLevelBomAsPlanned a samm:Aspect;
+   samm:preferredName "Single Level Bill of Material as Planned"@en;
+   samm:description "The single-level bill of material (BoM)represents one sub-level of an assembly and does not include any lower-level subassemblies. In the As-Planned lifecycle state all variants are covered (\"120% BoM\").\nIf multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM.\nIf there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM."@en;
+   samm:properties (:catenaXId :childItems);
+   samm:operations ();
+   samm:events ().
+
+:catenaXId a samm:Property;
+   samm:preferredName "Catena-X Identifier"@en;
+   samm:description "The Catena-X ID of the given part (e.g. the component), valid for the Catena-X dataspace."@en;
+   samm:characteristic ext-uuid:UuidV4Trait;
+   samm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d".
+
+:childItems a samm:Property;
+   samm:preferredName "Child Items"@en;
+   samm:description "Set of child items in As-Planned lifecycle phase, of which the given parent object is assembled by (one structural level down)."@en;
+   samm:characteristic :SetOfChildItemsCharacteristic.
+
+:SetOfChildItemsCharacteristic a samm-c:Set;
+   samm:preferredName "Set of Child Items"@en;
+   samm:description "Set of child items the parent object will be assembled by (one structural level down)."@en;
+   samm:dataType :ChildData.
+
+:ChildData a samm:Entity;
+   samm:preferredName "Child Data"@en;
+   samm:description "Catena-X ID and meta data of the assembled child item."@en;
+   samm:properties (:createdOn :quantity [ samm:property :lastModifiedOn; samm:optional true ] [ samm:property :validityPeriod; samm:optional true ] :businessPartner :catenaXId).
+
+:createdOn a samm:Property;
+   samm:preferredName "Created on"@en;
+   samm:description "Timestamp when the relation between the parent part and the child part was created"@en;
+   samm:characteristic :DateTimeTrait;
+   samm:exampleValue "2022-02-03T14:48:54.709Z".
+
+:quantity a samm:Property;
+   samm:preferredName "Quantity"@en;
+   samm:description "Quantity of which the child part will be assembled into the parent part."@en;
+   samm:characteristic ext-quantity:ItemQuantityCharacteristic.
+
+:lastModifiedOn a samm:Property;
+   samm:preferredName "Last Modified on"@en;
+   samm:description "Timestamp when the relationship between parent part and child part was last modified."@en;
+   samm:characteristic :DateTimeTrait;
+   samm:exampleValue "2022-02-03T14:48:54.709Z".
+
+:validityPeriod a samm:Property;
+   samm:preferredName "Validity Period"@en;
+   samm:description "The period of time during which the parent-child relation is valid. This relates to whether a child part can be built into the parent part at a given time.\nIf no validity period is given the relation is considered valid at any point in time."@en;
+   samm:characteristic :ValidityPeriodCharacteristic.
+
+:businessPartner a samm:Property;
+   samm:preferredName "Business Partner"@en;
+   samm:description "The supplier of the given child item."@en;
+   samm:characteristic ext-number:BpnlTrait;
+   samm:exampleValue "BPNL50096894aNXY".
+
+:DateTimeTrait a samm-c:Trait;
+   samm:preferredName "Date Time Trait"@en;
+   samm:description "Trait to ensure regular expressions with different date and time(zone)formats."@en;
+   samm-c:baseCharacteristic :DateTimeCharacteristic;
+   samm-c:constraint :DateTimeRegularExpression.
+
+:ValidityPeriodCharacteristic a samm:Characteristic;
+   samm:preferredName "Validity Period Characteristic"@en;
+   samm:description "Characteristic for a validity period defined by an (optional)start and an (optional)end timestamp."@en;
+   samm:dataType :ValidityPeriodEntity.
+
+:DateTimeCharacteristic a samm:Characteristic;
+   samm:preferredName "Date Time Characteristic"@en;
+   samm:description "Describes a property which contains the date and time with an optional timezone."@en;
+   samm:dataType xsd:string.
+
+:DateTimeRegularExpression a samm-c:RegularExpressionConstraint;
+   samm:preferredName "Date Time Regular Expression"@en;
+   samm:description "Regular Expression to enable UTC and Timezone formats and the possibility to exclude time information."@en;
+   samm:value "^-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])(T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?)?$".
+
+:ValidityPeriodEntity a samm:Entity;
+   samm:preferredName "Validity Period Entity"@en;
+   samm:description "If a validity period only has a start that means that the period is valid from the start date without a (yet)defined enddate and vice versa."@en;
+   samm:properties ([ samm:property :validFrom; samm:optional true ] [ samm:property :validTo; samm:optional true ]).
+
+:validFrom a samm:Property;
+   samm:preferredName "Valid from"@en;
+   samm:description "Start date of validity period."@en;
+   samm:characteristic :DateTimeTrait;
+   samm:exampleValue "2023-03-21T08:17:29.187+01:00".
+
+:validTo a samm:Property;
+   samm:preferredName "Valid to"@en;
+   samm:description "End date of validity period."@en;
+   samm:characteristic :DateTimeTrait;
+   samm:exampleValue "2024-07-01T16:10:00.000+01:00".
