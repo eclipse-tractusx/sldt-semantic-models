@@ -2,6 +2,6 @@
 
 All notable changes to this model will be documented in this file. 
 
-## [1.0.0] 29.01.2024
+## [1.1.0] 04.03.2024
 
-- initial version of the aspect model for BillOfProcess
+- update header to 3.0.0 Manufacturing capability to 3.1.0
