@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.1.0] - 2024-03-04
+## [3.0.0] - 2024-03-07
 ### Changed
 - Update based on shared aspect "recycling strategy certificate"
 
