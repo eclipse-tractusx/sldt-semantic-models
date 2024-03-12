@@ -1,0 +1,1096 @@
+---
+openapi: 3.0.3
+info:
+  title: MandatoryDismantling
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/mandatory-dismantling:
+    get:
+      tags:
+      - MandatoryDismantling
+      operationId: getMandatoryDismantling
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/MandatoryDismantling'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MandatoryDismantling'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlTrait:
+      type: string
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two alphanumeric letters."
+      pattern: "^BPNL[a-zA-Z0-9]{12}$"
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_QuantityCharacteristic:
+      type: number
+      description: Describes a Property which contains a number.
+    urn_samm_io.catenax.shared.quantity_2.0.0_QuantityValueCharacteristic:
+      type: number
+      description: The quantity value associated with the unit expressed as float.
+    urn_samm_io.catenax.shared.quantity_2.0.0_MassUnitEnumeration:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: Enumeration for mass units.
+      enum:
+      - unit:gram
+      - unit:kilogram
+      - unit:tonneMetricTon
+      - unit:tonUsOrShortTonUkorus
+      - unit:ounceAvoirdupois
+      - unit:pound
+    urn_samm_io.catenax.shared.quantity_2.0.0_MassCharacteristic:
+      description: Characteristic for mass measurements of an item.
+      type: object
+      properties:
+        value:
+          description: The quantity value associated with the unit.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_QuantityValueCharacteristic'
+        unit:
+          description: The unit of a mass related attribute.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_MassUnitEnumeration'
+      required:
+      - value
+      - unit
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_ConcentrationCharacteristic:
+      type: number
+      description: The characteristic of Concentration.
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_SubstanceOfConcernEntity:
+      description: Encapsulates list of  relevant attributes for substance of concern.
+      type: object
+      properties:
+        pollutant:
+          description: "Type of pollutant present. \"Pb\" (Lead), \"Hg\" (Mercury),\
+            \ \"Cd\" (Cadmium), \"Cr\" (Chromium), etc."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        number:
+          description: "Number of specific pollutant, component or part."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_QuantityCharacteristic'
+        part:
+          description: The part or component that contains the specific pollutant.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        location:
+          description: "String specifying the location of the pollutant , component\
+            \ or part."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        weight:
+          description: "Weight of the pollutant , component or part in grams"
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_MassCharacteristic'
+        minimumConcentration:
+          description: Minimum weight percentage of pollutant concentration to be
+            dismantled
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ConcentrationCharacteristic'
+        pollutantConcentration:
+          description: weight percentage of pollutant concentration
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ConcentrationCharacteristic'
+        weightOfPart:
+          description: Weight of part containing pollutant in gram
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_MassCharacteristic'
+      required:
+      - pollutant
+      - number
+      - part
+      - location
+      - weight
+      - minimumConcentration
+      - pollutantConcentration
+      - weightOfPart
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_SubstanceOfConcernCharacteristic:
+      description: The characteristics of the substance of concern.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_SubstanceOfConcernEntity'
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_FuelCharacteristic:
+      description: The characteristics of the Fuel.
+      type: object
+      properties:
+        itemType:
+          description: The item type of parent.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - itemType
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean:
+      type: boolean
+      description: Represents a boolean value (i.e. a "flag").
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_MotorOilCharacteristic:
+      description: The characteristics of the Motor Oil.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+      required:
+      - isPresent
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_TransmissionOilCharacteristic:
+      description: The characteristics of the Transmission Oil.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+      required:
+      - isPresent
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_GearboxOiltCharacteristic:
+      description: The characteristics of the Gearbox oil.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+      required:
+      - isPresent
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_HydraulicOilCharacteristic:
+      description: The characteristics of the Hydraulic Oil.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+      required:
+      - isPresent
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_CoolingLiquidCharacteristic:
+      description: The characteristics of the Cooling Liquid.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+      required:
+      - isPresent
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_AntifreezeCharacteristic:
+      description: The characteristics of the Antifreeze.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+      required:
+      - isPresent
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_BrakeFluidCharacteristic:
+      description: The characteristics of the Brake Fluid.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+      required:
+      - isPresent
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_AirConditioningFluidCharacteristic:
+      description: The characteristics of the Air Conditioning Fluid.
+      type: object
+      properties:
+        itemType:
+          description: The item type of parent.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - itemType
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_OtherFluidCharacteristic:
+      description: The characteristics of the Other Fluid.
+      type: object
+      properties:
+        itemType:
+          description: The item type of parent.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - itemType
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_FluidCharacteristic:
+      description: The characteristics of the Fluid.
+      type: object
+      properties:
+        fuel:
+          description: "A property of the model, named fuel."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_FuelCharacteristic'
+        motorOil:
+          description: "A property of the model, named motor oil."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_MotorOilCharacteristic'
+        transmissionOil:
+          description: "A property of the model, named  transmission oil."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_TransmissionOilCharacteristic'
+        gearboxOil:
+          description: "A property of the model, named gearbox oil."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_GearboxOiltCharacteristic'
+        hydraulicOil:
+          description: "A property of the model, named hydraulic oil."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_HydraulicOilCharacteristic'
+        coolingLiquid:
+          description: "A property of the model, named cooling liquids."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_CoolingLiquidCharacteristic'
+        antifreeze:
+          description: "A property of the model, named antifreeze."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_AntifreezeCharacteristic'
+        brakeFluid:
+          description: "A property of the model, named brake fluid."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_BrakeFluidCharacteristic'
+        airConditioningFluid:
+          description: "A property of the model, named air-conditioning fluid."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_AirConditioningFluidCharacteristic'
+        otherFluid:
+          description: "A property of the model, named other fluid."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_OtherFluidCharacteristic'
+      required:
+      - fuel
+      - motorOil
+      - transmissionOil
+      - gearboxOil
+      - hydraulicOil
+      - coolingLiquid
+      - antifreeze
+      - brakeFluid
+      - airConditioningFluid
+      - otherFluid
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_ItemDetailCharacteristics:
+      description: The characteristics of the item detail.
+      type: object
+      properties:
+        number:
+          description: "Number of specific pollutant, component or part."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_QuantityCharacteristic'
+        location:
+          description: "String specifying the location of the pollutant , component\
+            \ or part."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        weight:
+          description: "Weight of the pollutant , component or part in grams"
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_MassCharacteristic'
+        removalInstruction:
+          description: "String providing technical instructions on removal and replacement,\
+            \ including the sequence of all steps."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        treatmentTechnique:
+          description: availability of best treatment techniques
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_Text'
+      required:
+      - number
+      - location
+      - weight
+      - removalInstruction
+      - treatmentTechnique
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_AirbagCharacteristic:
+      description: The characteristics of the Airbag.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        itemDetail:
+          description: "A property of the model, with details of parent item."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ItemDetailCharacteristics'
+      required:
+      - isPresent
+      - itemDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_LiquefiedPetroleumGasTankCharacteristic:
+      description: The characteristics of the Liquefied Petroleum Gas Tank.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        itemDetail:
+          description: "A property of the model, with details of parent item."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ItemDetailCharacteristics'
+      required:
+      - isPresent
+      - itemDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_CompressedNaturalGasTankCharacteristic:
+      description: The characteristics of the Compressed Natural Gas Tank.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        itemDetail:
+          description: "A property of the model, with details of parent item."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ItemDetailCharacteristics'
+      required:
+      - isPresent
+      - itemDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_HydrogenTankCharacteristic:
+      description: The characteristics of the Hydrogen Tank.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        itemDetail:
+          description: "A property of the model, with details of parent item."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ItemDetailCharacteristics'
+      required:
+      - isPresent
+      - itemDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_ExplosivePartCharacteristic:
+      description: The characteristics of the Explosive Part.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        itemDetail:
+          description: "A property of the model, with details of parent item."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ItemDetailCharacteristics'
+      required:
+      - isPresent
+      - itemDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_AirConditioningSystemCharacteristic:
+      description: The characteristics of the Air Conditioning System.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        itemDetail:
+          description: "A property of the model, with details of parent item."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ItemDetailCharacteristics'
+      required:
+      - isPresent
+      - itemDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_RefrigerantCharacteristic:
+      description: The characteristics of the Refrigerant.
+      type: object
+      properties:
+        itemDetail:
+          description: "A property of the model, with details of parent item."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ItemDetailCharacteristics'
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+      required:
+      - itemDetail
+      - isPresent
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_ComponentContainingMercuryCharacteristic:
+      description: The characteristics of the Component Containing Mercury.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        itemDetail:
+          description: "A property of the model, with details of parent item."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ItemDetailCharacteristics'
+      required:
+      - isPresent
+      - itemDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_ComponentCharacteristic:
+      description: The characteristics of the Component.
+      type: object
+      properties:
+        airbag:
+          description: "A property of the model, named airbag."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_AirbagCharacteristic'
+        liquefiedPetroleumGasTank:
+          description: "A property of the model, named liquefied petroleum gas tank."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_LiquefiedPetroleumGasTankCharacteristic'
+        compressedNaturalGasTank:
+          description: "A property of the model, named  compressed natural gas tank."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_CompressedNaturalGasTankCharacteristic'
+        hydrogenTank:
+          description: "A property of the model, named  hydrogen tank."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_HydrogenTankCharacteristic'
+        explosivePart:
+          description: "A property of the model, named   explosive part."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ExplosivePartCharacteristic'
+        airConditioningSystem:
+          description: "A property of the model, named air conditioning system."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_AirConditioningSystemCharacteristic'
+        refrigerant:
+          description: "A property of the model, named refrigerant."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_RefrigerantCharacteristic'
+        componentContainingMercury:
+          description: "A property of the model, named  component containing mercury."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ComponentContainingMercuryCharacteristic'
+      required:
+      - airbag
+      - liquefiedPetroleumGasTank
+      - compressedNaturalGasTank
+      - hydrogenTank
+      - explosivePart
+      - airConditioningSystem
+      - refrigerant
+      - componentContainingMercury
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_DepollutionRequirementsCharacteristics:
+      description: The characteristics of the depollution requirements.
+      type: object
+      properties:
+        fluid:
+          description: Information on the different fluid and liquid available in
+            the asset
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_FluidCharacteristic'
+        component:
+          description: information on the different components available in the asset
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ComponentCharacteristic'
+      required:
+      - fluid
+      - component
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_Number:
+      type: number
+      description: The characteristic of Number.
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_DateTimeCharacteristic:
+      type: string
+      format: date-time
+      description: Characteristic of date time.
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_DepollutionRecordCharacteristic:
+      description: The characteristics of the depollution records.
+      type: object
+      properties:
+        depollutionType:
+          description: "Type of specific depollutant (e.g., Diesel)."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        quantity:
+          description: "Quantity of the specific depollutant (e.g., Diesel) in liters."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_Number'
+        wasteTransporterBPN:
+          description: Identity of the final waste transporter BPNDetox Ltd. (optional).
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        finalDisposalSiteBPN:
+          description: ' Identity of the final disposal site BPNDestroy GmbH (optional).'
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        dateTime:
+          description: Date and time of specific depollution
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_DateTimeCharacteristic'
+      required:
+      - depollutionType
+      - dateTime
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_DigitallyCodedComponentCharacteristics:
+      description: The characteristics of the digitally coded component.
+      type: object
+      properties:
+        number:
+          description: "Number of specific pollutant, component or part."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_QuantityCharacteristic'
+        location:
+          description: "String specifying the location of the pollutant , component\
+            \ or part."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        removalInstruction:
+          description: "String providing technical instructions on removal and replacement,\
+            \ including the sequence of all steps."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        functionalityDescription:
+          description: "String describing the functionality, interchangeability, and\
+            \ compatibility with specific parts and components of other makes and\
+            \ models."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        manufacturerContact:
+          description: String indicating the contact point of the manufacturer for
+            technical assistance.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - number
+      - location
+      - removalInstruction
+      - functionalityDescription
+      - manufacturerContact
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic:
+      description: The characteristics of the Part Detail.
+      type: object
+      properties:
+        number:
+          description: "Number of specific pollutant, component or part."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_QuantityCharacteristic'
+        location:
+          description: "String specifying the location of the pollutant , component\
+            \ or part."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        removalInstruction:
+          description: "String providing technical instructions on removal and replacement,\
+            \ including the sequence of all steps."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - number
+      - location
+      - removalInstruction
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_BatteryDetailCharacteristic:
+      description: The characteristics of the Battery Detail.
+      type: object
+      properties:
+        batteryType:
+          description: Type of battery chemistry of electric vehicle batteries
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        dischargeInstruction:
+          description: Provides instructions for the safe discharging of the battery.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        requiredTool:
+          description: "Lists the tools or technologies required for accessing, removing,\
+            \ and replacing the electric vehicle batteries."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        weight:
+          description: "Weight of the pollutant , component or part in grams"
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_MassCharacteristic'
+      required:
+      - batteryType
+      - dischargeInstruction
+      - requiredTool
+      - weight
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_ElectricVehicleBatteryCharacteristic:
+      description: The characteristics of the Electric Vehicle Batteries.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+        batteryDetail:
+          description: "A property of the model, named  battery detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_BatteryDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+      - batteryDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_MotorDetailCharacteristic:
+      description: The characteristics of the Motor Detail.
+      type: object
+      properties:
+        weight:
+          description: "Weight of the pollutant , component or part in grams"
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_2.0.0_MassCharacteristic'
+        requiredTool:
+          description: "Lists the tools or technologies required for accessing, removing,\
+            \ and replacing the electric vehicle batteries."
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        permanentMagnet:
+          description: "types of permanent magnets present in e-drive motors, if they\
+            \ belong to the following types: Neodymium-Iron-Boron, Samarium-Cobalt,\
+            \ Aluminium-Nickel-Cobalt, Ferrite"
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+      required:
+      - weight
+      - requiredTool
+      - permanentMagnet
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_EDriveMotorCharacteristic:
+      description: The characteristics of the E-Drive Motors.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+        motorDetail:
+          description: "A property of the model, named motor detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_MotorDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+      - motorDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_SLIBatteryCharacteristic:
+      description: The characteristics of the SLI Batteries.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_EngineCharacteristic:
+      description: The characteristics of the Engines.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_CatalyticConverterCharacteristic:
+      description: The characteristics of the Catalytic Converters.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_GearboxCharacteristics:
+      description: The characteristics of gearbox.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_WindowCharacteristic:
+      description: The characteristics of the Window.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_WheelCharacteristic:
+      description: The characteristics of the Wheel.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_TyreCharacteristic:
+      description: The characteristics of the Tyre.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_DashboardCharacteristic:
+      description: The characteristics of the Dashboard.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_InfotainmentSystemCharacteristic:
+      description: The characteristics of the Infotainment System.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_HeadlightCharacteristic:
+      description: The characteristics of the Headlight.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_WireHarnessCharacteristic:
+      description: The characteristics of the Wire Harness.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_BumperCharacteristic:
+      description: The characteristics of the Bumper.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_FluidContainerCharacteristic:
+      description: The characteristics of the Fluid Container.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_HeatExchangerCharacteristic:
+      description: The characteristics of the Heat Exchanger.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_MetalComponentCharacteristic:
+      description: The characteristics of the Mono-material Metal Component.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_PlasticComponentCharacteristic:
+      description: The characteristics of the Plastic Component.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_InverterCharacteristic:
+      description: The characteristics of the Inverter.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_PrintedCircuitBoardCharacteristics:
+      description: The characteristics of the Printed Circuit Board.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_PVPanelCharacteristic:
+      description: The characteristics of the PV Panel.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_TransmissionComponentCharacteristic:
+      description: The characteristics of the Transmission Component.
+      type: object
+      properties:
+        isPresent:
+          description: Does the asset contain the parent item
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+        partDetail:
+          description: "A property of the model, named part detail."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PartDetailCharacteristic'
+      required:
+      - isPresent
+      - partDetail
+    urn_samm_io.catenax.mandatory_dismantling_1.0.0_MandatoryRemovalCharacteristics:
+      description: The characteristics of the mandatory removal.
+      type: object
+      properties:
+        electricVehicleBattery:
+          description: "A property of the model, named  electric vehicle battery."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_ElectricVehicleBatteryCharacteristic'
+        eDriveMotor:
+          description: "A property of the model, named e-drive motor."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_EDriveMotorCharacteristic'
+        sliBattery:
+          description: "A property of the model, named SLI battery."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_SLIBatteryCharacteristic'
+        engine:
+          description: "A property of the model, named engine."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_EngineCharacteristic'
+        catalyticConverter:
+          description: "A property of the model, named catalytic converter."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_CatalyticConverterCharacteristic'
+        gearbox:
+          description: "A property of the model, named  gearbox."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_GearboxCharacteristics'
+        window:
+          description: "A property of the model, named  window."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_WindowCharacteristic'
+        wheel:
+          description: "A property of the model, named wheel."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_WheelCharacteristic'
+        tyre:
+          description: "A property of the model, named tire."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_TyreCharacteristic'
+        dashboard:
+          description: "A property of the model, named  dashboard."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_DashboardCharacteristic'
+        infotainmentSystem:
+          description: "A property of the model, named  infotainment system."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_InfotainmentSystemCharacteristic'
+        headlight:
+          description: "A property of the model, named  headlight."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_HeadlightCharacteristic'
+        wireHarness:
+          description: "A property of the model, named wire harness."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_WireHarnessCharacteristic'
+        bumper:
+          description: "A property of the model, named bumper."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_BumperCharacteristic'
+        fluidContainer:
+          description: "A property of the model, named fluid container."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_FluidContainerCharacteristic'
+        heatExchanger:
+          description: "A property of the model, named heat exchanger."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_HeatExchangerCharacteristic'
+        metalComponent:
+          description: "A property of the model, named metal component."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_MetalComponentCharacteristic'
+        plasticComponent:
+          description: "A property of the model, named plastic component."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PlasticComponentCharacteristic'
+        inverter:
+          description: "A property of the model, named inverter."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_InverterCharacteristic'
+        printedCircuitBoard:
+          description: "A property of the model, named printed circuit board."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PrintedCircuitBoardCharacteristics'
+        pvPanel:
+          description: "A property of the model, named PV panel."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_PVPanelCharacteristic'
+        transmissionComponent:
+          description: "A property of the model, named transmission component."
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_TransmissionComponentCharacteristic'
+      required:
+      - electricVehicleBattery
+      - eDriveMotor
+      - sliBattery
+      - engine
+      - catalyticConverter
+      - gearbox
+      - window
+      - wheel
+      - tyre
+      - dashboard
+      - infotainmentSystem
+      - headlight
+      - wireHarness
+      - bumper
+      - fluidContainer
+      - heatExchanger
+      - metalComponent
+      - plasticComponent
+      - inverter
+      - printedCircuitBoard
+      - pvPanel
+      - transmissionComponent
+    MandatoryDismantling:
+      description: "The mandatory dismantling data model is intended to ensure that\
+        \ end-of-life vehicles are disposed of properly. It defines components, parts\
+        \ and materials that must be mandatorily dismantled, as well as the necessary\
+        \ provision of information on those components, parts and materials to be\
+        \ dismantled"
+      type: object
+      properties:
+        catenaXId:
+          description: "The fully anonymous Catena-X ID of the serialized part, valid\
+            \ for the Catena-X dataspace."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+        van:
+          description: Vehicle Anonymiyed Number. This should be deducted from a reference
+            to the vehicle TWIN
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        bpnDismantler:
+          description: The aim of BPDM with its BPN is to define a set of rules for
+            a unique ID for cross-company communication and identification of Business
+            Partners.?
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlTrait'
+        substanceOfConcern:
+          description: " Evaluation of the presence of substances of concern (Pb,\
+            \ Hg, Cd, CrVI) "
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_SubstanceOfConcernCharacteristic'
+        depollutionRequirement:
+          description: The minimum requirements that must be met during the depollution
+            process.
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_DepollutionRequirementsCharacteristics'
+        depollutionRecord:
+          description: ' information on the depollution of the end-of-life vehicles '
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_DepollutionRecordCharacteristic'
+        digitallyCodedComponent:
+          description: Information on digitally coded components and parts in a vehicle
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_DigitallyCodedComponentCharacteristics'
+        mandatoryRemoval:
+          description: Information on items subject to mandatory removal
+          $ref: '#/components/schemas/urn_samm_io.catenax.mandatory_dismantling_1.0.0_MandatoryRemovalCharacteristics'
+      required:
+      - van
+      - bpnDismantler
+      - substanceOfConcern
+      - depollutionRequirement
+      - depollutionRecord
+      - digitallyCodedComponent
+      - mandatoryRemoval
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MandatoryDismantling:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    MandatoryDismantling:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MandatoryDismantling'
