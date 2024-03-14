@@ -4,7 +4,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [3.0.0] - 24-02-26
+## [3.0.0] - 24-03-04
 
 ### Changed
 
