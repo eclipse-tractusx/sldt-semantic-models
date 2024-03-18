@@ -1,0 +1,983 @@
+#######################################################################
+# Copyright (c) 2024 SAP SE
+# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2024 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
+# Copyright (c) 2024 ZF Friedrichshafen AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.mandatory_dismantling:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:MandatoryDismantling a samm:Aspect ;
+   samm:preferredName "MandatoryDismantling"@en ;
+   samm:description "The mandatory dismantling data model is intended to ensure that end-of-life vehicles are disposed of properly. It defines components, parts and materials that must be mandatorily dismantled, as well as the necessary provision of information on those components, parts and materials to be dismantled"@en ;
+   samm:properties ( [ samm:property :catenaXId; samm:optional true ] :van :bpnDismantler :substanceOfConcern :depollutionRequirement :depollutionRecord :digitallyCodedComponent :mandatoryRemoval ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X ID"@en ;
+   samm:description "The fully anonymous Catena-X ID of the serialized part, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9379" .
+
+:van a samm:Property ;
+   samm:preferredName "VAN"@en ;
+   samm:description "Vehicle Anonymiyed Number. This should be deducted from a reference to the vehicle TWIN"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "WBA41DU060S228332" .
+
+:bpnDismantler a samm:Property ;
+   samm:preferredName "Business Partner Number Dismantler"@en ;
+   samm:description "The aim of BPDM with its BPN is to define a set of rules for a unique ID for cross-company communication and identification of Business Partners.?"@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL8888888888XX" .
+
+:substanceOfConcern a samm:Property ;
+   samm:preferredName "Substance Of Concern"@en ;
+   samm:description " Evaluation of the presence of substances of concern (Pb, Hg, Cd, CrVI) "@en ;
+   samm:characteristic :SubstanceOfConcernCharacteristic .
+
+:depollutionRequirement a samm:Property ;
+   samm:preferredName "Depollution Requirement"@en ;
+   samm:description "The minimum requirements that must be met during the depollution process."@en ;
+   samm:characteristic :DepollutionRequirementsCharacteristics .
+
+:depollutionRecord a samm:Property ;
+   samm:preferredName "Depollution Record"@en ;
+   samm:description " information on the depollution of the end-of-life vehicles "@en ;
+   samm:characteristic :DepollutionRecordCharacteristic .
+
+:digitallyCodedComponent a samm:Property ;
+   samm:preferredName "Digitally Coded Component"@en ;
+   samm:description "Information on digitally coded components and parts in a vehicle"@en ;
+   samm:characteristic :DigitallyCodedComponentCharacteristics .
+
+:mandatoryRemoval a samm:Property ;
+   samm:preferredName "Mandatory Removal"@en ;
+   samm:description "Information on items subject to mandatory removal"@en ;
+   samm:characteristic :MandatoryRemovalCharacteristics .
+
+:SubstanceOfConcernCharacteristic a samm-c:List ;
+   samm:preferredName "Substance Of Concern Characteristic"@en ;
+   samm:description "The characteristics of the substance of concern."@en ;
+   samm:dataType :SubstanceOfConcernEntity .
+
+:DepollutionRequirementsCharacteristics a samm:Characteristic ;
+   samm:preferredName "Depollution Requirements Characteristics"@en ;
+   samm:description "The characteristics of the depollution requirements."@en ;
+   samm:dataType :DepollutionRequirementsEntity .
+
+:DepollutionRecordCharacteristic a samm:Characteristic ;
+   samm:preferredName "Depollution Record Characteristic"@en ;
+   samm:description "The characteristics of the depollution records."@en ;
+   samm:dataType :DepollutionRecordEntity .
+
+:DigitallyCodedComponentCharacteristics a samm:Characteristic ;
+   samm:preferredName "Digitally Coded Component Characteristics"@en ;
+   samm:description "The characteristics of the digitally coded component."@en ;
+   samm:dataType :DigitallyCodedComponentEntity .
+
+:MandatoryRemovalCharacteristics a samm:Characteristic ;
+   samm:preferredName "Mandatory Removal Characteristics"@en ;
+   samm:description "The characteristics of the mandatory removal."@en ;
+   samm:dataType :MandatoryRemovalEntity .
+
+:SubstanceOfConcernEntity a samm:Entity ;
+   samm:preferredName "Substance Of Concern Entity"@en ;
+   samm:description "Encapsulates list of  relevant attributes for substance of concern."@en ;
+   samm:properties ( :pollutant :number :part :location :weight :minimumConcentration :pollutantConcentration :weightOfPart ) .
+
+:DepollutionRequirementsEntity a samm:Entity ;
+   samm:preferredName "Depollution Requirements Entity"@en ;
+   samm:description "Encapsulates the depollution requirement relevant attributes"@en ;
+   samm:properties ( :fluid :component ) .
+
+:DepollutionRecordEntity a samm:Entity ;
+   samm:preferredName "Depollution Record Entity"@en ;
+   samm:description "Encapsulates the depollution record relevant attributes"@en ;
+   samm:properties ( :depollutionType [ samm:property :quantity; samm:optional true ] [ samm:property :wasteTransporterBPN; samm:optional true ] [ samm:property :finalDisposalSiteBPN; samm:optional true ] :dateTime ) .
+
+:DigitallyCodedComponentEntity a samm:Entity ;
+   samm:preferredName "Digitally Coded Component Entity"@en ;
+   samm:description "Encapsulates information on digitally coded components and parts in a vehicle"@en ;
+   samm:properties ( :number :location :removalInstruction :functionalityDescription :manufacturerContact ) .
+
+:MandatoryRemovalEntity a samm:Entity ;
+   samm:preferredName "Mandatory Removal Entity"@en ;
+   samm:description "Encapsulates information on items subject to mandatory removal"@en ;
+   samm:properties ( :electricVehicleBattery :eDriveMotor :sliBattery :engine :catalyticConverter :gearbox :window :wheel :tyre :dashboard :infotainmentSystem :headlight :wireHarness :bumper :fluidContainer :heatExchanger :metalComponent :plasticComponent :inverter :printedCircuitBoard :pvPanel :transmissionComponent ) .
+
+:pollutant a samm:Property ;
+   samm:preferredName "Pollutant"@en ;
+   samm:description "Type of pollutant present. \"Pb\" (Lead), \"Hg\" (Mercury), \"Cd\" (Cadmium), \"Cr\" (Chromium), etc."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Pb" .
+
+:number a samm:Property ;
+   samm:preferredName "Number"@en ;
+   samm:description "Number of specific pollutant, component or part."@en ;
+   samm:characteristic :QuantityCharacteristic ;
+   samm:exampleValue 1 .
+
+:part a samm:Property ;
+   samm:preferredName "Part"@en ;
+   samm:description "The part or component that contains the specific pollutant."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Starter battery" .
+
+:location a samm:Property ;
+   samm:preferredName "Location"@en ;
+   samm:description "String specifying the location of the pollutant , component or part."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Front Right Panel" .
+
+:weight a samm:Property ;
+   samm:preferredName "Weight"@en ;
+   samm:description "Weight of the pollutant , component or part in grams"@en ;
+   samm:characteristic ext-quantity:MassCharacteristic .
+
+:minimumConcentration a samm:Property ;
+   samm:preferredName "Minimum Concentration"@en ;
+   samm:description "Minimum weight percentage of pollutant concentration to be dismantled"@en ;
+   samm:characteristic :ConcentrationCharacteristic ;
+   samm:exampleValue "0.4"^^xsd:float .
+
+:pollutantConcentration a samm:Property ;
+   samm:preferredName "Pollutant Concentration"@en ;
+   samm:description "weight percentage of pollutant concentration"@en ;
+   samm:characteristic :ConcentrationCharacteristic ;
+   samm:exampleValue "0.5"^^xsd:float .
+
+:weightOfPart a samm:Property ;
+   samm:preferredName "Weight Of Part"@en ;
+   samm:description "Weight of part containing pollutant in gram"@en ;
+   samm:characteristic ext-quantity:MassCharacteristic .
+
+:fluid a samm:Property ;
+   samm:preferredName "Fluid"@en ;
+   samm:description "Information on the different fluid and liquid available in the asset"@en ;
+   samm:characteristic :FluidCharacteristic .
+
+:component a samm:Property ;
+   samm:preferredName "Component"@en ;
+   samm:description "information on the different components available in the asset"@en ;
+   samm:characteristic :ComponentCharacteristic .
+
+:depollutionType a samm:Property ;
+   samm:preferredName "Depollution Type"@en ;
+   samm:description "Type of specific depollutant (e.g., Diesel)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Diesel" .
+
+:quantity a samm:Property ;
+   samm:preferredName "Quantity"@en ;
+   samm:description "Quantity of the specific depollutant (e.g., Diesel) in liters."@en ;
+   samm:characteristic :Number ;
+   samm:exampleValue 23 .
+
+:wasteTransporterBPN a samm:Property ;
+   samm:preferredName "Waste Transporter BPN"@en ;
+   samm:description "Identity of the final waste transporter BPNDetox Ltd. (optional)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Detox Ltd." .
+
+:finalDisposalSiteBPN a samm:Property ;
+   samm:preferredName "Final Disposal Site BPN"@en ;
+   samm:description " Identity of the final disposal site BPNDestroy GmbH (optional)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Destroy GmbH" .
+
+:dateTime a samm:Property ;
+   samm:preferredName "DateTime"@en ;
+   samm:description "Date and time of specific depollution"@en ;
+   samm:characteristic :DateTimeCharacteristic ;
+   samm:exampleValue "2024-01-24T14:32:00"^^xsd:dateTimeStamp .
+
+:removalInstruction a samm:Property ;
+   samm:preferredName "Technical Instruction"@en ;
+   samm:description "String providing technical instructions on removal and replacement, including the sequence of all steps."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Follow proper safety protocols. Refer to the manual for step-by-step removal instructions." .
+
+:functionalityDescription a samm:Property ;
+   samm:preferredName "Functionality Description"@en ;
+   samm:description "String describing the functionality, interchangeability, and compatibility with specific parts and components of other makes and models."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Compatible with models X, Y, and Z." .
+
+:manufacturerContact a samm:Property ;
+   samm:preferredName "Manufacturer Contact"@en ;
+   samm:description "String indicating the contact point of the manufacturer for technical assistance."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "support@manufacturer.com" .
+
+:electricVehicleBattery a samm:Property ;
+   samm:preferredName "Electric Vehicle Battery"@en ;
+   samm:description "A property of the model, named  electric vehicle battery."@en ;
+   samm:characteristic :ElectricVehicleBatteryCharacteristic .
+
+:eDriveMotor a samm:Property ;
+   samm:preferredName "E-Drive Motor"@en ;
+   samm:description "A property of the model, named e-drive motor."@en ;
+   samm:characteristic :EDriveMotorCharacteristic .
+
+:sliBattery a samm:Property ;
+   samm:preferredName "SLI Battery"@en ;
+   samm:description "A property of the model, named SLI battery."@en ;
+   samm:characteristic :SLIBatteryCharacteristic .
+
+:engine a samm:Property ;
+   samm:preferredName "Engine"@en ;
+   samm:description "A property of the model, named engine."@en ;
+   samm:characteristic :EngineCharacteristic .
+
+:catalyticConverter a samm:Property ;
+   samm:preferredName "Catalytic Converter"@en ;
+   samm:description "A property of the model, named catalytic converter."@en ;
+   samm:characteristic :CatalyticConverterCharacteristic .
+
+:gearbox a samm:Property ;
+   samm:preferredName "Gearbox"@en ;
+   samm:description "A property of the model, named  gearbox."@en ;
+   samm:characteristic :GearboxCharacteristics .
+
+:window a samm:Property ;
+   samm:preferredName "Window"@en ;
+   samm:description "A property of the model, named  window."@en ;
+   samm:characteristic :WindowCharacteristic .
+
+:wheel a samm:Property ;
+   samm:preferredName "Wheel"@en ;
+   samm:description "A property of the model, named wheel."@en ;
+   samm:characteristic :WheelCharacteristic .
+
+:tyre a samm:Property ;
+   samm:preferredName "Tyre"@en ;
+   samm:description "A property of the model, named tire."@en ;
+   samm:characteristic :TyreCharacteristic .
+
+:dashboard a samm:Property ;
+   samm:preferredName "Dashboard"@en ;
+   samm:description "A property of the model, named  dashboard."@en ;
+   samm:characteristic :DashboardCharacteristic .
+
+:infotainmentSystem a samm:Property ;
+   samm:preferredName "Infotainment System"@en ;
+   samm:description "A property of the model, named  infotainment system."@en ;
+   samm:characteristic :InfotainmentSystemCharacteristic .
+
+:headlight a samm:Property ;
+   samm:preferredName "Headlight"@en ;
+   samm:description "A property of the model, named  headlight."@en ;
+   samm:characteristic :HeadlightCharacteristic .
+
+:wireHarness a samm:Property ;
+   samm:preferredName "Wire Harness"@en ;
+   samm:description "A property of the model, named wire harness."@en ;
+   samm:characteristic :WireHarnessCharacteristic .
+
+:bumper a samm:Property ;
+   samm:preferredName "Bumper"@en ;
+   samm:description "A property of the model, named bumper."@en ;
+   samm:characteristic :BumperCharacteristic .
+
+:fluidContainer a samm:Property ;
+   samm:preferredName "Fluid Container"@en ;
+   samm:description "A property of the model, named fluid container."@en ;
+   samm:characteristic :FluidContainerCharacteristic .
+
+:heatExchanger a samm:Property ;
+   samm:preferredName "Heat Exchanger"@en ;
+   samm:description "A property of the model, named heat exchanger."@en ;
+   samm:characteristic :HeatExchangerCharacteristic .
+
+:metalComponent a samm:Property ;
+   samm:preferredName "Metal Component"@en ;
+   samm:description "A property of the model, named metal component."@en ;
+   samm:characteristic :MetalComponentCharacteristic .
+
+:plasticComponent a samm:Property ;
+   samm:preferredName "Plastic Component"@en ;
+   samm:description "A property of the model, named plastic component."@en ;
+   samm:characteristic :PlasticComponentCharacteristic .
+
+:inverter a samm:Property ;
+   samm:preferredName "Inverter"@en ;
+   samm:description "A property of the model, named inverter."@en ;
+   samm:characteristic :InverterCharacteristic .
+
+:printedCircuitBoard a samm:Property ;
+   samm:preferredName "Printed Circuit Board"@en ;
+   samm:description "A property of the model, named printed circuit board."@en ;
+   samm:characteristic :PrintedCircuitBoardCharacteristics .
+
+:pvPanel a samm:Property ;
+   samm:preferredName "PV Panel"@en ;
+   samm:description "A property of the model, named PV panel."@en ;
+   samm:characteristic :PVPanelCharacteristic .
+
+:transmissionComponent a samm:Property ;
+   samm:preferredName "Transmission Component"@en ;
+   samm:description "A property of the model, named transmission component."@en ;
+   samm:characteristic :TransmissionComponentCharacteristic .
+
+:QuantityCharacteristic a samm-c:Quantifiable ;
+   samm:preferredName "Quantity Characteristic"@en ;
+   samm:description "Describes a Property which contains a number."@en ;
+   samm:dataType xsd:integer .
+
+:ConcentrationCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Concentration Characteristic"@en ;
+   samm:description "The characteristic of Concentration."@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit unit:percent .
+
+:FluidCharacteristic a samm:Characteristic ;
+   samm:preferredName "Fluid Characteristic"@en ;
+   samm:description "The characteristics of the Fluid."@en ;
+   samm:dataType :FluidEntity .
+
+:ComponentCharacteristic a samm:Characteristic ;
+   samm:preferredName "Component Characteristic"@en ;
+   samm:description "The characteristics of the Component."@en ;
+   samm:dataType :ComponentEntity .
+
+:Number a samm-c:Quantifiable ;
+   samm:preferredName "Number"@en ;
+   samm:description "The characteristic of Number."@en ;
+   samm:dataType xsd:integer .
+
+:DateTimeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Date Time Characteristic"@en ;
+   samm:description "Characteristic of date time."@en ;
+   samm:dataType xsd:dateTimeStamp .
+
+:ElectricVehicleBatteryCharacteristic a samm:Characteristic ;
+   samm:preferredName "Electric Vehicle Battery Characteristic"@en ;
+   samm:description "The characteristics of the Electric Vehicle Batteries."@en ;
+   samm:dataType :ElectricVehicleBatteryEntity .
+
+:EDriveMotorCharacteristic a samm:Characteristic ;
+   samm:preferredName "E-Drive Motor Characteristic"@en ;
+   samm:description "The characteristics of the E-Drive Motors."@en ;
+   samm:dataType :EDriveMotorEntity .
+
+:SLIBatteryCharacteristic a samm:Characteristic ;
+   samm:preferredName "SLI Battery Characteristic"@en ;
+   samm:description "The characteristics of the SLI Batteries."@en ;
+   samm:dataType :SLIBatteryEntity .
+
+:EngineCharacteristic a samm:Characteristic ;
+   samm:preferredName "Engine Characteristic"@en ;
+   samm:description "The characteristics of the Engines."@en ;
+   samm:dataType :EngineEntity .
+
+:CatalyticConverterCharacteristic a samm:Characteristic ;
+   samm:preferredName "Catalytic Converter Characteristic"@en ;
+   samm:description "The characteristics of the Catalytic Converters."@en ;
+   samm:dataType :CatalyticConverterEntity .
+
+:GearboxCharacteristics a samm:Characteristic ;
+   samm:preferredName "Gearbox Characteristic"@en ;
+   samm:description "The characteristics of gearbox."@en ;
+   samm:dataType :GearboxEntity .
+
+:WindowCharacteristic a samm:Characteristic ;
+   samm:preferredName "Window Characteristic"@en ;
+   samm:description "The characteristics of the Window."@en ;
+   samm:dataType :WindowEntity .
+
+:WheelCharacteristic a samm:Characteristic ;
+   samm:preferredName "Wheel Characteristic"@en ;
+   samm:description "The characteristics of the Wheel."@en ;
+   samm:dataType :WheelEntity .
+
+:TyreCharacteristic a samm:Characteristic ;
+   samm:preferredName "Tyre Characteristic"@en ;
+   samm:description "The characteristics of the Tyre."@en ;
+   samm:dataType :TyreEntity .
+
+:DashboardCharacteristic a samm:Characteristic ;
+   samm:preferredName "Dashboard Characteristic"@en ;
+   samm:description "The characteristics of the Dashboard."@en ;
+   samm:dataType :DashboardEntity .
+
+:InfotainmentSystemCharacteristic a samm:Characteristic ;
+   samm:preferredName "Infotainment System Characteristic"@en ;
+   samm:description "The characteristics of the Infotainment System."@en ;
+   samm:dataType :InfotainmentSystemEntity .
+
+:HeadlightCharacteristic a samm:Characteristic ;
+   samm:preferredName "Headlight Characteristic"@en ;
+   samm:description "The characteristics of the Headlight."@en ;
+   samm:dataType :HeadlightEntity .
+
+:WireHarnessCharacteristic a samm:Characteristic ;
+   samm:preferredName "Wire Harness Characteristic"@en ;
+   samm:description "The characteristics of the Wire Harness."@en ;
+   samm:dataType :WireHarnessEntity .
+
+:BumperCharacteristic a samm:Characteristic ;
+   samm:preferredName "Bumper Characteristic"@en ;
+   samm:description "The characteristics of the Bumper."@en ;
+   samm:dataType :BumperEntity .
+
+:FluidContainerCharacteristic a samm:Characteristic ;
+   samm:preferredName "Fluid Container Characteristic"@en ;
+   samm:description "The characteristics of the Fluid Container."@en ;
+   samm:dataType :FluidContainerEntity .
+
+:HeatExchangerCharacteristic a samm:Characteristic ;
+   samm:preferredName "Heat Exchanger Characteristic"@en ;
+   samm:description "The characteristics of the Heat Exchanger."@en ;
+   samm:dataType :HeatExchangerEntity .
+
+:MetalComponentCharacteristic a samm:Characteristic ;
+   samm:preferredName "Mono-material Metal Component Characteristic"@en ;
+   samm:description "The characteristics of the Mono-material Metal Component."@en ;
+   samm:dataType :MetalComponentEntity .
+
+:PlasticComponentCharacteristic a samm:Characteristic ;
+   samm:preferredName "Plastic Component Characteristic"@en ;
+   samm:description "The characteristics of the Plastic Component."@en ;
+   samm:dataType :PlasticComponentEntity .
+
+:InverterCharacteristic a samm:Characteristic ;
+   samm:preferredName "Inverter Characteristic"@en ;
+   samm:description "The characteristics of the Inverter."@en ;
+   samm:dataType :InverterEntity .
+
+:PrintedCircuitBoardCharacteristics a samm:Characteristic ;
+   samm:preferredName "Printed Circuit Board Characteristics"@en ;
+   samm:description "The characteristics of the Printed Circuit Board."@en ;
+   samm:dataType :PrintedCircuitBoardEntity .
+
+:PVPanelCharacteristic a samm:Characteristic ;
+   samm:preferredName "PV Panel Characteristic"@en ;
+   samm:description "The characteristics of the PV Panel."@en ;
+   samm:dataType :PVPanelEntity .
+
+:TransmissionComponentCharacteristic a samm:Characteristic ;
+   samm:preferredName "Transmission Component Characteristic"@en ;
+   samm:description "The characteristics of the Transmission Component."@en ;
+   samm:dataType :TransmissionComponentEntity .
+
+:FluidEntity a samm:Entity ;
+   samm:preferredName "Fluid Entity"@en ;
+   samm:description "Encapsulates the different fluids available"@en ;
+   samm:properties ( :fuel :motorOil :transmissionOil :gearboxOil :hydraulicOil :coolingLiquid :antifreeze :brakeFluid :airConditioningFluid :otherFluid ) .
+
+:ComponentEntity a samm:Entity ;
+   samm:preferredName "Component Entity"@en ;
+   samm:description "Encapsulates the different available component."@en ;
+   samm:properties ( :airbag :liquefiedPetroleumGasTank :compressedNaturalGasTank :hydrogenTank :explosivePart :airConditioningSystem :refrigerant :componentContainingMercury ) .
+
+:ElectricVehicleBatteryEntity a samm:Entity ;
+   samm:preferredName "Electric Vehicle Battery Entity"@en ;
+   samm:description "Encapsulates information on electric vehicle battery."@en ;
+   samm:properties ( :isPresent :partDetail :batteryDetail ) .
+
+:EDriveMotorEntity a samm:Entity ;
+   samm:preferredName "E-Drive Motor Entity"@en ;
+   samm:description "Encapsulates information on e-drive motor."@en ;
+   samm:properties ( :isPresent :partDetail :motorDetail ) .
+
+:SLIBatteryEntity a samm:Entity ;
+   samm:preferredName "SLI Battery Entity"@en ;
+   samm:description "Encapsulates information on SLI battery."@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:EngineEntity a samm:Entity ;
+   samm:preferredName "Engine Entity"@en ;
+   samm:description "Encapsulates information on engine."@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:CatalyticConverterEntity a samm:Entity ;
+   samm:preferredName "Catalytic Converter Entity"@en ;
+   samm:description "Encapsulates information on catalytic converter."@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:GearboxEntity a samm:Entity ;
+   samm:preferredName "Gearbox Entity"@en ;
+   samm:description "Encapsulates information on gearbox."@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:WindowEntity a samm:Entity ;
+   samm:preferredName "Window Entity"@en ;
+   samm:description "Encapsulates information on windows"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:WheelEntity a samm:Entity ;
+   samm:preferredName "Wheel Entity"@en ;
+   samm:description "Encapsulates information on wheels"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:TyreEntity a samm:Entity ;
+   samm:preferredName "Tyre Entity"@en ;
+   samm:description "Encapsulates information on tires"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:DashboardEntity a samm:Entity ;
+   samm:preferredName "Dashboard Entity"@en ;
+   samm:description "Encapsulates information on dashboards"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:InfotainmentSystemEntity a samm:Entity ;
+   samm:preferredName "Infotainment System Entity"@en ;
+   samm:description "Encapsulates information on the infotainment system"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:HeadlightEntity a samm:Entity ;
+   samm:preferredName "Headlight Entity"@en ;
+   samm:description "Encapsulates information on headlights"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:WireHarnessEntity a samm:Entity ;
+   samm:preferredName "Wire Harness Entity"@en ;
+   samm:description "Encapsulates information on wire harnesses"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:BumperEntity a samm:Entity ;
+   samm:preferredName "Bumper Entity"@en ;
+   samm:description "Encapsulates information on bumpers"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:FluidContainerEntity a samm:Entity ;
+   samm:preferredName "Fluid Container Entity"@en ;
+   samm:description "Encapsulates information on fluid containers"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:HeatExchangerEntity a samm:Entity ;
+   samm:preferredName "Heat Exchanger Entity"@en ;
+   samm:description "Encapsulates information on heat exchangers"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:MetalComponentEntity a samm:Entity ;
+   samm:preferredName "Mono-material Metal Component Entity"@en ;
+   samm:description "Encapsulates information on mono-material metal components"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:PlasticComponentEntity a samm:Entity ;
+   samm:preferredName "Plastic Component Entity"@en ;
+   samm:description "Encapsulates information on mono-material plastic components"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:InverterEntity a samm:Entity ;
+   samm:preferredName "Inverter Entity"@en ;
+   samm:description "Encapsulates information on inverters"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:PrintedCircuitBoardEntity a samm:Entity ;
+   samm:preferredName "Printed Circuit Board Entity"@en ;
+   samm:description "Encapsulates information on printed circuit boards"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:PVPanelEntity a samm:Entity ;
+   samm:preferredName "PV Panel Entity"@en ;
+   samm:description "Encapsulates information on photo-voltaic panels"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:TransmissionComponentEntity a samm:Entity ;
+   samm:preferredName "Transmission Component Entity"@en ;
+   samm:description "Encapsulates information on transmission components"@en ;
+   samm:properties ( :isPresent :partDetail ) .
+
+:fuel a samm:Property ;
+   samm:preferredName "Fuel"@en ;
+   samm:description "A property of the model, named fuel."@en ;
+   samm:characteristic :FuelCharacteristic .
+
+:motorOil a samm:Property ;
+   samm:preferredName "Motor Oil"@en ;
+   samm:description "A property of the model, named motor oil."@en ;
+   samm:characteristic :MotorOilCharacteristic .
+
+:transmissionOil a samm:Property ;
+   samm:preferredName "Transmission Oil"@en ;
+   samm:description "A property of the model, named  transmission oil."@en ;
+   samm:characteristic :TransmissionOilCharacteristic .
+
+:gearboxOil a samm:Property ;
+   samm:preferredName "Gearbox Oil"@en ;
+   samm:description "A property of the model, named gearbox oil."@en ;
+   samm:characteristic :GearboxOiltCharacteristic .
+
+:hydraulicOil a samm:Property ;
+   samm:preferredName "Hydraulic Oil"@en ;
+   samm:description "A property of the model, named hydraulic oil."@en ;
+   samm:characteristic :HydraulicOilCharacteristic .
+
+:coolingLiquid a samm:Property ;
+   samm:preferredName "Cooling Liquid"@en ;
+   samm:description "A property of the model, named cooling liquids."@en ;
+   samm:characteristic :CoolingLiquidCharacteristic .
+
+:antifreeze a samm:Property ;
+   samm:preferredName "Antifreeze"@en ;
+   samm:description "A property of the model, named antifreeze."@en ;
+   samm:characteristic :AntifreezeCharacteristic .
+
+:brakeFluid a samm:Property ;
+   samm:preferredName "Brake Fluid"@en ;
+   samm:description "A property of the model, named brake fluid."@en ;
+   samm:characteristic :BrakeFluidCharacteristic .
+
+:airConditioningFluid a samm:Property ;
+   samm:preferredName "Air-Conditioning System Fluids"@en ;
+   samm:description "A property of the model, named air-conditioning fluid."@en ;
+   samm:characteristic :AirConditioningFluidCharacteristic .
+
+:otherFluid a samm:Property ;
+   samm:preferredName "Other Fluid"@en ;
+   samm:description "A property of the model, named other fluid."@en ;
+   samm:characteristic :OtherFluidCharacteristic .
+
+:airbag a samm:Property ;
+   samm:preferredName "Airbag"@en ;
+   samm:description "A property of the model, named airbag."@en ;
+   samm:characteristic :AirbagCharacteristic .
+
+:liquefiedPetroleumGasTank a samm:Property ;
+   samm:preferredName "Liquefied Petroleum Gas Tank"@en ;
+   samm:description "A property of the model, named liquefied petroleum gas tank."@en ;
+   samm:characteristic :LiquefiedPetroleumGasTankCharacteristic .
+
+:compressedNaturalGasTank a samm:Property ;
+   samm:preferredName "Compressed Natural Gas Tank"@en ;
+   samm:description "A property of the model, named  compressed natural gas tank."@en ;
+   samm:characteristic :CompressedNaturalGasTankCharacteristic .
+
+:hydrogenTank a samm:Property ;
+   samm:preferredName "Hydrogen Tank"@en ;
+   samm:description "A property of the model, named  hydrogen tank."@en ;
+   samm:characteristic :HydrogenTankCharacteristic .
+
+:explosivePart a samm:Property ;
+   samm:preferredName "Explosive Part"@en ;
+   samm:description "A property of the model, named   explosive part."@en ;
+   samm:characteristic :ExplosivePartCharacteristic .
+
+:airConditioningSystem a samm:Property ;
+   samm:preferredName "Air Conditioning System"@en ;
+   samm:description "A property of the model, named air conditioning system."@en ;
+   samm:characteristic :AirConditioningSystemCharacteristic .
+
+:refrigerant a samm:Property ;
+   samm:preferredName "Refrigerant"@en ;
+   samm:description "A property of the model, named refrigerant."@en ;
+   samm:characteristic :RefrigerantCharacteristic .
+
+:componentContainingMercury a samm:Property ;
+   samm:preferredName "Component Containing Mercury"@en ;
+   samm:description "A property of the model, named  component containing mercury."@en ;
+   samm:characteristic :ComponentContainingMercuryCharacteristic .
+
+:isPresent a samm:Property ;
+   samm:preferredName "Is Present"@en ;
+   samm:description "Does the asset contain the parent item"@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:partDetail a samm:Property ;
+   samm:preferredName "Part Detail"@en ;
+   samm:description "A property of the model, named part detail."@en ;
+   samm:characteristic :PartDetailCharacteristic .
+
+:batteryDetail a samm:Property ;
+   samm:preferredName "Battery Detail"@en ;
+   samm:description "A property of the model, named  battery detail."@en ;
+   samm:characteristic :BatteryDetailCharacteristic .
+
+:motorDetail a samm:Property ;
+   samm:preferredName "Motor Detail"@en ;
+   samm:description "A property of the model, named motor detail."@en ;
+   samm:characteristic :MotorDetailCharacteristic .
+
+:FuelCharacteristic a samm:Characteristic ;
+   samm:preferredName "Fuel Characteristic"@en ;
+   samm:description "The characteristics of the Fuel."@en ;
+   samm:dataType :FuelEntity .
+
+:MotorOilCharacteristic a samm:Characteristic ;
+   samm:preferredName "Motor Oil Characteristic"@en ;
+   samm:description "The characteristics of the Motor Oil."@en ;
+   samm:dataType :MotorOilEntity .
+
+:TransmissionOilCharacteristic a samm:Characteristic ;
+   samm:preferredName "Transmission Oil Characteristic"@en ;
+   samm:description "The characteristics of the Transmission Oil."@en ;
+   samm:dataType :TransmissionOilEntity .
+
+:GearboxOiltCharacteristic a samm:Characteristic ;
+   samm:preferredName "Gearbox Oil Characteristic"@en ;
+   samm:description "The characteristics of the Gearbox oil."@en ;
+   samm:dataType :GearboxOilEntity .
+
+:HydraulicOilCharacteristic a samm:Characteristic ;
+   samm:preferredName "Hydraulic Oil Characteristic"@en ;
+   samm:description "The characteristics of the Hydraulic Oil."@en ;
+   samm:dataType :HydraulicOilEntity .
+
+:CoolingLiquidCharacteristic a samm:Characteristic ;
+   samm:preferredName "Cooling Liquid Characteristic"@en ;
+   samm:description "The characteristics of the Cooling Liquid."@en ;
+   samm:dataType :CoolingLiquidEntity .
+
+:AntifreezeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Antifreeze Characteristic"@en ;
+   samm:description "The characteristics of the Antifreeze."@en ;
+   samm:dataType :AntifreezeEntity .
+
+:BrakeFluidCharacteristic a samm:Characteristic ;
+   samm:preferredName "Brake Fluid Characteristic"@en ;
+   samm:description "The characteristics of the Brake Fluid."@en ;
+   samm:dataType :BrakeFluidEntity .
+
+:AirConditioningFluidCharacteristic a samm:Characteristic ;
+   samm:preferredName "Air Conditioning Fluid Characteristic"@en ;
+   samm:description "The characteristics of the Air Conditioning Fluid."@en ;
+   samm:dataType :AirConditioningFluidEntity .
+
+:OtherFluidCharacteristic a samm:Characteristic ;
+   samm:preferredName "Other Fluid Characteristic"@en ;
+   samm:description "The characteristics of the Other Fluid."@en ;
+   samm:dataType :OtherFluidEntity .
+
+:AirbagCharacteristic a samm:Characteristic ;
+   samm:preferredName "Airbag Characteristic"@en ;
+   samm:description "The characteristics of the Airbag."@en ;
+   samm:dataType :AirbagEntity .
+
+:LiquefiedPetroleumGasTankCharacteristic a samm:Characteristic ;
+   samm:preferredName "Liquefied Petroleum Gas Tank Characteristic"@en ;
+   samm:description "The characteristics of the Liquefied Petroleum Gas Tank."@en ;
+   samm:dataType :LiquefiedPetroleumGasTankEntity .
+
+:CompressedNaturalGasTankCharacteristic a samm:Characteristic ;
+   samm:preferredName "Compressed Natural Gas Tank Characteristic"@en ;
+   samm:description "The characteristics of the Compressed Natural Gas Tank."@en ;
+   samm:dataType :CompressedNaturalGasTankEntity .
+
+:HydrogenTankCharacteristic a samm:Characteristic ;
+   samm:preferredName "Hydrogen Tank Characteristic"@en ;
+   samm:description "The characteristics of the Hydrogen Tank."@en ;
+   samm:dataType :HydrogenTankEntity .
+
+:ExplosivePartCharacteristic a samm:Characteristic ;
+   samm:preferredName "Explosive Part Characteristic"@en ;
+   samm:description "The characteristics of the Explosive Part."@en ;
+   samm:dataType :ExplosivePartEntity .
+
+:AirConditioningSystemCharacteristic a samm:Characteristic ;
+   samm:preferredName "Air Conditioning System Characteristic"@en ;
+   samm:description "The characteristics of the Air Conditioning System."@en ;
+   samm:dataType :AirConditioningSystemEntity .
+
+:RefrigerantCharacteristic a samm:Characteristic ;
+   samm:preferredName "Refrigerant Characteristic"@en ;
+   samm:description "The characteristics of the Refrigerant."@en ;
+   samm:dataType :RefrigerantEntity .
+
+:ComponentContainingMercuryCharacteristic a samm:Characteristic ;
+   samm:preferredName "Component Containing Mercury Characteristic"@en ;
+   samm:description "The characteristics of the Component Containing Mercury."@en ;
+   samm:dataType :ComponentContainingMercuryEntity .
+
+:PartDetailCharacteristic a samm:Characteristic ;
+   samm:preferredName "Part Detail Characteristic"@en ;
+   samm:description "The characteristics of the Part Detail."@en ;
+   samm:dataType :PartDetailEntity .
+
+:BatteryDetailCharacteristic a samm:Characteristic ;
+   samm:preferredName "Battery Detail Characteristic"@en ;
+   samm:description "The characteristics of the Battery Detail."@en ;
+   samm:dataType :BatteryDetailEntity .
+
+:MotorDetailCharacteristic a samm:Characteristic ;
+   samm:preferredName "Motor Detail Characteristic"@en ;
+   samm:description "The characteristics of the Motor Detail."@en ;
+   samm:dataType :MotorDetailEntity .
+
+:FuelEntity a samm:Entity ;
+   samm:preferredName "Fuel Entity"@en ;
+   samm:description "Encapsulates the fuel details"@en ;
+   samm:properties ( :itemType ) .
+
+:MotorOilEntity a samm:Entity ;
+   samm:preferredName "Motor Oil Entity"@en ;
+   samm:description "Encapsulates the Motor Oil details"@en ;
+   samm:properties ( :isPresent ) .
+
+:TransmissionOilEntity a samm:Entity ;
+   samm:preferredName "Transmission Oil Entity"@en ;
+   samm:description "Encapsulates the Transmission Oil details"@en ;
+   samm:properties ( :isPresent ) .
+
+:GearboxOilEntity a samm:Entity ;
+   samm:preferredName "Gearbox Oil Entity"@en ;
+   samm:description "Encapsulates the Gearbox oil details"@en ;
+   samm:properties ( :isPresent ) .
+
+:HydraulicOilEntity a samm:Entity ;
+   samm:preferredName "Hydraulic Oil Entity"@en ;
+   samm:description "Encapsulates the Hydraulic Oil details"@en ;
+   samm:properties ( :isPresent ) .
+
+:CoolingLiquidEntity a samm:Entity ;
+   samm:preferredName "Cooling Liquid Entity"@en ;
+   samm:description "Encapsulates the Cooling Liquid details"@en ;
+   samm:properties ( :isPresent ) .
+
+:AntifreezeEntity a samm:Entity ;
+   samm:preferredName "Antifreeze Entity"@en ;
+   samm:description "Encapsulates the Antifreeze details"@en ;
+   samm:properties ( :isPresent ) .
+
+:BrakeFluidEntity a samm:Entity ;
+   samm:preferredName "Brake Fluid Entity"@en ;
+   samm:description "Encapsulates the Brake Fluid details"@en ;
+   samm:properties ( :isPresent ) .
+
+:AirConditioningFluidEntity a samm:Entity ;
+   samm:preferredName "Air Conditioning Fluid Entity"@en ;
+   samm:description "Encapsulates the Air Conditioning Fluid details"@en ;
+   samm:properties ( :itemType ) .
+
+:OtherFluidEntity a samm:Entity ;
+   samm:preferredName "Other Fluid Entity"@en ;
+   samm:description "Encapsulates the other Fluid details"@en ;
+   samm:properties ( :itemType ) .
+
+:AirbagEntity a samm:Entity ;
+   samm:preferredName "Airbag Entity"@en ;
+   samm:description "Encapsulates the Airbag details"@en ;
+   samm:properties ( :isPresent :itemDetail ) .
+
+:LiquefiedPetroleumGasTankEntity a samm:Entity ;
+   samm:preferredName "Liquefied Petroleum Gas Tank Entity"@en ;
+   samm:description "Encapsulates the Liquefied Petroleum Gas Tank details"@en ;
+   samm:properties ( :isPresent :itemDetail ) .
+
+:CompressedNaturalGasTankEntity a samm:Entity ;
+   samm:preferredName "Compressed Natural Gas Tank Entity"@en ;
+   samm:description "Encapsulates the Compressed Natural Gas Tank details"@en ;
+   samm:properties ( :isPresent :itemDetail ) .
+
+:HydrogenTankEntity a samm:Entity ;
+   samm:preferredName "Hydrogen Tank Entity"@en ;
+   samm:description "Encapsulates the Hydrogen Tank details"@en ;
+   samm:properties ( :isPresent :itemDetail ) .
+
+:ExplosivePartEntity a samm:Entity ;
+   samm:preferredName "Explosive Part Entity"@en ;
+   samm:description "Encapsulates the Explosive Part details"@en ;
+   samm:properties ( :isPresent :itemDetail ) .
+
+:AirConditioningSystemEntity a samm:Entity ;
+   samm:preferredName "Air Conditioning System Entity"@en ;
+   samm:description "Encapsulates the Air Conditioning System details"@en ;
+   samm:properties ( :isPresent :itemDetail ) .
+
+:RefrigerantEntity a samm:Entity ;
+   samm:preferredName "Refrigerant Entity"@en ;
+   samm:description "Encapsulates the Refrigerant details"@en ;
+   samm:properties ( :itemDetail :isPresent ) .
+
+:ComponentContainingMercuryEntity a samm:Entity ;
+   samm:preferredName "Component Containing Mercury Entity"@en ;
+   samm:description "Encapsulates the Component Containing Mercury details"@en ;
+   samm:properties ( :isPresent :itemDetail ) .
+
+:PartDetailEntity a samm:Entity ;
+   samm:preferredName "Part Detail Entity"@en ;
+   samm:description "Encapsulates the details of parent part"@en ;
+   samm:properties ( :number :location :removalInstruction ) .
+
+:BatteryDetailEntity a samm:Entity ;
+   samm:preferredName "Battery Detail Entity"@en ;
+   samm:description "Encapsulates the Battery detail."@en ;
+   samm:properties ( :batteryType :dischargeInstruction :requiredTool :weight ) .
+
+:MotorDetailEntity a samm:Entity ;
+   samm:preferredName "Motor Detail Entity"@en ;
+   samm:description "Encapsulates the Motor detail."@en ;
+   samm:properties ( :weight :requiredTool :permanentMagnet ) .
+
+:itemType a samm:Property ;
+   samm:preferredName "Item Type"@en ;
+   samm:description "The item type of parent."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Diesel" .
+
+:itemDetail a samm:Property ;
+   samm:preferredName "Item Detail"@en ;
+   samm:description "A property of the model, with details of parent item."@en ;
+   samm:characteristic :ItemDetailCharacteristics .
+
+:batteryType a samm:Property ;
+   samm:preferredName "Battery Type"@en ;
+   samm:description "Type of battery chemistry of electric vehicle batteries"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Lithium-Ion" .
+
+:dischargeInstruction a samm:Property ;
+   samm:preferredName "Discharge Instruction"@en ;
+   samm:description "Provides instructions for the safe discharging of the battery."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Follow proper safety procedures for discharging the battery." .
+
+:requiredTool a samm:Property ;
+   samm:preferredName "Required Tool"@en ;
+   samm:description "Lists the tools or technologies required for accessing, removing, and replacing the electric vehicle batteries."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Torque wrench, safety gloves" .
+
+:permanentMagnet a samm:Property ;
+   samm:preferredName "Permanent Magnet"@en ;
+   samm:description "types of permanent magnets present in e-drive motors, if they belong to the following types: Neodymium-Iron-Boron, Samarium-Cobalt, Aluminium-Nickel-Cobalt, Ferrite"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Neodymium-Iron-Boron" .
+
+:ItemDetailCharacteristics a samm:Characteristic ;
+   samm:preferredName "Item Detail Characteristics"@en ;
+   samm:description "The characteristics of the item detail."@en ;
+   samm:dataType :ItemDetailEntity .
+
+:ItemDetailEntity a samm:Entity ;
+   samm:preferredName "Item Detail Entity"@en ;
+   samm:description "Encapsulates information of parts, including number, location, weight, removal instructions and treatment techniques"@en ;
+   samm:properties ( :number :location :weight :removalInstruction :treatmentTechnique ) .
+
+:treatmentTechnique a samm:Property ;
+   samm:preferredName "Treatment Technique"@en ;
+   samm:description "availability of best treatment techniques"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Available" .
+
+:Text a samm:Characteristic ;
+   samm:preferredName "Text"@en ;
+   samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+   samm:dataType xsd:string .

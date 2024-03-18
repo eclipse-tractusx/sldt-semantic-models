@@ -1,0 +1,240 @@
+---
+openapi: 3.0.3
+info:
+  title: Remanufacturing certificate
+  version: v3
+servers:
+- url: catenax.io/api/v3
+  variables:
+    api-version:
+      default: v3
+paths:
+  /{tenant-id}/remanufacturing-certificate:
+    get:
+      tags:
+      - RemanufacturingCertificate
+      operationId: getRemanufacturingCertificate
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/RemanufacturingCertificate'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RemanufacturingCertificate'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlTrait:
+      type: string
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two alphanumeric letters."
+      pattern: "^BPNL[a-zA-Z0-9]{12}$"
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+      type: string
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    urn_samm_io.catenax.shared.recycling_strategy_certificate_3.0.0_Date:
+      type: string
+      format: date
+      description: Describes a Property which contains the date.
+    urn_samm_io.catenax.shared.recycling_strategy_certificate_3.0.0_RecyclingStrategyCertificateCharacteristic:
+      description: Describes the characteristic of Recycling strategy certificate
+      type: object
+      properties:
+        supplier:
+          description: BPN of the business partner who creates this certificate
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlTrait'
+        issueDate:
+          description: This is the date when the certificate was issued.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        catenaXIdPreviousLife:
+          description: Twin identification previous life
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+        catenaXId:
+          description: "The Catena-X ID of the given part (e.g. the assembly), valid\
+            \ for the Catena-X dataspace."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+        articleNumber:
+          description: Unique identification assigned by the authorized company for
+            internal referencing
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        revocationDate:
+          description: The date when the certificate is revoked by the issuer. This
+            only happens in exceptional cases when an asset has been marked as reused
+            by error or any other error is made in the issuance of the certificate.
+            Certificates may be revoked up to 7 working days after they have been
+            issued.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.recycling_strategy_certificate_3.0.0_Date'
+        van:
+          description: Vehicle Anonymized Number of vehicle of which this component
+            has been dismantled.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        originalEquipmentNumber:
+          description: Original Equipment Number
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+        vehicleCatenaXId:
+          description: Catena X ID of the Vehicle from which this component has been
+            dismantled.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+      required:
+      - supplier
+      - issueDate
+      - catenaXId
+      - revocationDate
+      - originalEquipmentNumber
+    urn_samm_io.catenax.serial_part_3.0.0_KeyTrait:
+      type: string
+      description: Constraint that ensures that the standard keys and custom key prefixes
+        can be used.
+      pattern: ^(manufacturerId|partInstanceId|batchId|van|customKey:\w+)$
+    urn_samm_io.catenax.serial_part_3.0.0_ValueCharacteristic:
+      type: string
+      description: The value of an identifier.
+    urn_samm_io.catenax.serial_part_3.0.0_KeyValueList:
+      description: "A list of key value pairs for local identifiers, which are composed\
+        \ of a key and a corresponding value."
+      type: object
+      properties:
+        key:
+          description: 'The key of a local identifier. '
+          $ref: '#/components/schemas/urn_samm_io.catenax.serial_part_3.0.0_KeyTrait'
+        value:
+          description: The value of an identifier.
+          $ref: '#/components/schemas/urn_samm_io.catenax.serial_part_3.0.0_ValueCharacteristic'
+      required:
+      - key
+      - value
+    urn_samm_io.catenax.serial_part_3.0.0_LocalIdentifierCharacteristic:
+      description: "A single serialized part may have multiple attributes, that uniquely\
+        \ identify a that part in a specific dataspace (e.g. the manufacturer`s dataspace)"
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.serial_part_3.0.0_KeyValueList'
+      uniqueItems: true
+    RemanufacturingCertificate:
+      description: "This certificate represents the meticulous reconstruction and\
+        \ enhancement of an asset, marking the culmination of its previous life cycle\
+        \ and the inception of a renewed phase of functionality and sustainability\
+        \ through remanufacturing processes."
+      type: object
+      properties:
+        certificate:
+          description: "A property of the model, named certificate."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.recycling_strategy_certificate_3.0.0_RecyclingStrategyCertificateCharacteristic'
+        partInstanceId:
+          description: The serial number of the part from the manufacturer
+          $ref: '#/components/schemas/urn_samm_io.catenax.serial_part_3.0.0_LocalIdentifierCharacteristic'
+      required:
+      - certificate
+      - partInstanceId
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RemanufacturingCertificate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    RemanufacturingCertificate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemanufacturingCertificate'
