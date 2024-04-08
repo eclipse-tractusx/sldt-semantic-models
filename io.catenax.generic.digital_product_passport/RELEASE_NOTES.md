@@ -1,7 +1,59 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [Unreleased]
+## [4.0.0] - 2023-02-19
+### Changed
+- Either-or possibilities are deleted in order to only allow one possible verifiable input
+- Changed descriptions to reference the latest regulation from January 9th, 2024.
+- Changed general structure
+- Changed structure for some document links to reuse existing structure
+- Changed the way how to refer to serial, batch and model information through shared aspects
+- Changed reference for part classification
+- Attributes made optional (volume, grossVolume)
+- Changed structure for critical raw materials
+- Changed structure for sustainability attributes
+
+
+### Added
+- New attribute structure for hazardous classification of material (mandatory)
+- New attribute backupReference
+- New attribute registrationIdentifier
+- Added constraints to allow only positive values and percentages
+- New attribute structure for material footprint (optional)
+- New attribute generalPerformanceClass (optional)
+- New attribute repairabilityScore (optional)
+- New attribute durabilityScore (optional)
+
+
+
+## [3.0.0] - 2023-12-04
+### Added
+General
+- payload names are added where missing and needed
+- all company identifiers can now be a company name, full address and contact or a simple identifier with a type
+- all site identifiers can now be a name and full address or a simple identifier
+
+Metadata
+- passportIdentifier added which can be a UUID in the case of catena-X
+
+Characteristics
+- physical dimensions linked to shared.quantity
+
+Sustainability
+- state has a more defined enumeration
+- carbon and environmental footprint have new properties "performance class", "manufacturing plant" and "declaration"
+- renewable and recycled content are now identified trough a share
+
+Identification
+- a list of identifiers can be provided
+
+Operation
+- manufacturing date is mandatory
+
+Handling
+- spare part producers changed to spare part sources
+- hazardClass optional added
+
 
 ## [2.0.0] - 2023-08-28
 ### Added

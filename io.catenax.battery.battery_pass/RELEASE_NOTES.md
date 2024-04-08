@@ -2,13 +2,23 @@
 All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
+## [5.0.0] - 2024-03-04
+### Changed
+- import of the new samm:io.catenax.generic.digital_product_passport:4.0.0
+- deletion of either-or possibilities
+
+## [4.0.0] - 2023-12-11
+### Changed
+- changed to SAMM
+- fundamental changes in the structure
+- references to the Digital Product Passport which references multiple other shared models
 
 ## [3.0.1] - 2023-01-15
 ### Added
 n/a
 
 ### Changed
-- several smaller fixes according to technical commitee feedback
+- several smaller fixes according to technical committee feedback
 
 ### Removed
 n/a

@@ -1,0 +1,272 @@
+---
+openapi: 3.0.3
+info:
+  title: Demand and Capacity Notification
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/demand-and-capacity-notification:
+    get:
+      tags:
+      - DemandAndCapacityNotification
+      operationId: getDemandAndCapacityNotification
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/DemandAndCapacityNotification'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DemandAndCapacityNotification'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_AffectedSitesCharacteristic:
+      description: A set of Business Partner Number Sites (BPNS) that are affected.
+      type: array
+      items:
+        type: string
+        description: "The provided regular expression ensures that the BPNS is composed\
+          \ of prefix 'BPNS', 10 digits and two alphanumeric letters."
+        pattern: "^BPNS[a-zA-Z0-9]{12}$"
+      uniqueItems: true
+    urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_LeadingRootCauseEnumeration:
+      type: string
+      description: Enumeration of the available leading root causes.
+      enum:
+      - strike
+      - natural-disaster
+      - production-incident
+      - pandemic-or-epidemic
+      - logistics-disruption
+      - war
+      - other
+    urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_EffectEnumeration:
+      type: string
+      description: Enumeration of the available effects due to the mentioned leadingRootCause.
+      enum:
+      - demand-reduction
+      - demand-increase
+      - capacity-reduction
+      - capacity-increase
+    urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_UserInputTrait:
+      type: string
+      description: Constraint for a string to be max. 4000 characters long.
+      maxLength: 4000
+    urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_MaterialNumberDigitalTwinCharacteristic:
+      description: A set of Digital Twin material numbers.
+      type: array
+      items:
+        type: string
+        description: "The provided regular expression ensures that the UUID is composed\
+          \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+          \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+          \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+        pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      uniqueItems: true
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_StatusEnumeration:
+      type: string
+      description: Status can be either "open" or "resolved".
+      enum:
+      - resolved
+      - open
+    urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait:
+      type: string
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_MaterialNumberSet:
+      description: "The set of material numbers, usually a multi-character string\
+        \ assigned by an ERP system of the customer or the supplier."
+      type: array
+      items:
+        type: string
+      uniqueItems: true
+    DemandAndCapacityNotification:
+      description: This aspect model defines the standard for demand and capacity
+        notification exchange between business partners. Demand and Capacity Notifications
+        refer to specific events within the supply chain which affect production or
+        demand.
+      type: object
+      properties:
+        affectedSitesSender:
+          description: The affected Business Partner Site Numbers of the sender of
+            the notification. It is RECOMMENDED to set this property.
+          $ref: '#/components/schemas/urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_AffectedSitesCharacteristic'
+        affectedSitesRecipient:
+          description: The affected Business Partner Site Numbers of the recipient
+            of the notification. It is RECOMMENDED to set this property. It MUST NOT
+            contain any BPNS that doesn't belong to the receiver.
+          $ref: '#/components/schemas/urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_AffectedSitesCharacteristic'
+        leadingRootCause:
+          description: The main cause that has or may have an impact on the supply
+            of goods.
+          $ref: '#/components/schemas/urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_LeadingRootCauseEnumeration'
+        effect:
+          description: Effect or impact on the supply of goods as a consequence mentioned
+            in the leadingRootCause. From business perspective demand/capacity reduction
+            are most relevant values in connection with mentioned root causes. For
+            technical completeness demand/capacity increase are also added to the
+            enumeration.
+          $ref: '#/components/schemas/urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_EffectEnumeration'
+        text:
+          description: Free text description for notification (max. 4000 characters).
+          $ref: '#/components/schemas/urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_UserInputTrait'
+        materialGlobalAssetId:
+          description: Identifier used uniquely to identify part type twin.
+          $ref: '#/components/schemas/urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_MaterialNumberDigitalTwinCharacteristic'
+        startDateOfEffect:
+          description: This property defines the start date and time of the effect
+            regardless of the time the notification was sent.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        expectedEndDateOfEffect:
+          description: Expected end date of the impact MAY be defined by the sender
+            of the notification.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        status:
+          description: Status "open" should be used in the context of an effect which
+            remains active. Status "resolved" should be used to inform the partner
+            that the effect of the initial notification stopped or has been resolved.
+          $ref: '#/components/schemas/urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_StatusEnumeration'
+        contentChangedAt:
+          description: The timestamp of the latest change of this notification. Date
+            and time are set according to a timezone.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        sourceNotificationId:
+          description: Unique ID identifying a source notification related to the
+            current one.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+        materialNumberSupplier:
+          description: "Material identifiers as assigned by the supplier or manufacturer.\
+            \ This property identifies the material in the supplier's database. If\
+            \ the supplier is the data provider, sending this property is RECOMMENDED."
+          $ref: '#/components/schemas/urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_MaterialNumberSet'
+        materialNumberCustomer:
+          description: "Material identifier as assigned by the customer. This property\
+            \ identifies the material in the customer's database. For standard materials\
+            \ (e.g. screws) for which a customer does not have an own ID, the manufacturer\
+            \ material ID should be set in this field, too. If the customer is the\
+            \ data provider, sending this property is RECOMMENDED."
+          $ref: '#/components/schemas/urn_samm_io.catenax.demand_and_capacity_notification_2.0.0_MaterialNumberSet'
+        notificationId:
+          description: Unique ID identifying the notification.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+        relatedNotificationId:
+          description: Unique ID identifying a previously received notification triggering
+            the exchange of the current notification.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+      required:
+      - leadingRootCause
+      - effect
+      - startDateOfEffect
+      - status
+      - contentChangedAt
+      - notificationId
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    DemandAndCapacityNotification:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    DemandAndCapacityNotification:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DemandAndCapacityNotification'

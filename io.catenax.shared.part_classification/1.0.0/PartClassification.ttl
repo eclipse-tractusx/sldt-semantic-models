@@ -1,0 +1,84 @@
+#######################################################################
+# Copyright (c) 2024 BASF SE
+# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2024 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2024 Henkel AG & Co. KGaA
+# Copyright (c) 2024 Mercedes Benz AG
+# Copyright (c) 2024 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2024 SAP SE
+# Copyright (c) 2024 Siemens AG
+# Copyright (c) 2024 T-Systems International GmbH
+# Copyright (c) 2024 ZF Friedrichshafen AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.shared.part_classification:1.0.0#> .
+
+:PartClassification a samm:Aspect ;
+   samm:preferredName "PartClassification"@en ;
+   samm:description "This model is used as a shared aspect, that integrates classification properties into the models of the industry core. it should be reused once models handle part related data. Mainly, as it provides the possibility for data providers to chose which classification standards for components or parts to use and therefore enables the network to have a broader acceptance towards the various classification standards used in the industry. Moreover, multiple standards can be used for one part these range from E-Class, to ISO, IEC, or STEP."@en ;
+   samm:properties ( :partClassification ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:partClassification a samm:Property ;
+   samm:preferredName "Part Classification"@en ;
+   samm:description "Property describing the classification of a part."@en ;
+   samm:characteristic :ClassificationCharacteristic .
+
+:ClassificationCharacteristic a samm-c:SortedSet ;
+   samm:preferredName "Classification Characteristic"@en ;
+   samm:description "Classification characteristic enabling a set of further properties."@en ;
+   samm:dataType :ClassificationEntity .
+
+:ClassificationEntity a samm:Entity ;
+   samm:preferredName "ClassificationEntity"@en ;
+   samm:description "Encapsulates data related to the classification of the part."@en ;
+   samm:properties ( :classificationStandard :classificationID [ samm:property :classificationDescription; samm:optional true ] ) .
+
+:classificationStandard a samm:Property ;
+   samm:preferredName "Classification Standard"@en ;
+   samm:description "Identified classification standards that align to the Catena-X needs."@en ;
+   samm:characteristic :ClassificationStandardCharacteristic ;
+   samm:exampleValue "GIN 20510-21513" .
+
+:classificationID a samm:Property ;
+   samm:preferredName "Classification ID"@en ;
+   samm:description "The classification ID of the part type according to the corresponding standard definition mentioned in the key value pair."@en ;
+   samm:characteristic :ClassificationIDCharacteristic ;
+   samm:exampleValue "1004712" .
+
+:classificationDescription a samm:Property ;
+   samm:preferredName "Classification Description"@en ;
+   samm:description "Optional property describing the classification standard."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Generic standard for classification of parts in the automotive industry." .
+
+:ClassificationStandardCharacteristic a samm:Characteristic ;
+   samm:preferredName "Classification Standard Characteristic"@en ;
+   samm:description "Identified classification standards that align to the Catena-X needs."@en ;
+   samm:dataType xsd:string .
+
+:ClassificationIDCharacteristic a samm:Characteristic ;
+   samm:preferredName "Classification ID characteristic"@en ;
+   samm:description "It can be numeric or a string, depending on the chosen classification standard."@en ;
+   samm:dataType xsd:string .
+

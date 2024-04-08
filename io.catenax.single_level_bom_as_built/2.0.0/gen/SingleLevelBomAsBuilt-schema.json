@@ -1,0 +1,102 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The single-level bill of material represents one sub-level of an assembly and does not include any lower-level subassemblies. The as-built lifecycle references all child items as manufactured by the manufacturer referencing only child items in an as-built lifecycle themselves (e.g. serial parts or batches), unless parts can only be tracked by an part ID (on a type level).\n\nIf it is unclear which item has been built-in into the parent item, all potential parts must be listed. This is the case when, e.g. the same item is supplied by two suppliers and the item is only tracked by a customer part ID during assembly, these items can not be differentiated from each other.\n",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.single_level_bom_as_built_2.0.0_CatenaXIdTraitCharacteristic" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_io.catenax.single_level_bom_as_built_2.0.0_NumberOfObjects" : {
+        "type" : "number",
+        "description" : "Quantifiable number of objects in reference to the measurementUnit"
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "description" : "Describes a Property containing a reference to one of the units in the Unit Catalog."
+      },
+      "urn_samm_io.catenax.single_level_bom_as_built_2.0.0_QuantityCharacteristic" : {
+        "description" : "Describes the quantity in which the child item is assembled in the given parent item by providing a quantity value and the measurement unit in which the quantity is measured.",
+        "type" : "object",
+        "properties" : {
+          "quantityNumber" : {
+            "description" : "The number of objects related to the measurement unit",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_built_2.0.0_NumberOfObjects"
+          },
+          "measurementUnit" : {
+            "description" : "Unit of Measurement for the quantity of serialized objects",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference"
+          }
+        },
+        "required" : [ "quantityNumber", "measurementUnit" ]
+      },
+      "urn_samm_io.catenax.single_level_bom_as_built_2.0.0_BpnTrait" : {
+        "type" : "string",
+        "description" : "Business Partner Number Regular Expression allowing only BPNL which stands for a legal entity.",
+        "pattern" : "^(BPNL)([0-9]{8})([a-zA-Z0-9]{4})$"
+      },
+      "urn_samm_io.catenax.single_level_bom_as_built_2.0.0_HasAlternativesCharacteristic" : {
+        "type" : "boolean",
+        "description" : "Describes the value whether the child data has alternatives."
+      },
+      "urn_samm_io.catenax.single_level_bom_as_built_2.0.0_ChildData" : {
+        "description" : "Catena-X ID and meta data of the assembled child item.",
+        "type" : "object",
+        "properties" : {
+          "createdOn" : {
+            "description" : "Timestamp when the relation between the parent item and the child item was created, e.g. when the serialized child part was assembled into the given part.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "quantity" : {
+            "description" : "Quantity of which the child item is assembled into the parent item. In general it is '1' for serialized parts.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_built_2.0.0_QuantityCharacteristic"
+          },
+          "lastModifiedOn" : {
+            "description" : "Timestamp when the assembly relationship between parent item and child item was last modified.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "catenaXId" : {
+            "description" : "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_built_2.0.0_CatenaXIdTraitCharacteristic"
+          },
+          "businessPartner" : {
+            "description" : "The supplier of the given child item.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_built_2.0.0_BpnTrait"
+          },
+          "hasAlternatives" : {
+            "description" : "Expresses wether the part is built-in or wether it is one of several options. If the value is false, it can be assumend this exact item is built-in. If the value is true, it is unknown wether this or an alternative item is built-in.\nThis is the case when, e.g. the same item is supplied by two suppliers, the item is only tracked by a customer part ID during assembly. Thus, these items can not be differentiated from each other.\n\n",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_built_2.0.0_HasAlternativesCharacteristic"
+          }
+        },
+        "required" : [ "createdOn", "quantity", "catenaXId", "businessPartner", "hasAlternatives" ]
+      },
+      "urn_samm_io.catenax.single_level_bom_as_built_2.0.0_SetOfChildItemsCharacteristic" : {
+        "description" : "Set of child items the parent item is assembled by (one structural level down).",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_built_2.0.0_ChildData"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "catenaXId" : {
+      "description" : "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_built_2.0.0_CatenaXIdTraitCharacteristic"
+    },
+    "childItems" : {
+      "description" : "Set of child items, of which the given parent item is assembled by (one structural level down).",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.single_level_bom_as_built_2.0.0_SetOfChildItemsCharacteristic"
+    }
+  },
+  "required" : [ "catenaXId", "childItems" ]
+}

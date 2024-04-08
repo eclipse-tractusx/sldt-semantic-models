@@ -3,6 +3,21 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [6.0.0] 2024-02-26
+### Changed
+- adapted as aligned with and specified by the Catena-X use case team
+- updated descriptions and references in order to express semantic compatibilities with Catena-X Industry Core where applicable
+- updated reference to shared uuid from version 1.0.0 to 2.0.0
+- updated from SAMM 2.0.0 to SAMM 2.1.0
+- updated dates and organizations in header 
+
+## [5.0.0] 2023-12-11
+### Changed
+- adapted as aligned with and specified by the Catena-X use case team
+- changed descriptions (added comment for optional/ mandatory declarations)
+- changed some properties from optional to mandatory in order to comply with PCF Rulebook
+- added property "distributionStageAircraftGhgEmissions" 
+
 ## [4.0.1] 2023-07-03
 ### Changed
 - changed data type of property "version" from "positiveInteger" to "nonNegativeInteger"

@@ -1,0 +1,408 @@
+---
+openapi: 3.0.3
+info:
+  title: Manufacturing Capability Aspect Model
+  version: v3
+servers:
+- url: catenax.io/api/v3
+  variables:
+    api-version:
+      default: v3
+paths:
+  /{tenant-id}/manufacturing-capability:
+    get:
+      tags:
+      - ManufacturingCapability
+      operationId: getManufacturingCapability
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/ManufacturingCapability'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManufacturingCapability'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.shared.bill_of_process_1.1.0_BillOfProcessIdCharacteristic:
+      type: string
+      description: Characteristic for Bill of process Identifiers
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_BoPEntity:
+      description: Element containing a bill of process identifier.
+      type: object
+      properties:
+        billOfProcessIdentification:
+          description: Unique identifier for a bill of process that can be used to
+            reference instances of the bill of process
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.bill_of_process_1.1.0_BillOfProcessIdCharacteristic'
+      required:
+      - billOfProcessIdentification
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_ProcessSetCharacteristic:
+      description: Characteristic for a set of bill of processes.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_BoPEntity'
+      uniqueItems: true
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_MultiLanguageText:
+      type: object
+      description: "Describes a Property which contains plain text in multiple languages.\
+        \ This is intended exclusively for human readable strings, not for identifiers,\
+        \ measurement values, etc."
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_IdCharacteristic:
+      type: string
+      description: Characteristic for identifiers.
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_SemanticReferenceEntity:
+      description: Element containing the SAMM properties of a semantic reference.
+      type: object
+      properties:
+        semanticReferenceId:
+          description: Globally unique identifier for the semantic.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_IdCharacteristic'
+      required:
+      - semanticReferenceId
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_SemanticReferenceSetCharacteristic:
+      description: Characteristic for a set of semantic references
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_SemanticReferenceEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_PropertyValueCharacteristic:
+      type: string
+      description: Characteristic for a property value.
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_PropertyEntity:
+      description: Element containing the SAMM properties of a property.
+      type: object
+      properties:
+        propertyLabel:
+          description: Human readable label of a property.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_MultiLanguageText'
+        semanticReferences:
+          description: A set of semantic references.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_SemanticReferenceSetCharacteristic'
+        propertyValue:
+          description: The value of a property. Note that this SAMM property does
+            have a variable type and is therefore defined as string.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_PropertyValueCharacteristic'
+      required:
+      - propertyLabel
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_PropertySetCharacteristic:
+      description: Characteristic for a set of property representations.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_PropertyEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementIdCharacteristic:
+      type: string
+      description: Characteristic for an identifier of a hierarcy element.
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementIdEntity:
+      description: Element containing the SAMM properties of a hierarchy element.
+      type: object
+      properties:
+        hierarchyElementId:
+          description: An identifier of a hierarchy element.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementIdCharacteristic'
+      required:
+      - hierarchyElementId
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementSetCharacteristic:
+      description: Characteristic for a set of hierarchy elements.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementIdEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_CapabilityEntity:
+      description: Element containing the SAMM properties of a capability.
+      type: object
+      properties:
+        capabilityConstraintSet:
+          description: Set of conditions imposed on capabilities which further detail
+            their applicability.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_CapabilityConstraintSetCharacteristic'
+        semanticReferences:
+          description: A set of semantic references.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_SemanticReferenceSetCharacteristic'
+        capabilityId:
+          description: Locally unique identifier for a capability.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_IdCharacteristic'
+        capabilityLabel:
+          description: Label of a capability.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_MultiLanguageText'
+      required:
+      - capabilityLabel
+      allOf:
+      - $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementAbstractEntity'
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialFamilyEntity:
+      description: Element containing the SAMM properties of a material family.
+      type: object
+      properties: {}
+      allOf:
+      - $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementAbstractEntity'
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementAbstractEntity:
+      description: Template for elements containing the SAMM properties needed to
+        build hierarchies.
+      type: object
+      properties:
+        specializes:
+          description: One hierarchy element can specialize others.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementSetCharacteristic'
+        generalizes:
+          description: One hierarchy element can generalize others.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementSetCharacteristic'
+        hierarchyElementId:
+          description: An identifier of a hierarchy element.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_HierarchyElementIdCharacteristic'
+      required:
+      - hierarchyElementId
+      allOf:
+      - $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_ElementAbstractEntity'
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_CertificateEntity:
+      description: Element containing the SAMM properties of a certificate.
+      type: object
+      properties: {}
+      allOf:
+      - $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_ElementAbstractEntity'
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_ProductEntity:
+      description: Element containing the SAMM properties of a product.
+      type: object
+      properties: {}
+      allOf:
+      - $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_ElementAbstractEntity'
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_MachineEntity:
+      description: Element containing the SAMM properties of a machine.
+      type: object
+      properties:
+        provides:
+          description: Set of capabilities the machine can provide.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_CapabilitySetCharacteristic'
+        containsTools:
+          description: Set of machine tools the machine can be equipped with.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MachineToolSetCharacteristic'
+      allOf:
+      - $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_ElementAbstractEntity'
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialEntity:
+      description: Characteristic for a material.
+      type: object
+      properties:
+        belongsToMaterialFamilies:
+          description: A material belongs to certain material families.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialFamilySetCharacteristic'
+      allOf:
+      - $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_ElementAbstractEntity'
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_ElementAbstractEntity:
+      description: Template for elements needing a label and containing properties.
+      type: object
+      properties:
+        properties:
+          description: "Set of qualities or characteristics inherent in or ascribed\
+            \ to process, resource, product or capability entities."
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_PropertySetCharacteristic'
+        label:
+          description: Multilanguage label of an element.
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_MultiLanguageText'
+      required:
+      - label
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialFamilySetCharacteristic:
+      description: Characteristic for a set of material families.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialFamilyEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialCharacteristic:
+      description: Characteristic for a material.
+      type: object
+      properties:
+        belongsToMaterialFamilies:
+          description: A material belongs to certain material families.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialFamilySetCharacteristic'
+      allOf:
+      - $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_ElementAbstractEntity'
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_CapabilityConstraintEntity:
+      description: Element containing the samm properties of a capability constraint.
+      type: object
+      properties:
+        capabilityConstraintProperties:
+          description: Set of constraints restricting the capability.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_PropertySetCharacteristic'
+        refersToMaterial:
+          description: A specific material the capability constraint can refer to.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialCharacteristic'
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_CapabilityConstraintSetCharacteristic:
+      description: Characteristic for a set of capability constraint representations.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_CapabilityConstraintEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_CapabilitySetCharacteristic:
+      description: Characteristic for a set of capability representations.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_CapabilityEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialSetCharacteristic:
+      description: Characteristic for a set of materials.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_MachineToolEntity:
+      description: Element containing the SAMM properties of a machine tool.
+      type: object
+      properties:
+        canProcessMaterials:
+          description: Set of materials the machine tool can utilize.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MaterialSetCharacteristic'
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_MachineToolSetCharacteristic:
+      description: Characteristic for a set of machine tools.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MachineToolEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_MachineSetCharacteristic:
+      description: Characteristic for a set of machine representations.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MachineEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_ProductSetCharacteristic:
+      description: Characteristic for a set of product representations.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_ProductEntity'
+      uniqueItems: true
+    urn_samm_io.catenax.manufacturing_capability_3.1.0_CertificateSetCharacteristic:
+      description: Characteristic for a set of certificates.
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_CertificateEntity'
+      uniqueItems: true
+    ManufacturingCapability:
+      description: "An aspect model representing manufacturing capabilities, based\
+        \ on the concepts for products, processes, resources and capabilities, as\
+        \ well as their relations to each other."
+      type: object
+      properties:
+        processes:
+          description: Set of production-relevant activities at any level of granularity
+            that might affect materials and is performed by resources.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_ProcessSetCharacteristic'
+        machines:
+          description: A set of machines used for production.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MachineSetCharacteristic'
+        products:
+          description: Set of physical objects being used as an input or created as
+            an output of a production process.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_ProductSetCharacteristic'
+        capabilities:
+          description: Set of implementation-independent specifications of functions
+            in industrial production to achieve an effect in the physical or virtual
+            world.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_CapabilitySetCharacteristic'
+        machineTools:
+          description: A set of machine tools.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_MachineToolSetCharacteristic'
+        certificates:
+          description: Set of certificates.
+          $ref: '#/components/schemas/urn_samm_io.catenax.manufacturing_capability_3.1.0_CertificateSetCharacteristic'
+      required:
+      - processes
+      - machines
+      - products
+      - capabilities
+      - machineTools
+      - certificates
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ManufacturingCapability:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    ManufacturingCapability:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ManufacturingCapability'

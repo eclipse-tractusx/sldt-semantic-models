@@ -1,0 +1,593 @@
+---
+openapi: 3.0.3
+info:
+  title: Request For Quotation
+  version: v2
+servers:
+- url: catenax.io/api/v2
+  variables:
+    api-version:
+      default: v2
+paths:
+  /{tenant-id}/request-for-quotation:
+    get:
+      tags:
+      - RequestForQuotation
+      operationId: getRequestForQuotation
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: '#/components/responses/RequestForQuotation'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SourceCharacteristic:
+      type: string
+      description: "digital address of the sender (e.g.token, IP address, link, user\
+        \ account)"
+    urn_samm_io.catenax.request_for_quotation_2.0.0_IdCharacteristic:
+      type: string
+      description: internal identifier in user account
+    urn_samm_io.catenax.request_for_quotation_2.0.0_NameCharacteristic:
+      type: string
+      description: name for the request for user account management (usually name
+        of the part to be manufactured)
+    urn_samm_io.catenax.request_for_quotation_2.0.0_DateTimeCharacteristic:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: date and time of the request in user account
+    urn_samm_io.catenax.request_for_quotation_2.0.0_RFQVersionCharacteristic:
+      type: string
+      description: version of this request in case there were any changes
+    urn_samm_io.catenax.request_for_quotation_2.0.0_RFQIdentificationCharacteristic:
+      description: all properties necessary for identification of the request for
+        quotation
+      type: object
+      properties:
+        rfqSource:
+          description: "RFQ-Identification: digital address of the sender (e.g.token,\
+            \ IP address, link, user account)"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SourceCharacteristic'
+        rfqId:
+          description: "RFQ-Identification: internal identifier in user account"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_IdCharacteristic'
+        rfqName:
+          description: "RFQ-Identification: name for the request for user account\
+            \ management (usually name of the product to be manufactured)"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_NameCharacteristic'
+        rfqDateTime:
+          description: "RFQ-Identification: date and time of the request in user account"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_DateTimeCharacteristic'
+        rfqVersion:
+          description: "RFQ-Identification: version of this request in case there\
+            \ were any changes"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_RFQVersionCharacteristic'
+      required:
+      - rfqSource
+      - rfqId
+      - rfqName
+      - rfqDateTime
+      - rfqVersion
+    urn_samm_io.catenax.request_for_quotation_2.0.0_FileTypeCharacteristic:
+      type: string
+      description: file format
+    urn_samm_io.catenax.request_for_quotation_2.0.0_FilePathCharacteristic:
+      type: string
+      description: 'path or address to the file '
+    urn_samm_io.catenax.request_for_quotation_2.0.0_FileNameCharacteristic:
+      type: string
+      description: name of the file
+    urn_samm_io.catenax.request_for_quotation_2.0.0_FileObjectCharacteristic:
+      description: "the file object itself, in case this could be sent via the API"
+      type: object
+      properties: {}
+    urn_samm_io.catenax.request_for_quotation_2.0.0_FileCharacteristic:
+      description: in case there are additional documents or files to share
+      type: object
+      properties:
+        fileType:
+          description: "RFQ-Configuration: file format"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_FileTypeCharacteristic'
+        filePath:
+          description: 'path or address to the file '
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_FilePathCharacteristic'
+        fileName:
+          description: name of the file
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_FileNameCharacteristic'
+        fileObject:
+          description: "the file object itself, in case this could be sent via the\
+            \ API"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_FileObjectCharacteristic'
+      required:
+      - fileType
+      - filePath
+      - fileName
+      - fileObject
+    urn_samm_io.catenax.request_for_quotation_2.0.0_PartIdCharacteristic:
+      type: string
+      description: identifier of the part from CAD File
+    urn_samm_io.catenax.request_for_quotation_2.0.0_PartNameCharacteristic:
+      type: string
+      description: "name of the part in CAD file. In case the CAD file has only one\
+        \ part, this could also be the file name"
+    urn_samm_io.catenax.request_for_quotation_2.0.0_ManufacturingDomainCharacteristic:
+      type: string
+      description: "domain of required process (e.g. subtractive manufacturing, additive\
+        \ manufacturing, assembly)"
+    urn_samm_io.catenax.request_for_quotation_2.0.0_ProcessStepIdentifierCharacteristic:
+      type: string
+      description: specific process step identifier within the level of detail
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SetOfSubProcessStepsCharacteristic:
+      type: string
+      description: list of specific process step identifiers within the next level
+        of detail
+    urn_samm_io.catenax.request_for_quotation_2.0.0_ValueCharacteristic:
+      type: string
+      description: value to detail the part material item
+    urn_samm_io.catenax.request_for_quotation_2.0.0_ValueTypeCharacteristic:
+      type: string
+      description: value type to specify the property value
+    urn_samm_io.catenax.request_for_quotation_2.0.0_PropertyNameCharacteristic:
+      type: string
+      description: name of the property
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SetOfProcessPropertyCharacteristic:
+      description: 'set of property data to detail material properties '
+      type: object
+      properties:
+        value:
+          description: value to detail the part material item
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_ValueCharacteristic'
+        valueType:
+          description: value type to specify the value of the property
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_ValueTypeCharacteristic'
+        propertyName:
+          description: name of the property
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_PropertyNameCharacteristic'
+      required:
+      - value
+      - valueType
+      - propertyName
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SetOfProcessStepsCharacteristic:
+      description: depending on the manufacturing domain there are several process
+        steps to be done. These process steps might also be hierarchical.
+      type: object
+      properties:
+        processStepIdentifier:
+          description: specific process step identifier within the level of detail.
+            Must be unique! (this is the identifier to reference to)
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_ProcessStepIdentifierCharacteristic'
+        subProcessSteps:
+          description: list of specific process step identifiers for the next level
+            of detail (reference from the SetOfProcessSteps list)
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SetOfSubProcessStepsCharacteristic'
+        processProperties:
+          description: "property related to the specified process, e.g. for coloring,\
+            \ the property would be the color: black "
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SetOfProcessPropertyCharacteristic'
+      required:
+      - processStepIdentifier
+      - subProcessSteps
+      - processProperties
+    urn_samm_io.catenax.request_for_quotation_2.0.0_GeneralToleranceCharacteristic:
+      type: string
+      description: selection of defined tolerance classes
+    urn_samm_io.catenax.request_for_quotation_2.0.0_AdditionalQualityRequirementsCharacteristic:
+      type: string
+      description: specific requirements to guarantee quality
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SetMaterialPropertiesCharacteristic:
+      description: 'set of property data to detail material properties '
+      type: object
+      properties:
+        value:
+          description: value to detail the part material item
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_ValueCharacteristic'
+        valueType:
+          description: value type to specify the value of the property
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_ValueTypeCharacteristic'
+        propertyName:
+          description: name of the property
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_PropertyNameCharacteristic'
+      required:
+      - value
+      - valueType
+      - propertyName
+    urn_samm_io.catenax.request_for_quotation_2.0.0_PartMaterialGroupCharacteristic:
+      type: string
+      description: definition of material group for preselection
+    urn_samm_io.catenax.request_for_quotation_2.0.0_MaterialCharacteristic:
+      description: material definition with further information
+      type: object
+      properties:
+        materialProperties:
+          description: "material definition with additional detail properties with\
+            \ name, value and value type, like name= density, value=2.7, type=g/m3\
+            \ or name= chemical term, value=AlMgMn, type=periodic table"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SetMaterialPropertiesCharacteristic'
+        materialFamily:
+          description: definition of material family for preselection
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_PartMaterialGroupCharacteristic'
+      required:
+      - materialProperties
+      - materialFamily
+    urn_samm_io.catenax.shared.quantity_1.0.0_QuantityValueCharacteristic:
+      type: number
+      description: The quantity value associated with the unit expressed as float.
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference:
+      type: string
+      pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      description: Describes a Property containing a reference to one of the units
+        in the Unit Catalog.
+    urn_samm_io.catenax.request_for_quotation_2.0.0_PartQuantityCharacteristic:
+      description: quantity to be ordered
+      type: object
+      properties:
+        quantityNumber:
+          description: The number of objects related to the measurement unit
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_QuantityValueCharacteristic'
+        measurementUnit:
+          description: Unit of Measurement for the quantity of serialized objects
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference'
+      required:
+      - quantityNumber
+      - measurementUnit
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SetOfPartsCharacteristic:
+      description: "list of parts contained in the CAD file, to be defined in RFQ\
+        \ configuration"
+      type: object
+      properties:
+        partId:
+          description: "RFQ-PartConfiguration: identifier of the part from CAD File"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_PartIdCharacteristic'
+        partName:
+          description: "RFQ-PartConfiguration: name of the part in CAD file. In case\
+            \ the CAD file has only one part, this could also be the file name."
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_PartNameCharacteristic'
+        manufacturingDomain:
+          description: "RFQ-PartConfiguration: domain of required process (e.g. subtractive\
+            \ manufacturing, additive manufacturing, assembly)"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_ManufacturingDomainCharacteristic'
+        processes:
+          description: "RFQ-PartConfiguration: list of processes related to the manufacturing\
+            \ domain (subtractive Manufacturing: milling, drilling, surface treatment;\
+            \ additive manufacturing: powder bed fusion, heat treatment, surface finishing;\
+            \ assembly: welding,...).These process steps might also be hierarchical\
+            \ (milling:roughing, milling:finishing,..."
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SetOfProcessStepsCharacteristic'
+        generalTolerance:
+          description: "RFQ-PartConfiguration: selection of defined tolerance classes"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_GeneralToleranceCharacteristic'
+        additionalRequirements:
+          description: "RFQ-PartConfiguration: specific requirements e.g. to guarantee\
+            \ quality, like premium quality check or standard quality check or test\
+            \ part required (makes only sense for batch)"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_AdditionalQualityRequirementsCharacteristic'
+        material:
+          description: "RFQ-PartConfiguration: material definition with further information"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_MaterialCharacteristic'
+        partQuantity:
+          description: "RFQ-PartConfiguration: Quantity of which the part item is\
+            \ assembled into the parent item (within the CAD File). In general it\
+            \ is '1' for serialized parts."
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_PartQuantityCharacteristic'
+      required:
+      - partId
+      - partName
+      - manufacturingDomain
+      - processes
+      - generalTolerance
+      - additionalRequirements
+      - material
+      - partQuantity
+    urn_samm_io.catenax.request_for_quotation_2.0.0_DeliveryDateCharacteristic:
+      type: string
+      format: date
+      description: delivery date
+    urn_samm_io.catenax.request_for_quotation_2.0.0_CommentCharacteristic:
+      type: string
+      description: placeholder for any kind of additional comments
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SetOfFilesCharacteristic:
+      description: in case there are additional documents or files to share
+      type: object
+      properties:
+        fileType:
+          description: "RFQ-Configuration: file format"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_FileTypeCharacteristic'
+        filePath:
+          description: 'path or address to the file '
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_FilePathCharacteristic'
+        fileName:
+          description: name of the file
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_FileNameCharacteristic'
+        fileObject:
+          description: "the file object itself, in case this could be sent via the\
+            \ API"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_FileObjectCharacteristic'
+      required:
+      - fileType
+      - filePath
+      - fileName
+      - fileObject
+    urn_samm_io.catenax.request_for_quotation_2.0.0_OrderQuantityCharacteristic:
+      description: quantity to be ordered
+      type: object
+      properties:
+        quantityNumber:
+          description: The number of objects related to the measurement unit
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.quantity_1.0.0_QuantityValueCharacteristic'
+        measurementUnit:
+          description: Unit of Measurement for the quantity of serialized objects
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference'
+      required:
+      - quantityNumber
+      - measurementUnit
+    urn_samm_io.catenax.request_for_quotation_2.0.0_RFQConfigurationCharacteristic:
+      description: all information to configure a request for quotation
+      type: object
+      properties:
+        cadFile:
+          description: "RFQ-Configuration: CAD file as geometry definition, e.g. step\
+            \ file"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_FileCharacteristic'
+        parts:
+          description: "RFQ-Configuration: list of parts contained in the CAD file"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SetOfPartsCharacteristic'
+        firstDeliveryDate:
+          description: "RFQ-Configuration: Date of desired, first, but not must delivery"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_DeliveryDateCharacteristic'
+        lastDeliveryDate:
+          description: "RFQ-Configuration: date of required and last acceptable delivery"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_DeliveryDateCharacteristic'
+        additionalComments:
+          description: "RFQ-Configuration: placeholder for any kind of additional\
+            \ comments"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_CommentCharacteristic'
+        additionalFiles:
+          description: "RFQ-Configuration: in case there are additional documents\
+            \ or files to share (like e.g. technical drawings)"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SetOfFilesCharacteristic'
+        orderQuantity:
+          description: "RFQ-Configuration: quantity at all, valid for complete order\
+            \ (usually number of products to be ordered)"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_OrderQuantityCharacteristic'
+      required:
+      - cadFile
+      - parts
+      - firstDeliveryDate
+      - lastDeliveryDate
+      - additionalComments
+      - additionalFiles
+      - orderQuantity
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SenderNameCharacteristic:
+      type: string
+      description: name of the sender
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SenderAddressCharacteristic:
+      type: string
+      description: address of sender
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SenderCompanyNameCharacteristic:
+      type: string
+      description: company name of sender
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SenderEMailCharacteristic:
+      type: string
+      description: ' e-mail address of sender'
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SenderPhoneNumberCharacteristic:
+      type: string
+      description: phone number of sender
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SenderAccountAddressCharacteristic:
+      type: string
+      description: address of sender for account
+    urn_samm_io.catenax.request_for_quotation_2.0.0_SenderDeliveryAddressCharacteristic:
+      type: string
+      description: address of sender for delivery
+    urn_samm_io.catenax.request_for_quotation_2.0.0_DeliveryRequirementsCharacteristic:
+      type: string
+      description: any kind of delivery requirements
+    urn_samm_io.catenax.request_for_quotation_2.0.0_RFQSenderCharacteristic:
+      description: "all data about sender of request for quotation, important for\
+        \ offer and delivery"
+      type: object
+      properties:
+        senderName:
+          description: "RFQ-Sender: name of the sender"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SenderNameCharacteristic'
+        senderAddress:
+          description: "RFQ-Sender: BPDM/ or fill in by the customer, address of sender"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SenderAddressCharacteristic'
+        senderCompanyName:
+          description: "RFQ-Sender: BPDM/ or fill in by the customer, company name\
+            \ of sender"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SenderCompanyNameCharacteristic'
+        senderEMail:
+          description: "RFQ-Sender: BPDM/ or fill in by the customer, e-mail address\
+            \ of sender"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SenderEMailCharacteristic'
+        senderPhoneNumber:
+          description: "RFQ-Sender: BPDM/ or fill in by the customer, phone number\
+            \ of sender"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SenderPhoneNumberCharacteristic'
+        senderAccountAddress:
+          description: "RFQ-Sender: BPDM/ or fill in by the customer, address of sender\
+            \ for account"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SenderAccountAddressCharacteristic'
+        senderDeliveryAddress:
+          description: "RFQ-Sender: BPDM/ or fill in by the customer, address of sender\
+            \ for delivery"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_SenderDeliveryAddressCharacteristic'
+        deliveryRequirements:
+          description: "RFQ-Sender: filled by customer, any kind of delivery requirements"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_DeliveryRequirementsCharacteristic'
+      required:
+      - senderName
+      - senderAddress
+      - senderCompanyName
+      - senderEMail
+      - senderPhoneNumber
+      - senderAccountAddress
+      - senderDeliveryAddress
+      - deliveryRequirements
+    urn_samm_io.catenax.shared.message_header_1.0.0_UuidCharacteristic:
+      type: string
+      description: Structured Value for defining a property which requires an UUID
+    urn_samm_io.catenax.shared.message_header_1.0.0_ContextCharacteristic:
+      type: string
+      description: Defining a string value for the context
+    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    urn_samm_io.catenax.shared.message_header_1.0.0_BpnCharacteristic:
+      type: string
+      description: Characteristic for defining BPN values
+    urn_samm_io.catenax.shared.message_header_1.0.0_VersionCharacteristic:
+      type: string
+      description: Characteristic defining the value of version.
+    urn_samm_io.catenax.request_for_quotation_2.0.0_CXHeaderCharacteristic:
+      description: header information by Catena-X
+      type: object
+      properties:
+        messageId:
+          description: "Unique ID identifying the message. The purpose of the ID is\
+            \ to uniquely identify a single message, therefore it MUST not be reused."
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_UuidCharacteristic'
+        context:
+          description: |-
+            Information about the context the message should be considered in.
+            The value MUST consist of two parts: an identifier of the context (e.g. business domain, etc.) followed by a version number.
+            Both the identifier and the version number MUST correspond to the content of the message.
+            If the content of a message is described by an aspect model available in the Catena-X Semantic Hub, then the unique identifier of this semantic model (e.g. urn:samm:io.catenax.<ASPECT-MODEL-NAME>:1.x.x) MUST be used as a value of the context field. This is considered the default case.
+            In all other cases the value of the context field MUST follow the pattern <domain>-<subdomain>-<object>:<[major] version> (e.g. TRACE-QM-Alert:1.x.x).
+            Versioning only refers to major versions in both default and fallback cases.
+            Note: The version of the message's header is specified in the version field.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_ContextCharacteristic'
+        sentDateTime:
+          description: Time zone aware timestamp holding the date and the time the
+            message was sent by the sending party. The value MUST be formatted according
+            to the ISO 8601 standard
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        senderBpn:
+          description: The Business Partner Number of the sending party. The value
+            MUST be a valid BPN. BPNA and BPNS are not allowed. Applicable constraints
+            are defined in the corresponding standard
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_BpnCharacteristic'
+        receiverBpn:
+          description: The Business Partner Number of the receiving party. The value
+            MUST be a valid BPN. BPNA and BPNS are not allowed. Applicable constraints
+            are defined in the corresponding standard.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_BpnCharacteristic'
+        expectedResponseBy:
+          description: Time zone aware timestamp holding the date and time by which
+            the sending party expects a certain type of response from the receiving
+            party. The meaning and interpretation of the fields's value are context-bound
+            and MUST therefore be defined by any business domain or platform capability
+            making use of it. The value MUST be formatted according to the ISO 8601
+            standard
+          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+        relatedMessageId:
+          description: Unique ID identifying a message somehow related to the current
+            one
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_UuidCharacteristic'
+        version:
+          description: The unique identifier of the aspect model defining the structure
+            and the semantics of the message's header. The version number should reflect
+            the versioning schema of aspect models in Catena-X.
+          $ref: '#/components/schemas/urn_samm_io.catenax.shared.message_header_1.0.0_VersionCharacteristic'
+      required:
+      - messageId
+      - context
+      - sentDateTime
+      - senderBpn
+      - receiverBpn
+      - version
+    RequestForQuotation:
+      description: The request for quotation represents the data structure to configure
+        a manufacturing request and send this to a supplier receive a quotation
+      type: object
+      properties:
+        rfqIdentification:
+          description: all properties necessary for identification of the request
+            for quotation
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_RFQIdentificationCharacteristic'
+        rfqConfiguration:
+          description: all information to configure a request for quotation
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_RFQConfigurationCharacteristic'
+        rfqSender:
+          description: "all data about sender of request for quotation, important\
+            \ for offer and delivery"
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_RFQSenderCharacteristic'
+        cxHeader:
+          description: header information by Catena-X
+          $ref: '#/components/schemas/urn_samm_io.catenax.request_for_quotation_2.0.0_CXHeaderCharacteristic'
+      required:
+      - rfqIdentification
+      - rfqConfiguration
+      - rfqSender
+      - cxHeader
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RequestForQuotation:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestForQuotation'
+      description: The request was successful.
+  requestBodies:
+    RequestForQuotation:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestForQuotation'

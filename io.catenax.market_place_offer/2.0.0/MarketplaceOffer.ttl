@@ -1,0 +1,431 @@
+#######################################################################
+# Copyright (c) 2023-2024 T-Systems International GmbH
+# Copyright (c) 2023-2024 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2023-2024 Robert Bosch GmbH
+# Copyright (c) 2023-2024 Henkel AG & Co. KGaA
+# Copyright (c) 2023-2024 LRP Autorecycling Leipzig GmbH
+# Copyright (c) 2023-2024 SAP SE
+# Copyright (c) 2023-2024 ZF Friedrichshafen AG
+# Copyright (c) 2023-2024 Circular Economy Solutions GmbH (C-ECO)
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2023-2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.market_place_offer:2.0.0#> .
+@prefix ext-part: <urn:samm:io.catenax.serial_part:3.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+
+:MarketplaceOffer a samm:Aspect ;
+   samm:preferredName "Marketplace Offer"@en ;
+   samm:description "Description of all needed information to place a market place offer on the marketplace."@en ;
+   samm:properties ( [ samm:property :sku; samm:optional true ] :quantity [ samm:property :condition; samm:optional true ] :pickupLocation [ samm:property :incoterms; samm:optional true ] :price [ samm:property :image; samm:optional true ] [ samm:property :attachment; samm:optional true ] :bundleOffer :marketplaceProduct [ samm:property :missingParts; samm:optional true ] [ samm:property :dismantled; samm:optional true ] [ samm:property :mechanicalDamage; samm:optional true ] [ samm:property :corroded; samm:optional true ] [ samm:property :discolored; samm:optional true ] [ samm:property :availabilityDate; samm:optional true ] [ samm:property :mileage; samm:optional true ] [ samm:property :burned; samm:optional true ] [ samm:property :errorCodes; samm:optional true ] [ samm:property :partMarking; samm:optional true ] [ samm:property :vehicleDescription; samm:optional true ] :serialNumber :taxPercentage :height :areaOfUsage :width :length :diameter :weight ext-part:date ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:sku a samm:Property ;
+   samm:preferredName "sku"@en ;
+   samm:description "Stock Keeping Unit is an unique identifier of the dealer providing the product"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "1002090, xYz.09, ABcXYZ" .
+
+:quantity a samm:Property ;
+   samm:preferredName "quantity"@en ;
+   samm:description "The available quantity of an offered product."@en ;
+   samm:characteristic ext-quantity:ItemQuantityCharacteristic .
+
+:condition a samm:Property ;
+   samm:preferredName "condition"@en ;
+   samm:description "The condition of the offered product."@en ;
+   samm:characteristic :ConditionCharacteristic ;
+   samm:exampleValue "used" .
+
+:pickupLocation a samm:Property ;
+   samm:preferredName "pickup location"@en ;
+   samm:description "The pickup location for the offered item."@en ;
+   samm:characteristic :GeographicalCoordinates .
+
+:incoterms a samm:Property ;
+   samm:preferredName "Incoterms"@en ;
+   samm:description "The International Commercial Terms are standardized trade terms used in international commerce to define the responsibilities and obligations of buyers and sellers during the transportation and delivery of goods. "@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "DAP (Delivered at Place)" .
+
+:price a samm:Property ;
+   samm:preferredName "price"@en ;
+   samm:description "The net price of the product after tax"@en ;
+   samm:characteristic :PriceInformation .
+
+:image a samm:Property ;
+   samm:preferredName "image"@en ;
+   samm:description "Images of the product."@en ;
+   samm:characteristic :ImageFileArray .
+
+:attachment a samm:Property ;
+   samm:preferredName "attachment"@en ;
+   samm:description "Attachments, such as CAD drawings or certificates"@en ;
+   samm:characteristic :AttachmentArray .
+
+:bundleOffer a samm:Property ;
+   samm:preferredName "Bundle Offer"@en ;
+   samm:description "If this is a single product or a lot of products (group) not being necessarly of the same part number."@en ;
+   samm:characteristic :BundleOfferCharacteristic .
+
+:marketplaceProduct a samm:Property ;
+   samm:preferredName "marketplace product"@en ;
+   samm:description "The description of the product within the marketplace that might differ from the digital twin."@en ;
+   samm:characteristic :ProductCharacteristic .
+
+:missingParts a samm:Property ;
+   samm:preferredName "missing parts"@en ;
+   samm:description "Completeness of the product, e.g. missing parts are not acceptable."@en ;
+   samm:characteristic :Boolean ;
+   samm:exampleValue true .
+
+:dismantled a samm:Property ;
+   samm:preferredName "dismantled"@en ;
+   samm:description "Information on whether the product has been dismantled."@en ;
+   samm:characteristic :Boolean ;
+   samm:exampleValue true .
+
+:mechanicalDamage a samm:Property ;
+   samm:preferredName "mechanical damage"@en ;
+   samm:description "Information on mechanical damage to the part, e.g. two broken ribs or part deformation indicate mechanical damage."@en ;
+   samm:characteristic :Boolean ;
+   samm:exampleValue true .
+
+:corroded a samm:Property ;
+   samm:preferredName "corroded"@en ;
+   samm:description "Information on whether the product has corrosion."@en ;
+   samm:characteristic :Boolean ;
+   samm:exampleValue true .
+
+:discolored a samm:Property ;
+   samm:preferredName "discolored"@en ;
+   samm:description "Information on whether the product has been discoloured."@en ;
+   samm:characteristic :Boolean ;
+   samm:exampleValue true .
+
+:availabilityDate a samm:Property ;
+   samm:preferredName "availability date"@en ;
+   samm:description "The availability date when the product is in stock."@en ;
+   samm:characteristic :AvailabilityDateCharacteristic ;
+   samm:exampleValue "2022-03-11"^^xsd:date .
+
+:mileage a samm:Property ;
+   samm:preferredName "mileage"@en ;
+   samm:description "The mileage the item was ins use."@en ;
+   samm:characteristic :MileageCharacteristic ;
+   samm:exampleValue "120000.06"^^xsd:decimal .
+
+:burned a samm:Property ;
+   samm:preferredName "burned"@en ;
+   samm:description "Information on whether the product has been fired and suffered damage from heat."@en ;
+   samm:characteristic :Boolean ;
+   samm:exampleValue true .
+
+:errorCodes a samm:Property ;
+   samm:preferredName "Error Codes"@en ;
+   samm:description "Error codes that are recorded as part of onboard data and can be read as part of diagnostics"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Engine control    Fault" .
+
+:partMarking a samm:Property ;
+   samm:preferredName "Part Marking"@en ;
+   samm:description "Unique identifier for a core"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ABCD" .
+
+:vehicleDescription a samm:Property ;
+   samm:preferredName "Vehicle Description"@en ;
+   samm:description "Description of vehicle where the EoL part has been dismantled from (if applicable)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "VW (VOLKSWAGEN) Golf VII 1.4 TSI 1.4 103.0kw" .
+
+:serialNumber a samm:Property ;
+   samm:preferredName "serial number"@en ;
+   samm:description "Unique identifier of an item in a serial production"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "NO-053448509504856168886009" .
+
+:taxPercentage a samm:Property ;
+   samm:preferredName "tax percentage"@en ;
+   samm:description "Tax percentage applicable to the product"@en ;
+   samm:characteristic :Decimal ;
+   samm:exampleValue "10.5"^^xsd:decimal .
+
+:height a samm:Property ;
+   samm:preferredName "height"@en ;
+   samm:description "The product height. According to: UCUM (Unified Code for Units of Measure)."@en ;
+   samm:characteristic ext-quantity:LinearCharacteristic .
+
+:areaOfUsage a samm:Property ;
+   samm:preferredName "areaOfUsage"@en ;
+   samm:description "Information, in which countries/areas the component has been in use"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Sahara, extreme dry and high temperature" .
+
+:width a samm:Property ;
+   samm:preferredName "width"@en ;
+   samm:description "The product width. According to: UCUM (Unified Code for Units of Measure)."@en ;
+   samm:characteristic ext-quantity:LinearCharacteristic .
+
+:length a samm:Property ;
+   samm:preferredName "length"@en ;
+   samm:description "The product length. According to: UCUM (Unified Code for Units of Measure)."@en ;
+   samm:characteristic ext-quantity:LinearCharacteristic .
+
+:diameter a samm:Property ;
+   samm:preferredName "diameter"@en ;
+   samm:description "The product diameter. According to: UCUM (Unified Code for Units of Measure)."@en ;
+   samm:characteristic ext-quantity:LinearCharacteristic .
+
+:weight a samm:Property ;
+   samm:preferredName "weight"@en ;
+   samm:description "The product weight."@en ;
+   samm:characteristic ext-quantity:MassCharacteristic .
+
+:ConditionCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Condition Characteristic"@en ;
+   samm:description "Condition of the article as enumeration."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "New" "Used" "Refurbished" "Other" ) .
+
+:GeographicalCoordinates a samm:Characteristic ;
+   samm:preferredName "geographical coordinates"@en ;
+   samm:description "The geographical coordinates show the Longitude / Latitude of the location."@en ;
+   samm:dataType :GeographicalCoordinateEntity .
+
+:PriceInformation a samm:Characteristic ;
+   samm:preferredName "price information"@en ;
+   samm:description "price information characteristic"@en ;
+   samm:dataType :PriceEntity .
+
+:ImageFileArray a samm-c:Set ;
+   samm:preferredName "ImageFileArray"@en ;
+   samm:description "Array of image of the object."@en ;
+   samm:dataType :Array .
+
+:AttachmentArray a samm-c:Set ;
+   samm:preferredName "AttachmentArray"@en ;
+   samm:description "array of attachments"@en ;
+   samm:dataType :Array .
+
+:BundleOfferCharacteristic a samm:Characteristic ;
+   samm:preferredName "bundleOffer"@en ;
+   samm:description "the characteristic of bundleOffer"@en ;
+   samm:dataType xsd:boolean .
+
+:ProductCharacteristic a samm:Characteristic ;
+   samm:preferredName "product characteristic"@en ;
+   samm:description "characteristic of the product"@en ;
+   samm:dataType :ProductEntity .
+
+:Boolean a samm:Characteristic ;
+   samm:preferredName "boolean"@en ;
+   samm:dataType xsd:boolean .
+
+:AvailabilityDateCharacteristic a samm:Characteristic ;
+   samm:preferredName "availability date characteristic"@en ;
+   samm:description "The availability date when the product is in stock."@en ;
+   samm:dataType xsd:date .
+
+:MileageCharacteristic a samm-c:Measurement ;
+   samm:preferredName "mileage characteristic"@en ;
+   samm:description "The value describing the mileage of the item."@en ;
+   samm:dataType xsd:decimal ;
+   samm-c:unit unit:kilometre .
+
+:Decimal a samm:Characteristic ;
+   samm:preferredName "Decimal"@en ;
+   samm:description "decribes the percentage"@en ;
+   samm:dataType xsd:decimal .
+
+:GeographicalCoordinateEntity a samm:Entity ;
+   samm:preferredName "geographical coordinate entity"@en ;
+   samm:description "geographical coordinate entity"@en ;
+   samm:properties ( :longitude :latitude ) .
+
+:PriceEntity a samm:Entity ;
+   samm:preferredName "price entity"@en ;
+   samm:description "entity for detailed price description"@en ;
+   samm:properties ( :value :currency :unitForPrice ) .
+
+:Array a samm:Entity ;
+   samm:preferredName "Array"@en ;
+   samm:description "Array of image file of the object or attachment."@en ;
+   samm:properties ( :size :indexing ) .
+
+:ProductEntity a samm:Entity ;
+   samm:preferredName "product entity"@en ;
+   samm:description "describes product entity"@en ;
+   samm:properties ( :productDescription :brand :category [ samm:property :originalManufacturer; samm:optional true ] [ samm:property :productLink; samm:optional true ] :technicalSpecification ext-part:manufacturerPartId ext-part:customerPartId ) .
+
+:longitude a samm:Property ;
+   samm:preferredName "longitude"@en ;
+   samm:description "The longitude of the 2D sphere coordinates."@en ;
+   samm:characteristic :LongitudeCharacteristic ;
+   samm:exampleValue "-117.283333"^^xsd:float .
+
+:latitude a samm:Property ;
+   samm:preferredName "latitude"@en ;
+   samm:description "The latitude of the 2D sphere coordinates."@en ;
+   samm:characteristic :LatitudeCharacteristic ;
+   samm:exampleValue "48.137154"^^xsd:float .
+
+:value a samm:Property ;
+   samm:preferredName "value"@en ;
+   samm:description "The absolute value of the price"@en ;
+   samm:characteristic :ValueCharacteristic ;
+   samm:exampleValue "250.00"^^xsd:float .
+
+:currency a samm:Property ;
+   samm:preferredName "currency"@en ;
+   samm:description "The currency of the price."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "EUR" .
+
+:unitForPrice a samm:Property ;
+   samm:preferredName "unit for price "@en ;
+   samm:description "The unit of measure (related to price)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "100 ml (so price would be e.g. 1000 EUR for 1 piece or for 100 ml or for 1 kg or for 1 ton)" .
+
+:size a samm:Property ;
+   samm:preferredName "size"@en ;
+   samm:description "The number of elements."@en ;
+   samm:characteristic :Number ;
+   samm:exampleValue 100 .
+
+:indexing a samm:Property ;
+   samm:preferredName "indexing"@en ;
+   samm:description "Elements in an array are accessed via their index. Indexing allows for direct access to any element in the array."@en ;
+   samm:characteristic :Number ;
+   samm:exampleValue 001 .
+
+:productDescription a samm:Property ;
+   samm:preferredName "product description"@en ;
+   samm:description "The description of the product on the marketplace."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BMW 3er (E36) BJ: 1996" .
+
+:brand a samm:Property ;
+   samm:preferredName "brand"@en ;
+   samm:description "The brandname of the offered product."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ZF" .
+
+:category a samm:Property ;
+   samm:preferredName "category"@en ;
+   samm:description "Category within the marketplace for classification of listings."@en ;
+   samm:characteristic :CategoryCharacteristic .
+
+:originalManufacturer a samm:Property ;
+   samm:preferredName "original manufacturer"@en ;
+   samm:description "The original manufacturer of a product."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BMW" .
+
+:productLink a samm:Property ;
+   samm:preferredName "product link"@en ;
+   samm:description "A link to either the product on the original marketplace/webshop or a link to the product specifications document."@en ;
+   samm:characteristic :ProductLinkCharacteristic .
+
+:technicalSpecification a samm:Property ;
+   samm:preferredName "technical specification"@en ;
+   samm:description "Further technical specifications."@en ;
+   samm:characteristic :TechnicalSpecificationCharacteristic .
+
+:LongitudeCharacteristic a samm:Characteristic ;
+   samm:preferredName "longitude characteristic"@en ;
+   samm:description "longitude information"@en ;
+   samm:dataType xsd:float .
+
+:LatitudeCharacteristic a samm:Characteristic ;
+   samm:preferredName "latitude characteristic"@en ;
+   samm:description "latitude information"@en ;
+   samm:dataType xsd:float .
+
+:ValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "value  characteristic"@en ;
+   samm:description "the characteristic of value"@en ;
+   samm:dataType xsd:float .
+
+:Number a samm:Characteristic ;
+   samm:preferredName "value"@en ;
+   samm:description "exact value"@en ;
+   samm:dataType xsd:integer .
+
+:CategoryCharacteristic a samm:Characteristic ;
+   samm:preferredName "category characteristic"@en ;
+   samm:description "The category of the listing within the marketplace."@en ;
+   samm:dataType :CategoryEntity .
+
+:ProductLinkCharacteristic a samm:Characteristic ;
+   samm:preferredName "product link characteristic"@en ;
+   samm:description "describes characteristic of product link "@en ;
+   samm:dataType xsd:anyURI .
+
+:TechnicalSpecificationCharacteristic a samm-c:Set ;
+   samm:preferredName "technical specification characteristic"@en ;
+   samm:description "describes characteristic of technical specification"@en ;
+   samm:dataType :TechnicalSpecificationEntity .
+
+:CategoryEntity a samm:Entity ;
+   samm:preferredName "category entity"@en ;
+   samm:description "describes the category entity"@en ;
+   samm:properties ( :mainCategoryProperty :subCategory ) .
+
+:TechnicalSpecificationEntity a samm:Entity ;
+   samm:preferredName "technical specification entity"@en ;
+   samm:description "describes the technical specification entity"@en ;
+   samm:properties ( :key :technicalValue ) .
+
+:mainCategoryProperty a samm:Property ;
+   samm:preferredName "main category property"@en ;
+   samm:description "The main category/material group of the product."@en ;
+   samm:characteristic :MainCategoryCharacteristic ;
+   samm:exampleValue "Audio, video, navigation" .
+
+:subCategory a samm:Property ;
+   samm:preferredName "sub category"@en ;
+   samm:description "The sub category/material group of the product."@en ;
+   samm:characteristic :SubCategoryCharacteristic ;
+   samm:exampleValue "Amplifiers, subwoofers, etc" .
+
+:key a samm:Property ;
+   samm:preferredName "key"@en ;
+   samm:description "The key of the key value pair"@en ;
+   samm:characteristic samm-c:Text .
+
+:technicalValue a samm:Property ;
+   samm:preferredName "technical value"@en ;
+   samm:description "The value of the key value pair."@en ;
+   samm:characteristic samm-c:Text .
+
+:MainCategoryCharacteristic a samm-c:List ;
+   samm:preferredName "main category characteristic"@en ;
+   samm:description "describes characteristic of main category "@en ;
+   samm:dataType xsd:string .
+
+:SubCategoryCharacteristic a samm-c:List ;
+   samm:preferredName "sub category characteristic"@en ;
+   samm:description "describes characteristic of sub category "@en ;
+   samm:dataType xsd:string .
+

@@ -1,0 +1,318 @@
+#######################################################################
+# Copyright(c) 2023, 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V.(represented by Fraunhofer IOSB)
+# Copyright(c) 2023, 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International(CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.manufacturing_capability:3.0.0#>.
+@prefix ext-process: <urn:samm:io.catenax.shared.bill_of_process:1.0.0#>.
+
+:ManufacturingCapability a samm:Aspect;
+   samm:preferredName "Manufacturing Capability Aspect Model"@en;
+   samm:description "An aspect model representing manufacturing capabilities, based on the concepts for products, processes, resources and capabilities, as well as their relations to each other."@en;
+   samm:properties ( :processes :machines :products :capabilities :machineTools :certificates );
+   samm:operations ( );
+   samm:events ( ).
+
+:processes a samm:Property;
+   samm:preferredName "Processes"@en;
+   samm:description "Set of production-relevant activities at any level of granularity that might affect materials and is performed by resources."@en;
+   samm:characteristic :ProcessSetCharacteristic.
+
+:machines a samm:Property;
+   samm:preferredName "Machines"@en;
+   samm:description "A set of machines used for production."@en;
+   samm:characteristic :MachineSetCharacteristic.
+
+:products a samm:Property;
+   samm:preferredName "Products"@en;
+   samm:description "Set of physical objects being used as an input or created as an output of a production process."@en;
+   samm:see <https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/CapabilitiesSkillsServices.pdf?__blob=publicationFile&v=1>;
+   samm:characteristic :ProductSetCharacteristic.
+
+:capabilities a samm:Property;
+   samm:preferredName "Capabilities"@en;
+   samm:description "Set of implementation-independent specifications of functions in industrial production to achieve an effect in the physical or virtual world."@en;
+   samm:see <https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/CapabilitiesSkillsServices.pdf?__blob=publicationFile&v=1>;
+   samm:characteristic :CapabilitySetCharacteristic.
+
+:machineTools a samm:Property;
+   samm:preferredName "Machine Tools"@en;
+   samm:description "A set of machine tools."@en;
+   samm:characteristic :MachineToolSetCharacteristic.
+
+:certificates a samm:Property;
+   samm:preferredName "Certificates"@en;
+   samm:description "Set of certificates."@en;
+   samm:characteristic :CertificateSetCharacteristic.
+
+:ProcessSetCharacteristic a samm-c:Set;
+   samm:preferredName "Process Set Characteristic"@en;
+   samm:description "Characteristic for a set of bill of processes."@en;
+   samm:dataType :BoPEntity.
+
+:MachineSetCharacteristic a samm-c:Set;
+   samm:preferredName "Machine Set Characteristic"@en;
+   samm:description "Characteristic for a set of machine representations."@en;
+   samm:dataType :MachineEntity.
+
+:ProductSetCharacteristic a samm-c:Set;
+   samm:preferredName "Product Set Characteristic"@en;
+   samm:description "Characteristic for a set of product representations."@en;
+   samm:dataType :ProductEntity.
+
+:CapabilitySetCharacteristic a samm-c:Set;
+   samm:preferredName "Capability Set Characteristic"@en;
+   samm:description "Characteristic for a set of capability representations."@en;
+   samm:dataType :CapabilityEntity.
+
+:MachineToolSetCharacteristic a samm-c:Set;
+   samm:preferredName "Machine Tool Set Characteristic"@en;
+   samm:description "Characteristic for a set of machine tools."@en;
+   samm:dataType :MachineToolEntity.
+
+:CertificateSetCharacteristic a samm-c:Set;
+   samm:preferredName "Certificate Set Characteristic"@en;
+   samm:description "Characteristic for a set of certificates."@en;
+   samm:dataType :CertificateEntity.
+
+:BoPEntity a samm:Entity;
+   samm:preferredName "BoP Entity"@en;
+   samm:description "Element containing a bill of process identifier."@en;
+   samm:properties ( ext-process:billOfProcessIdentification ).
+
+:MachineEntity a samm:Entity;
+   samm:extends :ElementAbstractEntity;
+   samm:preferredName "Machine Entity"@en;
+   samm:description "Element containing the SAMM properties of a machine."@en;
+   samm:properties ( [ samm:property :provides; samm:optional true ] [ samm:property :containsTools; samm:optional true ] ).
+
+:ProductEntity a samm:Entity;
+   samm:extends :ElementAbstractEntity;
+   samm:preferredName "Product Entity"@en;
+   samm:description "Element containing the SAMM properties of a product."@en;
+   samm:properties ( ).
+
+:CapabilityEntity a samm:Entity;
+   samm:extends :HierarchyElementAbstractEntity;
+   samm:preferredName "Capability Entity"@en;
+   samm:description "Element containing the SAMM properties of a capability."@en;
+   samm:properties ( [ samm:property :capabilityConstraintSet; samm:optional true ] [ samm:property :semanticReferences; samm:optional true ] [ samm:property :capabilityId; samm:optional true ] :capabilityLabel ).
+
+:MachineToolEntity a samm:Entity;
+   samm:extends :HierarchyElementAbstractEntity;
+   samm:preferredName "Machine Tool Entity"@en;
+   samm:description "Element containing the SAMM properties of a machine tool."@en;
+   samm:properties ( [ samm:property :canProcessMaterials; samm:optional true ] ).
+
+:CertificateEntity a samm:Entity;
+   samm:extends :ElementAbstractEntity;
+   samm:preferredName "Certificate Entity"@en;
+   samm:description "Element containing the SAMM properties of a certificate."@en;
+   samm:properties ( ).
+
+:ElementAbstractEntity a samm:AbstractEntity;
+   samm:preferredName "Element Abstract Entity"@en;
+   samm:description "Template for elements needing a label and containing properties."@en;
+   samm:properties ( [ samm:property :properties; samm:optional true ] :label ).
+
+:provides a samm:Property;
+   samm:preferredName "Provides"@en;
+   samm:description "Set of capabilities the machine can provide."@en;
+   samm:characteristic :CapabilitySetCharacteristic.
+
+:containsTools a samm:Property;
+   samm:preferredName "Contains Tools"@en;
+   samm:description "Set of machine tools the machine can be equipped with."@en;
+   samm:characteristic :MachineToolSetCharacteristic.
+
+:HierarchyElementAbstractEntity a samm:AbstractEntity;
+   samm:preferredName "Hierarchy Element Abstract Entity"@en;
+   samm:description "Template for elements containing the SAMM properties needed to build hierarchies."@en;
+   samm:properties ( [ samm:property :specializes; samm:optional true ] [ samm:property :generalizes; samm:optional true ] :hierarchyElementId ).
+
+:capabilityConstraintSet a samm:Property;
+   samm:preferredName "Capability Constraint Set"@en;
+   samm:description "Set of conditions imposed on capabilities which further detail their applicability."@en;
+   samm:characteristic :CapabilityConstraintSetCharacteristic.
+
+:semanticReferences a samm:Property;
+   samm:preferredName "Semantic References"@en;
+   samm:description "A set of semantic references."@en;
+   samm:characteristic :SemanticReferenceSetCharacteristic.
+
+:capabilityId a samm:Property;
+   samm:preferredName "Capability Identifier"@en;
+   samm:description "Locally unique identifier for a capability."@en;
+   samm:characteristic :IdCharacteristic;
+   samm:exampleValue "urn:manufacturing-capability:capability:42".
+
+:capabilityLabel a samm:Property;
+   samm:preferredName "Capability Label"@en;
+   samm:description "Label of a capability."@en;
+   samm:characteristic samm-c:MultiLanguageText;
+   samm:exampleValue "sawing"@en.
+
+:canProcessMaterials a samm:Property;
+   samm:preferredName "Can Process Materials"@en;
+   samm:description "Set of materials the machine tool can utilize."@en;
+   samm:characteristic :MaterialSetCharacteristic.
+
+:properties a samm:Property;
+   samm:preferredName "Properties"@en;
+   samm:description "Set of qualities or characteristics inherent in or ascribed to process, resource, product or capability entities."@en;
+   samm:characteristic :PropertySetCharacteristic.
+
+:label a samm:Property;
+   samm:preferredName "Label"@en;
+   samm:description "Multilanguage label of an element."@en;
+   samm:characteristic samm-c:MultiLanguageText;
+   samm:exampleValue "aluminum"@en.
+
+:specializes a samm:Property;
+   samm:preferredName "Specializes"@en;
+   samm:description "One hierarchy element can specialize others."@en;
+   samm:characteristic :HierarchyElementSetCharacteristic.
+
+:generalizes a samm:Property;
+   samm:preferredName "Generalizes"@en;
+   samm:description "One hierarchy element can generalize others."@en;
+   samm:characteristic :HierarchyElementSetCharacteristic.
+
+:hierarchyElementId a samm:Property;
+   samm:preferredName "Hierarchy Element Identifier"@en;
+   samm:description "An identifier of a hierarchy element."@en;
+   samm:characteristic :HierarchyElementIdCharacteristic;
+   samm:exampleValue "123".
+
+:CapabilityConstraintSetCharacteristic a samm-c:Set;
+   samm:preferredName "Capability Constraint Set Characteristic"@en;
+   samm:description "Characteristic for a set of capability constraint representations."@en;
+   samm:dataType :CapabilityConstraintEntity.
+
+:SemanticReferenceSetCharacteristic a samm-c:Set;
+   samm:preferredName "Semantic Reference Set Characteristic"@en;
+   samm:description "Characteristic for a set of semantic references"@en;
+   samm:dataType :SemanticReferenceEntity.
+
+:IdCharacteristic a samm:Characteristic;
+   samm:preferredName "Identifier Characteristic"@en;
+   samm:description "Characteristic for identifiers."@en;
+   samm:dataType xsd:string.
+
+:MaterialSetCharacteristic a samm-c:Set;
+   samm:preferredName "Material Set Characteristic"@en;
+   samm:description "Characteristic for a set of materials."@en;
+   samm:dataType :MaterialEntity.
+
+:PropertySetCharacteristic a samm-c:Set;
+   samm:preferredName "Property Set Characteristic"@en;
+   samm:description "Characteristic for a set of property representations."@en;
+   samm:dataType :PropertyEntity.
+
+:HierarchyElementSetCharacteristic a samm-c:Set;
+   samm:preferredName "Hierarchy Element Set Characteristic"@en;
+   samm:description "Characteristic for a set of hierarchy elements."@en;
+   samm:dataType :HierarchyElementIdEntity.
+
+:HierarchyElementIdCharacteristic a samm:Characteristic;
+   samm:preferredName "Hierarchy Element Id Characteristic"@en;
+   samm:description "Characteristic for an identifier of a hierarcy element."@en;
+   samm:dataType xsd:string.
+
+:CapabilityConstraintEntity a samm:Entity;
+   samm:preferredName "Capability Constraint Entity"@en;
+   samm:description "Element containing the samm properties of a capability constraint."@en;
+   samm:properties ( [ samm:property :capabilityConstraintProperties; samm:optional true ] [ samm:property :refersToMaterial; samm:optional true ] ).
+
+:SemanticReferenceEntity a samm:Entity;
+   samm:preferredName "Semantic Reference Entity"@en;
+   samm:description "Element containing the SAMM properties of a semantic reference."@en;
+   samm:properties ( :semanticReferenceId ).
+
+:MaterialEntity a samm:Entity;
+   samm:extends :ElementAbstractEntity;
+   samm:preferredName "Material Entity"@en;
+   samm:description "Element containing the SAMM properties of a material."@en;
+   samm:properties ( [ samm:property :belongsToMaterialFamilies; samm:optional true ] ).
+
+:PropertyEntity a samm:Entity;
+   samm:preferredName "Property Entity"@en;
+   samm:description "Element containing the SAMM properties of a property."@en;
+   samm:properties ( :propertyLabel [ samm:property :semanticReferences; samm:optional true ] [ samm:property :propertyValue; samm:optional true ] ).
+
+:HierarchyElementIdEntity a samm:Entity;
+   samm:preferredName "Hierarchy Element Id Entity "@en;
+   samm:description "Element containing the SAMM properties of a hierarchy element."@en;
+   samm:properties ( :hierarchyElementId ).
+
+:capabilityConstraintProperties a samm:Property;
+   samm:preferredName "Capability Constraint Properties"@en;
+   samm:description "Set of constraints restricting the capability."@en;
+   samm:characteristic :PropertySetCharacteristic.
+
+:refersToMaterial a samm:Property;
+   samm:preferredName "Refers to Material"@en;
+   samm:description "A specific material the capability constraint can refer to."@en;
+   samm:characteristic :MaterialCharacteristic.
+
+:semanticReferenceId a samm:Property;
+   samm:preferredName "Semantic Reference Identifier"@en;
+   samm:description "Globally unique identifier for the semantic."@en;
+   samm:characteristic :IdCharacteristic;
+   samm:exampleValue "urn:eclass:0173-1#02-AAF583#002".
+
+:belongsToMaterialFamilies a samm:Property;
+   samm:preferredName "Belongs to Material Family"@en;
+   samm:description "A material belongs to certain material families."@en;
+   samm:characteristic :MaterialFamilySetCharacteristic.
+
+:propertyLabel a samm:Property;
+   samm:preferredName "Property Label"@en;
+   samm:description "Human readable label of a property."@en;
+   samm:characteristic samm-c:MultiLanguageText;
+   samm:exampleValue "nominal voltage"@en.
+
+:propertyValue a samm:Property;
+   samm:preferredName "Property Value"@en;
+   samm:description "The value of a property. Note that this SAMM property does have a variable type and is therefore defined as string."@en;
+   samm:characteristic :PropertyValueCharacteristic;
+   samm:exampleValue "220".
+
+:MaterialCharacteristic a samm:Characteristic;
+   samm:preferredName "Material Characteristic"@en;
+   samm:description "Characteristic for a material."@en;
+   samm:dataType :MaterialEntity.
+
+:MaterialFamilySetCharacteristic a samm-c:Set;
+   samm:preferredName "Material Family Set Characteristic"@en;
+   samm:description "Characteristic for a set of material families."@en;
+   samm:dataType :MaterialFamilyEntity.
+
+:PropertyValueCharacteristic a samm:Characteristic;
+   samm:preferredName "Property Value Characteristic"@en;
+   samm:description "Characteristic for a property value."@en;
+   samm:dataType xsd:string.
+
+:MaterialFamilyEntity a samm:Entity;
+   samm:extends :ElementAbstractEntity;
+   samm:preferredName "Material Family Entity"@en;
+   samm:description "Element containing the SAMM properties of a material family."@en;
+   samm:properties ( ).
+

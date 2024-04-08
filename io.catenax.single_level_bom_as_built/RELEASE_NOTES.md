@@ -1,7 +1,24 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [Unreleased]
+## [3.0.0] - 2024-02-26
+### Changed
+- replaced the `quantityNumber` and `measurementUnit` properties with the `itemUnit` and `quantityValue` properties of the shared quantity 2.0.0 aspect model
+- replaced the whole `CatenaXIdTraitCharacteristic` and its childs with the `UuidV4Trait` of the shared uuid 2.0.0 aspect model
+- replaced the whole `BpnTrait` and its childs with the `BpnlTrait` of the shared business_partner_number 2.0.0 aspect model
+- description of some objects were adjusted
+
+## [2.0.0] - 25.09.2023
+### Added
+- property called hasAlternative
+- Boolean characteristic
+
+### Changed
+- Description of the main property 'SingleLevelBomAsBuil' was adapted to the new requirements of the model
+
+### Removed
+- 
+
 
 ## [1.0.0]
 ### Added

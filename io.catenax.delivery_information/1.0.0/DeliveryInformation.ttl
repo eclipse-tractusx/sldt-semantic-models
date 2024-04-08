@@ -1,0 +1,236 @@
+#######################################################################
+# Copyright (c) 2023 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2023 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST)
+# Copyright (c) 2023 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.0.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.0.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.0.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.0.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.delivery_information:1.0.0#>.
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#>.
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#>.
+
+:DeliveryInformation a samm:Aspect;
+    samm:preferredName "Delivery information"@en;
+    samm:description "This aspect represents the estimated and actual delivery information of one specific item, which is being shipped from the supplier to the customer."@en;
+    samm:properties (:positions :materialNumberCustomer [
+  samm:property :materialGlobalAssetId;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :materialNumberSupplier;
+  samm:optional "true"^^xsd:boolean
+]);
+    samm:operations ();
+    samm:events ().
+:positions a samm:Property;
+    samm:preferredName "Positions"@en;
+    samm:description "The positions refer to positions within an order of the given item (see material number supplier, material number customer and material global asset ID) for which the delivery information is exchanged. The positions can be differentiated by the order position reference. If no order position reference is given, then there is only one position containing all estimated deliveries of the item."@en;
+    samm:characteristic :PositionsCollection.
+:materialNumberCustomer a samm:Property;
+    samm:preferredName "Customer Material Number"@en;
+    samm:description "Material identifier as assigned by the customer. This material number identifies the material (as estimated) in the customer's database. For standard parts (e.g. screws) for which a customer does not have an own number, the material number supplier should be set in this field, too."@en;
+    samm:characteristic :MaterialNumberCharacteristic;
+    samm:exampleValue "MNR-7307-AU340474.002".
+:materialGlobalAssetId a samm:Property;
+    samm:preferredName "Material Number UUID of the Customer's Twin"@en;
+    samm:description "Material identifier used uniquely to identify the Material (e.g. PartAsestimated)."@en;
+    samm:characteristic ext-uuid:UuidV4Trait;
+    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df".
+:materialNumberSupplier a samm:Property;
+    samm:preferredName "Supplier Material Number"@en;
+    samm:description "Material identifier as assigned by the supplier. This material number identifies the material (as estimated) in the supplier's database."@en;
+    samm:characteristic :MaterialNumberCharacteristic;
+    samm:exampleValue "MNR-8101-ID146955.001".
+:PositionsCollection a samm-c:Collection;
+    samm:preferredName "Positions Collection"@en;
+    samm:description "If any delivery for the customer is estimated, then there is at least one position. If each order position is assigned to one (or more) delivery (an OrderPositionReference is set), then multiple positions can be given."@en;
+    samm:dataType :Position.
+:MaterialNumberCharacteristic a samm:Characteristic;
+    samm:preferredName "Material Number"@en;
+    samm:description "The material number is a multi-character string, usually assigned by an ERP system."@en;
+    samm:dataType xsd:string.
+:Position a samm:Entity;
+    samm:preferredName "Position"@en;
+    samm:description "The Position can contain one or more deliveries involving one or more supplier's and one or more customer's sites. A position may be anonymous (no orderPositionReference is set) or may reference a position within an order."@en;
+    samm:properties ([
+  samm:property :orderPositionReference;
+  samm:optional "true"^^xsd:boolean
+] :lastUpdatedOnDateTime :deliveries).
+:orderPositionReference a samm:Property;
+    samm:preferredName "Order Position Reference"@en;
+    samm:description "The order position reference contains information to identify a position within an order."@en;
+    samm:characteristic :OrderPositionReferenceCharacteristic.
+:lastUpdatedOnDateTime a samm:Property;
+    samm:preferredName "Lasted Updated on Date"@en;
+    samm:description "Date and time at which the position has been updated by the data provider. Date and time are set according to the timezone."@en;
+    samm:characteristic :DateTimeStamp;
+    samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:dateTime.
+:deliveries a samm:Property;
+    samm:preferredName "Estimated or actual delivery from supplier to a customer"@en;
+    samm:description "Deliveries are referred to the deliveries of an order position. One order position can be split into multiple deliveries. One delivery can have a different origin and destination than another delivery."@en;
+    samm:characteristic :DeliveryCollection.
+:OrderPositionReferenceCharacteristic a samm:Characteristic;
+    samm:preferredName "Order Position Reference Characteristic"@en;
+    samm:description "The order position reference includes reference numbers for the order and the position. As these information are meant for the customer, the customer reference numbers are mandatory."@en;
+    samm:dataType :OrderPositionReference.
+:DateTimeStamp a samm:Characteristic;
+    samm:preferredName "Date Time Stamp Characteristic"@en;
+    samm:description "The Date with the timezone."@en;
+    samm:dataType xsd:dateTime;
+    samm:see <https://www.iso.org/iso-8601-date-and-time-format.html>.
+:DeliveryCollection a samm-c:Collection;
+    samm:preferredName "Estimated and Allocated Delivery Collection"@en;
+    samm:description "Collection of deliveries that may relate to different origin or destination, different quantities and different time of departure or time of arrival. It MAY include different tracking numbers and different incoterms."@en;
+    samm:dataType :Delivery.
+:OrderPositionReference a samm:Entity;
+    samm:preferredName "Reference to Order Position"@en;
+    samm:description "Encapsulates the references to identify a position within an order."@en;
+    samm:properties ([
+  samm:property :supplierOrderId;
+  samm:optional "true"^^xsd:boolean
+] :customerOrderId :customerOrderPositionId).
+:Delivery a samm:Entity;
+    samm:preferredName "estimated and Allocated Delivery"@en;
+    samm:description "Quantity, origin and destination, time of departure and arrival, tracking number and incoterms for a certain delivery."@en;
+    samm:properties (:deliveryQuantity :transitEvents :transitLocations [
+  samm:property :trackingNumber;
+  samm:optional "true"^^xsd:boolean
+] [
+  samm:property :incoterm;
+  samm:optional "true"^^xsd:boolean
+]).
+:supplierOrderId a samm:Property;
+    samm:preferredName "Supplier Order ID"@en;
+    samm:description "This is the order number on the supplier side that is given by e.g., the supplier's enterprise resource planning system."@en;
+    samm:characteristic :OrderIdCharacteristic;
+    samm:exampleValue "M-Nbr-4711".
+:customerOrderId a samm:Property;
+    samm:preferredName "Customer Order ID"@en;
+    samm:description "This is the order number on the customer side that can be given by e.g., the customer's enterprise resource planning system."@en;
+    samm:characteristic :OrderIdCharacteristic;
+    samm:exampleValue "C-Nbr-4711".
+:customerOrderPositionId a samm:Property;
+    samm:preferredName "Customer Order Position ID"@en;
+    samm:description "This is an identifier for the position of an order defined by the customer. It's not a technical identifier, such as an UUID. This identifier is used within the business context when talking about the position."@en;
+    samm:characteristic :OrderPositionIdCharacteristic;
+    samm:exampleValue "PositionId-01".
+:deliveryQuantity a samm:Property;
+    samm:preferredName "Delivery Quantity"@en;
+    samm:description "Amount of items of a delivery between a supplier and a customer."@en;
+    samm:characteristic :QuantityCharacteristic.
+:transitEvents a samm:Property;
+    samm:preferredName "Date of departure or arrival"@en;
+    samm:description "Transit dates provide date and time of departure and date and time of arrival for a specific delivery. Date and time are set according to the timezone."@en;
+    samm:characteristic :TransitEventsTrait.
+:transitLocations a samm:Property;
+    samm:preferredName "Transit Locations"@en;
+    samm:description "Physical locations of the origin and destination."@en;
+    samm:characteristic :TransitLocationsCharacteristic.
+:trackingNumber a samm:Property;
+    samm:preferredName "Tracking Number"@en;
+    samm:description "Is a unique alphanumeric code assigned to a shipment by a logistics service provider, allowing it to be monitored and traced throughout its journey between origin and destination."@en;
+    samm:characteristic :TrackingNumberCharacteristic;
+    samm:exampleValue "1Z9829WDE02128".
+:incoterm a samm:Property;
+    samm:preferredName "Incoterm"@en;
+    samm:description "Incoterm which is assigned to a delivery."@en;
+    samm:characteristic :IncotermEnumeration;
+    samm:exampleValue "DAP";
+    samm:see <https://iccwbo.org/business-solutions/intoterms-rules/>.
+:OrderIdCharacteristic a samm:Characteristic;
+    samm:preferredName "Order ID Characteristic"@en;
+    samm:description "This is a proprietary order ID, generated by either the supplier side or customer side."@en;
+    samm:dataType xsd:string.
+:OrderPositionIdCharacteristic a samm:Characteristic;
+    samm:preferredName "Position ID within Order"@en;
+    samm:description "The position ID is unique for an order and used within business context to refer to a position."@en;
+    samm:dataType xsd:string.
+:QuantityCharacteristic a samm-c:Quantifiable;
+    samm:preferredName "Quantity Characteristic"@en;
+    samm:description "Describes the quantity and the unit of measure with which the delivery is measured."@en;
+    samm:dataType ext-quantity:ItemQuantityEntity.
+:TransitEventsTrait a samm-c:Trait;
+    samm-c:baseCharacteristic :TransitEventsSet;
+    samm-c:constraint :TransitEventsContstraint.
+:TransitLocationsCharacteristic a samm:Characteristic;
+    samm:preferredName "Transit Locations Characteristic"@en;
+    samm:description "Transit locations includes origin and destination points in the transportation of goods. It refers to specific location of the source or production facility (origin) or the designated endpoint (destination)."@en;
+    samm:dataType :TransitLocations.
+:TrackingNumberCharacteristic a samm:Characteristic;
+    samm:preferredName "Tracking Number Characteristic"@en;
+    samm:description "Alphanumeric string that is defined by the logistics service provider in order to track and identify the shipment."@en;
+    samm:dataType xsd:string.
+:IncotermEnumeration a samm-c:Enumeration;
+    samm:preferredName "Incoterm enumeration"@en;
+    samm:description "All 12 possible values for the incoterms."@en;
+    samm:dataType xsd:string;
+    samm:see <https://impargo.de/blog/incoterms-einfach-erklaert>;
+    samm-c:values ("EXW" "FCA" "CPT" "CIP" "DAP" "DAT" "DPU" "DDP" "FAS" "FOB" "CFR" "CIF").
+:TransitEventsSet a samm-c:Set;
+    samm:preferredName "Transit events set"@en;
+    samm:description "Transit events refer to the specific timeframes associated with the departure or arrival of products during their transportation from one location to another - from the supplier to the customer.\n\nIf the set has two elements, following restrictions apply:\n- one element MUST describe the departure and another element MUST describe the arrival\n- if the set contains a estimated departure, the set MUST NOT contain an actual arrival."@en;
+    samm:dataType :TransitEvent.
+:TransitEventsContstraint a samm-c:LengthConstraint;
+    samm:preferredName "Transit events constraint"@en;
+    samm:description "The TransitEventsSet MUST contain either 1 or 2 TransitEvents."@en;
+    samm-c:minValue "1"^^xsd:nonNegativeInteger;
+    samm-c:maxValue "2"^^xsd:nonNegativeInteger.
+:TransitLocations a samm:Entity;
+    samm:preferredName "Transit Locations"@en;
+    samm:description "Transit locations describes the specific location where products undergo the process of being transported from the source or production facility (origin) to the designated endpoint location (destination)."@en;
+    samm:properties (:origin :destination).
+:TransitEvent a samm:Entity;
+    samm:preferredName "Transit event"@en;
+    samm:description "Entity for specifying the departure or arrival time and date."@en;
+    samm:properties (:dateTimeOfEvent :eventType).
+:origin a samm:Property;
+    samm:preferredName "Origin"@en;
+    samm:description "Origin refers to the starting point or the location from which the items are being shipped to the customer. "@en;
+    samm:characteristic :LocationCharacteristic.
+:destination a samm:Property;
+    samm:preferredName "Destination"@en;
+    samm:description "Destination refers to the final endpoint or intended location where the items are meant to arrive (i.e. customer factory)."@en;
+    samm:characteristic :LocationCharacteristic.
+:dateTimeOfEvent a samm:Property;
+    samm:preferredName "Time of Event"@en;
+    samm:description "Time of Event signifies the time and date when the products leave (or will leave) the origin location of a delivery (i.e. supplier's production site) or when the products arrive (or will arrive) at the destination location of the delivery (i.e. customer's production site)."@en;
+    samm:characteristic :DateTimeStamp;
+    samm:exampleValue "2023-04-01T14:23:00+01:00"^^xsd:dateTime.
+:eventType a samm:Property;
+    samm:preferredName "Event Type"@en;
+    samm:description "Event type describes wether the mentioned timeOfEvent refers to a departure or arrival and provides the status of the delivery (estimated or actual)."@en;
+    samm:characteristic :EventTypeEnumeration;
+    samm:exampleValue "estimated-departure".
+:LocationCharacteristic a samm:Characteristic;
+    samm:preferredName "Location Characteristic"@en;
+    samm:description "Location characteristic describes a particular location of a business partner. It MUST include the information of the site and it MAY include the exact address."@en;
+    samm:dataType :Location.
+:EventTypeEnumeration a samm-c:Enumeration;
+    samm:preferredName "Event Type Enumeration"@en;
+    samm:description "Event type is the permutation of actual, estimated and departure, arrival."@en;
+    samm:dataType xsd:string;
+    samm-c:values ("estimated-departure" "estimated-arrival" "actual-departure" "actual-arrival").
+:Location a samm:Entity;
+    samm:preferredName "Location"@en;
+    samm:description "Location refers to a specific place that can be identified with two parameters - business partner number site (BPNS) and business partner number address (BPNA). Location MUST include BPNS and it MAY include BPNA. "@en;
+    samm:properties ([
+  samm:property ext-number:bpnaProperty;
+  samm:optional "true"^^xsd:boolean
+] ext-number:bpnsProperty).

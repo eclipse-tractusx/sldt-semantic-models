@@ -1,0 +1,402 @@
+#######################################################################
+# Copyright (c) 2023, 2024 Robert Bosch GmbH
+# Copyright (c) 2023, 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023, 2024 Volkswagen AG
+# Copyright (c) 2023, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2023, 2024 SAP SE
+# Copyright (c) 2023, 2024 Siemens AG
+# Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.fleet.vehicles:2.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#> .
+
+:Vehicles a samm:Aspect ;
+   samm:preferredName "Vehicles"@en ;
+   samm:description "This aspect model was created in the Catena-X use case quality. The purpose of this aspect model is to transfer general information of a list/fleet of vehicles - primarily how the vehicles are equipped, when they were built and which engines are installed."@en ;
+   samm:properties ( :listOfVehicles [ samm:property :metaInformation; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:listOfVehicles a samm:Property ;
+   samm:preferredName "listOfVehicles"@en ;
+   samm:description "List of Vehicle.ProductDescription"@en ;
+   samm:characteristic :VehiclesList .
+
+:metaInformation a samm:Property ;
+   samm:preferredName "Meta information"@en ;
+   samm:description "This meta information is valid for all entries in this data set. The meta information is used to tell the data consumer which selection criteria were applied by the data provider. "@en ;
+   samm:characteristic :MetaCharacteristic .
+
+:VehiclesList a samm-c:List ;
+   samm:preferredName "List of vehicles"@en ;
+   samm:description "List of vehicles"@en ;
+   samm:dataType :Vehicle .
+
+:MetaCharacteristic a samm:Characteristic ;
+   samm:preferredName "MetaCharacteristic"@en ;
+   samm:description "Characteristic for the meta information."@en ;
+   samm:dataType :MetaInformation .
+
+:Vehicle a samm:Entity ;
+   samm:preferredName "Vehicle"@en ;
+   samm:description "Vehicle data that does not fit into one of the other entities."@en ;
+   samm:properties ( [ samm:property :recordStatus; samm:optional true ] :anonymizedVin [ samm:property :catenaXVehicleId; samm:optional true ] [ samm:property :class; samm:optional true ] [ samm:property :driveSystemPower; samm:optional true ] [ samm:property :driveType; samm:optional true ] [ samm:property :powerTrainType; samm:optional true ] [ samm:property :modelDescription; samm:optional true ] [ samm:property :modelIdentifier; samm:optional true ] [ samm:property :plantCatenaXId; samm:optional true ] [ samm:property :plantCountryCode; samm:optional true ] [ samm:property :plantDescription; samm:optional true ] [ samm:property :plantIdentifier; samm:optional true ] [ samm:property :productionDate; samm:optional true ] [ samm:property :softwareCategory; samm:optional true ] [ samm:property :softwareVersion; samm:optional true ] [ samm:property :soldCountryCode; samm:optional true ] [ samm:property :soldCountryGroup; samm:optional true ] [ samm:property :soldDate; samm:optional true ] [ samm:property :steeringPos; samm:optional true ] [ samm:property :vehicleSeries; samm:optional true ] [ samm:property :wmiCode; samm:optional true ] [ samm:property :wmiNameNHTSA; samm:optional true ] [ samm:property :engines; samm:optional true ] [ samm:property :equipments; samm:optional true ] ) .
+
+:MetaInformation a samm:Entity ;
+   samm:preferredName "Meta Information"@en ;
+   samm:description "This entity groups all meta information properties. Meta information properties give hints for a Catena-X data consumer to better understand, how this data set was created on the Catena-X data provider side."@en ;
+   samm:properties ( :selectionCriteria [ samm:property :selectionStart; samm:optional true ] [ samm:property :selectionEnd; samm:optional true ] ) .
+
+:recordStatus a samm:Property ;
+   samm:preferredName "Record status"@en ;
+   samm:description "The record operation enumeration can be used to realize delta update concept.\nDelta update concept means:\n- You transfer an initial load of data\n- After the first week only the delta to the initial load is transferred\n\n\nThe record status describes whether this record is:\n- new=>This record is transferred the first time\n- update=> Some properties of this record have changed compared to a previous transfer\n- delete=> This record was transferred in the initial load or in a previous delta update, but is not used any more and therefore it should be deleted on data consumer side\n- same=> This record was transferred in the initial load or in a previous delta update"@en ;
+   samm:characteristic :RecordStatusEnumeration ;
+   samm:exampleValue "update" .
+
+:anonymizedVin a samm:Property ;
+   samm:preferredName "Anonymized VIN"@en ;
+   samm:description "OEM-specific hashed VIN; link to car data over pseydomized/hashed VIN or Catena-X unique digital twin identifier."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "3747429FGH382923974682" .
+
+:catenaXVehicleId a samm:Property ;
+   samm:preferredName "Vehicle Catena-X Identifier"@en ;
+   samm:description "A unique identifier for the vehicle in the Catena-X data space."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9379" .
+
+:class a samm:Property ;
+   samm:preferredName "Vehicle class"@en ;
+   samm:description "Class of the vehicle."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "A" .
+
+:driveSystemPower a samm:Property ;
+   samm:preferredName "Complete system power"@en ;
+   samm:description "Complete power of this vehicle in KW. This sums up the power of each individual engine installed in this vehicle."@en ;
+   samm:characteristic :EnginePower ;
+   samm:exampleValue 200 .
+
+:driveType a samm:Property ;
+   samm:preferredName "Drive type"@en ;
+   samm:description "Drive type of a vehicle according enumeration."@en ;
+   samm:characteristic :DriveTypeNHTSA ;
+   samm:exampleValue "Front-Wheel Drive" .
+
+:powerTrainType a samm:Property ;
+   samm:preferredName "Powertrain Type"@en ;
+   samm:description "Describes the installed powertrain in the vehicle."@en ;
+   samm:characteristic :PowerTrainTypes .
+
+:modelDescription a samm:Property ;
+   samm:preferredName "Vehicle model"@en ;
+   samm:description "Detail vehicle model like \"Golf VIII\""@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Golf VIII" .
+
+:modelIdentifier a samm:Property ;
+   samm:preferredName "Model identifier"@en ;
+   samm:description "OEM-specific model identifier or OEM-specific project name."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "689-G8" .
+
+:plantCatenaXId a samm:Property ;
+   samm:preferredName "Plant Catena-X ID"@en ;
+   samm:description "Unique Catena-X plant identifier, also called BPNS."@en ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS0123456789ZZ" .
+
+:plantCountryCode a samm:Property ;
+   samm:preferredName "Plant country"@en ;
+   samm:description "Country code of the plant, where the vehicle was produced."@en ;
+   samm:characteristic :CountryCodeTrait ;
+   samm:exampleValue "DEU" .
+
+:plantDescription a samm:Property ;
+   samm:preferredName "Vehicle production plant name"@en ;
+   samm:description "Long name of the production plant of the vehicle"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Wolfsburg" .
+
+:plantIdentifier a samm:Property ;
+   samm:preferredName "Production plant id"@en ;
+   samm:description "Plant id of the final assembly of the vehicle"@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "4711" .
+
+:productionDate a samm:Property ;
+   samm:preferredName "Vehicle production Date"@en ;
+   samm:description "Production date of the vehicle"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2018-01-15T00:00:00"^^xsd:dateTime .
+
+:softwareCategory a samm:Property ;
+   samm:preferredName "Software category"@en ;
+   samm:description "Some OEMs bring in the software as complete package for all systems:\nTo identify this software: software category and software version is needed.\nSoftware category when this car was built."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "TZGH64738" .
+
+:softwareVersion a samm:Property ;
+   samm:preferredName "Software version"@en ;
+   samm:description "Some OEMs brings in the software as complete package for all systems:\nTo identify this software: software category and software version is needed.\nSoftware version when this car was built\n."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "3.4.9837.567" .
+
+:soldCountryCode a samm:Property ;
+   samm:preferredName "Sold country code"@en ;
+   samm:description "The country code in 3 letter format where this vehicle was sold."@en ;
+   samm:characteristic :CountryCodeTrait ;
+   samm:exampleValue "DEU" .
+
+:soldCountryGroup a samm:Property ;
+   samm:preferredName "Vehicle sold region"@en ;
+   samm:description "The region where this car was sold."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Europe" .
+
+:soldDate a samm:Property ;
+   samm:preferredName "Vehicle sold date:"@en ;
+   samm:description "Sold date of the vehicle = warranty start date for this vehicle"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2018-02-03T00:00:00"^^xsd:dateTime .
+
+:steeringPos a samm:Property ;
+   samm:preferredName "Vehicle steering pos"@en ;
+   samm:description "Position of vehicle steering wheel, Left or right."@en ;
+   samm:characteristic :VehicleSteeringPos ;
+   samm:exampleValue "Left-Hand Drive" .
+
+:vehicleSeries a samm:Property ;
+   samm:preferredName "Vehicle series"@en ;
+   samm:description "vehicle series, normally one level above model. E.g. vehicle series =\"Golf\", vehicle model=\"Golf VIII\""@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Golf" .
+
+:wmiCode a samm:Property ;
+   samm:preferredName "WMI Code"@en ;
+   samm:description "The world manufacturer index are the first 3 letters of the VIN. IT describes a code for the vehicle manufacturer. Also see the description from NTHSA."@en ;
+   samm:see <https://vpic.nhtsa.dot.gov/> ;
+   samm:characteristic :OemShortNameTrait ;
+   samm:exampleValue "WVW" .
+
+:wmiNameNHTSA a samm:Property ;
+   samm:preferredName "WMI name according NHTSA"@en ;
+   samm:description "Name of the vehicle manufacturer according NHTSA: use https://vpic.nhtsa.dot.gov/api/vehicles/decodewmi/WVW?format=json - entry to be used is CommonName."@en ;
+   samm:see <https://vpic.nhtsa.dot.gov/> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Volkswagen" .
+
+:engines a samm:Property ;
+   samm:preferredName "Engines"@en ;
+   samm:description "List of installed engines in the vehicle."@en ;
+   samm:characteristic :EnginesList .
+
+:equipments a samm:Property ;
+   samm:preferredName "Equipments"@en ;
+   samm:description "Equipments."@en ;
+   samm:characteristic :EquipmentsList .
+
+:selectionCriteria a samm:Property ;
+   samm:preferredName "Selection criteria"@en ;
+   samm:description "Describes the selection criteria a Catena-X data provider has applied to create this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Export of vehicles that are involved in the linked qualityTask and FleetClaim list. " .
+
+:selectionStart a samm:Property ;
+   samm:preferredName "Selection start"@en ;
+   samm:description "Describes the starting point for providing records in this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2023-01-01T00:00:00" .
+
+:selectionEnd a samm:Property ;
+   samm:preferredName "Selection end"@en ;
+   samm:description "Describes the end point for providing records in this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2023-12-31T23:59:59" .
+
+:RecordStatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Record status enumeration"@en ;
+   samm:description "Defining the enumeration for the record status"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "update" "delete" "same" ) .
+
+:UniqueID a samm:Characteristic ;
+   samm:preferredName "unique ID"@en ;
+   samm:description "This Characteristic describes a property that is truly unique either inside the Company that is providing the data or even in Catena-X dataspace. Only one property in a semantic entity should be a uniqueID. Unique ids can be used to link a data set with other semantic models."@en ;
+   samm:dataType xsd:string .
+
+:EnginePower a samm-c:Measurement ;
+   samm:preferredName "Engine Power"@en ;
+   samm:description "Engine power expressed in kilowatt."@en ;
+   samm:dataType xsd:integer ;
+   samm-c:unit unit:kilowatt .
+
+:DriveTypeNHTSA a samm-c:Enumeration ;
+   samm:preferredName "Drive type(NHTSA)"@en ;
+   samm:description "Enumeration of drive type according NHTSA, table [vPICList_lite].[dbo].[DriveType]"@en ;
+   samm:see <https://vpic.nhtsa.dot.gov/api/> ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "All-Wheel Drive" "Front-Wheel Drive" "Rear-Wheel Drive" ) .
+
+:PowerTrainTypes a samm-c:Enumeration ;
+   samm:preferredName "Powertrain types "@en ;
+   samm:description "This enumeration comes from NHTSA (US authority) database. Table [vPICList_lite].[dbo].[ElectrificationLevel] extended by Gasoline and Diesel as entry."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "BEV (Battery Electric Vehicle)" "Diesel" "FCEV (Fuel Cell Electric Vehicle)" "Gasoline" "HEV (Hybrid Electric Vehicle)" "Mild HEV (Hybrid Electric Vehicle)" "PHEV (Plug-in Hybrid Electric Vehicle)" "Other" ) .
+
+:CountryCodeTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :CountryCodeCharacteristic ;
+   samm-c:constraint :CountryCodeRegularExpression .
+
+:VehicleSteeringPos a samm-c:Enumeration ;
+   samm:preferredName "Vehicle steering position(NHTSA)"@en ;
+   samm:description "Vehicle steering position enumeration from NHTSA, see table [vPICList_lite].[dbo].[Steering]"@en ;
+   samm:see <https://vpic.nhtsa.dot.gov/api/> ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Left-Hand Drive" "Right-Hand Drive" ) .
+
+:OemShortNameTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :WorldManufacturerInformationCodeLength .
+
+:EnginesList a samm-c:List ;
+   samm:preferredName "Engines"@en ;
+   samm:description "A list of all installed engines in the vehicle"@en ;
+   samm:dataType :Engine .
+
+:EquipmentsList a samm-c:List ;
+   samm:preferredName "Equipment List"@en ;
+   samm:description "List of equipments installed in the vehicle."@en ;
+   samm:dataType :Equipment .
+
+:CountryCodeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Country Code Characteristic"@en ;
+   samm:description "ISO 3166-1 alpha-3 ? three-letter country codes "@en ;
+   samm:dataType xsd:string .
+
+:CountryCodeRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Country Code Regular Expression"@en ;
+   samm:description "Regular Expression that ensures a three-letter code "@en ;
+   samm:see <https://www.iso.org/iso-3166-country-codes.html> ;
+   samm:value "^[A-Z][A-Z][A-Z]$" .
+
+:WorldManufacturerInformationCodeLength a samm-c:LengthConstraint ;
+   samm:preferredName "Length restriction for WMI"@en ;
+   samm:description "Restricts the length of wmiCode to exactly 3 chars."@en ;
+   samm:see <https://vpic.nhtsa.dot.gov/> ;
+   samm-c:minValue "3"^^xsd:nonNegativeInteger ;
+   samm-c:maxValue "3"^^xsd:nonNegativeInteger .
+
+:Engine a samm:Entity ;
+   samm:preferredName "Engine Entity"@en ;
+   samm:description "Describing one installed engine"@en ;
+   samm:properties ( :engineId [ samm:property :engineDescription; samm:optional true ] [ samm:property :engineSeries; samm:optional true ] [ samm:property :serialNumber; samm:optional true ] [ samm:property :size; samm:optional true ] [ samm:property :power; samm:optional true ] [ samm:property :engineProductionDate; samm:optional true ] [ samm:property :installDate; samm:optional true ] [ samm:property :nhtsaFuelType; samm:optional true ] ) .
+
+:Equipment a samm:Entity ;
+   samm:preferredName "Equipment"@en ;
+   samm:description "One equipment of the vehicle."@en ;
+   samm:properties ( :equipmentIdentifier [ samm:property :equipmentDescription; samm:optional true ] [ samm:property :group; samm:optional true ] ) .
+
+:engineId a samm:Property ;
+   samm:preferredName "Engine ID:"@en ;
+   samm:description "OEM-specific identifier/type of the installed engine"@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "CKBY" .
+
+:engineDescription a samm:Property ;
+   samm:preferredName "Engine Description"@en ;
+   samm:description "Description of the engine"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2.0 TDI" .
+
+:engineSeries a samm:Property ;
+   samm:preferredName "Vehicle engine series"@en ;
+   samm:description "Engine series as defined by OEM"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "EA189" .
+
+:serialNumber a samm:Property ;
+   samm:preferredName "Engine serial number"@en ;
+   samm:description "Serial number of the installed engine"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "3434937GJJG3738" .
+
+:size a samm:Property ;
+   samm:preferredName "Engine size"@en ;
+   samm:description "Cubic capacity in a combustion engine  - not available in battery-electric vehicles"@en ;
+   samm:characteristic :CubicCapacity ;
+   samm:exampleValue 1968 .
+
+:power a samm:Property ;
+   samm:preferredName "Engine power"@en ;
+   samm:description "Engine power is the power that an engine can put out"@en ;
+   samm:characteristic :EnginePower ;
+   samm:exampleValue 110 .
+
+:engineProductionDate a samm:Property ;
+   samm:preferredName "Engine production date"@en ;
+   samm:description "Date when the engine was produced"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2017-10-20T00:00:00"^^xsd:dateTime .
+
+:installDate a samm:Property ;
+   samm:preferredName "Engine install date"@en ;
+   samm:description "Date when the engine was installed"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2018-01-10T00:00:00"^^xsd:dateTime .
+
+:nhtsaFuelType a samm:Property ;
+   samm:preferredName "Fuel type(NHTSA)"@en ;
+   samm:description "Description of the fuel according US NHTSA"@en ;
+   samm:characteristic :FuelTypesNHTSA ;
+   samm:exampleValue "Diesel" .
+
+:equipmentIdentifier a samm:Property ;
+   samm:preferredName "Equipment Id"@en ;
+   samm:description "The identifier of a specific equipment."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "S248A" .
+
+:equipmentDescription a samm:Property ;
+   samm:preferredName "Equipment description"@en ;
+   samm:description "The equipment variants description."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Seat heating front" .
+
+:group a samm:Property ;
+   samm:preferredName "Equipment group"@en ;
+   samm:description "Bundels all equipment-oriented information into categories like Interior"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Interior" .
+
+:CubicCapacity a samm-c:Measurement ;
+   samm:preferredName "Cubic Capacity"@en ;
+   samm:description "Cubic capacity of the engine"@en ;
+   samm:dataType xsd:integer ;
+   samm-c:unit unit:cubicCentimetre .
+
+:FuelTypesNHTSA a samm-c:Enumeration ;
+   samm:preferredName "Fuel types (NHTSA)"@en ;
+   samm:description "Enumeration from NHTSA vpic database, table [vPICList_lite].[dbo].[FuelType]"@en ;
+   samm:see <https://vpic.nhtsa.dot.gov/api/> ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Compressed Hydrogen/Hydrogen" "Compressed Natural Gas(CNG)" "Diesel" "Electric" "Ethanol(E85)" "Flexible Fuel Vehicle(FFV)" "Fuel Cell" "Gasoline" "Liquefied Natural Gas(LNG)" "Liquefied Petroleum Gas(propane or LPG)" "Methanol(M85)" "Natural Gas" "Neat Ethanol(E100)" "Neat Methanol(M100)" "Unknown" ) .
+

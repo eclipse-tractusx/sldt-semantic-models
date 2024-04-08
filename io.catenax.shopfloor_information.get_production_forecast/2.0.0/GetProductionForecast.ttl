@@ -1,0 +1,89 @@
+##########################################################################################
+# Copyright (c) 2023-2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IOSB & Fraunhofer IWU & Fraunhofer IPA)
+# Copyright (c) 2023-2024 Siemens AG
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+##########################################################################################
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.shopfloor_information.get_production_forecast:2.0.0#>.
+@prefix ext-types2: <urn:samm:io.catenax.shared.shopfloor_information_types:2.0.0#>.
+@prefix ext-header2: <urn:samm:io.catenax.shared.message_header:2.0.0#>.
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:1.0.0#>.
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:1.0.0#>.
+
+:GetProductionForecast a samm:Aspect;
+    samm:preferredName "Get Production Forecast"@en;
+    samm:description "Aspect Model to request a production forecast"@en;
+    samm:properties ([ samm:property :request; samm:optional "true"^^xsd:boolean ] ext-header2:header);
+    samm:operations ();
+    samm:events ().
+
+:request a samm:Property;
+    samm:preferredName "Request"@en;
+    samm:description "Data model for a request"@en;
+    samm:characteristic :RequestCharacteristic.
+
+:RequestCharacteristic a samm:Characteristic;
+    samm:preferredName "Request Characteristic"@en;
+    samm:description "Data type for a request"@en;
+    samm:dataType :RequestEntity.
+
+:RequestEntity a samm:Entity;
+    samm:preferredName "Request Entity"@en;
+    samm:description "Entity for a request of a production forecast"@en;
+    samm:properties (:offset :customerId [ samm:property :precisionOfForecast; samm:optional "true"^^xsd:boolean ] :productionForecastForAll :orderId [ samm:property :deviationOfSchedule; samm:optional "true"^^xsd:boolean ] [ samm:property :notificationInterval; samm:optional "true"^^xsd:boolean ] ext-types2:communicationMode ext-header2:version).
+
+:offset a samm:Property;
+    samm:preferredName "offset"@en;
+    samm:description "Send/start time of the first message/notification\n- \"0\" ==> immediate response"@en;
+    samm:characteristic ext-types2:TimeValueCharacteristic.
+
+:customerId a samm:Property;
+    samm:preferredName "customer identification number"@en;
+    samm:description "Internal customer Id"@en;
+    samm:characteristic ext-number:BpnlTrait;
+    samm:exampleValue "BPNL7588787849VQ".
+
+:precisionOfForecast a samm:Property;
+    samm:preferredName "Precision of forecast"@en;
+    samm:description "Accuracy of the time specification of the completion date.\n- default: implicitly defined by production\n- only as a REQUEST of the requester since it cannot be guaranteed that the store floor can provide the data in this accuracy."@en;
+    samm:characteristic ext-types2:TimeValueCharacteristic.
+
+:productionForecastForAll a samm:Property;
+    samm:preferredName "Production forecast for all"@en;
+    samm:description "Boolean variable that detemines whether the customer request information about each position of an order, or information about the complete order"@en;
+    samm:characteristic samm-c:Boolean;
+    samm:exampleValue "false"^^xsd:boolean.
+
+:orderId a samm:Property;
+    samm:preferredName "order identification number"@en;
+    samm:description "The Id identifying subject of the request"@en;
+    samm:characteristic ext-uuid:UuidV4Trait;
+    samm:exampleValue "00000000-0000-0000-C000-000000000046".
+
+:deviationOfSchedule a samm:Property;
+    samm:preferredName "Deviation of Schedule"@en;
+    samm:description "Mandatory property for the notification mode. The property specifies the deviation from targeted delivery date that must be met to send a notification to a subscriber\n\nmandatory for CommunicationMode = \"notification\""@en;
+    samm:characteristic ext-types2:TimeValueCharacteristic.
+
+:notificationInterval a samm:Property;
+    samm:preferredName "Notification Interval"@en;
+    samm:description "Interval time that either specifies the cyclic send time or limits the notification time\nmandatory for CommunicationMode = \"cyclic\""@en;
+    samm:characteristic ext-types2:TimeValueCharacteristic.
+
+
