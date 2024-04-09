@@ -1,0 +1,216 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Semantic model for a quality failure pattern.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_StringInsideOperatorEnumeration" : {
+        "type" : "string",
+        "description" : "Provides a selection of several logical operators for string expressions",
+        "enum" : [ "equal", "not_equal", "like" ]
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_QAXNamespaces" : {
+        "type" : "string",
+        "description" : "A list to all existing qax namespaces.",
+        "enum" : [ "io.catenax.fleet.claim_data", "io.catenax.fleet.diagnostic_data", "io.catenax.fleet.vehicles", "io.catenax.manufactured_parts_quality_information", "io.catenax.parts_analyses", "io.catenax.quality_task" ]
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_ModelVersionTrait" : {
+        "type" : "string",
+        "description" : "This regular expression ensures that the version is [1-9].[0-9].[0.9]",
+        "pattern" : "^[1-9].[0-9].[0-9]$"
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_LinkToAspectModel" : {
+        "description" : "This characteristic groups all necessary properties to refer to an existing Catena-X aspect model.",
+        "type" : "object",
+        "properties" : {
+          "nameSpace" : {
+            "description" : "Name space of the model",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_QAXNamespaces"
+          },
+          "ttlFile" : {
+            "description" : "A defined ttl file",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "modelVersion" : {
+            "description" : "Version of aspect model.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_ModelVersionTrait"
+          }
+        },
+        "required" : [ "nameSpace", "ttlFile", "modelVersion" ]
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_StringExpressionCharacteristic" : {
+        "description" : "Characteristic to describe string expressions",
+        "type" : "object",
+        "properties" : {
+          "stringPropertyName" : {
+            "description" : "A property name of type string from the model.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "stringInsideOperator" : {
+            "description" : "Describes the logical connector inside of a string expression",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_StringInsideOperatorEnumeration"
+          },
+          "stringValue" : {
+            "description" : "The value that is used within the string expression and with which it is to be compared",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "referenceToAspectModel" : {
+            "description" : "This property describes the underlying aspect model to which this failure pattern definition should be applied to.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_LinkToAspectModel"
+          }
+        },
+        "required" : [ "stringPropertyName", "stringInsideOperator", "stringValue", "referenceToAspectModel" ]
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_BooleanInsideOperatorEnumerator" : {
+        "type" : "string",
+        "description" : "Provides a selection of several logical operators for boolean expressions",
+        "enum" : [ "equal", "not_equal" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean" : {
+        "type" : "boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_BooleanExpressionCharacteristic" : {
+        "description" : "Characteristic to describe boolean expressions",
+        "type" : "object",
+        "properties" : {
+          "booleanPropertyName" : {
+            "description" : "A property name of type boolean from the model.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "booleanInsideOperator" : {
+            "description" : "Describes the logical connector inside of a boolean expression",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_BooleanInsideOperatorEnumerator"
+          },
+          "booleanValue" : {
+            "description" : "The value that is used within the boolean expression and with which it is to be compared",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean"
+          },
+          "referenceToAspectModel" : {
+            "description" : "This property describes the underlying aspect model to which this failure pattern definition should be applied to.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_LinkToAspectModel"
+          }
+        },
+        "required" : [ "booleanPropertyName", "booleanInsideOperator", "booleanValue", "referenceToAspectModel" ]
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_Expression" : {
+        "description" : "This entity describes a single expression for an failure pattern",
+        "type" : "object",
+        "properties" : {
+          "stringExpression" : {
+            "description" : "Describes an expression to compare string values",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_StringExpressionCharacteristic"
+          },
+          "booleanExpression" : {
+            "description" : "Describes an expression to compare boolean values",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_BooleanExpressionCharacteristic"
+          },
+          "subExpressionList" : {
+            "description" : "A List of Expressions which is inside of an expression to be able to describe complex expressions",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_ListOfExpressions"
+          },
+          "timestampExpression" : {
+            "description" : "Describes an expression to compare timestamp values",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_TimestampExpressionCharacteristic"
+          },
+          "numericExpression" : {
+            "description" : "Describes an expression to compare numeric values",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_NumericExpressionCharacteristic"
+          },
+          "expressionConnector" : {
+            "description" : "Describes how multiple expressions of a failure pattern are connected to eachother",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_ExpressionConnectorEnumeration"
+          }
+        }
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_ListOfExpressions" : {
+        "description" : "A List containing multiple expressions to describe a failure patterns",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_Expression"
+        }
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_TimestampInsideOperatorEnumeration" : {
+        "type" : "string",
+        "description" : "Provides a selection of several logical operators for timestamp expressions",
+        "enum" : [ "after", "before", "equal", "not_equal" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_TimestampExpressionCharacteristic" : {
+        "description" : "Characteristic to describe timestamp expressions",
+        "type" : "object",
+        "properties" : {
+          "timestampPropertyName" : {
+            "description" : "A property name of type timestamp from the model.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "timestampInsideOperator" : {
+            "description" : "Describes the logical connector inside of a timestamp expression",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_TimestampInsideOperatorEnumeration"
+          },
+          "timestampValue" : {
+            "description" : "The value that is used within the timestamp expression and with which it is to be compared",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          },
+          "referenceToAspectModel" : {
+            "description" : "This property describes the underlying aspect model to which this failure pattern definition should be applied to.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_LinkToAspectModel"
+          }
+        },
+        "required" : [ "timestampPropertyName", "timestampInsideOperator", "timestampValue", "referenceToAspectModel" ]
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_NumericInsideOperatorEnumeration" : {
+        "type" : "string",
+        "description" : "Provides a selection of several logical operators for numeric expressions",
+        "enum" : [ "equal", "not_equal", "higher", "higher_equal", "lower", "lower_equal" ]
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_NumericValueCharacteristic" : {
+        "type" : "number",
+        "description" : "The characteristic to describe numeric values as double"
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_NumericExpressionCharacteristic" : {
+        "description" : "Characteristic to describe numeric expressions",
+        "type" : "object",
+        "properties" : {
+          "numericPropertyName" : {
+            "description" : "A property name of a numeric type from the model.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "numericInsideOperator" : {
+            "description" : "Describes the logical connector inside of a numeric expression",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_NumericInsideOperatorEnumeration"
+          },
+          "numericValue" : {
+            "description" : "The value that is used within the numeric expression and with which it is to be compared",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_NumericValueCharacteristic"
+          },
+          "referenceToAspectModel" : {
+            "description" : "This property describes the underlying aspect model to which this failure pattern definition should be applied to.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_LinkToAspectModel"
+          }
+        },
+        "required" : [ "numericPropertyName", "numericInsideOperator", "numericValue", "referenceToAspectModel" ]
+      },
+      "urn_samm_io.catenax.failure_pattern_1.0.0_ExpressionConnectorEnumeration" : {
+        "type" : "string",
+        "description" : "Provides a selection of several connectors for the expressions",
+        "enum" : [ "AND", "OR", "XOR" ]
+      }
+    }
+  },
+  "properties" : {
+    "failurePatternDefinition" : {
+      "description" : "The definition of a failure pattern",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.failure_pattern_1.0.0_ListOfExpressions"
+    }
+  },
+  "required" : [ "failurePatternDefinition" ]
+}
