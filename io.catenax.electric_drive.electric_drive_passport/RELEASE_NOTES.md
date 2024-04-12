@@ -3,13 +3,12 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [1.0.1] - 2022-10-26
+## [1.0.0] - 2024-03-25
 ### Added
-- initial model
-- fix in example value
+- initial model in SAMM 2.1.0
 
 ### Changed
 n/a
 
 ### Removed
-
+n/a
