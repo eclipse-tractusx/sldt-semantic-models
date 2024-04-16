@@ -1,0 +1,400 @@
+#######################################################################
+# Copyright (c) 2024 BASF SE
+# Copyright (c) 2024 BMW AG
+# Copyright (c) 2024 CGI Deutschland B.V. & Co. KG
+# Copyright (c) 2024 Henkel AG & Co. KGaA
+# Copyright (c) 2024 T-Systems International GmbH
+# Copyright (c) 2024 ZF Friedrichshafen AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.material.chemical_material_passport:1.0.0#> .
+@prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:4.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+
+:ChemicalMaterialPassport a samm:Aspect ;
+   samm:preferredName "Chemical Material Passport"@en ;
+   samm:properties ( [ samm:property :productSpecificParameters; samm:payloadName "specific" ] [ samm:property :productUnspecificParameters; samm:payloadName "unspecific" ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:productSpecificParameters a samm:Property ;
+   samm:preferredName "Product Specific Parameters"@en ;
+   samm:description "Product specific parameters of the electric drive."@en ;
+   samm:characteristic :SpecificCharacteristic .
+
+:productUnspecificParameters a samm:Property ;
+   samm:preferredName "Product Unspecific Parameters"@en ;
+   samm:description "The product unspecific parameters. These are defined by the Digital Product Passport proposal from the ESPR. The main basis is provided by the document \"Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL establishing a framework for setting ecodesign requirements for sustainable products and repealing Directive 2009/125/EC\" from March 30th, 2022. The latest version of the document was the provisional agreement between the EU Council and the Parliament from January 9th, 2024."@en ;
+   samm:characteristic :UnspecificCharacteristic .
+
+:SpecificCharacteristic a samm:Characteristic ;
+   samm:preferredName "Specific Characteristic"@en ;
+   samm:description "The Characteristic to describe product specific parameters of the electric drive."@en ;
+   samm:dataType :SpecificEntity .
+
+:UnspecificCharacteristic a samm:Characteristic ;
+   samm:preferredName "Unspecific Characteristic"@en ;
+   samm:description "Characteristic for the product unspecific parameters."@en ;
+   samm:dataType :UnspecificEntity .
+
+:SpecificEntity a samm:Entity ;
+   samm:preferredName "Specific Entity"@en ;
+   samm:description "The Entity for product specific parameters of the electric drive."@en ;
+   samm:properties ( :parameter :productType :hazardAssesment :transport :disposal :safety :compliance ) .
+
+:UnspecificEntity a samm:Entity ;
+   samm:preferredName "Unspecific Entity"@en ;
+   samm:description "Entity for the product unspecific parameters."@en ;
+   samm:properties ( ext-passport:identification ext-passport:operation ext-passport:characteristics ext-passport:commercial ext-passport:materials ext-passport:sources ext-passport:sustainability ext-passport:metadata ) .
+
+:parameter a samm:Property ;
+   samm:preferredName "Parameter"@en ;
+   samm:characteristic :Characteristic1 .
+
+:productType a samm:Property ;
+   samm:preferredName "Product Type"@en ;
+   samm:description "Information, whether the prdocut is a substance, mixture or article. Definitions from REACH Regulation (EC) No 1907/2006: \n\"substance\": means a chemical element and its compounds in the natural state or obtained by any manufacturing process, including any additive necessary to preserve its stability and any impurity deriving from the process used, but excluding any solvent which may be separated without affecting the stability of the substance or changing its composition;\n\"mixture\": means a mixture or solution composed of two or more substances;\n\"article\": means an object which during production is given a special shape, surface or design which determines its function to a greater degree than does its chemical composition;"@en ;
+   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02006R1907-20231201> ;
+   samm:characteristic :MaterialEnumeration ;
+   samm:exampleValue "substance" .
+
+:hazardAssesment a samm:Property ;
+   samm:preferredName "Hazard Assesment"@en ;
+   samm:characteristic :Characteristic2 .
+
+:transport a samm:Property ;
+   samm:preferredName "Transport"@en ;
+   samm:characteristic :Characteristic3 .
+
+:disposal a samm:Property ;
+   samm:preferredName "Disposal"@en ;
+   samm:characteristic :Characteristic4 .
+
+:safety a samm:Property ;
+   samm:preferredName "Safety"@en ;
+   samm:characteristic :Characteristic5 .
+
+:compliance a samm:Property ;
+   samm:characteristic :Characteristic11 .
+
+:Characteristic1 a samm:Characteristic ;
+   samm:dataType :Entity1 .
+
+:MaterialEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Material Enumeration"@en ;
+   samm:description "Enumeration with the values substance, mixture and article."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "substance" "mixture" "article" ) .
+
+:Characteristic2 a samm:Characteristic ;
+   samm:dataType :Entity2 .
+
+:Characteristic3 a samm-c:List ;
+   samm:dataType :Entity3 .
+
+:Characteristic4 a samm:Characteristic ;
+   samm:dataType :Entity4 .
+
+:Characteristic5 a samm:Characteristic ;
+   samm:dataType :Entity5 .
+
+:Characteristic11 a samm-c:List ;
+   samm:dataType :Entity10 .
+
+:Entity1 a samm:Entity ;
+   samm:properties ( :parameters :parametersAfterUse ) .
+
+:Entity2 a samm:Entity ;
+   samm:properties ( :classification :labeling :hazardAssessmentDocumenation ) .
+
+:Entity3 a samm:Entity ;
+   samm:properties ( :transportRegulation :transportUNNumber :transportUNProperShippingName :transportUNHazardClassCode :transportUNHazardClassName :transportUNPackagingGroup ) .
+
+:Entity4 a samm:Entity ;
+   samm:properties ( :property1 ) .
+
+:Entity5 a samm:Entity ;
+   samm:properties ( :safetyDocument :emergencyPhone :firstAidDocument ) .
+
+:Entity10 a samm:Entity ;
+   samm:properties ( :productComplianceCountry :productComplianceRegulationName :productComplianceResult [ samm:property :productComplianceReasonForExemption; samm:optional true ] [ samm:property :productComplianceRemark; samm:optional true ] ) .
+
+:parameters a samm:Property ;
+   samm:preferredName "Parameters"@en ;
+   samm:characteristic :Characteristic6 .
+
+:parametersAfterUse a samm:Property ;
+   samm:preferredName "Parameters After Use"@en ;
+   samm:characteristic :Characteristic10 .
+
+:classification a samm:Property ;
+   samm:characteristic :Characteristic9 .
+
+:labeling a samm:Property ;
+   samm:characteristic :Characteristic12 .
+
+:hazardAssessmentDocumenation a samm:Property ;
+   samm:characteristic ext-passport:DocumentList .
+
+:transportRegulation a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:transportUNNumber a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:transportUNProperShippingName a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:transportUNHazardClassCode a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:transportUNHazardClassName a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:transportUNPackagingGroup a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:property1 a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:safetyDocument a samm:Property ;
+   samm:characteristic ext-passport:DocumentList .
+
+:emergencyPhone a samm:Property ;
+   samm:characteristic :Characteristic17 .
+
+:firstAidDocument a samm:Property ;
+   samm:characteristic ext-passport:DocumentList .
+
+:productComplianceCountry a samm:Property ;
+   samm:characteristic :StringList .
+
+:productComplianceRegulationName a samm:Property ;
+   samm:characteristic :StringList .
+
+:productComplianceResult a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productComplianceReasonForExemption a samm:Property ;
+   samm:characteristic :StringList .
+
+:productComplianceRemark a samm:Property ;
+   samm:characteristic :Characteristic18 .
+
+:Characteristic6 a samm-c:List ;
+   samm:dataType :ParametersEntity .
+
+:Characteristic10 a samm:Characteristic ;
+   samm:dataType :Entity9 .
+
+:Characteristic9 a samm-c:List ;
+   samm:dataType :Entity6 .
+
+:Characteristic12 a samm:Characteristic ;
+   samm:dataType :Entity11 .
+
+:Characteristic17 a samm:Characteristic ;
+   samm:dataType :Entity16 .
+
+:StringList a samm-c:List .
+
+:Characteristic18 a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:ParametersEntity a samm:Entity ;
+   samm:properties ( [ samm:property :productParameterName; samm:payloadName "name" ] [ samm:property :productParameterValue; samm:payloadName "value" ] [ samm:property :productParameterUnit; samm:payloadName "unit" ] [ samm:property :productParameterResult; samm:payloadName "result" ] [ samm:property :productParameterMethod; samm:optional true; samm:payloadName "method" ] [ samm:property :productParameterRemark; samm:optional true; samm:payloadName "remark" ] [ samm:property :productParameterClassificationStatement; samm:optional true; samm:payloadName "classificationStatement" ] [ samm:property :productParametersTestGLPCompliance; samm:payloadName "testGLPCompliance" ] [ samm:property :productParameterDocumentation; samm:payloadName "documentation" ] ) .
+
+:Entity9 a samm:Entity ;
+   samm:properties ( [ samm:property :productParameterAfterUse; samm:optional true; samm:payloadName "docuementation" ] ext-passport:applicable ) .
+
+:Entity6 a samm:Entity ;
+   samm:properties ( :productClassificationRule :productClassificationHazardInfo :productClassificationHazardClass :productClassificationHazardClassRoute :productClassificationHazardCategory :productClassificationRemark ) .
+
+:Entity11 a samm:Entity ;
+   samm:properties ( :signalWord :pictogram :hazardStatement :precautionary :supplementalRequirement ) .
+
+:Entity16 a samm:Entity ;
+   samm:properties ( [ samm:property :emergencyPhoneNumberAvaliability; samm:payloadName "avaliability" ] [ samm:property :emergencyPhoneNumber; samm:payloadName "number" ] ) .
+
+:productParameterName a samm:Property ;
+   samm:preferredName "Product Parameter Name"@en ;
+   samm:description "The name of the parameter for the product tested and presented, for instance, in the Certificate of Analysis or Safety Data Sheet, found in Section 9. Parameters for chemical products usually encompass their chemical composition, physical properties, performance characteristics, and toxicological aspects. These parameters vary depending on the chemical's nature, its intended use, and relevant safety or regulatory considerations."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "VOC content" .
+
+:productParameterValue a samm:Property ;
+   samm:preferredName "Product Parameter Value"@en ;
+   samm:description "\nThe value resulting from the tested parameter is typically presented in Section 9 of the Safety Data Sheet or Certificate of Analysis."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "95.5" .
+
+:productParameterUnit a samm:Property ;
+   samm:preferredName "Product Parameter Unit"@en ;
+   samm:description "The unit of measurement for the parameter value presented in Section 9 of the Safety Data Sheet or Certificate of Analysis varies depending on the specific parameter being reported."@en ;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/appendix/unitcatalog.html> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "unit:percent" .
+
+:productParameterResult a samm:Property ;
+   samm:preferredName "productParameterResult"@en ;
+   samm:description "Other types of results, if not numerical values, for parameters presented in Section 9 of the Safety Data Sheet or Certificate of Analysis may include qualitative descriptions like \"pass\" or \"fail,\" as well as ranges, thresholds, or classifications."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "positive" .
+
+:productParameterMethod a samm:Property ;
+   samm:preferredName "Product Parameter Method"@en ;
+   samm:characteristic :Characteristic7 .
+
+:productParameterRemark a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productParameterClassificationStatement a samm:Property ;
+   samm:characteristic :StringList .
+
+:productParametersTestGLPCompliance a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productParameterDocumentation a samm:Property ;
+   samm:characteristic ext-passport:DocumentList .
+
+:productParameterAfterUse a samm:Property ;
+   samm:characteristic ext-passport:DocumentList .
+
+:productClassificationRule a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productClassificationHazardInfo a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productClassificationHazardClass a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productClassificationHazardClassRoute a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productClassificationHazardCategory a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productClassificationRemark a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:signalWord a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:pictogram a samm:Property ;
+   samm:characteristic :Characteristic13 .
+
+:hazardStatement a samm:Property ;
+   samm:characteristic :Characteristic14 .
+
+:precautionary a samm:Property ;
+   samm:characteristic :Characteristic15 .
+
+:supplementalRequirement a samm:Property ;
+   samm:characteristic :Characteristic16 .
+
+:emergencyPhoneNumberAvaliability a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:emergencyPhoneNumber a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:Characteristic7 a samm-c:List ;
+   samm:dataType :Entity7 .
+
+:Characteristic13 a samm:Characteristic ;
+   samm:dataType :Entity12 .
+
+:Characteristic14 a samm:Characteristic ;
+   samm:dataType :Entity13 .
+
+:Characteristic15 a samm:Characteristic ;
+   samm:dataType :Entity14 .
+
+:Characteristic16 a samm:Characteristic ;
+   samm:dataType :Entity15 .
+
+:Entity7 a samm:Entity ;
+   samm:properties ( :productParameterMethodName :productParameterMethods ) .
+
+:Entity12 a samm:Entity ;
+   samm:properties ( [ samm:property :hazardPictogramCode; samm:payloadName "code" ] [ samm:property :hazardPictogramImage; samm:payloadName "image" ] [ samm:property :hazardPictogramName; samm:payloadName "name" ] ) .
+
+:Entity13 a samm:Entity ;
+   samm:properties ( [ samm:property :hazardStatementCode; samm:payloadName "code" ] [ samm:property :hazardStatementsText; samm:payloadName "text" ] ) .
+
+:Entity14 a samm:Entity ;
+   samm:properties ( [ samm:property :precautionaryCode; samm:payloadName "code" ] [ samm:property :precautionaryText; samm:payloadName "text" ] ) .
+
+:Entity15 a samm:Entity ;
+   samm:properties ( [ samm:property :supplementalRequirementsCode; samm:optional true; samm:payloadName "code" ] [ samm:property :supplementalRequirementsText; samm:optional true; samm:payloadName "text" ] [ samm:property :supplementalRequirementsPictogram; samm:optional true; samm:payloadName "pictogram" ] [ samm:property :productLabelingNotes; samm:optional true; samm:payloadName "notes" ] ) .
+
+:productParameterMethodName a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productParameterMethods a samm:Property ;
+   samm:characteristic :Characteristic8 .
+
+:hazardPictogramCode a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:hazardPictogramImage a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:hazardPictogramName a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:hazardStatementCode a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:hazardStatementsText a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:precautionaryCode a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:precautionaryText a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:supplementalRequirementsCode a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:supplementalRequirementsText a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:supplementalRequirementsPictogram a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productLabelingNotes a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:Characteristic8 a samm-c:List ;
+   samm:dataType :Entity8 .
+
+:Entity8 a samm:Entity ;
+   samm:properties ( [ samm:property :productParameterMethodConditions; samm:payloadName "conditions" ] [ samm:property :productParameterMethodDescription; samm:payloadName "description" ] ) .
+
+:productParameterMethodConditions a samm:Property ;
+   samm:characteristic samm-c:Text .
+
+:productParameterMethodDescription a samm:Property ;
+   samm:characteristic samm-c:Text .
+
