@@ -1,0 +1,133 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Parts analysis that are related to one quality task",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.parts_analyses_2.0.0_UniqueID" : {
+        "type" : "string",
+        "description" : "Characteristic for a unique id: every linked property to this characteristic is a unique ID"
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_samm_io.catenax.parts_analyses_2.0.0_StatusCharacteristic" : {
+        "type" : "string",
+        "description" : "Enumeration of the different status values",
+        "enum" : [ "new", "in progress", "completed", "closed" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean" : {
+        "type" : "boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "urn_samm_io.catenax.parts_analyses_2.0.0_CatenaXIdTrait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_samm_io.catenax.parts_analyses_2.0.0_Keys" : {
+        "description" : "A list of additional keys. Togther with the values list this list forms the additional data information.",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        }
+      },
+      "urn_samm_io.catenax.parts_analyses_2.0.0_Values" : {
+        "description" : "A list of additional values that forms the additional data. Togther with the keys list this list forms the additional data information.",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        }
+      },
+      "urn_samm_io.catenax.parts_analyses_2.0.0_Text" : {
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc.",
+        "type" : "object",
+        "properties" : {
+          "keys" : {
+            "description" : "a list of keys",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.parts_analyses_2.0.0_Keys"
+          },
+          "values" : {
+            "description" : "Values for the keys defined",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.parts_analyses_2.0.0_Values"
+          }
+        },
+        "required" : [ "keys", "values" ]
+      },
+      "urn_samm_io.catenax.parts_analyses_2.0.0_PartAnalysis" : {
+        "description" : "The analysis results of ONE part",
+        "type" : "object",
+        "properties" : {
+          "manufacturerAnalysisID" : {
+            "description" : "Internal identifier for this analysis at manufacturer.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.parts_analyses_2.0.0_UniqueID"
+          },
+          "qualityTaskId" : {
+            "description" : "A unique quality task identifier where these list of parts analysis belong to.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "anonymizedVin" : {
+            "description" : "Reference to vehicle. OEM-specific hashed VIN. This property is the link to the vehicle from which the analyzed part came from.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "status" : {
+            "description" : "Status of this part analysis",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.parts_analyses_2.0.0_StatusCharacteristic"
+          },
+          "isDefect" : {
+            "description" : "True: Analysis turned out that analyzed part is defect accroding part's specification.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean"
+          },
+          "resultsDescription" : {
+            "description" : "Detailed description of part analysis results.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "manufacturerSerialPartNumber" : {
+            "description" : "Serial Part Number of the analyzed part as assigned by the manufacturer of the part. The serial part number is unique for each serial part. Not available for all kinds of parts.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "manufacturerPartNumber" : {
+            "description" : "Part number property for parts. This part number is not unique. Same parts have normally same part number.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "manufacturerPartName" : {
+            "description" : "Name of the analyzed part as assigned by the manufacturer of the part.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "catenaXPartId" : {
+            "description" : "The fully anonymous Catena-X ID of the analyzed part - only available after digital twin registry is fully operational.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.parts_analyses_2.0.0_CatenaXIdTrait"
+          },
+          "customerAnalysisID" : {
+            "description" : "Internal identifier for this analysis at customer.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "customerPartNumber" : {
+            "description" : "Part number from original manufacturer equipment (OEM). This part number is normally not unique.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "addtionalInformation" : {
+            "description" : "You can use this key:value list for additional properties that were not defined in this aspect model.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.parts_analyses_2.0.0_Text"
+          }
+        },
+        "required" : [ "manufacturerAnalysisID", "qualityTaskId", "anonymizedVin", "status", "isDefect", "resultsDescription", "manufacturerSerialPartNumber", "manufacturerPartNumber", "manufacturerPartName" ]
+      },
+      "urn_samm_io.catenax.parts_analyses_2.0.0_ListOfPartsAnalyses" : {
+        "description" : "A list for multiple part analyses",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.parts_analyses_2.0.0_PartAnalysis"
+        }
+      }
+    }
+  },
+  "properties" : {
+    "listOfPartAnalyses" : {
+      "description" : "A list of several part analyses",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.parts_analyses_2.0.0_ListOfPartsAnalyses"
+    }
+  },
+  "required" : [ "listOfPartAnalyses" ]
+}
