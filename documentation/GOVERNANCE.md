@@ -1,6 +1,6 @@
 # Aspect Model Governance Process
 This repository hosts the Turtle files for the Tractus-X Aspect models. The models are based on the SAMM Aspect Meta Model to semantically describe the data that gets exchanged by solutions using Eclipse Tractus-X. These models need to be aligned and agreed upon within and preferably across the use cases targeted by Tractus-X. To achieve this agreement and visibility across the whole project, there is a dedicated governance process enabled for the models in this repository.
-The following page introduces this process, the involved roles, and the states in which a model can be. 
+The following page introduces this process, the involved roles, and the states in which a model can be... 
 
 ## Process
 ### Roles
