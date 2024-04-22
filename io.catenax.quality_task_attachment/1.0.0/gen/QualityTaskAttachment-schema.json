@@ -1,0 +1,130 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Additional data for quality task",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_samm_io.catenax.quality_task_attachment_1.0.0_QualityModelType" : {
+        "type" : "string",
+        "description" : "Enumeration of released quality aspect models",
+        "enum" : [ "fleet.claim_data", "fleet.diagnostic_data", "manufactured_parts_quality_information", "parts_analyses", "quality_task", "vehicle.product_description" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "description" : "Describes a Property containing a reference to one of the units in the Unit Catalog."
+      },
+      "urn_samm_io.catenax.quality_task_attachment_1.0.0_VariableAttribute" : {
+        "description" : "A list describing the variables contained in the file",
+        "type" : "object",
+        "properties" : {
+          "variableName" : {
+            "description" : "The name of the column",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "dataType" : {
+            "description" : "The data type of the data contained in the column",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "unit" : {
+            "description" : "The unit of the data contained in the column (used for numeric values)",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_UnitReference"
+          },
+          "variableDescription" : {
+            "description" : "A description of the data contained in the column",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "variableName", "dataType", "unit" ]
+      },
+      "urn_samm_io.catenax.quality_task_attachment_1.0.0_Variables" : {
+        "description" : "A list describing the variables contained in the file",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_attachment_1.0.0_VariableAttribute"
+        }
+      },
+      "urn_samm_io.catenax.quality_task_attachment_1.0.0_Schema" : {
+        "description" : "Describes the schema of the values contained in the file",
+        "type" : "object",
+        "properties" : {
+          "decimalSeperator" : {
+            "description" : "Enumeration types to be used for the decimal separators",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "delimiter" : {
+            "description" : "Indicates whether a semicolon, comma or tab is used as a delimiter between data points",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "variables" : {
+            "description" : "A list describing the variables contained in the file",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_attachment_1.0.0_Variables"
+          }
+        },
+        "required" : [ "variables" ]
+      },
+      "urn_samm_io.catenax.quality_task_attachment_1.0.0_SizeInKb" : {
+        "type" : "number",
+        "minimum" : 1,
+        "description" : "Indicates the size of the file"
+      },
+      "urn_samm_io.catenax.quality_task_attachment_1.0.0_File" : {
+        "description" : "One file attached to the quality task",
+        "type" : "object",
+        "properties" : {
+          "fileName" : {
+            "description" : "The name of the described file",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "schema" : {
+            "description" : "schema definition for file",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_attachment_1.0.0_Schema"
+          },
+          "filePath" : {
+            "description" : "Indicates where the file is located within the ZIP-folder",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "sizeInKb" : {
+            "description" : "Indicates the size of the file",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_attachment_1.0.0_SizeInKb"
+          },
+          "fileDescription" : {
+            "description" : "A description of the file content",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "fileExtension" : {
+            "description" : "Indicates which file format the file has",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "fileName", "filePath", "sizeInKb", "fileDescription", "fileExtension" ]
+      },
+      "urn_samm_io.catenax.quality_task_attachment_1.0.0_ListOfFiles" : {
+        "description" : "List of files attached to a quality task",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_attachment_1.0.0_File"
+        }
+      }
+    }
+  },
+  "properties" : {
+    "qualityTaskId" : {
+      "description" : "A unique quality task identifier where these list of parts analysis belong to.",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "relatedModelType" : {
+      "description" : "Indicates which aspect model these additional files are to be added to",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_attachment_1.0.0_QualityModelType"
+    },
+    "files" : {
+      "description" : "A list of files within the ZIP-folder, which are needed for a specific quality task",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.quality_task_attachment_1.0.0_ListOfFiles"
+    }
+  },
+  "required" : [ "qualityTaskId", "relatedModelType", "files" ]
+}

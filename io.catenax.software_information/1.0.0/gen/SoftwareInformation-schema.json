@@ -1,0 +1,73 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "The software information aspect model contains the essential information of all software components that have been implemented or flashed in an instantiated part (e.g. serialized part). ",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_samm_io.catenax.software_information_1.0.0_NameCharacteristic" : {
+        "type" : "string",
+        "description" : "The characteristic of the (software) name, that is defined as a String."
+      },
+      "urn_samm_io.catenax.software_information_1.0.0_VersionCharacteristic" : {
+        "type" : "string",
+        "description" : "The characteristic of the (software) version, that is defined as a String."
+      },
+      "urn_samm_io.catenax.software_information_1.0.0_SoftwareIdCharacteristic" : {
+        "type" : "string",
+        "description" : "The characteristic of the (software) ID, that is defined as a String."
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_io.catenax.software_information_1.0.0_SoftwareData" : {
+        "description" : "The Entity of the software information to additionally structure the set.",
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "description" : "The name of the software for the corresponding instantiated part.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.software_information_1.0.0_NameCharacteristic"
+          },
+          "version" : {
+            "description" : "The version of the software for the corresponding instantiated part.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.software_information_1.0.0_VersionCharacteristic"
+          },
+          "softwareId" : {
+            "description" : "The ID (e.g. part number) of the software for the corresponding instantiated part.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.software_information_1.0.0_SoftwareIdCharacteristic"
+          },
+          "lastModifiedOn" : {
+            "description" : "The modified date when the software was installed or flashed on the corresponding instantiated part.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+          }
+        },
+        "required" : [ "name", "version", "lastModifiedOn" ]
+      },
+      "urn_samm_io.catenax.software_information_1.0.0_SetOfSoftwareCharacteristic" : {
+        "description" : "A set of data that can contain multiple pieces of software information, but never duplicates of the same software with the same version. However, if this model is provided, at least one entry must exist.",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/urn_samm_io.catenax.software_information_1.0.0_SoftwareData"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "catenaXId" : {
+      "description" : "The Catena-X ID of the given part (e.g. the assembly), valid for the Catena-X dataspace.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait"
+    },
+    "softwareInformation" : {
+      "description" : "Describes one or more software of a unique serialized part with its name, version and modified date. Optionally, the software part number/ID and the BPNL of the modifying company can be provided.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.software_information_1.0.0_SetOfSoftwareCharacteristic"
+    }
+  },
+  "required" : [ "catenaXId", "softwareInformation" ]
+}
