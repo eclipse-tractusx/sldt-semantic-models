@@ -4,6 +4,14 @@ All notable changes to this model will be documented in this file.
 ## [Unreleased]
 - Version 2.0.0 of model is deprecated. It has a wrong regex for BPNS validation from the old shared model for BPNS trait.
 
+## [2.2.0] - 2024-04-22
+### Added
+
+### Changed
+- components list as new feature of this semantic model
+
+### Removed
+
 ## [2.1.0] - 2024-02-19
 ### Added
 
@@ -11,7 +19,6 @@ All notable changes to this model will be documented in this file.
 - reference to shared aspect model for BPNS was changed to latest version
 
 ### Removed
-
 
 ## [2.0.0] - 2024-01-22
 ### Added
