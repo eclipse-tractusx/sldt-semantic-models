@@ -1,0 +1,100 @@
+######################################################################
+# Copyright (c) 2024 BASF SE
+# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2024 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2024 Henkel AG & Co. KGaA
+# Copyright (c) 2024 Mercedes Benz AG
+# Copyright (c) 2024 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2024 SAP SE
+# Copyright (c) 2024 Siemens AG
+# Copyright (c) 2024 T-Systems International GmbH
+# Copyright (c) 2024 ZF Friedrichshafen AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.certificate_signing_requests:1.0.0#>.
+
+:CertificateSigningRequests a samm:Aspect;
+   samm:preferredName "Certificate Signing Requests"@en;
+   samm:description "The certificate signing requests model contains the essential information needed to request specific certificates for a unique ECU component via a Certificate Signing Request (CSR) and to validate and certificate the ECU against this data."@en;
+   samm:properties ([ samm:property :certificateSigningRequestList; samm:optional true ]);
+   samm:operations ();
+   samm:events ().
+
+:certificateSigningRequestList a samm:Property;
+   samm:preferredName "Certificate Signing Request List"@en;
+   samm:description "Describes one or more Certificate Singing Requests (CSR). Each set entry contains additional information (e.g. subjectCommonName, subjectLocality, etc.) in readable form, which is otherwise part of the encrypted CSR."@en;
+   samm:characteristic :CertificateSigningRequestsCharacteristic.
+
+:CertificateSigningRequestsCharacteristic a samm-c:Set;
+   samm:preferredName "Certificate Signing Requests Characteristic"@en;
+   samm:description "A data set that can contain several Certificate Signing Requests (CSR). If CSRs exist, all subject information must be provided."@en;
+   samm:dataType :CertificateSigningRequestsEntity.
+
+:CertificateSigningRequestsEntity a samm:Entity;
+   samm:preferredName "Certificate Signing Requests Entity"@en;
+   samm:description "The Entity of a certificate signing requests to additionally structure the set."@en;
+   samm:properties (:subjectCommonName :subjectLocality :certificateSigningRequest :subjectSerialNumber).
+
+:subjectCommonName a samm:Property;
+   samm:preferredName "Subject Common Name\t"@en;
+   samm:description "Describes the common name on where the certificate is requested."@en;
+   samm:characteristic :SubjectCommonNameCharacteristic;
+   samm:exampleValue "IPsec-Internal".
+
+:subjectLocality a samm:Property;
+   samm:preferredName "Subject Locality"@en;
+   samm:description "Provides information about the specific type of the ECU that will be certified. \n\nThe value for the subjectLocality is always the same for an ECU and its attached CSRs, but is required to additionally validate each individual CSR."@en;
+   samm:characteristic :SubjectLocalityCharacteristic;
+   samm:exampleValue "ATM--02".
+
+:certificateSigningRequest a samm:Property;
+   samm:preferredName "Certificate Signing Request"@en;
+   samm:description "A CSR (Certificate Signing Request) is a 64-based PEM formatted and encrypted message to request and receive a digital certificate. The CSR validates the information required by a specific certification authority (CA) to issue the associated digital certificate.\n\nThe CSR consists of encrypted data, which can include, for example, basic information about the ECU and its manufacturer (common name, company, organizational unit, country, city/town, etc.), information about the public key attached to the certificate, as well as information on the key type and length."@en;
+   samm:characteristic :CertificateSigningRequestCharacteristic;
+   samm:exampleValue "MIIC2TCCAToCAQAwgZwxEzARBgNVBAgTClByb2R1Y3Rpb24xDDAKBgNVBAcMA0FUTTESMBAGA1UEChMJQk1XIEdyb3VwMRcwFQYDVQQLEw5WZWhpY2xlUEtJLUVDVTEXMBUGA1UEAxMOSVBzZWMtaW50ZXJuYWwxMTAvBgNVBAUTKEVDVS1VSUQ6QzAwMDgyNDI3MUREQTYwMDAwMDAwMDAwMjdBQTg0MjQwdjAQBgcqhkjOPQIBBgUrgQQAIgNiAAShNm4y5Mdzu4b9xDW3TfBZr".
+
+:subjectSerialNumber a samm:Property;
+   samm:preferredName "Subject Serial Number"@en;
+   samm:description "The serial number of the assembly part generated by the manufacturer that is used to identify the ECU component in a unique way. The subject serial number is identical to the serial number (partInstanceId) specified in the aspect model SerialPart.\n\nThe value for the subjectSerialNumber is always the same for an ECU and its attached CSRs, but is required to additionally validate each individual CSR."@en;
+   samm:see <https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.serial_part>;
+   samm:characteristic :SubjectSerialNumberCharacteristic;
+   samm:exampleValue "ECU-UID:SN12345678".
+
+:SubjectCommonNameCharacteristic a samm:Characteristic;
+   samm:preferredName "Subject Common Name Characteristic"@en;
+   samm:description "The characteristic of the subject common characteristic, that is defined as a String."@en;
+   samm:dataType xsd:string.
+
+:SubjectLocalityCharacteristic a samm:Characteristic;
+   samm:preferredName "Subject Locality Characteristic"@en;
+   samm:description "The characteristic of the subject locality, that is defined as a String."@en;
+   samm:dataType xsd:string.
+
+:CertificateSigningRequestCharacteristic a samm:Characteristic;
+   samm:preferredName "Certificate Signing Request Characteristic"@en;
+   samm:description "The characteristic of the certificate signing request ID, that is defined as a String."@en;
+   samm:dataType xsd:string.
+
+:SubjectSerialNumberCharacteristic a samm:Characteristic;
+   samm:preferredName "Subject Serial Number Characteristic"@en;
+   samm:description "The characteristic of the subject serial number, that is defined as a String."@en;
+   samm:dataType xsd:string.
