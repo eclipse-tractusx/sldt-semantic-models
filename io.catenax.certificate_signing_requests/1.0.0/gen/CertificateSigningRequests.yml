@@ -1,0 +1,190 @@
+---
+openapi: 3.0.3
+info:
+  title: Certificate Signing Requests
+  version: v1
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/certificate-signing-requests:
+    get:
+      tags:
+      - CertificateSigningRequests
+      operationId: getCertificateSigningRequests
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: '#/components/responses/CertificateSigningRequests'
+        "401":
+          $ref: '#/components/responses/ClientError'
+        "402":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateSigningRequests'
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    urn_samm_io.catenax.certificate_signing_requests_1.0.0_SubjectCommonNameCharacteristic:
+      type: string
+      description: "The characteristic of the subject common characteristic, that\
+        \ is defined as a String."
+    urn_samm_io.catenax.certificate_signing_requests_1.0.0_SubjectLocalityCharacteristic:
+      type: string
+      description: "The characteristic of the subject locality, that is defined as\
+        \ a String."
+    urn_samm_io.catenax.certificate_signing_requests_1.0.0_CertificateSigningRequestCharacteristic:
+      type: string
+      description: "The characteristic of the certificate signing request ID, that\
+        \ is defined as a String."
+    urn_samm_io.catenax.certificate_signing_requests_1.0.0_SubjectSerialNumberCharacteristic:
+      type: string
+      description: "The characteristic of the subject serial number, that is defined\
+        \ as a String."
+    urn_samm_io.catenax.certificate_signing_requests_1.0.0_CertificateSigningRequestsEntity:
+      description: The Entity of a certificate signing requests to additionally structure
+        the set.
+      type: object
+      properties:
+        subjectCommonName:
+          description: Describes the common name on where the certificate is requested.
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_signing_requests_1.0.0_SubjectCommonNameCharacteristic'
+        subjectLocality:
+          description: "Provides information about the specific type of the ECU that\
+            \ will be certified. \n\nThe value for the subjectLocality is always the\
+            \ same for an ECU and its attached CSRs, but is required to additionally\
+            \ validate each individual CSR."
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_signing_requests_1.0.0_SubjectLocalityCharacteristic'
+        certificateSigningRequest:
+          description: |-
+            A CSR (Certificate Signing Request) is a 64-based PEM formatted and encrypted message to request and receive a digital certificate. The CSR validates the information required by a specific certification authority (CA) to issue the associated digital certificate.
+
+            The CSR consists of encrypted data, which can include, for example, basic information about the ECU and its manufacturer (common name, company, organizational unit, country, city/town, etc.), information about the public key attached to the certificate, as well as information on the key type and length.
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_signing_requests_1.0.0_CertificateSigningRequestCharacteristic'
+        subjectSerialNumber:
+          description: |-
+            The serial number of the assembly part generated by the manufacturer that is used to identify the ECU component in a unique way. The subject serial number is identical to the serial number (partInstanceId) specified in the aspect model SerialPart.
+
+            The value for the subjectSerialNumber is always the same for an ECU and its attached CSRs, but is required to additionally validate each individual CSR.
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_signing_requests_1.0.0_SubjectSerialNumberCharacteristic'
+      required:
+      - subjectCommonName
+      - subjectLocality
+      - certificateSigningRequest
+      - subjectSerialNumber
+    urn_samm_io.catenax.certificate_signing_requests_1.0.0_CertificateSigningRequestsCharacteristic:
+      description: "A data set that can contain several Certificate Signing Requests\
+        \ (CSR). If CSRs exist, all subject information must be provided."
+      type: array
+      items:
+        $ref: '#/components/schemas/urn_samm_io.catenax.certificate_signing_requests_1.0.0_CertificateSigningRequestsEntity'
+      uniqueItems: true
+    CertificateSigningRequests:
+      description: The certificate signing requests model contains the essential information
+        needed to request specific certificates for a unique ECU component via a Certificate
+        Signing Request (CSR) and to validate and certificate the ECU against this
+        data.
+      type: object
+      properties:
+        certificateSigningRequestList:
+          description: "Describes one or more Certificate Singing Requests (CSR).\
+            \ Each set entry contains additional information (e.g. subjectCommonName,\
+            \ subjectLocality, etc.) in readable form, which is otherwise part of\
+            \ the encrypted CSR."
+          $ref: '#/components/schemas/urn_samm_io.catenax.certificate_signing_requests_1.0.0_CertificateSigningRequestsCharacteristic'
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources
+        for the given tenant.
+    NotFoundError:
+      description: The requested Twin has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    CertificateSigningRequests:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagingSchema'
+      description: The request was successful.
+  requestBodies:
+    CertificateSigningRequests:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CertificateSigningRequests'
