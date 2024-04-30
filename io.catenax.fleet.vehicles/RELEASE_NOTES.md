@@ -4,6 +4,15 @@ All notable changes to this model will be documented in this file.
 ## [Unreleased]
 - Version 2.0.0 of model is deprecated. It has a wrong regex for BPNS validation from the old shared model for BPNS trait.
 
+## [3.0.0] - 2024-04-29
+### Added
+- Added optional property components: to be able to store focus components in the semantic model as requested by BMW
+
+### Changed
+
+
+### Removed
+
 ## [2.1.0] - 2024-02-19
 ### Added
 
