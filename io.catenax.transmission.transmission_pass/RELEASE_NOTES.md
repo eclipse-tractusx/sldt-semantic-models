@@ -9,6 +9,7 @@ All notable changes to this model will be documented in this file.
 - changed payload name from unspecific to generic on highest level
 - changed example value for oilType
 - changed names for torquePeak, torqueContinuous, powerPeak, powerContinuous, speed, maxPeriod
+- changed PerformancePower to KilowattMeasurement (characteristic)
 
 
 ## [2.0.0] - 2024-03-04
