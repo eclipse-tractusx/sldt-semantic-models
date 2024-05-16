@@ -1,7 +1,23 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [4.0.0] - 2023-02-19
+## [5.0.0] - 2024-05-13
+### Changed
+- structure and pattern below chemicalName and chemicalId changed for materials
+- header example value made more generic
+- codeKey is now open and no longer an enumeration
+- description text added for packaging sustainability information in the attribute structure for sources
+
+### Added
+- identificationType added for materials
+- lastModification in metadata (optional)
+- otherOperatorsId in operation (optional)
+- otherOperatorsRole in operation (optional)
+
+### Deleted
+- codeDescription deleted due to duplication with codeKey
+
+## [4.0.0] - 2024-02-19
 ### Changed
 - Either-or possibilities are deleted in order to only allow one possible verifiable input
 - Changed descriptions to reference the latest regulation from January 9th, 2024.
