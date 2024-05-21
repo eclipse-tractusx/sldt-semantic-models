@@ -9,10 +9,10 @@ All notable changes to this model will be documented in this file.
 - description text added for packaging sustainability information in the attribute structure for sources
 
 ### Added
-- identificationType added for materials
 - lastModification in metadata (optional)
 - otherOperatorsId in operation (optional)
 - otherOperatorsRole in operation (optional)
+- purpose attribute added in commercial
 
 ### Deleted
 - codeDescription deleted due to duplication with codeKey
