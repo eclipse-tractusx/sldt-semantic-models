@@ -2,7 +2,7 @@
 
 All notable changes to this model will be documented in this file.
 
-## [3.0.0] 2024-05-27
+## [3.0.0] 2024-05-21
 
 - Add BPNS as entity with properties
 - Update header
