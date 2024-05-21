@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [3.0.0] - 2024-05-13
+## [3.0.0] - 2024-05-21
 ### Changed
 - connection update to @prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:5.0.0#>
 - renamed and changed attribute and payload name from unspecific to generic on highest level
