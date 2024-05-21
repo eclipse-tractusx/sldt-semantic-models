@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2024-05-13
+## [2.0.0] - 2024-05-21
 ### Added
 - connection update to @prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:5.0.0#>
 - connection update to @prefix ext-pass: <urn:samm:io.catenax.transmission.transmission_pass:3.0.0#>
