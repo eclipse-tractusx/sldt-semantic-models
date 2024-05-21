@@ -6,7 +6,7 @@ All notable changes to this model will be documented in this file.
 ## [3.0.0] - 2024-05-13
 ### Changed
 - connection update to @prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:5.0.0#>
-- changed payload name from unspecific to generic on highest level
+- renamed and changed attribute and payload name from unspecific to generic on highest level
 - changed example value for oilType
 - changed names for torquePeak, torqueContinuous, powerPeak, powerContinuous, speed, maxPeriod
 - changed PerformancePower to KilowattMeasurement (characteristic)
