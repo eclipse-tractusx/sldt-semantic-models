@@ -9,6 +9,9 @@ All notable changes to this model will be documented in this file.
 - example values for doubles are now doubles and not integers
 - corrected description texts with typos
 
+### Added
+- added commercial from ext-passport
+
 
 ## [5.0.0] - 2024-03-04
 ### Changed
