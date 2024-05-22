@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [5.0.0] - 2024-05-13
+## [5.0.0] - 2024-05-21
 ### Changed
 - structure and pattern below chemicalName and chemicalId changed for materials
 - header example value made more generic
@@ -9,10 +9,10 @@ All notable changes to this model will be documented in this file.
 - description text added for packaging sustainability information in the attribute structure for sources
 
 ### Added
-- identificationType added for materials
 - lastModification in metadata (optional)
 - otherOperatorsId in operation (optional)
 - otherOperatorsRole in operation (optional)
+- purpose attribute added in commercial
 
 ### Deleted
 - codeDescription deleted due to duplication with codeKey
