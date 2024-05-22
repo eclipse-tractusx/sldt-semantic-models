@@ -2,6 +2,17 @@
 All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
+## [6.0.0] - 2024-05-21
+### Changed
+- connection update to @prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:5.0.0#>
+- declarationOfConformityId is a string instead of a document list
+- example values for doubles are now doubles and not integers
+- corrected description texts with typos
+
+### Added
+- added commercial from ext-passport
+
+
 ## [5.0.0] - 2024-03-04
 ### Changed
 - import of the new samm:io.catenax.generic.digital_product_passport:4.0.0
