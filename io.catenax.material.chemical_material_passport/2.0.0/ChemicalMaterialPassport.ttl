@@ -1,0 +1,834 @@
+#######################################################################
+# Copyright (c) 2024 BASF SE
+# Copyright (c) 2024 BMW AG
+# Copyright (c) 2024 CGI Deutschland B.V. & Co. KG
+# Copyright (c) 2024 Henkel AG & Co. KGaA
+# Copyright (c) 2024 T-Systems International GmbH
+# Copyright (c) 2024 ZF Friedrichshafen AG
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.material.chemical_material_passport:2.0.0#> .
+@prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:5.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+
+:ChemicalMaterialPassport a samm:Aspect ;
+   samm:preferredName "Chemical Material Passport"@en ;
+   samm:description "The information in a Digital Product Passport allows stakeholders in the value chain to map information and obtain a better understanding of the composition of the product, the environmental impact of the production and use phase, and the aspect of circularity. To serve the same purpose as the Digital Passport, the Chemical Material Passport also plays an important role in providing more detailed information in terms of sustainability, safety and waste management. It can replace the current way of communication and data exchange from multi-channels by one streamlined data flow."@en ;
+   samm:properties ( [ samm:property :productSpecificParameters; samm:payloadName "specific" ] [ samm:property :genericParameters; samm:payloadName "generic" ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:productSpecificParameters a samm:Property ;
+   samm:preferredName "Product Specific Parameters"@en ;
+   samm:description "Product specific parameters of the electric drive."@en ;
+   samm:characteristic :SpecificCharacteristic .
+
+:genericParameters a samm:Property ;
+   samm:preferredName "Product Generic Parameters"@en ;
+   samm:description "The product generic parameters. These are defined by the Digital Product Passport proposal from the ESPR. The main basis is provided by the document \"Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL establishing a framework for setting ecodesign requirements for sustainable products and repealing Directive 2009/125/EC\" from March 30th, 2022. The latest version of the document was the provisional agreement between the EU Council and the Parliament from January 9th, 2024."@en ;
+   samm:characteristic :GenericCharacteristic .
+
+:SpecificCharacteristic a samm:Characteristic ;
+   samm:preferredName "Specific Characteristic"@en ;
+   samm:description "The Characteristic to describe product specific parameters of the electric drive."@en ;
+   samm:dataType :SpecificEntity .
+
+:GenericCharacteristic a samm:Characteristic ;
+   samm:preferredName "Generic Characteristic"@en ;
+   samm:description "Characteristic for the product generic parameters."@en ;
+   samm:dataType :GenericEntity .
+
+:SpecificEntity a samm:Entity ;
+   samm:preferredName "Specific Entity"@en ;
+   samm:description "The Entity for product specific parameters of the electric drive."@en ;
+   samm:properties ( :parameter :productType :hazardAssessment :transport :disposal :safety :compliance ) .
+
+:GenericEntity a samm:Entity ;
+   samm:preferredName "Generic Entity"@en ;
+   samm:description "Entity for the product generic parameters."@en ;
+   samm:properties ( ext-passport:identification ext-passport:operation ext-passport:characteristics ext-passport:commercial ext-passport:materials ext-passport:sources ext-passport:sustainability ext-passport:metadata ) .
+
+:parameter a samm:Property ;
+   samm:preferredName "Parameter"@en ;
+   samm:description "Parameters of the chemical material."@en ;
+   samm:characteristic :ParameterCharacteristic .
+
+:productType a samm:Property ;
+   samm:preferredName "Product Type"@en ;
+   samm:description "Information, whether the product is a substance, mixture or article. Definitions from REACH Regulation (EC) No 1907/2006: \n\"substance\": means a chemical element and its compounds in the natural state or obtained by any manufacturing process, including any additive necessary to preserve its stability and any impurity deriving from the process used, but excluding any solvent which may be separated without affecting the stability of the substance or changing its composition;\n\"mixture\": means a mixture or solution composed of two or more substances;\n\"article\": means an object which during production is given a special shape, surface or design which determines its function to a greater degree than does its chemical composition;"@en ;
+   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02006R1907-20231201> ;
+   samm:characteristic :MaterialEnumeration ;
+   samm:exampleValue "substance" .
+
+:hazardAssessment a samm:Property ;
+   samm:preferredName "Hazard Assessment"@en ;
+   samm:description "Hazard assessment refers to evaluating and identifying potential risks or dangers associated with the specific material."@en ;
+   samm:characteristic :HazardAssessmentCharacteristic .
+
+:transport a samm:Property ;
+   samm:preferredName "Transport"@en ;
+   samm:description "Transport related information."@en ;
+   samm:characteristic :TransportCharacteristic .
+
+:disposal a samm:Property ;
+   samm:preferredName "Disposal"@en ;
+   samm:description "The safe and appropriate elimination or management of these materials once they are no longer needed or usable."@en ;
+   samm:characteristic :DisposalCharacteristic .
+
+:safety a samm:Property ;
+   samm:preferredName "Safety"@en ;
+   samm:description "Safety related attributes of the chemical material."@en ;
+   samm:characteristic :SafetyCharacteristic .
+
+:compliance a samm:Property ;
+   samm:preferredName "Compliance"@en ;
+   samm:description "Compliance refers to adhering to relevant regulations, standards, or specifications regarding the testing, documentation, and presentation of parameters, methods, and results. This ensures that the product meets required safety, quality, and regulatory standards throughout its lifecycle, from manufacturing to post-application use."@en ;
+   samm:characteristic :ComplianceCharacteristic .
+
+:ParameterCharacteristic a samm:Characteristic ;
+   samm:preferredName "Parameter Characteristic"@en ;
+   samm:description "Parameter Characteristic for the chemical material."@en ;
+   samm:dataType :ParameterEntity .
+
+:MaterialEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Material Enumeration"@en ;
+   samm:description "Enumeration with the values substance, mixture and article."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "substance" "mixture" "article" ) .
+
+:HazardAssessmentCharacteristic a samm:Characteristic ;
+   samm:preferredName "Hazard Assessment Characteristic"@en ;
+   samm:description "Characteristic for the hazard assessment."@en ;
+   samm:dataType :HazardAssessmentEntity .
+
+:TransportCharacteristic a samm:Characteristic ;
+   samm:preferredName "Transport Characteristic"@en ;
+   samm:description "Characteristic for transport."@en ;
+   samm:dataType :TransportEntity .
+
+:DisposalCharacteristic a samm:Characteristic ;
+   samm:preferredName "Disposal Characteristic"@en ;
+   samm:description "Characteristic for disposal related attributes."@en ;
+   samm:dataType :DisposalEntity .
+
+:SafetyCharacteristic a samm:Characteristic ;
+   samm:preferredName "Safety Characteristic"@en ;
+   samm:description "Characteristic for safety information."@en ;
+   samm:dataType :SafetyEntity .
+
+:ComplianceCharacteristic a samm:Characteristic ;
+   samm:preferredName "Compliance Characteristic"@en ;
+   samm:description "Characteristic for compliance attributes."@en ;
+   samm:dataType :ComplianceEntity .
+
+:ParameterEntity a samm:Entity ;
+   samm:preferredName "Parameter Entity"@en ;
+   samm:description "Parameter Entity for the chemical material."@en ;
+   samm:properties ( :parameterBeforeUse :parameterAfterUse ) .
+
+:HazardAssessmentEntity a samm:Entity ;
+   samm:preferredName "Hazard Assessment Entity"@en ;
+   samm:description "Entity for the hazard assessment."@en ;
+   samm:properties ( :classification :labeling [ samm:property :hazardAssessmentDocumentation; samm:payloadName "documentation" ] ) .
+
+:TransportEntity a samm:Entity ;
+   samm:preferredName "Transport Entity"@en ;
+   samm:description "Entity for transport attributes."@en ;
+   samm:properties ( :productTransport :unTransport ) .
+
+:DisposalEntity a samm:Entity ;
+   samm:preferredName "Disposal Entity"@en ;
+   samm:description "Entity for disposal related attributes."@en ;
+   samm:properties ( [ samm:property :disposalBeforeUse; samm:payloadName "beforeUse" ] [ samm:property :disposalAfterUse; samm:payloadName "afterUse" ] [ samm:property :disposalWasteCode; samm:payloadName "wasteCode" ] [ samm:property :disposalPackagingInformation; samm:payloadName "packaging" ] ) .
+
+:SafetyEntity a samm:Entity ;
+   samm:preferredName "Safety Entity"@en ;
+   samm:description "Entity for safety information."@en ;
+   samm:properties ( [ samm:property :safetyDocumentation; samm:payloadName "documentation" ] :emergencyPhone :firstAidDocument ) .
+
+:ComplianceEntity a samm:Entity ;
+   samm:preferredName "Compliance Entity"@en ;
+   samm:description "Entity for compliance attributes."@en ;
+   samm:properties ( :complianceCountry :complianceRegulationName :complianceResult [ samm:property :complianceReasonForExemption; samm:optional true ] [ samm:property :complianceRemark; samm:optional true ] ) .
+
+:parameterBeforeUse a samm:Property ;
+   samm:preferredName "Parameter Before Use"@en ;
+   samm:description "Parameters of the chemical material before use."@en ;
+   samm:characteristic :ParameterBeforeUseList .
+
+:parameterAfterUse a samm:Property ;
+   samm:preferredName "Parameter After Use"@en ;
+   samm:description "Parameters of the chemical material after use."@en ;
+   samm:characteristic :ParameterAfterUseCharacteristic .
+
+:classification a samm:Property ;
+   samm:preferredName "Classification"@en ;
+   samm:description "Classification for the hazard assessment."@en ;
+   samm:characteristic :ClassificationList .
+
+:labeling a samm:Property ;
+   samm:preferredName "Labeling"@en ;
+   samm:description "The material labeling."@en ;
+   samm:see <https://eur-lex.europa.eu/eli/reg/2008/1272/oj> ;
+   samm:characteristic :LabelingCharacteristic .
+
+:hazardAssessmentDocumentation a samm:Property ;
+   samm:preferredName "Hazard Assessment Documentation"@en ;
+   samm:description "Documentation providing hazard assessment information for ensuring the safe management of chemical materials throughout their lifecycle."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:productTransport a samm:Property ;
+   samm:preferredName "Product Transport"@en ;
+   samm:description "Transport related attributes, which are not UN related."@en ;
+   samm:characteristic :ProductTransportCharacteristic .
+
+:unTransport a samm:Property ;
+   samm:preferredName "UN Transport"@en ;
+   samm:description "Transport related attributes from the UN."@en ;
+   samm:characteristic :UNTransportList .
+
+:disposalBeforeUse a samm:Property ;
+   samm:preferredName "Disposal Before Use"@en ;
+   samm:description "Management and disposal practices for chemicals that are no longer needed or deemed unsuitable for their intended purpose. This information can be provided as a document, detailing the properties of waste that render it hazardous, along with disposal and recovery operations or recommendations, and accidental release measures."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:disposalAfterUse a samm:Property ;
+   samm:preferredName "Disposal After Use"@en ;
+   samm:description "Chemical Management and Disposal Guides post-usage as document."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:disposalWasteCode a samm:Property ;
+   samm:preferredName "Disposal Waste Code"@en ;
+   samm:description "A waste code is a standardized alphanumeric code used to classify different types of waste according to their characteristics, origin, and potential hazards. These codes help in proper identification, handling, treatment, and disposal of waste materials."@en ;
+   samm:characteristic :WasteCodeCharacteristic .
+
+:disposalPackagingInformation a samm:Property ;
+   samm:preferredName "Disposal Packaging Information"@en ;
+   samm:description "Guidelines and instructions regarding the proper management and disposal of packaging materials after use. Includes instructions on separation, reuse, and recycling."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:safetyDocumentation a samm:Property ;
+   samm:preferredName "Safety Documentation"@en ;
+   samm:description "Safety information in a document that outlines safety protocols, procedures, and guidelines to be followed in specific situations involving the product. It provides clear instructions on accident prevention, how to respond to emergencies, and mitigate potential hazards. Examples include exposure scenarios, safety data sheets, risk assessments, and information on safety equipment and personal protective equipment (PPE)."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:emergencyPhone a samm:Property ;
+   samm:preferredName "Emergency Phone"@en ;
+   samm:description "A phone number in case of emergency serves the vital purpose of providing immediate access to emergency responders."@en ;
+   samm:characteristic :EmergencyList .
+
+:firstAidDocument a samm:Property ;
+   samm:preferredName "First Aid Document"@en ;
+   samm:description "Information on how to proceed in case of an emergency is essential. It includes guidance on providing initial assistance or immediate care to a person who has been injured before professional medical help arrives."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:complianceCountry a samm:Property ;
+   samm:preferredName "Compliance Country"@en ;
+   samm:description "The name of the country of compliance denotes the country whose rules and regulations the product must adhere to."@en ;
+   samm:see <https://www.iso.org/iso-3166-country-codes.html> ;
+   samm:characteristic :ProductComplianceCountryTrait ;
+   samm:exampleValue "UK" .
+
+:complianceRegulationName a samm:Property ;
+   samm:preferredName "Compliance Regulation Name"@en ;
+   samm:description "The name of the regulation or standard with which the product must comply can be sourced from Supplier Survey information. This attribute is referenced in ANNEX VI of the Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on detergents and surfactants, amending Regulation (EU) 2019/1020 and repealing Regulation (EC) No 648/2004:\nThe product passport shall include the following information: [...]\n(e) references to Union legal acts that the detergent or surfactant complies with;"@en ;
+   samm:characteristic :StringList ;
+   samm:exampleValue "UK -REACH regulation" .
+
+:complianceResult a samm:Property ;
+   samm:preferredName "Compliance Result"@en ;
+   samm:description "The statement indicates whether the product complies with the aforementioned regulations."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:complianceReasonForExemption a samm:Property ;
+   samm:preferredName "Compliance Reason For Exemption"@en ;
+   samm:description "Data providing details and justifications for an exemption from compliance with certain regulations, standards, or requirements. This information assists regulatory authorities or stakeholders in evaluating the merits of the exemption and making decisions in accordance with legal and regulatory requirements."@en ;
+   samm:characteristic :StringList ;
+   samm:exampleValue "Radioactive substance" .
+
+:complianceRemark a samm:Property ;
+   samm:preferredName "Compliance Remark"@en ;
+   samm:description "If necessary, any remarks that provide relevant information for compliance. Further clarification supplements the compliance information, offering additional context or details to ensure thorough understanding and adherence to regulatory requirements."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "If you need more information about the (pre-)registration status, please get in contact with our experts from the Compliance Team: www.xyz.com" .
+
+:ParameterBeforeUseList a samm-c:List ;
+   samm:preferredName "Parameter Before Use List"@en ;
+   samm:description "List of parameters of the chemical material before use."@en ;
+   samm:dataType :ParameterBeforeUseEntity .
+
+:ParameterAfterUseCharacteristic a samm:Characteristic ;
+   samm:preferredName "Parameter After Use Characteristic"@en ;
+   samm:description "Characteristic for parameters of the chemical material after use."@en ;
+   samm:dataType :ParameterAfterUseEntity .
+
+:ClassificationList a samm-c:List ;
+   samm:preferredName "Classification List"@en ;
+   samm:description "List for the hazard classification."@en ;
+   samm:dataType :ClassificationEntity .
+
+:LabelingCharacteristic a samm:Characteristic ;
+   samm:preferredName "Labeling Characteristic"@en ;
+   samm:description "Characteristic for material labeling."@en ;
+   samm:dataType :LabelingEntity .
+
+:ProductTransportCharacteristic a samm:Characteristic ;
+   samm:preferredName "Product Transport Characteristic"@en ;
+   samm:description "Product transportation Characteristic."@en ;
+   samm:dataType :ProductTransportEntity .
+
+:UNTransportList a samm-c:List ;
+   samm:preferredName "UN Transport List"@en ;
+   samm:description "List of transport related attributes from the UN."@en ;
+   samm:dataType :UNTransportEntity .
+
+:WasteCodeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Waste Code Characteristic"@en ;
+   samm:description "Characteristic for the waste code of the material."@en ;
+   samm:dataType :WasteCodeEntity .
+
+:EmergencyList a samm:Characteristic ;
+   samm:preferredName "Emergency List"@en ;
+   samm:description "List of information on how to proceed in case of an emergency."@en ;
+   samm:dataType :EmergencyEntity .
+
+:ProductComplianceCountryTrait a samm-c:Trait ;
+   samm:preferredName "Product Compliance Country Trait"@en ;
+   samm:description "Trait restricting the input to valid country codes."@en ;
+   samm-c:baseCharacteristic :StringList ;
+   samm-c:constraint :CountryCodeRegEx .
+
+:StringList a samm-c:List ;
+   samm:preferredName "String List"@en ;
+   samm:description "List of text strings."@en ;
+   samm:dataType xsd:string .
+
+:ParameterBeforeUseEntity a samm:Entity ;
+   samm:preferredName "Parameter Before Use Entity"@en ;
+   samm:description "Entity for parameters of the chemical material before use."@en ;
+   samm:properties ( [ samm:property :productParameterName; samm:payloadName "name" ] [ samm:property :productParameterValue; samm:payloadName "value" ] [ samm:property :productParameterUnit; samm:payloadName "unit" ] [ samm:property :productParameterResult; samm:payloadName "result" ] [ samm:property :productParameterMethod; samm:optional true; samm:payloadName "method" ] [ samm:property :productParameterRemark; samm:optional true; samm:payloadName "remark" ] [ samm:property :parameterClassificationStatement; samm:optional true; samm:payloadName "classificationStatement" ] [ samm:property :parameterTestGLPCompliance; samm:payloadName "testGLPCompliance" ] [ samm:property :parameterDocumentation; samm:payloadName "documentation" ] ) .
+
+:ParameterAfterUseEntity a samm:Entity ;
+   samm:preferredName "Parameter After Use Entity"@en ;
+   samm:description "Characteristic for parameters of the chemical material after use."@en ;
+   samm:properties ( [ samm:property :parameterAfterUseDocumentation; samm:payloadName "documentation" ] ext-passport:applicable ) .
+
+:ClassificationEntity a samm:Entity ;
+   samm:preferredName "Classification Entity"@en ;
+   samm:description "Entity for the hazard classification."@en ;
+   samm:properties ( [ samm:property :classificationRule; samm:payloadName "rule" ] [ samm:property :classificationHazardInfo; samm:payloadName "hazardous" ] [ samm:property :classificationHazardClassRoute; samm:payloadName "route" ] [ samm:property :classificationRemark; samm:payloadName "remark" ] [ samm:property ext-passport:hazardCategory; samm:payloadName "category" ] [ samm:property ext-passport:hazardClass; samm:payloadName "class" ] [ samm:property ext-passport:hazardStatement; samm:payloadName "statement" ] ) .
+
+:LabelingEntity a samm:Entity ;
+   samm:preferredName "Labeling Entity"@en ;
+   samm:description "Entity for the labeling of the chemical material."@en ;
+   samm:properties ( :signalWord :hazardPictogram [ samm:property :hazardStatement; samm:payloadName "hazard" ] :precautionary :supplementalRequirements ) .
+
+:ProductTransportEntity a samm:Entity ;
+   samm:preferredName "Product Transport Entity"@en ;
+   samm:description "Entity for transport."@en ;
+   samm:properties ( [ samm:property :emergencyTemperatureMinValue; samm:optional true; samm:payloadName "emergencyTemperatureMin" ] [ samm:property :emergencyTemperatureMaxValue; samm:optional true; samm:payloadName "emergencyTemperatureMax" ] [ samm:property :transportOtherInformation; samm:optional true; samm:payloadName "other" ] [ samm:property :controlTemperature; samm:optional true; samm:payloadName "controlTemperature" ] [ samm:property :transportPictogram; samm:optional true; samm:payloadName "pictogram" ] ) .
+
+:UNTransportEntity a samm:Entity ;
+   samm:preferredName "UN Transport Entity"@en ;
+   samm:description "Entity with transport related attributes."@en ;
+   samm:see <https://unece.org/sites/default/files/2023-08/ST-SG-AC10-1r23e_Vol1_WEB.pdf> ;
+   samm:properties ( :transportRegulation :unNumber :unShippingName :unHazardClassCode :unHazardClassName :unPackagingGroup [ samm:property :unExceptedQuantityCode; samm:optional true ] [ samm:property :environmentallyHazardous; samm:optional true ] [ samm:property :unSpecialProvisionsCode; samm:optional true ] [ samm:property :unLimitedQuantityValue; samm:optional true ] [ samm:property :unLimitedQuantityUnit; samm:optional true ] ) .
+
+:WasteCodeEntity a samm:Entity ;
+   samm:preferredName "Waste Code Entity"@en ;
+   samm:description "Entity for the waste code of the material."@en ;
+   samm:properties ( [ samm:property :wasteCodeDescription; samm:payloadName "description" ] [ samm:property :wasteCodeRegulation; samm:payloadName "regulation" ] [ samm:property :wasteCode; samm:payloadName "code" ] ) .
+
+:EmergencyEntity a samm:Entity ;
+   samm:preferredName "Emergency Entity"@en ;
+   samm:description "Entity for information on how to proceed in case of an emergency."@en ;
+   samm:properties ( [ samm:property :emergencyAvailability; samm:payloadName "availability" ] [ samm:property :emergencyPhoneNumber; samm:payloadName "number" ] ) .
+
+:CountryCodeRegEx a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Country Code RegEx"@en ;
+   samm:description "Regex pattern including all valid ISO 3166 country codes, ensuring a precise match."@en ;
+   samm:value "\\b(?:A[BDEFGHIJKLMNOQSTUWXZ]|B[ABDEFGHJMNRSVWY]|C[ACDDEFGHIKLMNOPQRSTUVXYZ]|D[EJKMOZ]|E[CEGHRST]|F[IJKMOR]|G[ABDEFGHILMNPQRSTUWY]|H[KMNRTU]|I[DELNOQRST]|J[EMOP]|KE|L[ABCIKRSTUVY]|M[ACDEFGHKLMNOPQRSTUVWXYZ]|N[ACEFGILOPRTUVYZ]|OM|P[AEFGHKLMNRSTWY]|QA|R[EOSUW]|S[ABCDEGHIJKLMNRTUVYZ]|T[CDGHJMNPRW]|U[AGKMSTYZ]|V[ACEGINU]|W[FS]|X[KYZ]|Y[ETU]|Z[AMW])\\b" .
+
+:productParameterName a samm:Property ;
+   samm:preferredName "Product Parameter Name"@en ;
+   samm:description "The name of the parameter for the product tested and presented, for instance, in the Certificate of Analysis or Safety Data Sheet, found in Section 9. Parameters for chemical products usually encompass their chemical composition, physical properties, performance characteristics, and toxicological aspects. These parameters vary depending on the chemical's nature, its intended use, and relevant safety or regulatory considerations."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "VOC content" .
+
+:productParameterValue a samm:Property ;
+   samm:preferredName "Product Parameter Value"@en ;
+   samm:description "The value resulting from the tested parameter is typically presented in Section 9 of the Safety Data Sheet or Certificate of Analysis."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "95.5" .
+
+:productParameterUnit a samm:Property ;
+   samm:preferredName "Product Parameter Unit"@en ;
+   samm:description "The unit of measurement for the parameter value presented in Section 9 of the Safety Data Sheet or Certificate of Analysis varies depending on the specific parameter being reported."@en ;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/appendix/unitcatalog.html> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "unit:percent" .
+
+:productParameterResult a samm:Property ;
+   samm:preferredName "Product Parameter Result"@en ;
+   samm:description "Other types of results, if not numerical values, for parameters presented in Section 9 of the Safety Data Sheet or Certificate of Analysis may include qualitative descriptions like \"pass\" or \"fail,\" as well as ranges, thresholds, or classifications."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "positive" .
+
+:productParameterMethod a samm:Property ;
+   samm:preferredName "Product Parameter Method"@en ;
+   samm:description "Testing methods or standards used for testing parameters."@en ;
+   samm:characteristic :ParameterMethodList .
+
+:productParameterRemark a samm:Property ;
+   samm:preferredName "Product Parameter Remark"@en ;
+   samm:description "Commentary on the test/parameter presented in the Certificate of Analysis or Safety Data Sheet in Section 9. Selecting \"not applicable\" is also an option."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "not applicable" .
+
+:parameterClassificationStatement a samm:Property ;
+   samm:preferredName "Parameter Classification Statement"@en ;
+   samm:description "List of classification statements resulting from the test should include information on whether the result impacts the hazard classification of the product, particularly in the case of properties such as explosives in Safety Data Sheets (SDS)."@en ;
+   samm:characteristic :StringList ;
+   samm:exampleValue "Risk of explosion if heated under confinement" .
+
+:parameterTestGLPCompliance a samm:Property ;
+   samm:preferredName "Parameter Test GLP Compliance"@en ;
+   samm:description "Statement indicating whether the test for the parameter was conducted in accordance with the Good Laboratory Practice (GLP) standard, as outlined in ISO/IEC 17025:2017, which specifies general requirements for the competence of testing and calibration laboratories."@en ;
+   samm:see <https://www.iso.org/standard/66912.html> ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
+:parameterDocumentation a samm:Property ;
+   samm:preferredName "Parameter Documentation"@en ;
+   samm:description "Reference to the confirmation of the result typically includes a link to the document containing the confirmation, such as the Certificate of Analysis (CoA)."@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:parameterAfterUseDocumentation a samm:Property ;
+   samm:preferredName "Parameter After Use Documentation"@en ;
+   samm:description "Parameters of a product that may change or become relevant after its intended use are often documented as post-application characteristics. This data can be found in documents such as \"Technical Documentation.\""@en ;
+   samm:characteristic ext-passport:DocumentList .
+
+:classificationRule a samm:Property ;
+   samm:preferredName "Classification Rule"@en ;
+   samm:description "Name of the classification rule under which the hazard assessment has been prepared."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "CLP Regulation (EC) No 1272/2008" .
+
+:classificationHazardInfo a samm:Property ;
+   samm:preferredName "classification Hazard Info"@en ;
+   samm:description "Information if the product is hazardous or not, according to the connected rule."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:classificationHazardClassRoute a samm:Property ;
+   samm:preferredName "Classification Hazard Class Route"@en ;
+   samm:description "Certain classifications must be communicated with the relevant route of exposure according to CLP Regulation (EC) No 1272/2008, which include:\n- oral,\n- dermal,\n- inhalation gas,\n- inhalation vapour,\n- inhalation dust/mist/fume."@en ;
+   samm:characteristic :RouteEnumeration ;
+   samm:exampleValue "oral" .
+
+:classificationRemark a samm:Property ;
+   samm:preferredName "Classification Remark"@en ;
+   samm:description "Additional remarks for classification information supplement the classification details for a particular chemical material. These remarks assist stakeholders in making informed decisions regarding safety, handling, and regulatory compliance."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "No additional information available" .
+
+:signalWord a samm:Property ;
+   samm:preferredName "Signal Word"@en ;
+   samm:description "According to CLP Regulation (EC) No 1272/2008, a \"signal word\" refers to a term indicating the relative severity of hazards to alert the reader to a potential danger. There are two levels distinguished:\n(a) ‘Danger’ means a signal word indicating the more severe hazard categories;\n(b) ‘Warning’ means a signal word indicating the less severe hazard categories;"@en ;
+   samm:characteristic :SignalWordEnumeration ;
+   samm:exampleValue "Danger" .
+
+:hazardPictogram a samm:Property ;
+   samm:preferredName "Hazard Pictogram"@en ;
+   samm:description "A hazard pictogram is a graphical symbol used to convey specific information about the hazards associated with a chemical substance or mixture."@en ;
+   samm:characteristic :HazardPictogramList .
+
+:hazardStatement a samm:Property ;
+   samm:preferredName "Hazard Statement"@en ;
+   samm:description "Describes the nature of a hazard associated with a chemical substance or mixture."@en ;
+   samm:characteristic :HazardStatementList .
+
+:precautionary a samm:Property ;
+   samm:preferredName "Precautionary"@en ;
+   samm:description "A precautionary code for materials is a standardized code used to convey specific precautionary measures that should be taken when handling, storing, or using a chemical substance or mixture."@en ;
+   samm:characteristic :PrecautionaryList .
+
+:supplementalRequirements a samm:Property ;
+   samm:preferredName "Supplemental Requirements"@en ;
+   samm:description "Supplemental requirements often include additional codes, symbols, or statements beyond those required by regulations."@en ;
+   samm:characteristic :SupplementalRequirementsList .
+
+:emergencyTemperatureMinValue a samm:Property ;
+   samm:preferredName "Emergency Temperature Min Value"@en ;
+   samm:description "The critical minimum temperature for transporting the product refers to the lowest temperature at which the product can be safely transported without compromising its integrity or functionality. Emergency temperature refers to a temperature that poses a significant risk, potentially leading to hazardous conditions or product damage."@en ;
+   samm:characteristic :CelsiusDegreeMeasurement ;
+   samm:exampleValue "-20.0"^^xsd:float .
+
+:emergencyTemperatureMaxValue a samm:Property ;
+   samm:preferredName "Emergency Temperature Max Value"@en ;
+   samm:description "The critical maximum temperature for transporting the product refers to the highest temperature at which the product can be safely transported without degradation or posing a risk. Emergency temperature refers to a temperature that poses a significant risk, potentially leading to hazardous conditions or product damage."@en ;
+   samm:characteristic :CelsiusDegreeMeasurement ;
+   samm:exampleValue "35.0"^^xsd:float .
+
+:transportOtherInformation a samm:Property ;
+   samm:preferredName "Transport Other Information"@en ;
+   samm:description "Additional information related to the transport of the product. Relevant details that could aid in making decisions regarding the shipping of the product."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Not permitted for transport" .
+
+:controlTemperature a samm:Property ;
+   samm:preferredName "Control Temperature"@en ;
+   samm:description "The controlled temperature for transportation refers to the range of values within which the temperature conditions of goods or products are monitored and regulated during transportation in degree celcius. This information is crucial for mitigating risks associated with temperature-sensitive products, ensuring their integrity and quality throughout the shipping process."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "20 - 25 C" .
+
+:transportPictogram a samm:Property ;
+   samm:preferredName "Transport Pictogram"@en ;
+   samm:description "Links to transport related pictograms."@en ;
+   samm:characteristic :StringList ;
+   samm:exampleValue "https://example.link" .
+
+:transportRegulation a samm:Property ;
+   samm:preferredName "Transport Regulation"@en ;
+   samm:description "Indicate regulations for transportation for example: Land transport (ADR/RID), Inland waterway transport (ADN), Sea transport (IMDG), Air transport (ICAO-TI/IATA-DGR) and so on."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ADR - Agreement concerning the International Carriage of Dangerous Goods by Road" .
+
+:unNumber a samm:Property ;
+   samm:preferredName "UN Number"@en ;
+   samm:description "The UN number or ID number is a four-digit identification code for substances, mixtures, or articles."@en ;
+   samm:see <https://unece.org/sites/default/files/2023-08/ST-SG-AC10-1r23e_Vol1_WEB.pdf> ;
+   samm:characteristic :UNNumberTrait ;
+   samm:exampleValue "3113" .
+
+:unShippingName a samm:Property ;
+   samm:preferredName "UN Shipping Name"@en ;
+   samm:description "The proper shipping name is provided in column 2, \"Name and description,\" of Table A of Chapter 3.2 Dangerous Goods List of the UN Regulations."@en ;
+   samm:see <https://unece.org/sites/default/files/2023-08/ST-SG-AC10-1r23e_Vol1_WEB.pdf> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ORGANIC PEROXIDE TYPE C, LIQUID, TEMPERATURE CONTROLLED (Tert-BUTYL PEROXY-2-ETHYLHEXANOATE)" .
+
+:unHazardClassCode a samm:Property ;
+   samm:preferredName "UN Hazard Class Code"@en ;
+   samm:description "The transport class of the dangerous group according to UN Regulations."@en ;
+   samm:characteristic :FloatQuantityValue ;
+   samm:exampleValue "5.2"^^xsd:float .
+
+:unHazardClassName a samm:Property ;
+   samm:preferredName "UN Hazard Class Name"@en ;
+   samm:description "The classified dangerous group in transportation refers to the classification of hazardous materials or dangerous goods according to the United Nations (UN) Globally Harmonized System of Classification and Labelling of Chemicals (GHS) and the UN Model Regulations for the Transport of Dangerous Goods."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Oxidising substances" .
+
+:unPackagingGroup a samm:Property ;
+   samm:preferredName "UN Packaging Group"@en ;
+   samm:description "Group to which certain substances may be assigned for packaging purposes according to their degree of danger:\nPackaging group I: Substances presenting high danger,\nPackaging group II: Substances presenting medium danger,\nPackaging group III: Substances presenting low danger.\nNot all dangerous goods assigned to hazard classes or their divisions will be allocated to Packaging Groups."@en ;
+   samm:see <https://unece.org/sites/default/files/2023-08/ST-SG-AC10-1r23e_Vol1_WEB.pdf> ;
+   samm:characteristic :PackagingGroupEnumeration ;
+   samm:exampleValue "I" .
+
+:unExceptedQuantityCode a samm:Property ;
+   samm:preferredName "UN Excepted Quantity Code"@en ;
+   samm:description "Chapter 3.5 of UN Transportation Regulation pertains to dangerous goods packed in excepted quantities, with possible codes including E0, E1, E2, E3, E4, and E5."@en ;
+   samm:see <https://unece.org/sites/default/files/2023-08/ST-SG-AC10-1r23e_Vol1_WEB.pdf> ;
+   samm:characteristic :QuantityCodeEnumeration ;
+   samm:exampleValue "E0" .
+
+:environmentallyHazardous a samm:Property ;
+   samm:preferredName "Environmentally Hazardous"@en ;
+   samm:description "The indication of whether a substance or mixture is environmentally hazardous according to the criteria of the UN Model Regulations (as reflected in ADR, RID, and ADN) and whether it is a marine pollutant according to the IMDG Code and the Emergency Response Procedures for Ships Carrying Dangerous Goods."@en ;
+   samm:characteristic :StringList ;
+   samm:exampleValue "Marine pollutant" .
+
+:unSpecialProvisionsCode a samm:Property ;
+   samm:preferredName "UN Special Provisions Code"@en ;
+   samm:description "The UN Special Provisions Code refers to a set of additional requirements or conditions specified by the United Nations for the transportation of certain dangerous goods."@en ;
+   samm:characteristic :SpecialProvisionsCodeList .
+
+:unLimitedQuantityValue a samm:Property ;
+   samm:preferredName "UN Limited Quantity Value"@en ;
+   samm:description "Maximum quantity per inner packaging or article for carrying dangerous goods refers to the maximum amount of a hazardous material permitted for transportation."@en ;
+   samm:characteristic :FloatQuantityValue ;
+   samm:exampleValue "5.0"^^xsd:float .
+
+:unLimitedQuantityUnit a samm:Property ;
+   samm:preferredName "UN Limited Quantity Unit"@en ;
+   samm:description "Unit of the limited quantity value."@en ;
+   samm:characteristic ext-quantity:ItemUnitEnumeration ;
+   samm:exampleValue "unit:kilogram"^^samm:curie .
+
+:wasteCodeDescription a samm:Property ;
+   samm:preferredName "Waste Code Description"@en ;
+   samm:description "Description of the related waste code."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "waste paint and varnish containing organic solvents or other hazardous substances" .
+
+:wasteCodeRegulation a samm:Property ;
+   samm:preferredName "Waste Code Regulation"@en ;
+   samm:description "The name of the regulation that applies to waste codes can vary depending on the region or jurisdiction. Examples include Regulation (EC) No 1013/2006 in the European Union or Annex VIII of the Basel Convention."@en ;
+   samm:see <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02000D0532-20150601> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "European List of Waste acc. Regulation (EC) No 1013/2006" .
+
+:wasteCode a samm:Property ;
+   samm:preferredName "Waste Code"@en ;
+   samm:description "A waste code is used to identify the type of waste."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "08 01 11*" .
+
+:emergencyAvailability a samm:Property ;
+   samm:preferredName "Emergency Availability"@en ;
+   samm:description "The period of time when emergency phone numbers are available."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Only available during the following office hours: xx - xx" .
+
+:emergencyPhoneNumber a samm:Property ;
+   samm:preferredName "Emergency Phone Number"@en ;
+   samm:description "The phone number in case of an emergency."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "+49111222333" .
+
+:ParameterMethodList a samm-c:List ;
+   samm:preferredName "Parameter Method List"@en ;
+   samm:description "List of testing methods or standards used for testing parameters."@en ;
+   samm:dataType :ParameterMethodEntity .
+
+:RouteEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Route Enumeration"@en ;
+   samm:description "Enumeration with oral, dermal, inhalation gas, inhalation vapour, inhalation dust/mist/fume and not applicable"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "oral" "dermal" "inhalation gas" "inhalation vapour" "inhalation dust/mist/fume" "not applicable" ) .
+
+:SignalWordEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Signal Word Enumeration"@en ;
+   samm:description "Enumeration with Danger and Warning."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Danger" "Warning" ) .
+
+:HazardPictogramList a samm-c:List ;
+   samm:preferredName "Hazard Pictogram List"@en ;
+   samm:description "List of hazard pictograms."@en ;
+   samm:dataType :HazardPictogramEntity .
+
+:HazardStatementList a samm-c:List ;
+   samm:preferredName "Hazard Statement List"@en ;
+   samm:description "List for the hazard statement."@en ;
+   samm:dataType :HazardStatementEntity .
+
+:PrecautionaryList a samm:Characteristic ;
+   samm:preferredName "Precautionary List"@en ;
+   samm:description "List for precautionary codes."@en ;
+   samm:dataType :PrecautionaryEntity .
+
+:SupplementalRequirementsList a samm-c:List ;
+   samm:preferredName "Supplemental Requirements List"@en ;
+   samm:description "List for supplemental requirements."@en ;
+   samm:dataType :SupplementalRequirementsEntity .
+
+:CelsiusDegreeMeasurement a samm-c:Measurement ;
+   samm:preferredName "Celsius Degree Measurement"@en ;
+   samm:description "Measurement as float in celsius degree."@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit unit:degreeCelsius .
+
+:UNNumberTrait a samm-c:Trait ;
+   samm:preferredName "UN Number Trait"@en ;
+   samm:description "Trait for the UN number."@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :UNNumberConstraint .
+
+:FloatQuantityValue a samm-c:Quantifiable ;
+   samm:preferredName "Float Quantity Value"@en ;
+   samm:description "Value as float."@en ;
+   samm:dataType xsd:float .
+
+:PackagingGroupEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Packaging Group Enumeration"@en ;
+   samm:description "Enumeration to match \"I\", \"II\", \"III\", or \"not applicable\"."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "I" "II" "III" "not applicable" ) .
+
+:QuantityCodeEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Quantity Code Enumeration"@en ;
+   samm:description "Enumeration for the codes E0, E1, E2, E3, E4, and E5."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "E0" "E1" "E2" "E3" "E4" "E5" ) .
+
+:SpecialProvisionsCodeList a samm-c:List ;
+   samm:preferredName "Special Provisions Code List"@en ;
+   samm:description "List of the special provisions codes."@en ;
+   samm:dataType :SpecialProvisionsCodeEntity .
+
+:ParameterMethodEntity a samm:Entity ;
+   samm:preferredName "Parameter Method Entity"@en ;
+   samm:description "Testing methods or standards used for testing parameters with method names."@en ;
+   samm:properties ( :parameterMethodName :parameterMethodConditions :parameterMethodDescription ) .
+
+:HazardPictogramEntity a samm:Entity ;
+   samm:preferredName "Hazard Pictogram Entity"@en ;
+   samm:description "Entity for the hazard pictogram."@en ;
+   samm:properties ( [ samm:property :hazardPictogramCode; samm:payloadName "code" ] [ samm:property :hazardPictogramImage; samm:payloadName "image" ] [ samm:property :hazardPictogramName; samm:payloadName "name" ] ) .
+
+:HazardStatementEntity a samm:Entity ;
+   samm:preferredName "Hazard Statement Entity"@en ;
+   samm:description "Entity for the hazard statement."@en ;
+   samm:properties ( [ samm:property :hazardStatementCode; samm:payloadName "code" ] [ samm:property :hazardStatementText; samm:payloadName "text" ] ) .
+
+:PrecautionaryEntity a samm:Entity ;
+   samm:preferredName "Precautionary Entity"@en ;
+   samm:description "Entity for precautionary codes."@en ;
+   samm:properties ( [ samm:property :precautionaryCode; samm:payloadName "code" ] [ samm:property :precautionaryText; samm:payloadName "text" ] ) .
+
+:SupplementalRequirementsEntity a samm:Entity ;
+   samm:preferredName "Supplemental Requirements Entity"@en ;
+   samm:description "Entity for supplemental requirements."@en ;
+   samm:properties ( [ samm:property :supplementalRequirementsCode; samm:optional true; samm:payloadName "code" ] [ samm:property :supplementalRequirementsText; samm:optional true; samm:payloadName "text" ] [ samm:property :supplementalRequirementsPictogram; samm:optional true; samm:payloadName "pictogram" ] [ samm:property :productLabelingNotes; samm:optional true; samm:payloadName "notes" ] ) .
+
+:UNNumberConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "UN Number Constraint"@en ;
+   samm:description "Constraint to four digits numbers."@en ;
+   samm:value "^\\d{4}$" .
+
+:SpecialProvisionsCodeEntity a samm:Entity ;
+   samm:preferredName "Special Provisions Code Entity"@en ;
+   samm:description "Entity for the special provisions code."@en ;
+   samm:properties ( [ samm:property :specialProvisionsCode; samm:payloadName "code" ] [ samm:property :specialProvisionsInfo; samm:payloadName "text" ] ) .
+
+:parameterMethodName a samm:Property ;
+   samm:preferredName "Parameter Method Name"@en ;
+   samm:description "The name of the testing method or standard used for testing parameters can vary depending on the context and industry. It might be referred to by a specific code, standard name, or regulation/directive."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Directive 2004/42/CE" .
+
+:parameterMethodConditions a samm:Property ;
+   samm:preferredName "Parameter Method Conditions"@en ;
+   samm:description "The relevant conditions for conducting a measurement or analysis of a chemical parameter ensure the accuracy, reliability, and consistency of the results obtained from the method used. These conditions are typically presented in the Certificate of Analysis or Safety Data Sheet, specifically in Section 9."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "50 degree celsius" .
+
+:parameterMethodDescription a samm:Property ;
+   samm:preferredName "Parameter Method Description"@en ;
+   samm:description "Short description of the method used to determine parameter presented in Certificate of Analysis or Safety Data Sheet in Section 9."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Evaporation in oven." .
+
+:hazardPictogramCode a samm:Property ;
+   samm:preferredName "Hazard Pictogram Code"@en ;
+   samm:description "The code of a pictogram refers to a set of symbols used to visually represent and communicate information about the hazards associated with a chemical material."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "GHS05" .
+
+:hazardPictogramImage a samm:Property ;
+   samm:preferredName "Hazard Pictogram Image"@en ;
+   samm:description "Link to the picture of the pictogram. Definition from CLP Regulation (EC) No 1272/2008 : ‘hazard pictogram’ means a graphical composition that includes a symbol plus other graphic elements, such as a border, background pattern or colour that is intended to convey specific information on the hazard concerned;"@en ;
+   samm:characteristic :LinkCharacteristic ;
+   samm:exampleValue "https://example.link" .
+
+:hazardPictogramName a samm:Property ;
+   samm:preferredName "Hazard Pictogram Name"@en ;
+   samm:description "The meaning or description of a pictogram is the explanation that accompanies it, providing information and context about its purpose and the hazards it represents."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Corrosive" .
+
+:hazardStatementCode a samm:Property ;
+   samm:preferredName "Hazard Statement Code"@en ;
+   samm:description "According to CLP Regulation (EC) No 1272/2008, each hazard statement is designated a code, starting with the letter H followed by three digits. These codes can be associated with multiple hazard statements or be assigned to a single statement."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "H220" .
+
+:hazardStatementText a samm:Property ;
+   samm:preferredName "Hazard Statement Text"@en ;
+   samm:description "Definition from CLP Regulation (EC) No 1272/2008 ‘hazard statement’ means a phrase assigned to a hazard class and category that describes the nature of the hazards of a hazardous substance or mixture, including, where appropriate, the degree of hazard;"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Extremely flammable gas" .
+
+:precautionaryCode a samm:Property ;
+   samm:preferredName "Precautionary Code"@en ;
+   samm:description "Each precautionary statement is designated a code, starting with the letter P and followed by three digits."@en ;
+   samm:characteristic :PrecautionaryCodeTrait ;
+   samm:exampleValue "P103" .
+
+:precautionaryText a samm:Property ;
+   samm:preferredName "Precautionary Text"@en ;
+   samm:description "Definition from CLP Regulation (EC) No 1272/2008: ‘precautionary statement’ means a phrase that describes recommended measure(s) to minimise or prevent adverse effects resulting from exposure to a hazardous substance or mixture due to its use or disposal."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Read label before use." .
+
+:supplementalRequirementsCode a samm:Property ;
+   samm:preferredName "Supplemental Requirements Code"@en ;
+   samm:description "Supplemental codes used for labeling statements provide additional information or context about the hazards, handling, or regulatory requirements associated with chemical materials. This data can be helpful for stakeholders in managing chemical materials by offering further guidance on safe handling practices, storage conditions, emergency response procedures, or regulatory compliance measures."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "XYZ" .
+
+:supplementalRequirementsText a samm:Property ;
+   samm:preferredName "Supplemental Requirements Text"@en ;
+   samm:description "Any supplemental text used for labeling provides data that could be helpful for stakeholders in managing chemical materials."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Substance is phototoxic." .
+
+:supplementalRequirementsPictogram a samm:Property ;
+   samm:preferredName "Supplemental Requirements Pictogram"@en ;
+   samm:description "Supplemental pictures or pictograms used for additional labeling provide data that could be helpful for stakeholders in managing chemical materials."@en ;
+   samm:characteristic :LinkCharacteristic ;
+   samm:exampleValue "https://example.link" .
+
+:productLabelingNotes a samm:Property ;
+   samm:preferredName "Product Labeling Notes"@en ;
+   samm:description "Labeling notes consist of statements that provide additional information regarding hazardous possible reactions or other important considerations related to the chemical material. These notes help stakeholders understand potential risks and take appropriate precautions when handling, storing, or using the material."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "The substance can react dangerously with: alcohols" .
+
+:specialProvisionsCode a samm:Property ;
+   samm:preferredName "Special Provisions Code"@en ;
+   samm:description "Code of special provisions or exceptions that must be met."@en ;
+   samm:see <https://unece.org/sites/default/files/2023-08/ST-SG-AC10-1r23e_Vol1_WEB.pdf> ;
+   samm:characteristic :IntegerCharacteristic ;
+   samm:exampleValue 274 .
+
+:specialProvisionsInfo a samm:Property ;
+   samm:preferredName "Special Provisions Info"@en ;
+   samm:description "Text aligned with special provisions under UN transport regulation Chapter 3.3."@en ;
+   samm:see <https://unece.org/sites/default/files/2023-08/ST-SG-AC10-1r23e_Vol1_WEB.pdf> ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "The provision of 3.1.2.8 apply" .
+
+:LinkCharacteristic a samm:Characteristic ;
+   samm:preferredName "Link Characteristic"@en ;
+   samm:description "Characteristic for a simple web link."@en ;
+   samm:dataType xsd:string .
+
+:PrecautionaryCodeTrait a samm-c:Trait ;
+   samm:preferredName "Precautionary Code Trait"@en ;
+   samm:description "Trait for the precautionary codes."@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :PrecautionaryCodeConstraint .
+
+:IntegerCharacteristic a samm:Characteristic ;
+   samm:preferredName "Integer Characteristic"@en ;
+   samm:description "Characteristic for integer values."@en ;
+   samm:dataType xsd:integer .
+
+:PrecautionaryCodeConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Precautionary Code Constraint"@en ;
+   samm:description "Constraint starting with the letter P followed by three digits."@en ;
+   samm:value "^P\\d{3}$" .
+
