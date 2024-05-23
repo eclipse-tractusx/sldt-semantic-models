@@ -1,0 +1,214 @@
+##########################################################################################
+# Copyright (c) 2023,2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e. V.
+# Copyright (c) 2023,2024 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2023,2024 Siemens AG
+# Copyright (c) 2023,2024 Contributors to the Eclipse Foundation
+
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+##########################################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.material_flow_scenario_request:2.0.0#> .
+@prefix ext-result: <urn:samm:io.catenax.material_flow_simulation_result:3.0.0#> .
+
+:MaterialFlowScenarioRequestAspect a samm:Aspect ;
+   samm:preferredName "Material Flow Scenario Request Aspect"@en ;
+   samm:description "Aspect model describing the Material Flow Scenario Request"@en ;
+   samm:properties ( :materialFlowScenarioRequest ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:materialFlowScenarioRequest a samm:Property ;
+   samm:preferredName "Material Flow Scenario Request"@en ;
+   samm:description "Contains standardized attributes for the content of the Material Flow Scenario Request"@en ;
+   samm:characteristic :MaterialFlowScenarioRequestCharacteristic .
+
+:MaterialFlowScenarioRequestCharacteristic a samm:Characteristic ;
+   samm:preferredName "Material Flow Scenario Request Characteristic"@en ;
+   samm:description "Characteristic describing the aspect Material Flow Scenario Request"@en ;
+   samm:dataType :MaterialFlowScenarioRequest .
+
+:MaterialFlowScenarioRequest a samm:Entity ;
+   samm:preferredName "Material Flow Scenario Request"@en ;
+   samm:description "The Material Flow Scenario Request contains standardized attributes for exchanging scenario requests and the resulting simulation results between two OSIM Manager Instances"@en ;
+   samm:properties ( :scenarioHeader [ samm:property :scenarioParameter; samm:optional true ] :scenarioSimResults ) .
+
+:scenarioHeader a samm:Property ;
+   samm:preferredName "Scenario Header"@en ;
+   samm:description "Required parameters for the scenario header"@en ;
+   samm:characteristic :ScenarioHeaderCharacteristic .
+
+:scenarioParameter a samm:Property ;
+   samm:preferredName "Scenario Parameter"@en ;
+   samm:description "Required parameters for the material flow scenario request"@en ;
+   samm:characteristic :ScenarioParameterCharacteristic .
+
+:scenarioSimResults a samm:Property ;
+   samm:preferredName "Scenario Sim Results"@en ;
+   samm:description "Simulation results of the scenario"@en ;
+   samm:characteristic :ScenarioSimResultsCharacteristic .
+
+:ScenarioHeaderCharacteristic a samm:Characteristic ;
+   samm:preferredName "Scenario Header Characteristic"@en ;
+   samm:description "Characteristic describing the parameter for a scenario header"@en ;
+   samm:dataType :ScenarioHeader .
+
+:ScenarioParameterCharacteristic a samm-c:Collection ;
+   samm:preferredName "Scenario Parameter Characteristic"@en ;
+   samm:description "Characteristic describing the scenario parameter"@en ;
+   samm:dataType :ScenarioParameter .
+
+:ScenarioSimResultsCharacteristic a samm:Characteristic ;
+   samm:preferredName "Scenario Simulation Results Characteristic"@en ;
+   samm:description "Characteristic for simulation results"@en ;
+   samm:dataType :ScenarioSimResults .
+
+:ScenarioHeader a samm:Entity ;
+   samm:preferredName "Scenario Header"@en ;
+   samm:description "Headers required for every exchange"@en ;
+   samm:properties ( :scenarioId :scenarioTitle :scenarioCreationTimestamp :scenarioExpirationTimestamp :scenarioOwner :scenarioOwnerRole [ samm:property :scenarioDescription; samm:optional true ] ) .
+
+:ScenarioParameter a samm:Entity ;
+   samm:preferredName "Scenario Parameter"@en ;
+   samm:description "Parameters which are used to describe a material flow scenario request"@en ;
+   samm:properties ( :parameterId :parameterDeliveryDateInitial :parameterDeliveryDateUpdated :parameterQuantityInitial :parameterQuantityUpdated :parameterOrderId :parameterComment ext-result:materialNumber ext-result:materialName ext-result:unitOfMeasurement ) .
+
+:ScenarioSimResults a samm:Entity ;
+   samm:preferredName "Scenario Simulation Results"@en ;
+   samm:description "Attached to a scenario simulation results of the feedback requestor"@en ;
+   samm:properties ( :resultOwnId [ samm:property :resultOwnSimRunInitial; samm:optional true ] [ samm:property :resultOwnSimRunUpdated; samm:optional true ] ) .
+
+:scenarioId a samm:Property ;
+   samm:preferredName "Scenario ID"@en ;
+   samm:description "ID of scenario header"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "8d464b8b-6977-4952-8a22-0489067ca081" .
+
+:scenarioTitle a samm:Property ;
+   samm:preferredName "Scenario Title"@en ;
+   samm:description "Title of scenario"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Delivery Modification" .
+
+:scenarioCreationTimestamp a samm:Property ;
+   samm:preferredName "Scenario Creation Timestamp"@en ;
+   samm:description "Date and Time of scenario creation"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-10-04T09:10:00.000Z"^^xsd:dateTime .
+
+:scenarioExpirationTimestamp a samm:Property ;
+   samm:preferredName "Scenario Expiration Timestamp"@en ;
+   samm:description "Date and Time of validity expiration"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-10-07T09:10:00.000Z"^^xsd:dateTime .
+
+:scenarioOwner a samm:Property ;
+   samm:preferredName "Scenario Owner"@en ;
+   samm:description "Owner of the simulation scenario"@en ;
+   samm:characteristic :ScenarioOwnerCharacteristic .
+
+:scenarioOwnerRole a samm:Property ;
+   samm:preferredName "Scenario Owner Role"@en ;
+   samm:description "Role of the scenario owner"@en ;
+   samm:characteristic :ScenarioOwnerRoleCharacteristic ;
+   samm:exampleValue "Customer" .
+
+:scenarioDescription a samm:Property ;
+   samm:preferredName "Scenario Description"@en ;
+   samm:description "Description of the scenario"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Changes in Delivery Date" .
+
+:parameterId a samm:Property ;
+   samm:preferredName "Parameter ID"@en ;
+   samm:description "Identifier of scenario parameter"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "847c71e5-614a-468b-a3a0-674bf2af3004" .
+
+:parameterDeliveryDateInitial a samm:Property ;
+   samm:preferredName "Parameter Delivery Date Initial"@en ;
+   samm:description "Delivery date initial (without scenario changes), optional, NULL when initially not set"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-10-09T10:00:00.000Z"^^xsd:dateTime .
+
+:parameterDeliveryDateUpdated a samm:Property ;
+   samm:preferredName "Parameter Delivery Date Updated"@en ;
+   samm:description "Delivery date updated (with scenario changes)"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-10-10T09:00:00.000Z"^^xsd:dateTime .
+
+:parameterQuantityInitial a samm:Property ;
+   samm:preferredName "Parameter Quantity Initial"@en ;
+   samm:description "Amount initial (without scenario changes), optional, NULL, when initially not set"@en ;
+   samm:characteristic :QuantityCharacteristic ;
+   samm:exampleValue "1"^^xsd:float .
+
+:parameterQuantityUpdated a samm:Property ;
+   samm:preferredName "Parameter Quantity Updated"@en ;
+   samm:description "Amount updated (with scenario changes)"@en ;
+   samm:characteristic :QuantityCharacteristic ;
+   samm:exampleValue "1"^^xsd:float .
+
+:parameterOrderId a samm:Property ;
+   samm:preferredName "Parameter Order Id"@en ;
+   samm:description "ID of the order"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "OID-011123546" .
+
+:parameterComment a samm:Property ;
+   samm:preferredName "Parameter Comment"@en ;
+   samm:description "Optional description of parameters"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "updated Delivery Date" .
+
+:resultOwnId a samm:Property ;
+   samm:preferredName "Result Own Id"@en ;
+   samm:description "ID of scenario result own"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "916b5688-8bd8-4d7e-83b9-e0d40939274e" .
+
+:resultOwnSimRunInitial a samm:Property ;
+   samm:preferredName "Result Own Sim Run Initial"@en ;
+   samm:description "Foreign key to simulation result based on initial parameters"@en ;
+   samm:characteristic :SimResult .
+
+:resultOwnSimRunUpdated a samm:Property ;
+   samm:preferredName "Result Own Sim Run Updated"@en ;
+   samm:description "Foreign key to simulation result based on updated parameter (scenario)"@en ;
+   samm:characteristic :SimResult .
+
+:ScenarioOwnerCharacteristic a samm:Characteristic ;
+   samm:preferredName "Scenario Owner Characteristic"@en ;
+   samm:description "Characteristic describing the Scenario Owner"@en ;
+   samm:dataType ext-result:BusinessPartnerSite .
+
+:ScenarioOwnerRoleCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Scenario Owner Role Characteristic"@en ;
+   samm:description "Characteristic describing possible values for the role of the scenario owner"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Customer" "Supplier" "LogisticianReceiving" "LogisticianSending" ) .
+
+:QuantityCharacteristic a samm:Characteristic ;
+   samm:preferredName "Quantity Characteristic"@en ;
+   samm:description "Describes a property which is a Float"@en ;
+   samm:dataType xsd:float .
+
+:SimResult a samm:Characteristic ;
+   samm:preferredName "Sim Result"@en ;
+   samm:description "Characteristic describing the property for a Material Flow Simulation Result"@en ;
+   samm:dataType ext-result:MaterialFlowSimulationResult .
