@@ -1,0 +1,337 @@
+##########################################################################################
+# Copyright (c) 2023,2024 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e. V.
+# Copyright (c) 2023,2024 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2023,2024 Siemens AG
+# Copyright (c) 2023,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+##########################################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.material_flow_simulation_result:3.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+
+:MaterialFlowSimulationResultAspect a samm:Aspect ;
+   samm:preferredName "Material Flow Simulation Result Aspect"@en ;
+   samm:description "Aspect Model for the result of a Material Flow Simulation"@en ;
+   samm:properties ( :materialFlowSimulationResult ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:materialFlowSimulationResult a samm:Property ;
+   samm:preferredName "Material Flow Simulation Result"@en ;
+   samm:description "Contains standardized attributes for the result of a material flow simulation"@en ;
+   samm:characteristic :MaterialFlowSimulationResultCharacteristic .
+
+:MaterialFlowSimulationResultCharacteristic a samm:Characteristic ;
+   samm:preferredName "Material Flow Simulation Result Characteristic"@en ;
+   samm:description "Characteristic describing the aspect material flow simulation result"@en ;
+   samm:dataType :MaterialFlowSimulationResult .
+
+:MaterialFlowSimulationResult a samm:Entity ;
+   samm:preferredName "Material Flow Simulation Result"@en ;
+   samm:description "Result of a Material Flow Simulation"@en ;
+   samm:properties ( :description :runId :comment :expirationTimestamp :owner :dataQuality :shipments :timestamp ) .
+
+:description a samm:Property ;
+   samm:preferredName "Description"@en ;
+   samm:description "Verbal description"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Please simulate asap" .
+
+:runId a samm:Property ;
+   samm:preferredName "RunId"@en ;
+   samm:description "Id of the simulation run"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "0fece48b-c8d1-4180-1a9caca6d67e" .
+
+:comment a samm:Property ;
+   samm:preferredName "Comment"@en ;
+   samm:description "Additional comments"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "successful simulation " .
+
+:expirationTimestamp a samm:Property ;
+   samm:preferredName "ExpirationTimestamp"@en ;
+   samm:description "Date and time when the simulation is expired"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-03-24T09:15:24.000Z"^^xsd:dateTime .
+
+:owner a samm:Property ;
+   samm:preferredName "Owner"@en ;
+   samm:description "Site identifier of the simulation originator"@en ;
+   samm:characteristic :OwnerCharacteristic .
+
+:dataQuality a samm:Property ;
+   samm:preferredName "Data Quality"@en ;
+   samm:description "Information on quality of simulation results"@en ;
+   samm:characteristic :DataQualityOptions ;
+   samm:exampleValue "0"^^xsd:nonNegativeInteger .
+
+:shipments a samm:Property ;
+   samm:preferredName "Shipments"@en ;
+   samm:description "List of shipments"@en ;
+   samm:characteristic :ShipmentList .
+
+:timestamp a samm:Property ;
+   samm:preferredName "Timestamp"@en ;
+   samm:description "Timestamp of simulation run"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-03-09T14:13:42.806Z"^^xsd:dateTime .
+
+:Text a samm:Characteristic ;
+   samm:preferredName "Text"@en ;
+   samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+   samm:dataType xsd:string .
+
+:OwnerCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Owner Characteristic"@en ;
+   samm:description "Site identifier of the simulation originator"@en ;
+   samm:dataType :BusinessPartnerSite .
+
+:DataQualityOptions a samm-c:Enumeration ;
+   samm:preferredName "Data Quality Options"@en ;
+   samm:description "Possible values determining data quality"@en ;
+   samm:dataType xsd:nonNegativeInteger ;
+   samm-c:values ( "0"^^xsd:nonNegativeInteger "1"^^xsd:nonNegativeInteger "2"^^xsd:nonNegativeInteger "3"^^xsd:nonNegativeInteger "4"^^xsd:nonNegativeInteger "5"^^xsd:nonNegativeInteger ) .
+
+:ShipmentList a samm-c:List ;
+   samm:preferredName "Shipment List"@en ;
+   samm:description "List of shipments contained in the simulation"@en ;
+   samm:dataType :Shipment .
+
+:BusinessPartnerSite a samm:Entity ;
+   samm:preferredName "Business Partner Site"@en ;
+   samm:description "Identifier for the physical location of a business partner plant or site, (e.g. BPNS in Catena-X context)"@en ;
+   samm:properties ( :bpnsProperty ) .
+
+:Shipment a samm:Entity ;
+   samm:preferredName "Shipment"@en ;
+   samm:description "Delivery item from a sender to a recipient containing goods"@en ;
+   samm:properties ( :shipmentId :destination :destinationTimestamp :recipient :recipientTimestampPlanned :splittingAllowed :logistics :preceding :handlingUnits ) .
+
+:bpnsProperty a samm:Property ;
+   samm:preferredName "bpnsProperty"@en ;
+   samm:description "Property based on BPNS"@en ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS0123456789ZZ" .
+
+:shipmentId a samm:Property ;
+   samm:preferredName "Shipment Id"@en ;
+   samm:description "ID to identify the shipment"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "DE51515151" .
+
+:destination a samm:Property ;
+   samm:preferredName "Destination"@en ;
+   samm:description "Address where the shipment is immediately delivered to (by logistician) or provided for pickup (by producer)"@en ;
+   samm:characteristic :DestinationCharacteristic .
+
+:destinationTimestamp a samm:Property ;
+   samm:preferredName "Destination Timestamp"@en ;
+   samm:description "Time when delivery arrives or is ready at goods issue"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-03-19T09:00:00.000Z"^^xsd:dateTime .
+
+:recipient a samm:Property ;
+   samm:preferredName "Recipient"@en ;
+   samm:description "Address of final recipient of shipment"@en ;
+   samm:characteristic :RecipientCharacteristic .
+
+:recipientTimestampPlanned a samm:Property ;
+   samm:preferredName "Recipient Timestamp Planned"@en ;
+   samm:description "Planned delivery time"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-04-19T09:00:00.000Z"^^xsd:dateTime .
+
+:splittingAllowed a samm:Property ;
+   samm:preferredName "Splitting Allowed"@en ;
+   samm:description "Permission to split the shipment into individual deliveries"@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:logistics a samm:Property ;
+   samm:preferredName "Logistics"@en ;
+   samm:description "Address of logistician executing the shipment"@en ;
+   samm:characteristic :LogisticsCharacteristic .
+
+:preceding a samm:Property ;
+   samm:preferredName "Preceding"@en ;
+   samm:description "Reference ID of a preceding shipment"@en ;
+   samm:characteristic :PrecedingCharacteristic .
+
+:handlingUnits a samm:Property ;
+   samm:preferredName "Handling Units"@en ;
+   samm:description "List of Handling Units"@en ;
+   samm:characteristic :HandlingUnitList .
+
+:DestinationCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Destination Characteristic"@en ;
+   samm:description "Address where the shipment is immediately delivered to (by logistician) or provided for pickup (by producer)"@en ;
+   samm:dataType :BusinessPartnerSite .
+
+:RecipientCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Recipient Characteristic"@en ;
+   samm:description "Location identifier of the final recipient of the shipment"@en ;
+   samm:dataType :BusinessPartnerSite .
+
+:LogisticsCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Logistics Characteristic"@en ;
+   samm:description "Site identifier of the logistician executing the shipment"@en ;
+   samm:dataType :BusinessPartnerSite .
+
+:PrecedingCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Preceding Characteristic"@en ;
+   samm:description "Reference of preceding shipments"@en ;
+   samm:dataType :BusinessPartnerSite .
+
+:HandlingUnitList a samm-c:List ;
+   samm:preferredName "Handling Unit List"@en ;
+   samm:description "List of handling units included in the shipment"@en ;
+   samm:dataType :HandlingUnit .
+
+:HandlingUnit a samm:Entity ;
+   samm:preferredName "Handling Unit"@en ;
+   samm:description "Handling Unit is the smallest shipment unit and cannot be divided into several shipments"@en ;
+   samm:properties ( :handlingUnitId :name :volume :weight :amount :batches ) .
+
+:handlingUnitId a samm:Property ;
+   samm:preferredName "Handling Unit Id"@en ;
+   samm:description "ID of the handling unit"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "HUT_1" .
+
+:name a samm:Property ;
+   samm:preferredName "Name"@en ;
+   samm:description "Name of the type of handling unit"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Palette" .
+
+:volume a samm:Property ;
+   samm:preferredName "Volume"@en ;
+   samm:description "Volume of the handling unit"@en ;
+   samm:characteristic :VolumeCharacteristic ;
+   samm:exampleValue "1.00"^^xsd:float .
+
+:weight a samm:Property ;
+   samm:preferredName "Weight"@en ;
+   samm:description "Weight of the handling unit"@en ;
+   samm:characteristic :WeightCharacteristic ;
+   samm:exampleValue "189"^^xsd:float .
+
+:amount a samm:Property ;
+   samm:preferredName "Amount"@en ;
+   samm:description "Number of handling units with identical content"@en ;
+   samm:characteristic :AmountCharacteristic ;
+   samm:exampleValue "1"^^xsd:positiveInteger .
+
+:batches a samm:Property ;
+   samm:preferredName "Batches"@en ;
+   samm:description "List of material batches contained within a handling unit"@en ;
+   samm:characteristic :BatchList .
+
+:VolumeCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Volume Characteristic"@en ;
+   samm:description "Volumetric value determining the volume of the handling unit"@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit unit:litre .
+
+:WeightCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Weight Characteristic"@en ;
+   samm:description "Amount of weight of the handling unit"@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit unit:kilogram .
+
+:AmountCharacteristic a samm-c:Quantifiable ;
+   samm:preferredName "Amount Characteristic"@en ;
+   samm:description "Number describing handling units with identical pieces"@en ;
+   samm:dataType xsd:positiveInteger ;
+   samm-c:unit unit:piece .
+
+:BatchList a samm-c:List ;
+   samm:preferredName "Batch List"@en ;
+   samm:description "List of material batches"@en ;
+   samm:dataType :MaterialBatch .
+
+:MaterialBatch a samm:Entity ;
+   samm:preferredName "Material Batch"@en ;
+   samm:description "Material Batches are part of a handling unit"@en ;
+   samm:properties ( :batchSerialNumber :materialNumber :materialName :materialHazardousGoods :batchExpirationTimestamp :quantity :unitOfMeasurement :batchNumber :batchOrderId ) .
+
+:batchSerialNumber a samm:Property ;
+   samm:preferredName "Batch Serial Number"@en ;
+   samm:description "can be used to uniquely identify a singe product part"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Batch_1" .
+
+:materialNumber a samm:Property ;
+   samm:preferredName "Material Number"@en ;
+   samm:description "ID of the material contained in the batch"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "KK1000GR" .
+
+:materialName a samm:Property ;
+   samm:preferredName "Material Name"@en ;
+   samm:description "Name of the material"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "KK1000GR-Gehäuse-Rot" .
+
+:materialHazardousGoods a samm:Property ;
+   samm:preferredName "Material Hazardous Goods"@en ;
+   samm:description "Flags hazardous goods"@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
+:batchExpirationTimestamp a samm:Property ;
+   samm:preferredName "Batch Expiration Timestamp"@en ;
+   samm:description "Expiration date of batch"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-08-22T16:00:00.000Z"^^xsd:dateTime .
+
+:quantity a samm:Property ;
+   samm:preferredName "Quantity"@en ;
+   samm:description "Amount of materials"@en ;
+   samm:characteristic :QuantityCharacteristic ;
+   samm:exampleValue "50"^^xsd:float .
+
+:unitOfMeasurement a samm:Property ;
+   samm:preferredName "Unit Of Measurement"@en ;
+   samm:description "Unit used for measuring the quantity"@en ;
+   samm:characteristic :UnitOfMeasurementCharacteristic .
+
+:batchNumber a samm:Property ;
+   samm:preferredName "Batch Number"@en ;
+   samm:description "Number of the batch, generated by originator (e.g. from ERP system, no uuid)"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "45" .
+
+:batchOrderId a samm:Property ;
+   samm:preferredName "Batch Order Id"@en ;
+   samm:description "Order ID to which the batch belongs"@en ;
+   samm:characteristic :Text ;
+   samm:exampleValue "Order-0001" .
+
+:QuantityCharacteristic a samm:Characteristic ;
+   samm:preferredName "Quantity Characteristic"@en ;
+   samm:description "Number of materials contained within a handling unit"@en ;
+   samm:dataType xsd:float .
+
+:UnitOfMeasurementCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Unit Of Measurement Characteristic"@en ;
+   samm:description "Possible options for units of measurement"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "KG" "Liter" "Piece" ) .
