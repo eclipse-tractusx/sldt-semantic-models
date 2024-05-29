@@ -3,6 +3,12 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [7.0.0] 2024-05-27
+### Changed
+- adapted as aligned with and specified by the Catena-X use case team
+- extended enumeration list of property "crossSectoralStandard" for compliance with the TfS (Together for Sustainability) standard
+- updated descriptions and examples for compliance with the PCF Rulebook v3 standard
+
 ## [6.0.0] 2024-02-26
 ### Changed
 - adapted as aligned with and specified by the Catena-X use case team
