@@ -1,0 +1,407 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "description" : "Aspect for defining an incident in context of Environmental and Social Standards as specified by the Catena-X Sustainability team.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text" : {
+        "type" : "string",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "urn_samm_io.catenax.essincident_4.0.0_IndustryCharacteristic" : {
+        "type" : "string",
+        "description" : "Industry Characteristic",
+        "enum" : [ "Extraction of raw materials", "Manufacture of components / intermediates", "Manufacture of final products", "Distribution / Trade", "Waste treatment / recycling", "Services", "Lending / financing / insurance", "Other" ]
+      },
+      "urn_samm_io.catenax.essincident_4.0.0_IncidentCategoryCharacteristic" : {
+        "type" : "string",
+        "description" : "Characteristic for defining an incident category in the context of ESS (Environmental and Social Standards).",
+        "enum" : [ "Environmental", "Social" ]
+      },
+      "urn_samm_io.catenax.essincident_4.0.0_IncidentSubcategories" : {
+        "type" : "string",
+        "description" : "Characteristic for defining subcategories of an incident in the context of ESS (Environmental and Social Standards).",
+        "enum" : [ "Child labour", "Forced labour", "Slavery", "Work safety", "Freedom of association", "Discrimination", "Minimum wage", "Environmental pollution", "Forced eviction", "Force by state security", "Usage of Mercury", "Usage of harmful chemicals", "Non-environmental friendly handling of waste", "Import and export of hazardous waste" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_ResourcePath" : {
+        "type" : "string",
+        "format" : "uri",
+        "description" : "The path of a resource."
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait" : {
+        "type" : "string",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "urn_samm_io.catenax.essincident_4.0.0_IncidentStatusCharacteristic" : {
+        "type" : "string",
+        "description" : "Incident status as defined in a list, default value = new",
+        "enum" : [ "new", "in cleansing", "in process", "completed", "closed" ]
+      },
+      "urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean" : {
+        "type" : "boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_ThoroughfareTechnicalKeyCharacteristic" : {
+        "type" : "string",
+        "description" : "Characteristic of the technical key of a thoroughfare.",
+        "enum" : [ "STREET", "INDUSTRIAL_ZONE", "OTHER", "RIVER", "SQUARE" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_ThoroughfareEntity" : {
+        "description" : "Characteristic for defining a thoroughfare which can consist of a type (e.g. \"STREET\"), value (e.g. \"Bernstra?e\") and number (e.g. \"45\"). Model follows the specification of BPDM.",
+        "type" : "object",
+        "properties" : {
+          "technicalKey" : {
+            "description" : "Technical key of a thoroughfare. As specified by BPDM, this can be a \"STREET\" or a different type.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_ThoroughfareTechnicalKeyCharacteristic"
+          },
+          "value" : {
+            "description" : "Value of a thoroughfare, e.g. name of a street.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          },
+          "number" : {
+            "description" : "Number of a thoroughfare. As used differently in international context, this number can contain both numerical and alphanumerical values.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "technicalKey", "value", "number" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_LocalityTechnicalKeyCharacteristic" : {
+        "type" : "string",
+        "description" : "Characteristic of the technical key of a locality",
+        "enum" : [ "BLOCK", "CITY", "DISTRICT", "OTHER", "POST_OFFICE_CITY", "QUARTER" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_LocalityEntity" : {
+        "description" : "Characteristic for defining a locality which belongs to an address and which consists of a type (e.g. \"CITY\") and value (e.g. \"Mannheim\"). Model follows the specification of BPDM.",
+        "type" : "object",
+        "properties" : {
+          "technicalKey" : {
+            "description" : "Technical key of a locality.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_LocalityTechnicalKeyCharacteristic"
+          },
+          "value" : {
+            "description" : "Value of a locality, e.g. name of a city (\"Mannheim\").",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "technicalKey", "value" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_PremiseTechnicalKeyCharacteristic" : {
+        "type" : "string",
+        "description" : "Characteristic of the technical key of a premise.",
+        "enum" : [ "BUILDING", "HARBOUR", "LEVEL", "OTHER", "ROOM", "SUITE", "UNIT", "WAREHOUSE" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_PremiseEntity" : {
+        "description" : "Characteristic for defining a premise which consists of a technical key (e.g. \"BUILDING\" or \"OTHER\") and a value (e.g. \"Werk 1\").",
+        "type" : "object",
+        "properties" : {
+          "technicalKey" : {
+            "description" : "Technical key of a premise.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_PremiseTechnicalKeyCharacteristic"
+          },
+          "value" : {
+            "description" : "Value of a premise, e.g. name or designation of a particular site.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "technicalKey", "value" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostalDeliveryPointTechnicalKeyCharacteristic" : {
+        "type" : "string",
+        "description" : "Characteristic of the technical key of a postal delivery point.",
+        "enum" : [ "INTERURBAN_DELIVERY_POINT", "MAIL_STATION", "MAILBOX", "OTHER", "POST_OFFICE_BOX" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostalDeliveryPointEntity" : {
+        "description" : "Characteristic for defining a postal delivery point which consists of a technical key (e.g. \"MAILBOX\" or \"OTHER\") and a value. Model follows the specification of BPDM.",
+        "type" : "object",
+        "properties" : {
+          "technicalKey" : {
+            "description" : "Technical key of a postal delivery point.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostalDeliveryPointTechnicalKeyCharacteristic"
+          },
+          "value" : {
+            "description" : "Value of a postal delivery point, e.g. designation of a gate.",
+            "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+          }
+        },
+        "required" : [ "technicalKey", "value" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_CountryTrait" : {
+        "type" : "string",
+        "description" : "Regular expression for designation of a short name of a country as defined in ISO 3166-2.",
+        "pattern" : "([A-Z]{2}-[A-Z0-9]{1,3}|)"
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_CountryEntity" : {
+        "description" : "Characteristic of a country belonging to an address",
+        "type" : "object",
+        "properties" : {
+          "shortName" : {
+            "description" : "The short variation of the name of the country.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_CountryTrait"
+          }
+        },
+        "required" : [ "shortName" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostCodeTrait" : {
+        "type" : "string",
+        "description" : "Regular expression for post codes.",
+        "pattern" : "^[a-z0-9][a-z0-9\\- ]{0,10}$"
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostCodeTechnicalKeyCharacteristic" : {
+        "type" : "string",
+        "description" : "Characteristic for the technical key of a post code.",
+        "enum" : [ "CEDEX", "LARGE_MAIL_USER", "OTHER", "POST_BOX", "REGULAR" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostCodeEntity" : {
+        "description" : "Characteristic for defining a postcode which can consist of a type (e.g. \"REGULAR\" for zip codes) and a value (e.g. \"98765-4321\"). Model follows the specification of BPDM.",
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "description" : "The value of a post code.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostCodeTrait"
+          },
+          "technicalKey" : {
+            "description" : "The technical key of a post code.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostCodeTechnicalKeyCharacteristic"
+          }
+        },
+        "required" : [ "value", "technicalKey" ]
+      },
+      "urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostalAddress" : {
+        "description" : "A characteristic to express the postal address and which is intended to be referenced by other aspects.",
+        "type" : "object",
+        "properties" : {
+          "thoroughfare" : {
+            "description" : "Street or thorough road name.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_ThoroughfareEntity"
+          },
+          "locality" : {
+            "description" : "Locality belonging to an address.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_LocalityEntity"
+          },
+          "premise" : {
+            "description" : "Premise of an address, e.g. a specific \"BUILDING\" but can also be used for naming a particular site.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_PremiseEntity"
+          },
+          "postalDeliveryPoint" : {
+            "description" : "Delivery point, e.g. designation of a gate.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostalDeliveryPointEntity"
+          },
+          "country" : {
+            "description" : "Country of an address.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_CountryEntity"
+          },
+          "postCode" : {
+            "description" : "Postal code of the address.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostCodeEntity"
+          }
+        },
+        "required" : [ "thoroughfare", "locality", "country", "postCode" ]
+      },
+      "urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlCharacteristic" : {
+        "type" : "string",
+        "description" : "BPNL (Business Partner Number Legal Entity) represents the legal entity of an organization (e.g. enterprise, university, association, …) and contains its legal name (incl. legal form, if registered), registered address and tax number. The registered address is the official, legal correspondence address which has to be supplied to governmental and tax authorities and is the address which is used in any legal or court documents. BPNL is on corporate level and is unique for this legal entity."
+      },
+      "urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsCharacteristic" : {
+        "type" : "string",
+        "description" : "BPNS (Business Partner Number Site) represents a site which can be a production plant. A site can also be e.g. an office or a warehouse. An information related to a site is e.g. needed for reporting issues (How many sites does e.g. Beispiel AG have?), status of operation (out of operations due to environmental disaster), for certificates on site level (e.g. environment certificates) or for internal regulations on site level, (e.g. security topics, Corona rules,...). Several addresses (= BPNA with different streets and different gates) can belong to one site. A BPNS should be always linked to one BPNL via relationship 'belongs to legal entity'."
+      },
+      "urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnaCharacteristic" : {
+        "type" : "string",
+        "description" : "BPNA (Business Partner Number Address) contains the legal name (incl. legal form, if registered) and additional organization information about site, e.g. Plant xxx, Branch office yyy of an organization with its corresponding, most commonly physical, address. A BPNA is always linked to a BPNL via relationship 'belongs to legal entity' and should be linked to a BPNS via relationship 'belongs to site'.The BPNA is on operational level (e.g. shipping or pick-up address)."
+      },
+      "urn_samm_io.catenax.essincident_4.0.0_LongitudeTrait" : {
+        "type" : "string",
+        "description" : "Regular expression for longitude information.",
+        "pattern" : "^(\\+|-)?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$"
+      },
+      "urn_samm_io.catenax.essincident_4.0.0_LatitudeTrait" : {
+        "type" : "string",
+        "description" : "Regular expression for latitude information of geographic coordinates.",
+        "pattern" : "^(\\+|-)?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$"
+      },
+      "urn_samm_io.catenax.essincident_4.0.0_EssOriginatorCoordinatesEntity" : {
+        "description" : "Characteristic for defining geographic coordinates (longitude and latitude) of an incident originator in context of ESS (Environmental and Social Standards).",
+        "type" : "object",
+        "properties" : {
+          "longitude" : {
+            "description" : "Longitude information for geographic coordinates.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.essincident_4.0.0_LongitudeTrait"
+          },
+          "latitude" : {
+            "description" : "Latitude information for geographic coordinates.",
+            "$ref" : "#/components/schemas/urn_samm_io.catenax.essincident_4.0.0_LatitudeTrait"
+          }
+        },
+        "required" : [ "longitude", "latitude" ]
+      },
+      "urn_samm_io.catenax.essincident_4.0.0_ContactMailTrait" : {
+        "type" : "string",
+        "description" : "Regular expression for a contact mail address.",
+        "pattern" : "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+      },
+      "urn_samm_io.catenax.essincident_4.0.0_EssIncidentModeratorCharacteristic" : {
+        "description" : "Business Partner(s) who moderate(s) the clearing of an ESS incident",
+        "type" : "array",
+        "items" : {
+          "type" : "string",
+          "description" : "The provided regular expression ensures that the BPNL is composed of prefix 'BPNL', 10 digits and two alphanumeric letters.",
+          "pattern" : "^BPNL[a-zA-Z0-9]{12}$"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "productCommodity" : {
+      "description" : "Free-text description for commodity of a product affected by an incident in the context of ESS (Environmental and Social Standards)",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "productDescription" : {
+      "description" : "Description of product or component affected by an incident in the context of ESS (Environmental and Social Standards) ",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "rawMaterial" : {
+      "description" : "Raw material that causes an incident in the context of ESS (Environmental and Social Standards)",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "industry" : {
+      "description" : "Industry / Branch that causes the incident",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.essincident_4.0.0_IndustryCharacteristic"
+    },
+    "incidentCategory" : {
+      "description" : "Environmental and social standards related incident category according to Supply Chain Due Diligence Act",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.essincident_4.0.0_IncidentCategoryCharacteristic"
+    },
+    "incidentSubcategory" : {
+      "description" : "Subcategory of an incident Category",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.essincident_4.0.0_IncidentSubcategories"
+    },
+    "incidentSubject" : {
+      "description" : "Title/ subject of an incident in the context of ESS (Environmental and Social Standards)",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "incidentExternalSubject" : {
+      "description" : "Replaces Incident Subject for external communication",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "incidentDescription" : {
+      "description" : "Full text description of an incident in the context of ESS (Environmental and Social Standards)",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "incidentExternalNotes" : {
+      "description" : "Incident description for external communication",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "incidentAttachment" : {
+      "description" : "Picture(s) about the reported incident in the context of ESS (Environmental and Social Standards)",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_ResourcePath"
+    },
+    "systemDate" : {
+      "description" : "System created timestamp when the incident in the context of ESS (Environmental and Social Standards) was issued and saved",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+    },
+    "incidentDate" : {
+      "description" : "Date and time information when an incident in the context of ESS (Environmental and Social Standards) occurred",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp"
+    },
+    "incidentId" : {
+      "description" : "Unique identifier for an incident in the context of ESS (Environmental and Social Standards)",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait"
+    },
+    "masterOpCoId" : {
+      "description" : "Incident ID that has been checked and validated. In case of duplicates the \"parent\" incident ID will be used as Master Operating Company Incident ID.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait"
+    },
+    "incidentDisplayId" : {
+      "description" : "Human readable format of Incident ID",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "incidentStatusInformation" : {
+      "description" : "Status of incident progress, default value = new",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.essincident_4.0.0_IncidentStatusCharacteristic"
+    },
+    "incidentShareFlag" : {
+      "description" : "Flag, that can be set to true in order to request to publish the incident, default value is false",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean"
+    },
+    "subCaseOpCoIds" : {
+      "description" : "Incident Ids that belong to a Master Operating Company Incident Id",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "incidentSystemId" : {
+      "description" : "System Id that defines the tenant",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "essOriginatorCompanyName" : {
+      "description" : "Name of a company / an organisation that is the originator of an incident in the context of ESS (Environmental and Social Standards)",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "essOriginatorAddress" : {
+      "description" : "Address of ESS Originator ",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostalAddress"
+    },
+    "essOriginatorBpnL" : {
+      "description" : "BPN-L ID of the company that causes the incident",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnlCharacteristic"
+    },
+    "essOriginatorBpnS" : {
+      "description" : "BPN-S ID of the company that causes the incident",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsCharacteristic"
+    },
+    "essOriginatorBpnA" : {
+      "description" : "BPN-A ID of the company that causes the incident",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnaCharacteristic"
+    },
+    "essOriginatorCoordinates" : {
+      "description" : "Exact geographic position of an incident in the context of ESS (Environmental and Social Standards)",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.essincident_4.0.0_EssOriginatorCoordinatesEntity"
+    },
+    "essIncidentIssuerFirstName" : {
+      "description" : "First name of ESS incident issuer",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "essIncidentIssuerEmailAddress" : {
+      "description" : "Email address of ESS incident issuer",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.essincident_4.0.0_ContactMailTrait"
+    },
+    "essIncidentIssuerPhoneNo" : {
+      "description" : "Phone number of ESS incident issuer",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "flagAnonymous" : {
+      "description" : "Flag that Incident issuer wants to be anonymous",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean"
+    },
+    "essIncidentIssuerId" : {
+      "description" : "System generated unique identifier of incident issuer",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait"
+    },
+    "essIncidentIssuerAddress" : {
+      "description" : "Simple form of an address which can belong to a person, organisation, company etc.",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.shared.address_characteristic_4.0.0_PostalAddress"
+    },
+    "essIncidentIssuerLastName" : {
+      "description" : "Last name of ESS incident Issuer",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "essOriginatorCountrySubdivision" : {
+      "description" : "Region within a country of ESS Originator",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "essIncidentIssuerCountrySubdivision" : {
+      "description" : "Region within a country of ESS Incident Issuer",
+      "$ref" : "#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text"
+    },
+    "essIncidentModerator" : {
+      "description" : "Business Partner who moderates the clearing of an ESS incident",
+      "$ref" : "#/components/schemas/urn_samm_io.catenax.essincident_4.0.0_EssIncidentModeratorCharacteristic"
+    }
+  },
+  "required" : [ "productDescription", "incidentCategory", "incidentSubcategory", "incidentDescription", "systemDate", "incidentDate", "incidentId", "incidentStatusInformation" ]
+}
