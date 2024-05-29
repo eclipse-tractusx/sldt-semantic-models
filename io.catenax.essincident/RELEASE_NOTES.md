@@ -3,6 +3,16 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [4.0.0] - 2024-05-27
+### Changed
+- add field essIncidentModerator with trait BPNL
+- set fields to optional:
+- incidentDisplayId
+- incidentShareFlag
+- essIncidentIssuerId
+- flagAnonymous
+
+
 ## [3.0.0] - 2024-02-19
 ### Changed
 - updated version of model

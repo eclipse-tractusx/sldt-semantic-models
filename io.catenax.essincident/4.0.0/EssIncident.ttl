@@ -1,0 +1,352 @@
+#######################################################################
+# Copyright (c) 2022, 2023, 2024 ZF Friedrichshafen AG
+# Copyright (c) 2022, 2023, 2024 T-Systems International GmbH
+# Copyright (c) 2022, 2023, 2024 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2023, 2024 SAP AG
+# Copyright (c) 2023, 2024 Capgemini
+# Copyright (c) 2022, 2023, 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.essincident:4.0.0#> .
+@prefix ext-characteristic: <urn:samm:io.catenax.shared.address_characteristic:4.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:EssIncident a samm:Aspect ;
+   samm:preferredName "ESS Incident"@en ;
+   samm:description "Aspect for defining an incident in context of Environmental and Social Standards as specified by the Catena-X Sustainability team."@en ;
+   samm:properties ( [ samm:property :productCommodity; samm:optional true ] :productDescription [ samm:property :rawMaterial; samm:optional true ] [ samm:property :industry; samm:optional true ] :incidentCategory :incidentSubcategory [ samm:property :incidentSubject; samm:optional true ] [ samm:property :incidentExternalSubject; samm:optional true ] :incidentDescription [ samm:property :incidentExternalNotes; samm:optional true ] [ samm:property :incidentAttachment; samm:optional true ] :systemDate :incidentDate :incidentId [ samm:property :masterOpCoId; samm:optional true ] [ samm:property :incidentDisplayId; samm:optional true ] :incidentStatusInformation [ samm:property :incidentShareFlag; samm:optional true ] [ samm:property :subCaseOpCoIds; samm:optional true ] [ samm:property :incidentSystemId; samm:optional true ] [ samm:property :essOriginatorCompanyName; samm:optional true ] [ samm:property :essOriginatorAddress; samm:optional true ] [ samm:property :essOriginatorBpnL; samm:optional true ] [ samm:property :essOriginatorBpnS; samm:optional true ] [ samm:property :essOriginatorBpnA; samm:optional true ] [ samm:property :essOriginatorCoordinates; samm:optional true ] [ samm:property :essIncidentIssuerFirstName; samm:optional true ] [ samm:property :essIncidentIssuerEmailAddress; samm:optional true ] [ samm:property :essIncidentIssuerPhoneNo; samm:optional true ] [ samm:property :flagAnonymous; samm:optional true ] [ samm:property :essIncidentIssuerId; samm:optional true ] [ samm:property :essIncidentIssuerAddress; samm:optional true ] [ samm:property :essIncidentIssuerLastName; samm:optional true ] [ samm:property :essOriginatorCountrySubdivision; samm:optional true ] [ samm:property :essIncidentIssuerCountrySubdivision; samm:optional true ] [ samm:property :essIncidentModerator; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:productCommodity a samm:Property ;
+   samm:preferredName "Product Commodity"@en ;
+   samm:description "Free-text description for commodity of a product affected by an incident in the context of ESS (Environmental and Social Standards)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Tire" .
+
+:productDescription a samm:Property ;
+   samm:preferredName "Product Description"@en ;
+   samm:description "Description of product or component affected by an incident in the context of ESS (Environmental and Social Standards) "@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Natural Rubber" .
+
+:rawMaterial a samm:Property ;
+   samm:preferredName "Raw Material"@en ;
+   samm:description "Raw material that causes an incident in the context of ESS (Environmental and Social Standards)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Natural Rubber" .
+
+:industry a samm:Property ;
+   samm:preferredName "Industry / Branch"@en ;
+   samm:description "Industry / Branch that causes the incident"@en ;
+   samm:characteristic :IndustryCharacteristic ;
+   samm:exampleValue "Extraction of raw material" .
+
+:incidentCategory a samm:Property ;
+   samm:preferredName "Incident Category"@en ;
+   samm:description "Environmental and social standards related incident category according to Supply Chain Due Diligence Act"@en ;
+   samm:see <https://www.gesetze-im-internet.de/lksg/> ;
+   samm:characteristic :IncidentCategoryCharacteristic ;
+   samm:exampleValue "Social" .
+
+:incidentSubcategory a samm:Property ;
+   samm:preferredName "Incident Subcategory"@en ;
+   samm:description "Subcategory of an incident Category"@en ;
+   samm:characteristic :IncidentSubcategories ;
+   samm:exampleValue "Child labour" .
+
+:incidentSubject a samm:Property ;
+   samm:preferredName "Incident Subject"@en ;
+   samm:description "Title/ subject of an incident in the context of ESS (Environmental and Social Standards)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Child labour on rubber producer Farm A" .
+
+:incidentExternalSubject a samm:Property ;
+   samm:preferredName "External Subject"@en ;
+   samm:description "Replaces Incident Subject for external communication"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Child labour on a rubber producer farm" .
+
+:incidentDescription a samm:Property ;
+   samm:preferredName "Incident Description"@en ;
+   samm:description "Full text description of an incident in the context of ESS (Environmental and Social Standards)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Child labour at production site of the rubber producer Farm A in Brazil" .
+
+:incidentExternalNotes a samm:Property ;
+   samm:preferredName "External Notes"@en ;
+   samm:description "Incident description for external communication"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Child labour at production site of a rubber producer in Brazil" .
+
+:incidentAttachment a samm:Property ;
+   samm:preferredName "Incident Attachment"@en ;
+   samm:description "Picture(s) about the reported incident in the context of ESS (Environmental and Social Standards)"@en ;
+   samm:characteristic samm-c:ResourcePath .
+
+:systemDate a samm:Property ;
+   samm:preferredName "System Date"@en ;
+   samm:description "System created timestamp when the incident in the context of ESS (Environmental and Social Standards) was issued and saved"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2022-08-31T23:22:12Z"^^xsd:dateTime .
+
+:incidentDate a samm:Property ;
+   samm:preferredName "Date of Incident"@en ;
+   samm:description "Date and time information when an incident in the context of ESS (Environmental and Social Standards) occurred"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2022-08-31T00:00:00Z"^^xsd:dateTime .
+
+:incidentId a samm:Property ;
+   samm:preferredName "Incident ID"@en ;
+   samm:description "Unique identifier for an incident in the context of ESS (Environmental and Social Standards)"@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "9f47b3c8-b6d4-44f1-99ba-6bdb33916cac" .
+
+:masterOpCoId a samm:Property ;
+   samm:preferredName "Master Operating Company Incident ID"@en ;
+   samm:description "Incident ID that has been checked and validated. In case of duplicates the \"parent\" incident ID will be used as Master Operating Company Incident ID."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "9f47b3c8-b6d4-44f1-99ba-6bdb33916cac" .
+
+:incidentDisplayId a samm:Property ;
+   samm:preferredName "Display ID"@en ;
+   samm:description "Human readable format of Incident ID"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "123456789101" .
+
+:incidentStatusInformation a samm:Property ;
+   samm:preferredName "Incident Status"@en ;
+   samm:description "Status of incident progress, default value = new"@en ;
+   samm:characteristic :IncidentStatusCharacteristic ;
+   samm:exampleValue "new" .
+
+:incidentShareFlag a samm:Property ;
+   samm:preferredName "Incident Share Flag"@en ;
+   samm:description "Flag, that can be set to true in order to request to publish the incident, default value is false"@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
+:subCaseOpCoIds a samm:Property ;
+   samm:preferredName "Sub Case Operating Company Incident Ids"@en ;
+   samm:description "Incident Ids that belong to a Master Operating Company Incident Id"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "9f47b3c8-b6d4-44f1-99ba-6bdb33916cac, 9f47b3c8-b6d4-44f1-99ba-6bdb33916cad" .
+
+:incidentSystemId a samm:Property ;
+   samm:preferredName "Incident System Id"@en ;
+   samm:description "System Id that defines the tenant"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "123456789" .
+
+:essOriginatorCompanyName a samm:Property ;
+   samm:preferredName "ESS Originator Company Name"@en ;
+   samm:description "Name of a company / an organisation that is the originator of an incident in the context of ESS (Environmental and Social Standards)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Rubbery Ltd." .
+
+:essOriginatorAddress a samm:Property ;
+   samm:preferredName "Ess Originator Address"@en ;
+   samm:description "Address of ESS Originator "@en ;
+   samm:characteristic ext-characteristic:PostalAddress .
+
+:essOriginatorBpnL a samm:Property ;
+   samm:preferredName "ESS Originator BPN-L"@en ;
+   samm:description "BPN-L ID of the company that causes the incident"@en ;
+   samm:characteristic ext-number:BpnlCharacteristic ;
+   samm:exampleValue "BPNL1234567890ZZ" .
+
+:essOriginatorBpnS a samm:Property ;
+   samm:preferredName "ESS Originator BPN-S"@en ;
+   samm:description "BPN-S ID of the company that causes the incident"@en ;
+   samm:characteristic ext-number:BpnsCharacteristic ;
+   samm:exampleValue "BPNS1234567890ZZ" .
+
+:essOriginatorBpnA a samm:Property ;
+   samm:preferredName "ESS Originator BPN A"@en ;
+   samm:description "BPN-A ID of the company that causes the incident"@en ;
+   samm:characteristic ext-number:BpnaCharacteristic ;
+   samm:exampleValue "BPNA1234567890ZZ" .
+
+:essOriginatorCoordinates a samm:Property ;
+   samm:preferredName "ESS Originator Geographic data / Coordinates"@en ;
+   samm:description "Exact geographic position of an incident in the context of ESS (Environmental and Social Standards)"@en ;
+   samm:characteristic :EssOriginatorCoordinatesCharacteristic .
+
+:essIncidentIssuerFirstName a samm:Property ;
+   samm:preferredName "ESS Incident Issuer First Name"@en ;
+   samm:description "First name of ESS incident issuer"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Testuser First name" .
+
+:essIncidentIssuerEmailAddress a samm:Property ;
+   samm:preferredName "ESS Incident Issuer Email Address"@en ;
+   samm:description "Email address of ESS incident issuer"@en ;
+   samm:characteristic :ContactMailTrait ;
+   samm:exampleValue "test@example.com" .
+
+:essIncidentIssuerPhoneNo a samm:Property ;
+   samm:preferredName "ESS Incident Issuer Phone No"@en ;
+   samm:description "Phone number of ESS incident issuer"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "+49-123-456789" .
+
+:flagAnonymous a samm:Property ;
+   samm:preferredName "Flag anonymous"@en ;
+   samm:description "Flag that Incident issuer wants to be anonymous"@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
+:essIncidentIssuerId a samm:Property ;
+   samm:preferredName "Issuer ID"@en ;
+   samm:description "System generated unique identifier of incident issuer"@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "9a47b3c8-b6d4-44f1-99ba-6bdb33916cac" .
+
+:essIncidentIssuerAddress a samm:Property ;
+   samm:preferredName "Ess Incident Issuer Address"@en ;
+   samm:description "Simple form of an address which can belong to a person, organisation, company etc."@en ;
+   samm:characteristic ext-characteristic:PostalAddress .
+
+:essIncidentIssuerLastName a samm:Property ;
+   samm:preferredName "ESS Incident Issuer Last Name"@en ;
+   samm:description "Last name of ESS incident Issuer"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Testuser Last name" .
+
+:essOriginatorCountrySubdivision a samm:Property ;
+   samm:preferredName "ESS Originator Country Subdivision"@en ;
+   samm:description "Region within a country of ESS Originator"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BR-SP" .
+
+:essIncidentIssuerCountrySubdivision a samm:Property ;
+   samm:preferredName "ESS Incident Issuer Country Subdivision"@en ;
+   samm:description "Region within a country of ESS Incident Issuer"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "IN-AP" .
+
+:essIncidentModerator a samm:Property ;
+   samm:preferredName "Incident Moderator"@en ;
+   samm:description "Business Partner who moderates the clearing of an ESS incident"@en ;
+   samm:characteristic :EssIncidentModeratorCharacteristic ;
+   samm:exampleValue "BPNL1234567890YY" .
+
+:IndustryCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Industry characteristic"@en ;
+   samm:description "Industry Characteristic"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Extraction of raw materials" "Manufacture of components / intermediates" "Manufacture of final products" "Distribution / Trade" "Waste treatment / recycling" "Services" "Lending / financing / insurance" "Other" ) .
+
+:IncidentCategoryCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Incident Category Characteristic"@en ;
+   samm:description "Characteristic for defining an incident category in the context of ESS (Environmental and Social Standards)."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Environmental" "Social" ) .
+
+:IncidentSubcategories a samm-c:Enumeration ;
+   samm:preferredName "Incident Subcategories"@en ;
+   samm:description "Characteristic for defining subcategories of an incident in the context of ESS (Environmental and Social Standards)."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Child labour" "Forced labour" "Slavery" "Work safety" "Freedom of association" "Discrimination" "Minimum wage" "Environmental pollution" "Forced eviction" "Force by state security" "Usage of Mercury" "Usage of harmful chemicals" "Non-environmental friendly handling of waste" "Import and export of hazardous waste" ) .
+
+:IncidentStatusCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Incident Status"@en ;
+   samm:description "Incident status as defined in a list, default value = new"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "in cleansing" "in process" "completed" "closed" ) .
+
+:EssOriginatorCoordinatesCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "ESS Originator Coordinates Characteristic"@en ;
+   samm:description "Characteristic for defining geographic coordinates (longitude and latitude) of an incident originator in context of ESS (Environmental and Social Standards)."@en ;
+   samm:dataType :EssOriginatorCoordinatesEntity .
+
+:ContactMailTrait a samm-c:Trait ;
+   samm:preferredName "Contact Mail Trait"@en ;
+   samm:description "Trait for a contact mail address."@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :ContactMailConstraint .
+
+:EssIncidentModeratorCharacteristic a samm-c:Set ;
+   samm:preferredName "Ess Incident Moderator Characteristic"@en ;
+   samm:description "Business Partner(s) who moderate(s) the clearing of an ESS incident"@en ;
+   samm:dataType xsd:string ;
+   samm-c:elementCharacteristic :BPNLTrait .
+
+:EssOriginatorCoordinatesEntity a samm:Entity ;
+   samm:preferredName "ESS Originator Coordinates Entity"@en ;
+   samm:description "Entity for geographic coordinates including a longitude and a latitude value."@en ;
+   samm:properties ( :longitude :latitude ) .
+
+:ContactMailConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Contact Mail Constraint"@en ;
+   samm:description "Regular expression for a contact mail address."@en ;
+   samm:value "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$" .
+
+:BPNLTrait a samm-c:Trait ;
+   samm:preferredName "BPNL Trait"@en ;
+   samm:description "Trait to ensure data format for BPNL."@en ;
+   samm-c:baseCharacteristic ext-number:BpnlCharacteristic ;
+   samm-c:constraint ext-number:BpnlRegularExpression .
+
+:longitude a samm:Property ;
+   samm:preferredName "Longitude"@en ;
+   samm:description "Longitude information for geographic coordinates."@en ;
+   samm:characteristic :LongitudeTrait ;
+   samm:exampleValue "-79.517415" .
+
+:latitude a samm:Property ;
+   samm:preferredName "Latitude"@en ;
+   samm:description "Latitude information for geographic coordinates."@en ;
+   samm:characteristic :LatitudeTrait ;
+   samm:exampleValue "-5.422077" .
+
+:LongitudeTrait a samm-c:Trait ;
+   samm:preferredName "Longitude Trait"@en ;
+   samm:description "Trait for longitude information belonging to geographic coordinates."@en ;
+   samm-c:baseCharacteristic :LongitudeCharacteristic ;
+   samm-c:constraint :LongitudeConstraint .
+
+:LatitudeTrait a samm-c:Trait ;
+   samm:preferredName "Latitude Trait"@en ;
+   samm:description "Trait for latitude information belonging to geographic coordinates."@en ;
+   samm-c:baseCharacteristic :LatitudeCharacteristic ;
+   samm-c:constraint :LatitudeConstraint .
+
+:LongitudeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Longitude Characteristic"@en ;
+   samm:description "Characteristic for longitude information of geographic coordinates."@en ;
+   samm:dataType xsd:string .
+
+:LongitudeConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Longitude Constraint"@en ;
+   samm:description "Regular expression for longitude information."@en ;
+   samm:value "^(\\+|-)?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$" .
+
+:LatitudeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Latitude Characteristic"@en ;
+   samm:description "Characteristic for latitude information of geographic coordinates."@en ;
+   samm:dataType xsd:string .
+
+:LatitudeConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Latitude Constraint"@en ;
+   samm:description "Regular expression for latitude information of geographic coordinates."@en ;
+   samm:value "^(\\+|-)?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$" .
+
