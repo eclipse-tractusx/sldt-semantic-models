@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
+## 2024-06-10
+- deprecation of models older then release 24.05
+
 ## [5.0.0] - 2024-05-21
 ### Changed
 - structure and pattern below chemicalName and chemicalId changed for materials
