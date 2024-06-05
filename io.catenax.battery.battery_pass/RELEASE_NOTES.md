@@ -2,6 +2,10 @@
 All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
+
+##  2024-05-10
+- deprecation of models older then release 24.05
+
 ## [6.0.0] - 2024-05-21
 ### Changed
 - connection update to @prefix ext-passport: <urn:samm:io.catenax.generic.digital_product_passport:5.0.0#>
