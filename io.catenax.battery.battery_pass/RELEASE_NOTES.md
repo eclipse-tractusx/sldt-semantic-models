@@ -3,7 +3,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
-##  2024-05-10
+##  2024-06-10
 - deprecation of models older then release 24.05
 
 ## [6.0.0] - 2024-05-21
