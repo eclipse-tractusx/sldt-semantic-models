@@ -18,6 +18,10 @@ source code repository logs.
 
 ## Declared Project Licenses
 
+The Tractus-X project uses the following licenses:
+
+- CC-BY-4.0 for non-code
+
 The materials in this repository is made available under the terms
 of the Creative Commons Attribution 4.0 International License, which is available at
 https://spdx.org/licenses/CC-BY-4.0.html.
