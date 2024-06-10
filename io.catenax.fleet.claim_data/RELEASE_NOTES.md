@@ -17,7 +17,7 @@ All notable changes to this model will be documented in this file.
 ### Removed
 - Vehicle entity -> all properties are now located on claim entity
 
-## [1.0.0] - 2022-12-13
+## [1.0.0] - 2022-12-13 -> deprecated
 ### Added
 - initial version of this model
 
