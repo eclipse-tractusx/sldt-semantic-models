@@ -17,7 +17,7 @@ All notable changes to this model will be documented in this file.
 ### Removed
 - oem properties -> replaced by parent properties
 
-## [2.0.0] - 2023-06-23
+## [2.0.0] - 2023-06-23 -> deprecated
 ### Added
 - property manufacturerAnalysisID: ID of internal system from manufacturer
 - property customerAnalysisID: ID of internal system from customer
@@ -32,7 +32,7 @@ All notable changes to this model will be documented in this file.
 
 ### Removed
 
-## [1.0.0] - 2022-12-13
+## [1.0.0] - 2022-12-13 -> deprecated
 ### Added
 - initial version of this model
 
@@ -40,4 +40,3 @@ All notable changes to this model will be documented in this file.
 n/a
 
 ### Removed
-
