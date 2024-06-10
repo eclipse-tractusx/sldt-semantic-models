@@ -28,3 +28,6 @@ n/a
 
 ### Removed
 
+## Deprecated versions of this model
+- 2024-06-17: Version 1.0.0 set to deprecated
+
