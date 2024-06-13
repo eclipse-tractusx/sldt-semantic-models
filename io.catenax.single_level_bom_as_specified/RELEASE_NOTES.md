@@ -4,12 +4,19 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.1] - 2023-10-11
+
+### Added
+
+### Changed
+
+- remove duplicates in requirements in ttl file
+
 ## [2.0.0] - 2023-08-28
 
 ### Added
 
 - added new properties: partGeometry (represting the side a part belongs to, e.g. left or right) and manufacturerId (BPN of the manufacturer)
-
 
 ### Changed
 
