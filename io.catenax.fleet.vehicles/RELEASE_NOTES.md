@@ -13,7 +13,7 @@ All notable changes to this model will be documented in this file.
 
 ### Removed
 
-## [2.1.0] - 2024-02-19
+## [2.1.0] - 2024-02-19 -> deprecated
 ### Added
 
 ### Changed
@@ -22,7 +22,7 @@ All notable changes to this model will be documented in this file.
 ### Removed
 
 
-## [2.0.0] - 2024-01-22
+## [2.0.0] - 2024-01-22 -> deprecated
 ### Added
 - metaInformation added to root entity: Gives data consumer necessary information how data provider created this data set
 - integration of shared UUID characteristic and RegEx for the vehicle Catena-X identifier
@@ -45,7 +45,7 @@ Streamlining of aspect model:
 - remove of sale entity: Properties now located on vehicle level
 - remove of production entity: Properties now located on vehicle level
 
-## [1.0.0] - 2023-05-15
+## [1.0.0] - 2023-05-15 -> deprecated
 ### Added
 - initial version of this model
 
