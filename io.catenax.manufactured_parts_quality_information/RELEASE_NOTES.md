@@ -13,7 +13,7 @@ All notable changes to this model will be documented in this file.
 
 ### Removed
 
-## [2.0.0] - 2024-01-29
+## [2.0.0] - 2024-01-29 -> deprecated
 ### Added
 - metaInformation property added to root entity
 - integration of the shared UUID characteristic and RegEx for Catena-X identifiers
@@ -26,7 +26,7 @@ All notable changes to this model will be documented in this file.
 ### Removed
 - Manufacturing entity -> all properties are now located on ManufacturedPart entity
 
-## [1.0.0] - 2022-12-13
+## [1.0.0] - 2022-12-13 -> deprecated
 ### Added
 - initial version of this model
 
