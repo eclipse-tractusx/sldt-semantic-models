@@ -20,7 +20,7 @@ All notable changes to this model will be documented in this file.
 - vehicle entity: Properties now located one level up on DiagnosticSession
 - eventList: Removed completely - instead procedures list was introduced
 
-## [1.0.0] - 2022-12-13
+## [1.0.0] - 2022-12-13 -> deprecated
 ### Added
 - initial version of this model
 
