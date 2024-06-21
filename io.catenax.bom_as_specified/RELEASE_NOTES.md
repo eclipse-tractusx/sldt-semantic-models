@@ -21,3 +21,13 @@ All notable changes to this model will be documented in this file.
 ### Removed
 - removed non-needed properties: index, quantity
 
+## [3.0.0] - 2023-06-20
+### Added
+
+### Changed
+- changed bamm -> samm
+- added newline between each block to be consistent with current style
+
+### Removed
+
+
