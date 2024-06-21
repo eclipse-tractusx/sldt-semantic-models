@@ -19,7 +19,7 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 
 ### Removed
 
-## [1.0.0] - 2022-12-13
+## [1.0.0] - 2022-12-13 -> deprecated
 ### Added
 - initial version of this model
 
@@ -27,4 +27,3 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 n/a
 
 ### Removed
-
