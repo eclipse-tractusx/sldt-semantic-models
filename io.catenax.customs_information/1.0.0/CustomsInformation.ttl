@@ -1,0 +1,205 @@
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.customs_information:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:CustomsInformation a samm:Aspect ;
+   samm:preferredName "Customs Information"@en ;
+   samm:properties ( :customsInformation :catenaXId ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:customsInformation a samm:Property ;
+   samm:preferredName "Customs Information"@en ;
+   samm:characteristic :CustomsInformationSet .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X Identifier"@en ;
+   samm:description "The fully anonymous Catena-X ID of the corresponding part, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "580d3adf-1981-44a0-a214-13d6ceed9379" .
+
+:CustomsInformationSet a samm-c:Set ;
+   samm:preferredName "Customs Information Set"@en ;
+   samm:dataType :CustomsInformationEntity .
+
+:CustomsInformationEntity a samm:Entity ;
+   samm:preferredName "Customs Information Entity"@en ;
+   samm:properties ( :originInformation :confirmationDate :validFrom :type :status ) .
+
+:originInformation a samm:Property ;
+   samm:preferredName "Origin Information"@en ;
+   samm:characteristic :OriginInformationCharacteristic .
+
+:confirmationDate a samm:Property ;
+   samm:preferredName "Confirmation Date"@en ;
+   samm:characteristic :DateCharacteristic ;
+   samm:exampleValue "2024-03-27"^^xsd:date .
+
+:validFrom a samm:Property ;
+   samm:preferredName "Valid From"@en ;
+   samm:characteristic :DateCharacteristic ;
+   samm:exampleValue "2024-03-20"^^xsd:date .
+
+:type a samm:Property ;
+   samm:preferredName "Type"@en ;
+   samm:characteristic :TypeEnumaration ;
+   samm:exampleValue "AnnualRequest" .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:characteristic :StatusEnumeration ;
+   samm:exampleValue "Commited" .
+
+:OriginInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Origin Information Characteristic"@en ;
+   samm:dataType :OriginInformationEntity .
+
+:DateCharacteristic a samm:Characteristic ;
+   samm:preferredName "Date Characteristic"@en ;
+   samm:dataType xsd:date .
+
+:TypeEnumaration a samm-c:Enumeration ;
+   samm:preferredName "Type Enumaration"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "AnnualRequest" "InitialRequest" "Reminder-1" "Reminder-2" "Reminder-3" "ReVocation" ) .
+
+:StatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Status Enumeration"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Commited" "Not-Completed" ) .
+
+:OriginInformationEntity a samm:Entity ;
+   samm:preferredName "Origin Information Entity"@en ;
+   samm:properties ( :tradeRelation [ samm:property :commercialCountryOfOrigin; samm:optional true ] [ samm:property :federalState; samm:optional true ] :preferedStatus [ samm:property :tracedValue; samm:optional true ] :contactInformation ) .
+
+:tradeRelation a samm:Property ;
+   samm:preferredName "Trade Relation"@en ;
+   samm:characteristic :TradeRelationTrait ;
+   samm:exampleValue "EU-MX" .
+
+:commercialCountryOfOrigin a samm:Property ;
+   samm:preferredName "Commercial Country Of Origin"@en ;
+   samm:characteristic :CommercialCountryOfOriginTrait ;
+   samm:exampleValue "DE" .
+
+:federalState a samm:Property ;
+   samm:preferredName "Federal State"@en ;
+   samm:characteristic :FederalStateTrait ;
+   samm:exampleValue "BW" .
+
+:preferedStatus a samm:Property ;
+   samm:preferredName "Prefered Status"@en ;
+   samm:characteristic :PreferedStatusEnumeration ;
+   samm:exampleValue "Y-Certified" .
+
+:tracedValue a samm:Property ;
+   samm:preferredName "Traced Value"@en ;
+   samm:characteristic :Characteristic1Trait ;
+   samm:exampleValue "300.00" .
+
+:contactInformation a samm:Property ;
+   samm:preferredName "Contact Information"@en ;
+   samm:characteristic :ContactInformationCharacteristic .
+
+:TradeRelationTrait a samm-c:Trait ;
+   samm:preferredName "Trade Relation Trait"@en ;
+   samm-c:baseCharacteristic :TradeRelationCharacteristic ;
+   samm-c:constraint :TradeRelationRegularExpression .
+
+:CommercialCountryOfOriginTrait a samm-c:Trait ;
+   samm:preferredName "Commercial Country Of Origin Trait"@en ;
+   samm-c:baseCharacteristic :CommercialCountryOfOriginCharacteristic ;
+   samm-c:constraint :CountryAndStateCodeRegularExpression .
+
+:FederalStateTrait a samm-c:Trait ;
+   samm:preferredName "Federal State Trait"@en ;
+   samm-c:baseCharacteristic :FederalStateEnumeration ;
+   samm-c:constraint :CountryAndStateCodeRegularExpression .
+
+:PreferedStatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Prefered Status Enumeration"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Y-Certified" "N-NotCertified" "NoLongerUsed" "NoLongerSupplied" ) .
+
+:Characteristic1Trait a samm-c:Trait ;
+   samm-c:baseCharacteristic :TracedValueCharacteristic ;
+   samm-c:constraint :TracedValueRegularExpression .
+
+:ContactInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Contact Information Characteristic"@en ;
+   samm:dataType :ContactInformationEntity .
+
+:TradeRelationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Trade Relation Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:TradeRelationRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Trade Relation Regular Expression"@en ;
+   samm:value "^([A-Z]{2})-([A-Z]{2})$" .
+
+:CommercialCountryOfOriginCharacteristic a samm:Characteristic ;
+   samm:preferredName "Commercial Country Of Origin Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:CountryAndStateCodeRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Country And State Code Regular Expression"@en ;
+   samm:value "^[A-Z]{2}$" .
+
+:FederalStateEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Federal State Enumeration"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "BW" "BY" "BW" "BB" "HB" "HH" "HE" "MV" "NI" "NW" "RP" "SL" "SN" "ST" "SH" "TH" "99" ) .
+
+:TracedValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "Traced Value Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:TracedValueRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Traced Value Regular Expression"@en ;
+   samm:value "^(0|[1-9]\\d*)(\\.\\d+)?$  " .
+
+:ContactInformationEntity a samm:Entity ;
+   samm:preferredName "Contact Information Entity"@en ;
+   samm:properties ( :contactPerson :jobTitle :email :phoneNumber ) .
+
+:contactPerson a samm:Property ;
+   samm:preferredName "Contact Person"@en ;
+   samm:characteristic :ContactPersionCharacteristic ;
+   samm:exampleValue "Max Mustermann" .
+
+:jobTitle a samm:Property ;
+   samm:preferredName "Job Title"@en ;
+   samm:characteristic :JobTitleCharacteristic ;
+   samm:exampleValue "executive position" .
+
+:email a samm:Property ;
+   samm:preferredName "Email"@en ;
+   samm:characteristic :EmailCharacteristic ;
+   samm:exampleValue "max.mustermann@ziel.de" .
+
+:phoneNumber a samm:Property ;
+   samm:preferredName "Phone Number"@en ;
+   samm:characteristic :PhoneNumberCharacteristic ;
+   samm:exampleValue "+49 89 123456" .
+
+:ContactPersionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Contact Persion Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:JobTitleCharacteristic a samm:Characteristic ;
+   samm:preferredName "Job Title Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:EmailCharacteristic a samm:Characteristic ;
+   samm:preferredName "Email Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:PhoneNumberCharacteristic a samm:Characteristic ;
+   samm:preferredName "Phone Number Characteristic"@en ;
+   samm:dataType xsd:string .
