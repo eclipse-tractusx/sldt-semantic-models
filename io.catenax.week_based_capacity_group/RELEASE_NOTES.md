@@ -2,6 +2,12 @@
 
 All notable changes to this model will be documented in this file.
 
+## [3.0.1] - 2024-09-16
+
+### Changed
+
+- updated descriptions and constraint inconsistencies fixed (no semantic conflicts)
+
 ## [3.0.0] - 2024-03-11
 
 ### Added
