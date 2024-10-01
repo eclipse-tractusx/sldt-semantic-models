@@ -1,0 +1,328 @@
+#######################################################################
+# Copyright(c) 2024 BASF SE
+# Copyright(c) 2024 Bayerische Motoren Werke Aktiengesellschaft(BMW AG)
+# Copyright(c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V.(represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright(c) 2024 German Edge Cloud GmbH & Co. KG
+# Copyright(c) 2024 Mercedes Benz AG
+# Copyright(c) 2024 Robert Bosch Manufacturing Solutions GmbH
+# Copyright(c) 2024 SAP SE
+# Copyright(c) 2024 Siemens AG
+# Copyright(c) 2024 ZF Friedrichshafen AG
+# Copyright(c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International(CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.customs_information:1.0.0#>.
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#>.
+
+:CustomsInformation a samm:Aspect;
+   samm:preferredName "Customs Information"@en;
+   samm:description "To carry out a preference calculation, customs-specific master data is required for all installed parts within a product. For this purpose, the manufacturer of the product requests this information from the relevant suppliers for all purchased parts (part numbers)and uses it for the preference calculation.\n\nThe exchange takes place peer-to-peer from one value-added participant across the two tier levels."@en;
+   samm:properties (:customsInformation :catenaXId);
+   samm:operations ();
+   samm:events ().
+
+:customsInformation a samm:Property;
+   samm:preferredName "Customs Information"@en;
+   samm:description "CustomsInformation contains all customs-related information for a long-term supplier's declaration for a part. Long-term supplier's declarations (LLE)are one-off declarations that are valid for deliveries over a longer period of time, provided that the delivered goods are expected to have the same origin status."@en;
+   samm:characteristic :CustomsInformationSet.
+
+:catenaXId a samm:Property;
+   samm:preferredName "Catena-X Identifier"@en;
+   samm:description "The fully anonymous Catena-X ID of the corresponding part, valid for the Catena-X dataspace."@en;
+   samm:characteristic ext-uuid:UuidV4Trait;
+   samm:exampleValue "580d3adf-1981-44a0-a214-13d6ceed9379".
+
+:CustomsInformationSet a samm-c:Set;
+   samm:preferredName "Customs Information Set"@en;
+   samm:description "Characteristic of the customs information property defined as a Set."@en;
+   samm:dataType :CustomsInformationEntity.
+
+:CustomsInformationEntity a samm:Entity;
+   samm:preferredName "Customs Information Entity"@en;
+   samm:description "Entity of the customs information."@en;
+   samm:properties (:originInformation :confirmationDate :validFrom :type :status).
+
+:originInformation a samm:Property;
+   samm:preferredName "Origin Information"@en;
+   samm:description "OriginInformation contains all the information required to determine that the part is eligible for preferential treatment, i.e. the determination of preferential origin."@en;
+   samm:characteristic :OriginInformationCharacteristic.
+
+:confirmationDate a samm:Property;
+   samm:preferredName "Confirmation Date"@en;
+   samm:description "Confirmation Date is the date of issue of a long-term supplier's declaration."@en;
+   samm:characteristic :DateCharacteristic;
+   samm:exampleValue "2024-03-27"^^xsd:date.
+
+:validFrom a samm:Property;
+   samm:preferredName "Valid From"@en;
+   samm:description "Valid From is the date from which a long-term supplier declaration is valid. This date can be in the future."@en;
+   samm:characteristic :DateCharacteristic;
+   samm:exampleValue "2024-03-20"^^xsd:date.
+
+:type a samm:Property;
+   samm:preferredName "Type"@en;
+   samm:description "Type is the reason for submitting a long-term supplier's declaration. This may be due to a recurring annual enquiry by the customer or at the start of a supply relationship."@en;
+   samm:characteristic :TypeEnumaration;
+   samm:exampleValue "AnnualRequest".
+
+:status a samm:Property;
+   samm:preferredName "Status"@en;
+   samm:description "Status represents the stage of a long-term supplier's declaration. Committed indicates to the data recipient that all data has been provided correctly."@en;
+   samm:characteristic :StatusEnumeration;
+   samm:exampleValue "Committed".
+
+:OriginInformationCharacteristic a samm:Characteristic;
+   samm:preferredName "Origin Information Characteristic"@en;
+   samm:description "Characteristic of the origin information property."@en;
+   samm:dataType :OriginInformationEntity.
+
+:DateCharacteristic a samm:Characteristic;
+   samm:preferredName "Date Characteristic"@en;
+   samm:description "Characteristic to define the date for one or more properties."@en;
+   samm:dataType xsd:date.
+
+:TypeEnumaration a samm-c:Enumeration;
+   samm:preferredName "Type Enumaration"@en;
+   samm:description "Characteristic of the type property defined as an Enumeration."@en;
+   samm:dataType xsd:string;
+   samm-c:values ("AnnualRequest" "InitialRequest" "Reminder-1" "Reminder-2" "Reminder-3" "ReVocation").
+
+:StatusEnumeration a samm-c:Enumeration;
+   samm:preferredName "Status Enumeration"@en;
+   samm:description "Characteristic of the status property defined as an Enumeration."@en;
+   samm:dataType xsd:string;
+   samm-c:values ("Not-Completed" "Committed").
+
+:OriginInformationEntity a samm:Entity;
+   samm:preferredName "Origin Information Entity"@en;
+   samm:description "Entity of the origin information."@en;
+   samm:properties (:tradeRelation [ samm:property :commercialCountryOfOrigin; samm:optional true ] [ samm:property :federalState; samm:optional true ] :preferredStatus [ samm:property :tracedWorth; samm:optional true ] :contactInformation [ samm:property :originOfManufacturing; samm:optional true ]).
+
+:tradeRelation a samm:Property;
+   samm:preferredName "Trade Relation"@en;
+   samm:description "The trade relation (preferential agreement)for which origin information has been provided."@en;
+   samm:characteristic :TradeRelationTrait;
+   samm:exampleValue "EU-MX".
+
+:commercialCountryOfOrigin a samm:Property;
+   samm:preferredName "Commercial Country Of Origin"@en;
+   samm:description "The term \"Commercial Country Of Origin\" specifically refers to the country where the goods were originally produced, manufactured or significantly transformed"@en;
+   samm:characteristic :CommercialCountryOfOriginTrait;
+   samm:exampleValue "DE".
+
+:federalState a samm:Property;
+   samm:preferredName "Federal State"@en;
+   samm:description "German federal state in which the part was manufactured."@en;
+   samm:characteristic :FederalStateTrait;
+   samm:exampleValue "BW".
+
+:preferredStatus a samm:Property;
+   samm:preferredName "Preferred Status"@en;
+   samm:description "This is the preference status of the part."@en;
+   samm:characteristic :PreferredStatusEnumeration;
+   samm:exampleValue "Y-Certified".
+
+:tracedWorth a samm:Property;
+   samm:preferredName "Traced Worth"@en;
+   samm:description "Material value of the part in a currency unit."@en;
+   samm:characteristic :TracedWorthCharacteristic.
+
+:contactInformation a samm:Property;
+   samm:preferredName "Contact Information"@en;
+   samm:description "Contact information for the responsible."@en;
+   samm:characteristic :ContactInformationCharacteristic.
+
+:originOfManufacturing a samm:Property;
+   samm:preferredName "Origin Of Manufacturing"@en;
+   samm:description "Information of the Manufacturing place."@en;
+   samm:characteristic :OriginOfManufacturingCharacteristic.
+
+:TradeRelationTrait a samm-c:Trait;
+   samm:preferredName "Trade Relation Trait"@en;
+   samm-c:baseCharacteristic :TradeRelationCharacteristic;
+   samm-c:constraint :TradeRelationRegularExpression.
+
+:CommercialCountryOfOriginTrait a samm-c:Trait;
+   samm:preferredName "Commercial Country Of Origin Trait"@en;
+   samm-c:baseCharacteristic :CommercialCountryOfOriginCharacteristic;
+   samm-c:constraint :CountryAndStateCodeRegularExpression.
+
+:FederalStateTrait a samm-c:Trait;
+   samm:preferredName "Federal State Trait"@en;
+   samm-c:baseCharacteristic :FederalStateEnumeration;
+   samm-c:constraint :CountryAndStateCodeRegularExpression.
+
+:PreferredStatusEnumeration a samm-c:Enumeration;
+   samm:preferredName "Preferred Status Enumeration"@en;
+   samm:description "Characteristic of the preferred status property defined as an enumeration."@en;
+   samm:dataType xsd:string;
+   samm-c:values ("Y-Certified" "N-NotCertified" "NoLongerUsed" "NoLongerSupplied").
+
+:TracedWorthCharacteristic a samm:Characteristic;
+   samm:preferredName "Traced Worth Characteristic"@en;
+   samm:description "Characteristic of the traced worth property."@en;
+   samm:dataType :TracedWorthEntity.
+
+:ContactInformationCharacteristic a samm:Characteristic;
+   samm:preferredName "Contact Information Characteristic"@en;
+   samm:description "Characteristic of the contact information property."@en;
+   samm:dataType :ContactInformationEntity.
+
+:OriginOfManufacturingCharacteristic a samm:Characteristic;
+   samm:preferredName "Origin Of Manufacturing Characteristic"@en;
+   samm:description "Characteristic of the origin of manufacturing."@en;
+   samm:dataType :OriginOfManufacturingEntity.
+
+:TradeRelationCharacteristic a samm:Characteristic;
+   samm:preferredName "Trade Relation Characteristic"@en;
+   samm:description "Characteristic of the trade relation property defined as String with Regular Expression."@en;
+   samm:dataType xsd:string.
+
+:TradeRelationRegularExpression a samm-c:RegularExpressionConstraint;
+   samm:preferredName "Trade Relation Regular Expression"@en;
+   samm:description "Regular expression to restrict the trade relation based on the ISO 3166."@en;
+   samm:see <https://www.iso.org/iso-3166-country-codes.html>;
+   samm:value "^([A-Z]{2})-([A-Z]{2})$".
+
+:CommercialCountryOfOriginCharacteristic a samm:Characteristic;
+   samm:preferredName "Commercial Country Of Origin Characteristic"@en;
+   samm:description "Characteristic of the commercial country of origin property defined as String with Regular Expression."@en;
+   samm:dataType xsd:string.
+
+:CountryAndStateCodeRegularExpression a samm-c:RegularExpressionConstraint;
+   samm:preferredName "Country And State Code Regular Expression"@en;
+   samm:description "Regular expression to restrict a country code or federal state based on the ISO 3166."@en;
+   samm:see <https://www.iso.org/iso-3166-country-codes.html>;
+   samm:value "^[A-Z]{2}$".
+
+:FederalStateEnumeration a samm-c:Enumeration;
+   samm:preferredName "Federal State Enumeration"@en;
+   samm:description "Characteristic of the federal state property defined as Enumeration with Regular Expression."@en;
+   samm:dataType xsd:string;
+   samm-c:values ("BW" "BY" "BW" "BB" "HB" "HH" "HE" "MV" "NI" "NW" "RP" "SL" "SN" "ST" "SH" "TH" "99").
+
+:TracedWorthEntity a samm:Entity;
+   samm:preferredName "Traced Worth Entity"@en;
+   samm:description "Entity of the traced worth."@en;
+   samm:properties (:value :currency).
+
+:ContactInformationEntity a samm:Entity;
+   samm:preferredName "Contact Information Entity"@en;
+   samm:description "Entity of the contact information."@en;
+   samm:properties (:contactPerson :jobTitle :email :phoneNumber).
+
+:OriginOfManufacturingEntity a samm:Entity;
+   samm:preferredName "Origin Of Manufacturing Entity"@en;
+   samm:description "Entity of the origin of manufacturing."@en;
+   samm:properties (:longitude :latitude).
+
+:value a samm:Property;
+   samm:preferredName "Value"@en;
+   samm:description "Value of traced Value  depending on the currency."@en;
+   samm:characteristic :ValueCharacteristic;
+   samm:exampleValue "300.45"^^xsd:double.
+
+:currency a samm:Property;
+   samm:preferredName "Currency"@en;
+   samm:description "This is the currency of the traced value."@en;
+   samm:characteristic :CurrencyTrait;
+   samm:exampleValue "EUR".
+
+:contactPerson a samm:Property;
+   samm:preferredName "Contact Person"@en;
+   samm:description "Name of the person responsible for the customs information provided."@en;
+   samm:characteristic :ContactPersionCharacteristic;
+   samm:exampleValue "Max Mustermann".
+
+:jobTitle a samm:Property;
+   samm:preferredName "Job Title"@en;
+   samm:description "Jobtitle of the responsible for the customs information provided."@en;
+   samm:characteristic :JobTitleCharacteristic;
+   samm:exampleValue "executive position".
+
+:email a samm:Property;
+   samm:preferredName "Email"@en;
+   samm:description "E-Mail of the responsible for the customs information provided."@en;
+   samm:characteristic :EmailCharacteristic;
+   samm:exampleValue "max.mustermann@ziel.de".
+
+:phoneNumber a samm:Property;
+   samm:preferredName "Phone Number"@en;
+   samm:description "Phone number of the responsible for the customs information provided."@en;
+   samm:characteristic :PhoneNumberCharacteristic;
+   samm:exampleValue "+49 89 123456".
+
+:longitude a samm:Property;
+   samm:preferredName "Longitude"@en;
+   samm:description "Longitude of the manufacturing place."@en;
+   samm:characteristic :LongitudeAndLatitudeCharacteristic;
+   samm:exampleValue "13.214907205727538"^^xsd:double.
+
+:latitude a samm:Property;
+   samm:preferredName "Latitude"@en;
+   samm:description "Latiitude of the manufacturing place."@en;
+   samm:characteristic :LongitudeAndLatitudeCharacteristic;
+   samm:exampleValue "59.351212217399095"^^xsd:double.
+
+:ValueCharacteristic a samm:Characteristic;
+   samm:preferredName "Value Characteristic"@en;
+   samm:description "Characteristic of the value property defined as double. "@en;
+   samm:dataType xsd:double.
+
+:CurrencyTrait a samm-c:Trait;
+   samm:preferredName "Currency Trait"@en;
+   samm-c:baseCharacteristic :CurrencyCharacteristic;
+   samm-c:constraint :CurrencyRegularExpression.
+
+:ContactPersionCharacteristic a samm:Characteristic;
+   samm:preferredName "Contact Persion Characteristic"@en;
+   samm:description "Characteristic of the contact person defined as String."@en;
+   samm:dataType xsd:string.
+
+:JobTitleCharacteristic a samm:Characteristic;
+   samm:preferredName "Job Title Characteristic"@en;
+   samm:description "Characteristic of the job title defined as String."@en;
+   samm:dataType xsd:string.
+
+:EmailCharacteristic a samm:Characteristic;
+   samm:preferredName "Email Characteristic"@en;
+   samm:description "Characteristic of the e-mail defined as String."@en;
+   samm:dataType xsd:string.
+
+:PhoneNumberCharacteristic a samm:Characteristic;
+   samm:preferredName "Phone Number Characteristic"@en;
+   samm:description "Characteristic of the phone number defined as String."@en;
+   samm:dataType xsd:string.
+
+:LongitudeAndLatitudeCharacteristic a samm:Characteristic;
+   samm:preferredName "Longitude And Latitude Characteristic"@en;
+   samm:description "Characteristic of the geological position for the manufacturing origin defined as double. "@en;
+   samm:dataType xsd:double.
+
+:CurrencyCharacteristic a samm:Characteristic;
+   samm:preferredName "Currency Characteristic"@en;
+   samm:description "Characteristic of the currency property defined as String."@en;
+   samm:dataType xsd:string.
+
+:CurrencyRegularExpression a samm-c:RegularExpressionConstraint;
+   samm:preferredName "Currency Regular Expression"@en;
+   samm:description "Regular expression to restrict the currency based on the ISO 4217."@en;
+   samm:see <https://www.iso.org/iso-4217-currency-codes.html>;
+   samm:value "^[A-Z]{3}$".
