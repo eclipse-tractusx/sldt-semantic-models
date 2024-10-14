@@ -1,0 +1,41 @@
+name: "TruffleHog"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: ["main"]
+  schedule:
+    - cron: "0 0 * * *" # Once a day
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+  id-token: write
+  issues: write
+
+jobs:
+  ScanSecrets:
+    name: Scan secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensure full clone for pull request workflows
+
+      - name: TruffleHog OSS
+        id: trufflehog
+        uses: trufflesecurity/trufflehog@7e78ca385fb82c19568c7a4b341c97d57d9aa5e1
+        continue-on-error: true
+        with:
+          path: ./  # Scan the entire repository
+          base: "${{ github.event.repository.default_branch }}"  # Set base branch for comparison (pull requests)
+          extra_args: --filter-entropy=4 --results=verified,unknown --debug
+      
+      - name: Scan Results Status
+        if: steps.trufflehog.outcome == 'failure'
+        run: exit 1  # Set workflow run to failure if TruffleHog finds secrets 
