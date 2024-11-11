@@ -1,5 +1,7 @@
 #######################################################################
 # Copyright (c) 2023 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2024 Catena-X Automotive Network e.V.
+# Copyright (c) 2023-2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -42,9 +44,11 @@ jobs:
         run: |
           mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.changes.outputs.added_modified }}')
           for added_modified_file in "${added_modified_files[@]}"; do
-            echo "Generate model artifacts for ${added_modified_file}."
-            ./generate.sh ${added_modified_file}
-            git add $(dirname "${added_modified_file}")
+            if [[ $added_modified_file == *".ttl" ]]; then
+              echo "Generate model artifacts for ${added_modified_file}."
+              ./generate.sh ${added_modified_file}
+              git add $(dirname "${added_modified_file}")
+            fi
           done
       - name: Commit new artifacts
         run: |
