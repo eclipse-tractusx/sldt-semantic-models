@@ -1,7 +1,7 @@
 # Aspect Models for Eclipse Tractus-X Semantic Layer (SLDT)
 The repository contains the aspect models based on [SAMM (Semantic Aspect Meta Model)](https://eclipse-esmf.github.io/samm-specification/2.1.0/index.html) for the Tractus-X project for Catena-X.
 
-**Currently, we assume the usage of the version 2.9.7 of the [SAMM-CLI](https://eclipse-esmf.github.io/esmf-developer-guide/2.9.7/tooling-guide/samm-cli.html) and version 5.6.0 of the [Aspect Model Editor](https://eclipse-esmf.github.io/ame-guide/5.6.0/introduction.html) **.
+**Currently, we assume the usage of the version 2.9.7 of the [SAMM-CLI](https://eclipse-esmf.github.io/esmf-developer-guide/2.9.7/tooling-guide/samm-cli.html) and version 5.6.0 of the [Aspect Model Editor](https://eclipse-esmf.github.io/ame-guide/5.6.0/introduction.html)**.
 
 # Using the models
 The models can locally be processed with the [SAMM CLI](https://eclipse-esmf.github.io/esmf-developer-guide/2.9.7/tooling-guide/samm-cli.html), which is documented [here](https://eclipse-esmf.github.io/esmf-developer-guide/2.9.7/tooling-guide/samm-cli.html).
