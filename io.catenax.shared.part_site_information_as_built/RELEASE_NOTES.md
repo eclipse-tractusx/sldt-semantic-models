@@ -2,6 +2,12 @@
 
 All notable changes to this model will be documented in this file.
 
+## 3.0.0
+
+### Removed
+
+- attribute catenaXId
+
 ## [2.0.0] 2024-02-01
 
 - Reference to BPNS Trait updated
