@@ -6,7 +6,7 @@ All notable changes to this model will be documented in this file.
 
 ### Changed
 - New data attributes added for entity Document: creationDate, contentType and contentBase64
-- New data attributes for an entity issuer: issuerName and issuerBpn.
+- New data attributes for entity Issuer: issuerName and issuerBpn.
 - issuerBpn changed to optional
 - fixed typos, added missing descriptions 
 
