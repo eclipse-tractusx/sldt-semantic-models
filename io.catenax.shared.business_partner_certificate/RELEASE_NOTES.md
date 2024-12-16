@@ -2,7 +2,7 @@
 
 All notable changes to this model will be documented in this file.
 
-## [3.0.0] 02.12.2024
+## [3.0.0] 16.12.2024
 
 ### Changed
 - New data attributes added for entity Document: creationDate, contentType and contentBase64
