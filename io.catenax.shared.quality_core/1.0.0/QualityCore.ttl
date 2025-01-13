@@ -85,7 +85,7 @@
 :GeneralProperties a samm:Entity ;
    samm:preferredName "General properties"@en ;
    samm:description "Bundling general properties that do not belong to parts or vehicles."@en ;
-   samm:properties ( :countryCode :latitude :longitude :catenaXQualityTaskId :recordStatus :semanticModel :semanticModelVersion :sessionId :workShopId ) .
+   samm:properties ( :catenaXQualityTaskId :countryCode :hexValue :latitude :longitude :recordStatus :semanticModel :semanticModelVersion :sessionId :workShopId ) .
 
 :MetaInformation a samm:Entity ;
    samm:preferredName "Meta Information"@en ;
@@ -94,19 +94,31 @@
 
 :PartProperties a samm:Entity ;
    samm:preferredName "Part Properties"@en ;
-   samm:description "Bundling part/component properties. A part/component is meant as one piece in a vehicle. The terms part and component are synonymes."@en ;
-   samm:properties ( :catenaXPartId :dataMatrixCode :manufacturerPartNumber :manufacturerSerialNumber :partName :partNumber :serialNumber :supplierId ) .
+   samm:description "Bundling part/component properties. A part/component is meant as one piece in a vehicle. The terms part and component are synonyms. Some parts/components are produced/manufacturer by a supplier and sold by an automotive manufacturer/original equipment manufacturer (OEM). That's why for the same part different part numbers can exists: e.g. manufacturerPartNumber that is used within the manufacturing company and oemPartNumber that is labelled on the part itself. Spare parts from aftermarket have often only manufacturerPartNumber on them."@en ;
+   samm:properties ( :catenaXPartId :dataMatrixCode :manufacturerPartName :manufacturerPartNumber :manufacturerSerialNumber :oemPartName :oemPartNumber :oemSerialNumber :supplierId ) .
 
 :VehicleProperties a samm:Entity ;
    samm:preferredName "Vehicle properties"@en ;
    samm:description "Bundling vehicle/car properties like anonymizedVIN or mileage counter."@en ;
    samm:properties ( :anonymizedVIN :catenaXVehicleId :mileage ) .
 
+:catenaXQualityTaskId a samm:Property ;
+   samm:preferredName "Quality Task ID"@en ;
+   samm:description "A unique quality task identifier within the Catena-X data-space. The unique id uses the Catena-X UUID trait."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "430f56d3-1234-1234-1234-abc123456789" .
+
 :countryCode a samm:Property ;
    samm:preferredName "Country code"@en ;
    samm:description "Country code in  ISO 3166-1 alpha-3 codes where this session took place"@en ;
    samm:characteristic :CountryCodeTrait ;
    samm:exampleValue "DEU" .
+
+:hexValue a samm:Property ;
+   samm:preferredName "Hex value"@en ;
+   samm:description "Hex values use are encoded in  0-9,a-f or A-F to store information. "@en ;
+   samm:characteristic :HexValueTrait ;
+   samm:exampleValue "0x343343443af" .
 
 :latitude a samm:Property ;
    samm:preferredName "Latitude"@en ;
@@ -121,12 +133,6 @@
    samm:see <https://www.w3.org/2003/01/geo/#overview> ;
    samm:characteristic :LongitudeTrait ;
    samm:exampleValue "48.81109356017604"^^xsd:float .
-
-:catenaXQualityTaskId a samm:Property ;
-   samm:preferredName "Quality Task ID"@en ;
-   samm:description "A unique quality task identifier within the Catena-X data-space. The unique id uses the Catena-X UUID trait."@en ;
-   samm:characteristic ext-uuid:UuidV4Trait ;
-   samm:exampleValue "430f56d3-1234-1234-1234-abc123456789" .
 
 :recordStatus a samm:Property ;
    samm:preferredName "Record status"@en ;
@@ -188,6 +194,12 @@
    samm:characteristic :UniqueID ;
    samm:exampleValue "3#5ZZ9454554CE#2024-07-10#BR11" .
 
+:manufacturerPartName a samm:Property ;
+   samm:preferredName "Manufacturer part name"@en ;
+   samm:description "Manufacturer specific part name. A part name is not unique - same kinds of parts can share same OEM part name."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Gear box Gen9" .
+
 :manufacturerPartNumber a samm:Property ;
    samm:preferredName "Manufacturer part number"@en ;
    samm:description "Part number given from  the manufacturer or supplier of this part, component, sub component or raw material. A manufacturer part number is NOT unique: All parts of the same kind share the same part number."@en ;
@@ -196,25 +208,25 @@
 
 :manufacturerSerialNumber a samm:Property ;
    samm:preferredName "Manufacturer serial number"@en ;
-   samm:description "Serial number given from the manufacturer or supplier of this part, component, sub component. A manufacturer serial number is unique: With the serial number the produced part can be traced within the manufacturer."@en ;
+   samm:description "Serial number given from the manufacturer or supplier of this part, component, sub component. A manufacturer serial number is unique: With the serial number the produced part can be traced within the manufacturer.\nManufacturer serial numbers are often use for spare parts from the aftermarket."@en ;
    samm:characteristic :UniqueID ;
    samm:exampleValue "GBH3232434535454545-3534535" .
 
-:partName a samm:Property ;
-   samm:preferredName "Part name"@en ;
-   samm:description "Part name of one part. A part name is not unique."@en ;
+:oemPartName a samm:Property ;
+   samm:preferredName "OEM part name"@en ;
+   samm:description "OEM specific part name. A part name is not unique - same kinds of parts can share same OEM part name."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Gear box control unit." .
 
-:partNumber a samm:Property ;
-   samm:preferredName "Part number"@en ;
-   samm:description "Part number of one part. A part number is NOT unique."@en ;
+:oemPartNumber a samm:Property ;
+   samm:preferredName "OEM Part number"@en ;
+   samm:description "OEM specific part number. A part number is not unique - same kinds of parts can share same OEM part number."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "AD12345" .
 
-:serialNumber a samm:Property ;
-   samm:preferredName "Serial number"@en ;
-   samm:description "Serial number of a part. A serial number is unique that means no other part/component has the same serial number."@en ;
+:oemSerialNumber a samm:Property ;
+   samm:preferredName "OEM Serial number"@en ;
+   samm:description "Serial number as given from the OEM of one specific  part. A serial number is unique that means no other part/component has the same serial number."@en ;
    samm:characteristic :UniqueID ;
    samm:exampleValue "ECU20646005020221" .
 
@@ -247,6 +259,12 @@
    samm:description "This trait ensures a 3 characters country code."@en ;
    samm-c:baseCharacteristic :CountryCodeCharacteristic ;
    samm-c:constraint :CountryCodeRegularExpression .
+
+:HexValueTrait a samm-c:Trait ;
+   samm:preferredName "Hex Value Trait"@en ;
+   samm:description "This trait allows 0-9, a-f, A-F in a string value. Optional prefix is \"0x\"."@en ;
+   samm-c:baseCharacteristic :HexCodeCharacteristic ;
+   samm-c:constraint :HexRegularExpression .
 
 :LatitudeTrait a samm-c:Trait ;
    samm:preferredName "Latitude Trait"@en ;
@@ -293,6 +311,16 @@
    samm:description "Regular Expression that ensures a three-letter code "@en ;
    samm:see <https://www.iso.org/iso-3166-country-codes.html> ;
    samm:value "^[A-Z][A-Z][A-Z]$" .
+
+:HexCodeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Hex code characteristic"@en ;
+   samm:description "Describing a hex code: 0-9, a-f, A-F, optional 0x"@en ;
+   samm:dataType xsd:string .
+
+:HexRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Hex regular expression"@en ;
+   samm:description "This regular expression enforces a hex string. It ensures 0-9, a-f, A-F with an optional prefix 0x.\nValid examples:\n- 0x0123456789abcdefABCDEF\n- 0123456789abcdefABCDEF\n"@en ;
+   samm:value "^(0x)?[0-9a-fA-F]+$" .
 
 :Float a samm:Characteristic ;
    samm:preferredName "Float"@en ;
