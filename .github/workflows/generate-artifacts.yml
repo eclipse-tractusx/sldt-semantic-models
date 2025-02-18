@@ -46,6 +46,7 @@ jobs:
           distribution: temurin
           java-version: '17'
       - name: Generate artifacts for new models
+        id: generate_artifacts
         run: |
           artifacts_generated=false
           mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.changes.outputs.added_modified }}')
@@ -57,8 +58,9 @@ jobs:
               artifacts_generated=true
             fi
           done
-
+      
           echo "artifacts_generated=$artifacts_generated" >> $GITHUB_OUTPUT
+      
       - name: Commit new artifacts
         if: steps.generate_artifacts.outputs.artifacts_generated == 'true'
         run: |
@@ -66,3 +68,4 @@ jobs:
           git config --global user.email "username@users.noreply.github.com"
           git commit -a -m "Adding auto-generated artifacts for new models"
           git push
+
