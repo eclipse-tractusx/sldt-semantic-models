@@ -1,0 +1,158 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#SpecialCharacteristicMeasurement",
+  "description" : "Contains the Measurment for a special characteristic",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "BpnlTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnlTrait",
+        "description" : "The provided regular expression ensures that the BPNL is composed of prefix 'BPNL', 10 digits and two alphanumeric letters.",
+        "pattern" : "^BPNL[a-zA-Z0-9]{12}$"
+      },
+      "KeyTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.serial_part:3.0.0#KeyTrait",
+        "description" : "Constraint that ensures that the standard keys and custom key prefixes can be used.",
+        "pattern" : "^(manufacturerId|partInstanceId|batchId|van|customKey:\\w+)$"
+      },
+      "ValueCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.serial_part:3.0.0#ValueCharacteristic",
+        "description" : "The value of an identifier."
+      },
+      "KeyValueList" : {
+        "description" : "A list of key value pairs for local identifiers, which are composed of a key and a corresponding value.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.serial_part:3.0.0#KeyValueList",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "description" : "The key of a local identifier. ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.serial_part:3.0.0#key",
+            "$ref" : "#/components/schemas/KeyTrait"
+          },
+          "value" : {
+            "description" : "The value of an identifier.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.serial_part:3.0.0#value",
+            "$ref" : "#/components/schemas/ValueCharacteristic"
+          }
+        },
+        "required" : [ "key", "value" ]
+      },
+      "LocalIdentifierCharacteristic" : {
+        "description" : "A single serialized part may have multiple attributes, that uniquely identify a that part in a specific dataspace (e.g. the manufacturer`s dataspace)",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.serial_part:3.0.0#LocalIdentifierCharacteristic",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/KeyValueList"
+        },
+        "uniqueItems" : true
+      },
+      "PartIdCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.serial_part:3.0.0#PartIdCharacteristic",
+        "description" : "The part ID is a multi-character string, usually assigned by an ERP system"
+      },
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "ValueCharacteristic0" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#ValueCharacteristic"
+      },
+      "UnitReference" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#UnitReference",
+        "description" : "Describes a Property containing a reference to one of the units in the Unit Catalog."
+      },
+      "MeasurementObject" : {
+        "description" : "This Entity represents a generic Measurement Object",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#MeasurementObject",
+        "type" : "object",
+        "properties" : {
+          "identifier" : {
+            "description" : "Use this Attribute to identify the measuremnt ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#identifier",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "measurementTimestamp" : {
+            "description" : "Timestamp when the measurement was taken",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#measurementTimestamp",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "value" : {
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#value",
+            "$ref" : "#/components/schemas/ValueCharacteristic0"
+          },
+          "unit" : {
+            "description" : "Unit of the measured value",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#unit",
+            "$ref" : "#/components/schemas/UnitReference"
+          },
+          "description" : {
+            "description" : "Use this attribute to give a more detailed description to this measurement. ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#description",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "identifier", "measurementTimestamp", "value", "description" ]
+      },
+      "ResultList" : {
+        "description" : "List of result objects",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#ResultList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/MeasurementObject"
+        }
+      }
+    }
+  },
+  "properties" : {
+    "manufacturerId" : {
+      "description" : "business partner number of the manufacturer of the related product",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#manufacturerId",
+      "$ref" : "#/components/schemas/BpnlTrait"
+    },
+    "localIdentifiers" : {
+      "description" : "A local identifier enables identification of a part in a specific dataspace, but is not unique in Catena-X dataspace. Multiple local identifiers may exist.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.serial_part:3.0.0#localIdentifiers",
+      "$ref" : "#/components/schemas/LocalIdentifierCharacteristic"
+    },
+    "customerPartId" : {
+      "description" : "Part ID as assigned by the manufacturer of the part. The Part ID identifies the part (as designed)in the customer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.serial_part:3.0.0#customerPartId",
+      "$ref" : "#/components/schemas/PartIdCharacteristic"
+    },
+    "characteristicId" : {
+      "description" : "Identification of the special characteristic in in relation of the specified part",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#characteristicId",
+      "$ref" : "#/components/schemas/Text"
+    },
+    "results" : {
+      "description" : "List of measurementObjects",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#results",
+      "$ref" : "#/components/schemas/ResultList"
+    },
+    "measurementType" : {
+      "description" : "This optional attribute hints the type of the measurement",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#measurementType",
+      "$ref" : "#/components/schemas/Text"
+    },
+    "revisionIndex" : {
+      "description" : "This attribute contains the revision index of the special characteristic, it is necessary to identify a special characteristic",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:1.0.0#revisionIndex",
+      "$ref" : "#/components/schemas/Text"
+    }
+  },
+  "required" : [ "manufacturerId", "localIdentifiers", "customerPartId", "characteristicId", "results", "revisionIndex" ]
+}
