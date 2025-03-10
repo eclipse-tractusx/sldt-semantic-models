@@ -36,14 +36,18 @@ jobs:
           distribution: temurin
           java-version: '17'
       - name: Generate artifacts for new models
-        id: generate_artifacts
         run: |
           find "." -type f -name "*.ttl" | while read -r file; do
+            # Create "gen"-folder per model
+            mkdir -p "$(dirname "$file")/gen"
+
+            # Generate artefacts for each model
             ./generate.sh $file || printf "Artefact generation not possible for: $file \n"
           done
       
-      - name: Commit new artifacts
+      - name: Add and commit new artifacts
         run: |
+          git add -A
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "username@users.noreply.github.com"
           git commit -a -m "Adding auto-generated artifacts for new models"
