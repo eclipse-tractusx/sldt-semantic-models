@@ -95,7 +95,7 @@
 :General a samm:Entity ;
    samm:preferredName "General"@en ;
    samm:description "Bundling general properties that do not belong to parts or vehicles."@en ;
-   samm:properties ( :catenaXQualityTaskId :countryCode :hexValue :latitude :longitude :recordStatus :sessionId :workShopId :additionalInformationList ) .
+   samm:properties ( :qualityTaskId :countryCode :hexValue :latitude :longitude :recordStatus :sessionId :supplierId :supplierName :workShopId :additionalInformationList ) .
 
 :MetaInformation a samm:Entity ;
    samm:preferredName "Meta Information"@en ;
@@ -104,22 +104,22 @@
 
 :Part a samm:Entity ;
    samm:preferredName "Part"@en ;
-   samm:description "Bundling part/component properties. A part/component is meant as one piece in a vehicle. The terms part and component are synonyms. Some parts/components are produced/manufacturer by a supplier and sold by vehicle manufacturer/original equipment manufacturer. That's why for the same part different part numbers can exists: e.g. manufacturerPartNumber that is used within the manufacturing company and oemPartNumber that is labelled on the part itself. Spare parts from aftermarket have often only manufacturerPartNumber on them."@en ;
-   samm:properties ( [ samm:property :supplier1Part; samm:optional true ] [ samm:property :supplier2Part; samm:optional true ] [ samm:property :vehicleManufacturerPart; samm:optional true ] ) .
+   samm:description "A collection of part/component properties. A Catena-X data provider should provide the  properties that are useful for a Catena-X data consumer to clearly identify the part/component. For example, this can be done by using a serial number, data matrix code or delivery note"@en ;
+   samm:properties ( :partName :partDescription [ samm:property :assemblyPartNumberVersion; samm:optional true ] [ samm:property :batchNumber; samm:optional true ] [ samm:property :calibrationInformation; samm:optional true ] [ samm:property :partId; samm:optional true ] [ samm:property :dataMatrixCode; samm:optional true ] [ samm:property :deliveryNote; samm:optional true ] [ samm:property :hwVersion; samm:optional true ] [ samm:property :orderNumber; samm:optional true ] [ samm:property :partNumber; samm:optional true ] [ samm:property :partVersion; samm:optional true ] [ samm:property :serialNumber; samm:optional true ] [ samm:property :swPartNumber; samm:optional true ] [ samm:property :swVersion; samm:optional true ] [ samm:property :variantInfomation; samm:optional true ] ) .
 
 :Plant a samm:Entity ;
    samm:preferredName "Plant properties"@en ;
    samm:description "Bundling plant/production properties."@en ;
-   samm:properties ( :plantIdentifier :plantDescription [ samm:property :plantCatenaXId; samm:optional true ] [ samm:property :plantCountryCode; samm:optional true ] ) .
+   samm:properties ( :plantIdentifier :plantDescription [ samm:property :plantBPNS; samm:optional true ] [ samm:property :plantCountryCode; samm:optional true ] ) .
 
 :Vehicle a samm:Entity ;
    samm:preferredName "Vehicle"@en ;
    samm:description "Bundling vehicle/car properties like anonymizedVIN or mileage counter."@en ;
-   samm:properties ( :anonymizedVIN [ samm:property :catenaXVehicleId; samm:optional true ] :mileage :productionDate :soldDate ) .
+   samm:properties ( :anonymizedVIN [ samm:property :vehicleId; samm:optional true ] :mileage :productionDate :soldDate ) .
 
-:catenaXQualityTaskId a samm:Property ;
+:qualityTaskId a samm:Property ;
    samm:preferredName "Quality Task ID"@en ;
-   samm:description "A unique quality task identifier within the Catena-X data-space. The unique id uses the Catena-X UUID trait."@en ;
+   samm:description "A unique quality task identifier within this data-space."@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "430f56d3-1234-1234-1234-abc123456789" .
 
@@ -161,6 +161,18 @@
    samm:characteristic :UniqueID ;
    samm:exampleValue "3747429FGH382923974682_Session_2023-11-04T08:00:45" .
 
+:supplierId a samm:Property ;
+   samm:preferredName "SupplierID"@en ;
+   samm:description "Specific ID of the supplier that produced the part/component/subcomponent/chemicals/raw materials /etc. You can also use a Catena-X Business Partner Number (BPNL) in here."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "RB2064600502" .
+
+:supplierName a samm:Property ;
+   samm:preferredName "Supplier Name"@en ;
+   samm:description "The name of one supplier company."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Robert Bosch GmbH" .
+
 :workShopId a samm:Property ;
    samm:preferredName "Workshop ID"@en ;
    samm:description "A company-specific identifier for a workshop that is unique in this company."@en ;
@@ -190,20 +202,101 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "2023-12-31T23:59:59" .
 
-:supplier1Part a samm:Property ;
-   samm:preferredName "Supplier 1"@en ;
-   samm:description "The properties supplier 1 and supplier 2 are used in cases where two suppliers,e.g. Tier1 supplier and TIER2 supplier exchange data over Catena-X. The creator/initiator of a QualityTask could fill all properties of supplier1(could be the TIER1) and the data consumer could fill all properties of supplier2(could be the TIER2). "@en ;
-   samm:characteristic :Supplier1PartCharacteristic .
+:partName a samm:Property ;
+   samm:preferredName "OEM part name"@en ;
+   samm:description "The name of a part. A part name is not unique - same kinds of parts can have the same part name."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Gearbox ECU" .
 
-:supplier2Part a samm:Property ;
-   samm:preferredName "Supplier 2"@en ;
-   samm:description "The properties supplier 1 and supplier 2 are used in cases where two suppliers,e.g. Tier1 supplier and TIER2 supplier exchange data over Catena-X. The creator/initiator of a QualityTask could fill all properties of supplier1(could be the TIER1) and the data consumer could fill all properties of supplier2(could be the TIER2). "@en ;
-   samm:characteristic :Supplier2PartCharacteristic .
+:partDescription a samm:Property ;
+   samm:preferredName "Part Description"@en ;
+   samm:description "A textual description of the part."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Gear control unit GBX, second generation." .
 
-:vehicleManufacturerPart a samm:Property ;
-   samm:preferredName "Vehicle Manufacturer"@en ;
-   samm:description "Collection of part identifier coming from the vehicle manufacturer."@en ;
-   samm:characteristic :VehicleManufacturerPartCharacteristic .
+:assemblyPartNumberVersion a samm:Property ;
+   samm:preferredName "Assembly part number version"@en ;
+   samm:description "Often vehicle manufacturer specific: An assembly part number version. Assembly parts are often produced by a supplier that combines his own parts with other parts from other suppliers and ships as one assembly to a vehicle manufacturer."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Steering-GBX-43353522" .
+
+:batchNumber a samm:Property ;
+   samm:preferredName "Batch Number"@en ;
+   samm:description "A batch number describes all parts that were manufactured in the same run."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "LB#LineA#20240731" .
+
+:calibrationInformation a samm:Property ;
+   samm:preferredName "Calibration information"@en ;
+   samm:description "Calibration for this ECU. This could be the result of a calibration process."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Calibration_file_4711" .
+
+:partId a samm:Property ;
+   samm:preferredName "Part identifier"@en ;
+   samm:description "A unique part identifier in this data-space.  Optional as of now not all parts have such an identifier assigned."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9000" .
+
+:dataMatrixCode a samm:Property ;
+   samm:preferredName "Data matrix code"@en ;
+   samm:description "String that is behind a data matrix code. Data matrix codes or short DMC are labelled/printed on components/parts. Example: A data matrix code can combine supplier name, part type, manufacturing and many more information. A DMC string is normally unique."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "3#5ZZ9454554CE#2024-07-10#BR11" .
+
+:deliveryNote a samm:Property ;
+   samm:preferredName "Delivery Note"@en ;
+   samm:description "The delivery note of package."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "Package 439330220585844" .
+
+:hwVersion a samm:Property ;
+   samm:preferredName "Hardware version"@en ;
+   samm:description "The hardware version of this part."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Version H001" .
+
+:orderNumber a samm:Property ;
+   samm:preferredName "Order Number"@en ;
+   samm:description "The order number of this order. This is a unique identifier defined by the supplier."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ORDER-1223324" .
+
+:partNumber a samm:Property ;
+   samm:preferredName "Part number"@en ;
+   samm:description "The number of a physical part. A part number is not unique - same kinds of parts can have same part numbers. Part numbers and part description normally relate to each other."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "GBX-3232455" .
+
+:partVersion a samm:Property ;
+   samm:preferredName "Part version"@en ;
+   samm:description "The version of this hardware part."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "0556A" .
+
+:serialNumber a samm:Property ;
+   samm:preferredName "OEM Serial number"@en ;
+   samm:description "Serial number one specific  part. A serial number is unique that means no other part/component has the same serial number on the world."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ECU20646005020221" .
+
+:swPartNumber a samm:Property ;
+   samm:preferredName "ECU SW part number"@en ;
+   samm:description "Software number installed in this electronic control unit."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "SW3.23" .
+
+:swVersion a samm:Property ;
+   samm:preferredName "ECU SW version"@en ;
+   samm:description "Software version installed in this electronic control unit."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "V001" .
+
+:variantInfomation a samm:Property ;
+   samm:preferredName "Variant information"@en ;
+   samm:description "An electronic control unit has many parameters that have to be set to work correctly: Examples are target market (which functions need to be activated for the target market) or the equipment of the vehicle (e.g. navigation system is installed)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "C01,C02,C03,C10" .
 
 :plantIdentifier a samm:Property ;
    samm:preferredName "Production plant id"@en ;
@@ -217,9 +310,9 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Wolfsburg" .
 
-:plantCatenaXId a samm:Property ;
-   samm:preferredName "Plant Catena-X ID"@en ;
-   samm:description "Unique Catena-X plant identifier, also called BPNS."@en ;
+:plantBPNS a samm:Property ;
+   samm:preferredName "Plant BPNS"@en ;
+   samm:description "A unique plant identifier according BPNS description. Optional as of now not all plants have a BPNS."@en ;
    samm:characteristic ext-number:BpnsTrait ;
    samm:exampleValue "BPNS0123456789ZZ" .
 
@@ -235,9 +328,9 @@
    samm:characteristic :UniqueID ;
    samm:exampleValue "3747429FGH382923974682" .
 
-:catenaXVehicleId a samm:Property ;
-   samm:preferredName "Vehicle Catena-X Identifier"@en ;
-   samm:description "A unique identifier for the vehicle in the Catena-X data space."@en ;
+:vehicleId a samm:Property ;
+   samm:preferredName "Vehicle identifier"@en ;
+   samm:description "A unique identifier for this vehicle in data-space. Optional as of now not all vehicles have such an identifier assigned."@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9379" .
 
@@ -299,21 +392,6 @@
    samm:description "A list of additional information."@en ;
    samm:dataType :AdditionalInformation .
 
-:Supplier1PartCharacteristic a samm:Characteristic ;
-   samm:preferredName "Supplier 1 Characteristic"@en ;
-   samm:description "Bundles part properties for one supplier company called  supplier1. The distinguishing is needed when 2 supplier companies are exchanging data"@en ;
-   samm:dataType :Supplier1Part .
-
-:Supplier2PartCharacteristic a samm:Characteristic ;
-   samm:preferredName "Supplier 2 Characteristic"@en ;
-   samm:description "Bundles part properties for one supplier company called  supplier2. The distinguishing is needed when 2 supplier companies are exchanging data"@en ;
-   samm:dataType :Supplier2Part .
-
-:VehicleManufacturerPartCharacteristic a samm:Characteristic ;
-   samm:preferredName "Vehicle Manufacturer Characteristic"@en ;
-   samm:description "Bundles part properties for a vehicle manufacturer."@en ;
-   samm:dataType :VehicleManufacturerPart .
-
 :MileageCounter a samm-c:Measurement ;
    samm:preferredName "Mileage"@en ;
    samm:description "The mileage counter of the car."@en ;
@@ -369,21 +447,6 @@
    samm:description "One key:value information pair"@en ;
    samm:properties ( :key :value ) .
 
-:Supplier1Part a samm:Entity ;
-   samm:preferredName "Supplier 1 part"@en ;
-   samm:description "Bundling part properties of a supplier. Supplier1 can be used for communication between vehicle manufacturer and one supplier."@en ;
-   samm:properties ( [ samm:property :supplierId; samm:optional true ] :supplierName :partName :partDescription [ samm:property :assemblyPartNumberVersion; samm:optional true ] [ samm:property :batchNumber; samm:optional true ] [ samm:property :calibrationInformation; samm:optional true ] [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :dataMatrixCode; samm:optional true ] [ samm:property :deliveryNote; samm:optional true ] [ samm:property :hwVersion; samm:optional true ] [ samm:property :orderNumber; samm:optional true ] [ samm:property :partNumber; samm:optional true ] [ samm:property :partVersion; samm:optional true ] [ samm:property :serialNumber; samm:optional true ] [ samm:property :swPartNumber; samm:optional true ] [ samm:property :swVersion; samm:optional true ] [ samm:property :variantInfomation; samm:optional true ] ) .
-
-:Supplier2Part a samm:Entity ;
-   samm:preferredName "Supplier 2 part"@en ;
-   samm:description "Bundling part properties of a supplier. Supplier2 can be used for communication between one supplier (for example TIER1 supplier) and another supplier (for example TIER2 supplier). One company can take the properties from Supplier1 and the other company can take the properties of Supplier2."@en ;
-   samm:properties ( [ samm:property :supplierId; samm:optional true ] :supplierName :partName :partDescription [ samm:property :assemblyPartNumberVersion; samm:optional true ] [ samm:property :batchNumber; samm:optional true ] [ samm:property :calibrationInformation; samm:optional true ] [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :dataMatrixCode; samm:optional true ] [ samm:property :deliveryNote; samm:optional true ] [ samm:property :hwVersion; samm:optional true ] [ samm:property :orderNumber; samm:optional true ] [ samm:property :partNumber; samm:optional true ] [ samm:property :partVersion; samm:optional true ] [ samm:property :serialNumber; samm:optional true ] [ samm:property :swPartNumber; samm:optional true ] [ samm:property :swVersion; samm:optional true ] [ samm:property :variantInfomation; samm:optional true ] ) .
-
-:VehicleManufacturerPart a samm:Entity ;
-   samm:preferredName "Vehicle Manufacturer part"@en ;
-   samm:description "Bundling part properties of a vehicle manufacturer."@en ;
-   samm:properties ( :partName :partDescription [ samm:property :assemblyPartNumberVersion; samm:optional true ] [ samm:property :batchNumber; samm:optional true ] [ samm:property :calibrationInformation; samm:optional true ] [ samm:property :catenaXPartId; samm:optional true ] [ samm:property :dataMatrixCode; samm:optional true ] [ samm:property :deliveryNote; samm:optional true ] [ samm:property :hwVersion; samm:optional true ] [ samm:property :orderNumber; samm:optional true ] [ samm:property :partNumber; samm:optional true ] [ samm:property :partVersion; samm:optional true ] [ samm:property :serialNumber; samm:optional true ] [ samm:property :swPartNumber; samm:optional true ] [ samm:property :swVersion; samm:optional true ] [ samm:property :variantInfomation; samm:optional true ] ) .
-
 :DateRegularExpressionNullable a samm-c:RegularExpressionConstraint ;
    samm:preferredName "Date Regular Expression Nullable"@en ;
    samm:description "This regular expressions enforces a given date according ISO 8601 local date. General format is YYYY-MM-DD. YYYY can be 0000..9999. MM-DD is checked together: months 01,03,05,07,08,10,12 must have DD in the range of  01..31 days, months 04,06,09,11 must have DD in the range of  01..30 days, month 02 must have DD in the range of  01..29 days."@en ;
@@ -400,112 +463,4 @@
    samm:description "Value for this additional information"@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Stainless steel" .
-
-:supplierId a samm:Property ;
-   samm:preferredName "SupplierID"@en ;
-   samm:description "Specific ID of the supplier that produced the part/component/subcomponent/chemicals/raw materials /etc. You can also use a Catena-X Business Partner Number (BPNL) in here."@en ;
-   samm:characteristic :UniqueID ;
-   samm:exampleValue "RB2064600502" .
-
-:supplierName a samm:Property ;
-   samm:preferredName "Supplier Name"@en ;
-   samm:description "The name of one supplier company."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Robert Bosch GmbH" .
-
-:partName a samm:Property ;
-   samm:preferredName "OEM part name"@en ;
-   samm:description "The name of a part. A part name is not unique - same kinds of parts can have the same part name."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Gearbox ECU" .
-
-:partDescription a samm:Property ;
-   samm:preferredName "Part Description"@en ;
-   samm:description "A textual description of the part."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Gear contol unit GBX, second generation." .
-
-:assemblyPartNumberVersion a samm:Property ;
-   samm:preferredName "Assembly part number version"@en ;
-   samm:description "Often vehicle manufacturer specific: An assembly part number version. Assembly parts are often produced by a supplier that combines his own parts with other parts from other suppliers and ships as one assembly to a vehicle manufacturer."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Steering-GBX-43353522" .
-
-:batchNumber a samm:Property ;
-   samm:preferredName "Batch Number"@en ;
-   samm:description "A batch number describes all parts that were manufactured in the same run."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "LB#LineA#20240731" .
-
-:calibrationInformation a samm:Property ;
-   samm:preferredName "Calibration information"@en ;
-   samm:description "Calibration for this ECU. This could be the result of a calibration process."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Calibration_file_4711" .
-
-:catenaXPartId a samm:Property ;
-   samm:preferredName "Catena-X part ID"@en ;
-   samm:description "Catena-X ID of one part. A Catena-X ID is unique in Catena-X data-space"@en ;
-   samm:characteristic ext-uuid:UuidV4Trait ;
-   samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9000" .
-
-:dataMatrixCode a samm:Property ;
-   samm:preferredName "Datamatrix code"@en ;
-   samm:description "String that is behind a data matrix code. Data matrix codes or short DMC are labelled/printed on components/parts. Example: A data matrix code can combine supplier name, part type, manufacturing and many more information. A DMC string is normally unique."@en ;
-   samm:characteristic :UniqueID ;
-   samm:exampleValue "3#5ZZ9454554CE#2024-07-10#BR11" .
-
-:deliveryNote a samm:Property ;
-   samm:preferredName "Delivery Note"@en ;
-   samm:description "The delivery note of package."@en ;
-   samm:characteristic :UniqueID ;
-   samm:exampleValue "Package 439330220585844" .
-
-:hwVersion a samm:Property ;
-   samm:preferredName "Hardware version"@en ;
-   samm:description "The hardware version of this part."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Version H001" .
-
-:orderNumber a samm:Property ;
-   samm:preferredName "Order Number"@en ;
-   samm:description "The order number of this order. This is a unique identifier defined by the supplier."@en ;
-   samm:characteristic :UniqueID ;
-   samm:exampleValue "ORDER-1223324" .
-
-:partNumber a samm:Property ;
-   samm:preferredName "Part number"@en ;
-   samm:description "The number of a physical part. A part number is not unique - same kinds of parts can have same part numbers. Part numbers and part description normally relate to each other."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "GBX-3232455" .
-
-:partVersion a samm:Property ;
-   samm:preferredName "Part version"@en ;
-   samm:description "The version of this hardware part."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "0556A" .
-
-:serialNumber a samm:Property ;
-   samm:preferredName "OEM Serial number"@en ;
-   samm:description "Serial number one specific  part. A serial number is unique that means no other part/component has the same serial number on the world."@en ;
-   samm:characteristic :UniqueID ;
-   samm:exampleValue "ECU20646005020221" .
-
-:swPartNumber a samm:Property ;
-   samm:preferredName "ECU SW part number"@en ;
-   samm:description "Software number installed in this electronic control unit."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "SW3.23" .
-
-:swVersion a samm:Property ;
-   samm:preferredName "ECU SW version"@en ;
-   samm:description "Software version installed in this electronic control unit."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "V001" .
-
-:variantInfomation a samm:Property ;
-   samm:preferredName "Variant information"@en ;
-   samm:description "An electronic control unit has many parameters that have to be set to work correctly: Examples are target market (which functions need to be activated for the target market) or the equipment of the vehicle (e.g. navigation system is installed)."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "C01,C02,C03,C10" .
 
