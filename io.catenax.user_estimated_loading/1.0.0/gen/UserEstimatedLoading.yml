@@ -1,0 +1,406 @@
+---
+openapi: 3.0.3
+info:
+  title: User defined loading
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#UserEstimatedLoading"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/user-estimated-loading:
+    get:
+      tags:
+      - UserEstimatedLoading
+      operationId: getUserEstimatedLoading
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: "#/components/responses/UserEstimatedLoading"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserEstimatedLoading"
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    Mileage:
+      type: number
+      minimum: 1
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#Mileage"
+      description: Distance in kilometre
+    AgeInMonths:
+      type: number
+      minimum: 0
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#AgeInMonths"
+      description: Age of vehicle in month
+    VehicleStatusCharacteristic:
+      description: Characteristic decribing the vehicle status
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#VehicleStatusCharacteristic"
+      type: object
+      properties:
+        mileage:
+          description: Distance the vehicle has travelled in kilometre
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#mileage"
+          $ref: "#/components/schemas/Mileage"
+        ageInMonth:
+          description: Age of the vehicle in month
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#ageInMonth"
+          $ref: "#/components/schemas/AgeInMonths"
+    KbaVariant:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#KbaVariant"
+      description: Current version of the Enumeration is sub-set of list defined from
+        the German Federal Office for motor vehicles.
+      enum:
+      - Limousine
+      - Kombilimousine
+      - Pick-up
+      - Van
+      - SUV
+      - andere
+    NumberOfDriveAxle:
+      type: number
+      minimum: 1
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#NumberOfDriveAxle"
+      description: Characteristic of number of drive axles
+    EnergySource:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#EnergySource"
+      description: Enumeration of possible energy sources/fuel types of a vehicle.
+        The list is defined from the German Federal Office for motor vehicles.
+      enum:
+      - Unbekannt
+      - Diesel
+      - Benzin
+      - LPG
+      - Hybr.Benzin/E
+      - Hybr.Diesel/E
+      - '0001'
+      - '0002'
+      - '0003'
+      - '0005'
+      - '0006'
+      - '0007'
+      - '0008'
+      - '0009'
+      - '0010'
+      - '0019'
+      - '0022'
+      - '0023'
+      - '0024'
+      - '0025'
+      - '0026'
+      - '0027'
+      - '0029'
+      - '0030'
+      - '0000'
+      - Vielstoff
+      - Benzin/LPG
+      - Benzin/komp.Erdgas
+      - Erdgas NG
+      - Hybr.Vielstoff/E
+      - Hybr.Erdgas/E
+      - Benzin/Ethanol
+      - Hybr.LPG/E
+      - Hybr.B/E plug-in
+      - Hybr.D/E plug-in
+      - Hybr.LPG/E plug-in
+      - Hybr.V/E plug-in
+      - Hybr.NG/E plug-in
+    EnginePowerKW:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#EnginePowerKW"
+      description: Engine power expressed in kilowatt
+    Weight:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#Weight"
+      description: Weight of an object
+    VehicleDataCharacteristic:
+      description: 'Characteristic describing the basic technical data of the vehicle '
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#VehicleDataCharacteristic"
+      type: object
+      properties:
+        vehicleType:
+          description: "Vehicle variant - body shapes like SUV, Van, Limousine"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#vehicleType"
+          $ref: "#/components/schemas/KbaVariant"
+        numberOfDriveAxle:
+          description: "Identification of 4WD, default 1: 2WD"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#numberOfDriveAxle"
+          $ref: "#/components/schemas/NumberOfDriveAxle"
+        energySourceCode:
+          description: The code for the energy source respectively fuel type of the
+            vehicle according to KBA list
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#energySourceCode"
+          $ref: "#/components/schemas/EnergySource"
+        powerKW:
+          description: Engine power is the power that an engine can put out in kW
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#powerKW"
+          $ref: "#/components/schemas/EnginePowerKW"
+        grossVehicleWeightKG:
+          description: Technical permissable maximum weight of the vehicle in kg
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#grossVehicleWeightKG"
+          $ref: "#/components/schemas/Weight"
+      required:
+      - powerKW
+      - grossVehicleWeightKG
+    Percentage:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#Percentage"
+    Boolean:
+      type: boolean
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Boolean"
+      description: Represents a boolean value (i.e. a "flag").
+    WeightFactor:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#WeightFactor"
+      description: Weightfactor is a number between 1 and 100 weightening the hilliness
+        or curviness or driving style.
+    HistoryProfilesEnity:
+      description: 'Collection of previous usage profiles '
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#HistoryProfilesEnity"
+      type: object
+      properties:
+        percentage:
+          description: "Weighfactor of the different profiles, a user has. Different\
+            \ profiles indicates different user as well as different usages of like\
+            \ profiles for daily work routes or for caravan holiday."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#percentage"
+          $ref: "#/components/schemas/Percentage"
+        trailerUse:
+          description: 'Usage of trailer like caravan. '
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#trailerUse"
+          $ref: "#/components/schemas/Boolean"
+        cityDriving:
+          description: City driving means a short distances.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#cityDriving"
+          $ref: "#/components/schemas/Boolean"
+        drivingStyle:
+          description: "Numerical value between 1 and 100 describing the driving style.\
+            \ 1 for extreme economic driving, about 30 for normal driving, about 65\
+            \ for sportive driving, 100 for aggressive driving."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#drivingStyle"
+          $ref: "#/components/schemas/WeightFactor"
+        hilliness:
+          description: |-
+            Numerical value between 1 and 100 to describe the hilliness.
+            1: absolut flat region, 100 steep mountain roads
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#hilliness"
+          $ref: "#/components/schemas/WeightFactor"
+        curviness:
+          description: "Numerical value between 1 and 100 describing the curviness\
+            \ (1: straight road ... 100: very curvy road."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#curviness"
+          $ref: "#/components/schemas/WeightFactor"
+      required:
+      - percentage
+      - drivingStyle
+      - hilliness
+      - curviness
+    HistoryProfileList:
+      description: |
+        Characteristic of historie profile list
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#HistoryProfileList"
+      type: array
+      items:
+        $ref: "#/components/schemas/HistoryProfilesEnity"
+    FutureProfilesEntity:
+      description: "Future scenario: collection of usage profiles"
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#FutureProfilesEntity"
+      type: object
+      properties:
+        curviness:
+          description: "Numerical value between 1 and 100 describing the curviness\
+            \ (1: straight road ... 100: very curvy road."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#curviness"
+          $ref: "#/components/schemas/WeightFactor"
+        hilliness:
+          description: |-
+            Numerical value between 1 and 100 to describe the hilliness.
+            1: absolut flat region, 100 steep mountain roads
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#hilliness"
+          $ref: "#/components/schemas/WeightFactor"
+        drivingStyle:
+          description: "Numerical value between 1 and 100 describing the driving style.\
+            \ 1 for extreme economic driving, about 30 for normal driving, about 65\
+            \ for sportive driving, 100 for aggressive driving."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#drivingStyle"
+          $ref: "#/components/schemas/WeightFactor"
+        cityDriving:
+          description: City driving means a short distances.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#cityDriving"
+          $ref: "#/components/schemas/Boolean"
+        trailerUse:
+          description: 'Usage of trailer like caravan. '
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#trailerUse"
+          $ref: "#/components/schemas/Boolean"
+        percentage:
+          description: "Weighfactor of the different profiles, a user has. Different\
+            \ profiles indicates different user as well as different usages of like\
+            \ profiles for daily work routes or for caravan holiday."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#percentage"
+          $ref: "#/components/schemas/Percentage"
+      required:
+      - curviness
+      - hilliness
+      - drivingStyle
+      - percentage
+    FutureScenarioList:
+      description: Characteristic of future scenario
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#FutureScenarioList"
+      type: array
+      items:
+        $ref: "#/components/schemas/FutureProfilesEntity"
+    PositiveInteger:
+      type: number
+      minimum: 1
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#PositiveInteger"
+      description: Positive integer number without unit
+    FutureScenarioEntity:
+      description: List of future scenarios
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#FutureScenarioEntity"
+      type: object
+      properties:
+        futureScenario:
+          description: The future scenario cotains one or more future usage profiles
+            where the sum of percentage is 100
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#futureScenario"
+          $ref: "#/components/schemas/FutureScenarioList"
+        futureScenarioId:
+          description: Identification number of future scenarios
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#futureScenarioId"
+          $ref: "#/components/schemas/PositiveInteger"
+      required:
+      - futureScenario
+      - futureScenarioId
+    FutureList:
+      description: Characteristic of future usages
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#FutureList"
+      type: array
+      items:
+        $ref: "#/components/schemas/FutureScenarioEntity"
+    UserEstimatedLoading:
+      description: "User defined list of usage with percentage, driving style, eniviroment\
+        \ (hilliness, city_use, trailer_use)"
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#UserEstimatedLoading"
+      properties:
+        vehicleStatus:
+          description: "Current status of vehicle: age, mileage"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#vehicleStatus"
+          $ref: "#/components/schemas/VehicleStatusCharacteristic"
+        vehicleData:
+          description: Basic technical data of the vehicle
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#vehicleData"
+          $ref: "#/components/schemas/VehicleDataCharacteristic"
+        history:
+          description: User profiles of previous use
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#history"
+          $ref: "#/components/schemas/HistoryProfileList"
+        future:
+          description: Collection of future usages
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.user_estimated_loading:1.0.0#future"
+          $ref: "#/components/schemas/FutureList"
+      required:
+      - vehicleStatus
+      - vehicleData
+      - history
+      - future
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    UserEstimatedLoading:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PagingSchema"
+      description: The request was successful.
+  requestBodies:
+    UserEstimatedLoading:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserEstimatedLoading"

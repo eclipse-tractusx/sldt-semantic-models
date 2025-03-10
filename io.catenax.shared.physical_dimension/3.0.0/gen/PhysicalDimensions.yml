@@ -1,0 +1,134 @@
+---
+openapi: 3.0.3
+info:
+  title: physical dimensions
+  version: v3
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#PhysicalDimensions"
+servers:
+- url: catenax.io/api/v3
+  variables:
+    api-version:
+      default: v3
+paths:
+  /{tenant-id}/physical-dimensions:
+    get:
+      tags:
+      - PhysicalDimensions
+      operationId: getPhysicalDimensions
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: "#/components/responses/PhysicalDimensions"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    KilogramCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#KilogramCharacteristic"
+      description: a measurement value given in the unit kilogram
+    MillimetreCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#MillimetreCharacteristic"
+      description: a measurement for a lenght given in the unit millimetre
+    PhysicalDimensionsCharacteristic:
+      description: Describes the physical dimensions of then entity.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#PhysicalDimensionsCharacteristic"
+      type: object
+      properties:
+        weight:
+          description: Weight of the item
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#weight"
+          $ref: "#/components/schemas/KilogramCharacteristic"
+        diameter:
+          description: Diameter of the item.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#diameter"
+          $ref: "#/components/schemas/MillimetreCharacteristic"
+        height:
+          description: Height of the item.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#height"
+          $ref: "#/components/schemas/MillimetreCharacteristic"
+        width:
+          description: Width of the item.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#width"
+          $ref: "#/components/schemas/MillimetreCharacteristic"
+        length:
+          description: Length of the item.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#length"
+          $ref: "#/components/schemas/MillimetreCharacteristic"
+    PhysicalDimensions:
+      description: Describes the physical dimensions of then entity.
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#PhysicalDimensions"
+      properties:
+        physicalDimensionsProperty:
+          description: Describes the physical dimensions of then entity.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.physical_dimension:3.0.0#physicalDimensionsProperty"
+          $ref: "#/components/schemas/PhysicalDimensionsCharacteristic"
+      required:
+      - physicalDimensionsProperty
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    PhysicalDimensions:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PhysicalDimensions"
+      description: The request was successful.
+  requestBodies:
+    PhysicalDimensions:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PhysicalDimensions"

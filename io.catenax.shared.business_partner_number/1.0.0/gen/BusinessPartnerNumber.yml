@@ -1,0 +1,129 @@
+---
+openapi: 3.0.3
+info:
+  title: Shared Aspect for any business partner number
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:1.0.0#BusinessPartnerNumber"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/business-partner-number:
+    get:
+      tags:
+      - BusinessPartnerNumber
+      operationId: getBusinessPartnerNumber
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: "#/components/responses/BusinessPartnerNumber"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    BpnlTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:1.0.0#BpnlTrait"
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two uppercase letters."
+      pattern: "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$"
+    BpnsTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:1.0.0#BpnsTrait"
+      description: "The provided regular expression ensures that the BPNS is composed\
+        \ of prefix 'BPNS', 10 digits and two uppercase letters."
+      pattern: "^BPNS[0-9]{8}[a-zA-Z0-9]{4}$"
+    BpnaTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:1.0.0#BpnaTrait"
+      description: "The provided regular expression ensures that the BPNA is composed\
+        \ of prefix 'BPNA', 10 digits and two uppercase letters."
+      pattern: "^BPNA[0-9]{8}[a-zA-Z0-9]{4}$"
+    BusinessPartnerNumber:
+      description: This is a shared aspect for BPN with a regex.
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:1.0.0#BusinessPartnerNumber"
+      properties:
+        bpnlProperty:
+          description: Property based on a BPNL.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:1.0.0#bpnlProperty"
+          $ref: "#/components/schemas/BpnlTrait"
+        bpnsProperty:
+          description: Property based on a BPNS.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:1.0.0#bpnsProperty"
+          $ref: "#/components/schemas/BpnsTrait"
+        bpnaProperty:
+          description: Property based on a BPNA.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:1.0.0#bpnaProperty"
+          $ref: "#/components/schemas/BpnaTrait"
+      required:
+      - bpnlProperty
+      - bpnsProperty
+      - bpnaProperty
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    BusinessPartnerNumber:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BusinessPartnerNumber"
+      description: The request was successful.
+  requestBodies:
+    BusinessPartnerNumber:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BusinessPartnerNumber"

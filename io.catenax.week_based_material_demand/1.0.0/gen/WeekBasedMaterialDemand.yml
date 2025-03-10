@@ -1,0 +1,425 @@
+---
+openapi: 3.0.3
+info:
+  title: Week-Based Material Demand
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#WeekBasedMaterialDemand"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/week-based-material-demand:
+    get:
+      tags:
+      - WeekBasedMaterialDemand
+      operationId: getWeekBasedMaterialDemand
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: "#/components/responses/WeekBasedMaterialDemand"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/WeekBasedMaterialDemand"
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    UUIDv4IdTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#UUIDv4IdTrait"
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."
+      pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    BPNSTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#BPNSTrait"
+      description: "The provided regular expression ensures that the BPNS is composed\
+        \ of prefix 'BPNS', 10 digits and two uppercase letters."
+      pattern: "^BPNS[0-9]{8}[a-zA-Z0-9]{4}$"
+    DemandCategoryDefault:
+      type: object
+      properties:
+        demandCategoryCode:
+          description: The code identifying a demand category.
+          type: string
+          enum:
+          - '0001'
+      required:
+      - demandCategoryCode
+    DemandCategoryAfterSales:
+      type: object
+      properties:
+        demandCategoryCode:
+          description: The code identifying a demand category.
+          type: string
+          enum:
+          - A1S1
+      required:
+      - demandCategoryCode
+    DemandCategorySeries:
+      type: object
+      properties:
+        demandCategoryCode:
+          description: The code identifying a demand category.
+          type: string
+          enum:
+          - SR99
+      required:
+      - demandCategoryCode
+    DemandCategoryPhaseInPeriod:
+      type: object
+      properties:
+        demandCategoryCode:
+          description: The code identifying a demand category.
+          type: string
+          enum:
+          - PI01
+      required:
+      - demandCategoryCode
+    DemandCategorySingleOrder:
+      type: object
+      properties:
+        demandCategoryCode:
+          description: The code identifying a demand category.
+          type: string
+          enum:
+          - OS01
+      required:
+      - demandCategoryCode
+    DemandCategorySmallSeries:
+      type: object
+      properties:
+        demandCategoryCode:
+          description: The code identifying a demand category.
+          type: string
+          enum:
+          - OI01
+      required:
+      - demandCategoryCode
+    DemandCategoryExtraordinaryDemand:
+      type: object
+      properties:
+        demandCategoryCode:
+          description: The code identifying a demand category.
+          type: string
+          enum:
+          - ED01
+      required:
+      - demandCategoryCode
+    DemandCategoryPhaseOutPeriod:
+      type: object
+      properties:
+        demandCategoryCode:
+          description: The code identifying a demand category.
+          type: string
+          enum:
+          - PO01
+      required:
+      - demandCategoryCode
+    DemandCategory:
+      description: The classification of demands used to prioritize or allocate capacities.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#DemandCategory"
+      type: object
+      oneOf:
+      - $ref: "#/components/schemas/DemandCategoryDefault"
+      - $ref: "#/components/schemas/DemandCategoryAfterSales"
+      - $ref: "#/components/schemas/DemandCategorySeries"
+      - $ref: "#/components/schemas/DemandCategoryPhaseInPeriod"
+      - $ref: "#/components/schemas/DemandCategorySingleOrder"
+      - $ref: "#/components/schemas/DemandCategorySmallSeries"
+      - $ref: "#/components/schemas/DemandCategoryExtraordinaryDemand"
+      - $ref: "#/components/schemas/DemandCategoryPhaseOutPeriod"
+    CalendarWeek:
+      type: string
+      format: date
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#CalendarWeek"
+      description: An ISO calendar week in which a given demand is needed. Must be
+        given as date of the Monday in the week.
+    QuantityTrait:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#QuantityTrait"
+      description: "Constraint to ensure size of quantities: 12 digits plus 3 decimal\
+        \ places."
+      maximum: 999999999999999999.999
+      exclusiveMaximum: false
+      minimum: 0
+      exclusiveMinimum: false
+    Demand:
+      description: A single demand for a given calendar week.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#Demand"
+      type: object
+      properties:
+        calendarWeek:
+          description: ISO Calendar Week of the given time series entry. Must be given
+            as date of the Monday in the week.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#calendarWeek"
+          $ref: "#/components/schemas/CalendarWeek"
+        demand:
+          description: Quantity of materials required in the specified calendar week.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#demand"
+          $ref: "#/components/schemas/QuantityTrait"
+      required:
+      - calendarWeek
+      - demand
+    DemandTimeSeries:
+      description: The weekly demands in a given time period.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#DemandTimeSeries"
+      type: array
+      items:
+        $ref: "#/components/schemas/Demand"
+      uniqueItems: true
+    DemandSeries:
+      description: Encapsulates the demand series related information.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#DemandSeries"
+      type: object
+      properties:
+        customerLocation:
+          description: The BPNS number of the site at which the customer needs the
+            specified material for this demand series.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#customerLocation"
+          $ref: "#/components/schemas/BPNSTrait"
+        demandCategory:
+          description: Type of demand for this demand series.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#demandCategory"
+          $ref: "#/components/schemas/DemandCategory"
+        demands:
+          description: A time series with week-based granularity along a given time
+            period to describe the demand values for this demand series.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#demands"
+          $ref: "#/components/schemas/DemandTimeSeries"
+        expectedSupplierLocation:
+          description: The BPNS number of the site from where the customer expects
+            the supplier to fulfill the demands of the demand series. The value is
+            used for informational purposes only and is therefore not binding for
+            the supplier.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#expectedSupplierLocation"
+          $ref: "#/components/schemas/BPNSTrait"
+      required:
+      - customerLocation
+      - demandCategory
+      - demands
+    DemandSeriesSet:
+      description: A set of demand series belonging to a certain material demand.
+        Each demand series in the set must have a unique combination of customer location
+        and demand category.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#DemandSeriesSet"
+      type: array
+      items:
+        $ref: "#/components/schemas/DemandSeries"
+      uniqueItems: true
+    BPNLTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#BPNLTrait"
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two uppercase letters."
+      pattern: "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$"
+    UnitOfMeasure:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#UnitOfMeasure"
+      description: The Enumeration lists a selection of allowed units of measure referenced
+        by their official code according to Codes for Units of Measure Used in International
+        Trade
+      enum:
+      - GRM
+      - KGM
+      - TNE
+      - STN
+      - ONZ
+      - LBR
+      - CMT
+      - MTR
+      - KTM
+      - INH
+      - FOT
+      - YRD
+      - CMK
+      - MTK
+      - INK
+      - FTK
+      - YDK
+      - CMQ
+      - MTQ
+      - INQ
+      - FTQ
+      - YDQ
+      - MLT
+      - LTR
+      - HLT
+      - H87
+      - SET
+      - PR
+      - ZP
+      - KWH
+      - ""
+    MaterialNumber:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#MaterialNumber"
+      description: "The material number is a multi-character string, usually assigned\
+        \ by an ERP system."
+    MaterialDescription:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#MaterialDescription"
+      description: Description of a material demand.
+    Timestamp:
+      type: string
+      format: date-time
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#Timestamp"
+      description: Point in time.
+    WeekBasedMaterialDemand:
+      description: "The requirements of a customer towards a specific supplier for\
+        \ a specific material. Each material demand is unique by its Customer, Supplier\
+        \ and Material Number."
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#WeekBasedMaterialDemand"
+      properties:
+        materialDemandId:
+          description: The Material Demand ID uniquely identifies the material demand
+            within the business relationship between a customer and its supplier.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#materialDemandId"
+          $ref: "#/components/schemas/UUIDv4IdTrait"
+        demandSeries:
+          description: "The weekly demands for a dedicated material in a given time\
+            \ period, distinguished by their demand location and demand category."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#demandSeries"
+          $ref: "#/components/schemas/DemandSeriesSet"
+        customer:
+          description: The Business Partner Number (BPNL) of the party requesting
+            materials from a supplier.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#customer"
+          $ref: "#/components/schemas/BPNLTrait"
+        supplier:
+          description: The Business Partner Number (BPNL) of the party providing materials
+            to a customer.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#supplier"
+          $ref: "#/components/schemas/BPNLTrait"
+        unitOfMeasure:
+          description: Unit of measurement for demand quantities.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#unitOfMeasure"
+          $ref: "#/components/schemas/UnitOfMeasure"
+        materialNumberCustomer:
+          description: Material identifier as assigned by customer. This material
+            number identifies the material (as planned) in customer's database. Must
+            be unique for each Material Demand in the customer-supplier relationship.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#materialNumberCustomer"
+          $ref: "#/components/schemas/MaterialNumber"
+        materialNumberSupplier:
+          description: Material identifier as assigned by supplier. This material
+            number identifies the material (as planned) in supplier's database.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#materialNumberSupplier"
+          $ref: "#/components/schemas/MaterialNumber"
+        materialDescriptionCustomer:
+          description: Description of the material.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#materialDescriptionCustomer"
+          $ref: "#/components/schemas/MaterialDescription"
+        changedAt:
+          description: "Point in time when the material demand was last updated at\
+            \ the customer, either by a human user or an automated process."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_material_demand:1.0.0#changedAt"
+          $ref: "#/components/schemas/Timestamp"
+      required:
+      - materialDemandId
+      - demandSeries
+      - customer
+      - supplier
+      - unitOfMeasure
+      - materialNumberCustomer
+      - materialDescriptionCustomer
+      - changedAt
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    WeekBasedMaterialDemand:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PagingSchema"
+      description: The request was successful.
+  requestBodies:
+    WeekBasedMaterialDemand:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/WeekBasedMaterialDemand"
