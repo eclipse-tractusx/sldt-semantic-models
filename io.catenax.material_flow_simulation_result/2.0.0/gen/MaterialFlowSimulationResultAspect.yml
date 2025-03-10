@@ -3,6 +3,7 @@ openapi: 3.0.3
 info:
   title: Material Flow Simulation Result Aspect
   version: v2
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#MaterialFlowSimulationResultAspect"
 servers:
 - url: catenax.io/api/v2
   variables:
@@ -24,15 +25,15 @@ paths:
           format: uuid
       responses:
         "200":
-          $ref: '#/components/responses/MaterialFlowSimulationResultAspect'
+          $ref: "#/components/responses/MaterialFlowSimulationResultAspect"
+        "400":
+          $ref: "#/components/responses/ClientError"
         "401":
-          $ref: '#/components/responses/ClientError'
-        "402":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: '#/components/responses/Forbidden'
+          $ref: "#/components/responses/Forbidden"
         "404":
-          $ref: '#/components/responses/NotFoundError'
+          $ref: "#/components/responses/NotFoundError"
 components:
   schemas:
     ErrorResponse:
@@ -41,7 +42,7 @@ components:
       - error
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
     Error:
       type: object
       required:
@@ -61,24 +62,35 @@ components:
         code:
           type: string
           nullable: true
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text:
+    Text:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#Text"
       description: "Describes a Property which contains plain text. This is intended\
         \ exclusively for human readable strings, not for identifiers, measurement\
         \ values, etc."
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+    Timestamp:
       type: string
       pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
         .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp"
       description: Describes a Property which contains the date and time with an optional
         timezone.
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_BusinessPartnerSite:
-      description: Reference of preceding shipments
+    BusinessPartnerSite:
+      description: "Identifier for the physical location of a business partner plant\
+        \ or site, (e.g. BPNS in Catena-X context)"
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#BusinessPartnerSite"
       type: object
       properties: {}
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_DataQualityOptions:
+    OwnerCharacteristic:
+      description: Site identifier of the simulation originator
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#OwnerCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/BusinessPartnerSite"
+    DataQualityOptions:
       type: number
       minimum: 0
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#DataQualityOptions"
       description: Possible values determining data quality
       enum:
       - 0
@@ -87,66 +99,108 @@ components:
       - 3
       - 4
       - 5
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+    Text0:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
       description: "Describes a Property which contains plain text. This is intended\
         \ exclusively for human readable strings, not for identifiers, measurement\
         \ values, etc."
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean:
+    DestinationCharacteristic:
+      description: Address where the shipment is immediately delivered to (by logistician)
+        or provided for pickup (by producer)
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#DestinationCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/BusinessPartnerSite"
+    RecipientCharacteristic:
+      description: Location identifier of the final recipient of the shipment
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#RecipientCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/BusinessPartnerSite"
+    Boolean:
       type: boolean
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Boolean"
       description: Represents a boolean value (i.e. a "flag").
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_VolumeCharacteristic:
+    LogisticsCharacteristic:
+      description: Site identifier of the logistician executing the shipment
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#LogisticsCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/BusinessPartnerSite"
+    PrecedingCharacteristic:
+      description: Reference of preceding shipments
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#PrecedingCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/BusinessPartnerSite"
+    VolumeCharacteristic:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#VolumeCharacteristic"
       description: Volumetric value determining the volume of the handling unit
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_WeightCharacteristic:
+    WeightCharacteristic:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#WeightCharacteristic"
       description: Amount of weight of the handling unit
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_AmountCharacteristic:
+    AmountCharacteristic:
       type: number
       minimum: 1
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#AmountCharacteristic"
       description: Number describing handling units with identical pieces
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_QuantityCharacteristic:
+    QuantityCharacteristic:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#QuantityCharacteristic"
       description: Number of materials contained within a handling unit
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_UnitOfMeasurementCharacteristic:
+    UnitOfMeasurementCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#UnitOfMeasurementCharacteristic"
       description: Possible options for units of measurement
       enum:
       - KG
       - Liter
       - Piece
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_MaterialBatch:
+    MaterialBatch:
       description: Material Batches are part of a handling unit
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#MaterialBatch"
       type: object
       properties:
         batchId:
           description: ID for the material batch
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#batchId"
+          $ref: "#/components/schemas/Text"
         materialNumber:
           description: ID of the material contained in the batch
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#materialNumber"
+          $ref: "#/components/schemas/Text"
         materialName:
           description: Name of the material
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#materialName"
+          $ref: "#/components/schemas/Text"
         materialHazardousGoods:
           description: Flags hazardous goods
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#materialHazardousGoods"
+          $ref: "#/components/schemas/Boolean"
         batchExpirationTimestamp:
           description: Expiration date of batch
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#batchExpirationTimestamp"
+          $ref: "#/components/schemas/Timestamp"
         quantity:
           description: Amount of materials
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_QuantityCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#quantity"
+          $ref: "#/components/schemas/QuantityCharacteristic"
         unitOfMeasurement:
           description: Unit used for measuring the quantity
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_UnitOfMeasurementCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#unitOfMeasurement"
+          $ref: "#/components/schemas/UnitOfMeasurementCharacteristic"
         batchNumber:
           description: "Number of the batch, generated by originator (e.g. from ERP\
             \ system, no uuid)"
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#batchNumber"
+          $ref: "#/components/schemas/Text"
         batchOrderId:
           description: Order ID to which the batch belongs
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#batchOrderId"
+          $ref: "#/components/schemas/Text"
       required:
       - batchId
       - materialNumber
@@ -157,34 +211,42 @@ components:
       - unitOfMeasurement
       - batchNumber
       - batchOrderId
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_BatchList:
+    BatchList:
       description: List of material batches
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#BatchList"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_MaterialBatch'
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_HandlingUnit:
+        $ref: "#/components/schemas/MaterialBatch"
+    HandlingUnit:
       description: Handling Unit is the smallest shipment unit and cannot be divided
         into several shipments
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#HandlingUnit"
       type: object
       properties:
         handlingUnitId:
           description: ID of the handling unit
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#handlingUnitId"
+          $ref: "#/components/schemas/Text"
         name:
           description: Name of the type of handling unit
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#name"
+          $ref: "#/components/schemas/Text"
         volume:
           description: Volume of the handling unit
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_VolumeCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#volume"
+          $ref: "#/components/schemas/VolumeCharacteristic"
         weight:
           description: Weight of the handling unit
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_WeightCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#weight"
+          $ref: "#/components/schemas/WeightCharacteristic"
         amount:
           description: Number of handling units with identical content
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_AmountCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#amount"
+          $ref: "#/components/schemas/AmountCharacteristic"
         batches:
           description: List of material batches contained within a handling unit
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_BatchList'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#batches"
+          $ref: "#/components/schemas/BatchList"
       required:
       - handlingUnitId
       - name
@@ -192,43 +254,54 @@ components:
       - weight
       - amount
       - batches
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_HandlingUnitList:
+    HandlingUnitList:
       description: List of handling units included in the shipment
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#HandlingUnitList"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_HandlingUnit'
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Shipment:
+        $ref: "#/components/schemas/HandlingUnit"
+    Shipment:
       description: Delivery item from a sender to a recipient containing goods
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#Shipment"
       type: object
       properties:
         shipmentId:
           description: ID to identify the shipment
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#shipmentId"
+          $ref: "#/components/schemas/Text0"
         destination:
           description: Address where the shipment is immediately delivered to (by
             logistician) or provided for pickup (by producer)
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_BusinessPartnerSite'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#destination"
+          $ref: "#/components/schemas/DestinationCharacteristic"
         destinationTimestamp:
           description: Time when delivery arrives or is ready at goods issue
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#destinationTimestamp"
+          $ref: "#/components/schemas/Timestamp"
         recipient:
           description: Address of final recipient of shipment
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_BusinessPartnerSite'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#recipient"
+          $ref: "#/components/schemas/RecipientCharacteristic"
         recipientTimestampPlanned:
           description: Planned delivery time
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#recipientTimestampPlanned"
+          $ref: "#/components/schemas/Timestamp"
         splittingAllowed:
           description: Permission to split the shipment into individual deliveries
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#splittingAllowed"
+          $ref: "#/components/schemas/Boolean"
         logistics:
           description: Address of logistician executing the shipment
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_BusinessPartnerSite'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#logistics"
+          $ref: "#/components/schemas/LogisticsCharacteristic"
         preceding:
           description: Reference ID of a preceding shipment
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_BusinessPartnerSite'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#preceding"
+          $ref: "#/components/schemas/PrecedingCharacteristic"
         handlingUnits:
           description: List of Handling Units
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_HandlingUnitList'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#handlingUnits"
+          $ref: "#/components/schemas/HandlingUnitList"
       required:
       - shipmentId
       - destination
@@ -239,39 +312,49 @@ components:
       - logistics
       - preceding
       - handlingUnits
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_ShipmentList:
+    ShipmentList:
       description: List of shipments contained in the simulation
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#ShipmentList"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Shipment'
-    urn_samm_io.catenax.material_flow_simulation_result_2.0.0_MaterialFlowSimulationResultCharacteristic:
+        $ref: "#/components/schemas/Shipment"
+    MaterialFlowSimulationResultCharacteristic:
       description: Characteristic describing the aspect material flow simulation result
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#MaterialFlowSimulationResultCharacteristic"
       type: object
       properties:
         description:
           description: Verbal description
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#description"
+          $ref: "#/components/schemas/Text"
         runId:
           description: Id of the simulation run
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#runId"
+          $ref: "#/components/schemas/Text"
         comment:
           description: Additional comments
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#comment"
+          $ref: "#/components/schemas/Text"
         expirationTimestamp:
           description: Date and time when the simulation is expired
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#expirationTimestamp"
+          $ref: "#/components/schemas/Timestamp"
         owner:
           description: Site identifier of the simulation originator
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_BusinessPartnerSite'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#owner"
+          $ref: "#/components/schemas/OwnerCharacteristic"
         dataQuality:
           description: Information on quality of simulation results
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_DataQualityOptions'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#dataQuality"
+          $ref: "#/components/schemas/DataQualityOptions"
         shipments:
           description: List of shipments
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_ShipmentList'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#shipments"
+          $ref: "#/components/schemas/ShipmentList"
         timestamp:
           description: Timestamp of simulation run
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#timestamp"
+          $ref: "#/components/schemas/Timestamp"
       required:
       - description
       - runId
@@ -284,37 +367,38 @@ components:
     MaterialFlowSimulationResultAspect:
       description: Aspect Model for the result of a Material Flow Simulation
       type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#MaterialFlowSimulationResultAspect"
       properties:
         materialFlowSimulationResult:
           description: Contains standardized attributes for the result of a material
             flow simulation
-          $ref: '#/components/schemas/urn_samm_io.catenax.material_flow_simulation_result_2.0.0_MaterialFlowSimulationResultCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#materialFlowSimulationResult"
+          $ref: "#/components/schemas/MaterialFlowSimulationResultCharacteristic"
       required:
       - materialFlowSimulationResult
   responses:
     Unauthorized:
       description: The requesting user or client is not authenticated.
     Forbidden:
-      description: The requesting user or client is not authorized to access resources
-        for the given tenant.
+      description: The requesting user or client is not authorized to access resources.
     NotFoundError:
-      description: The requested Twin has not been found.
+      description: The requested resource has not been found.
     ClientError:
       description: Payload or user input is invalid. See error details in the payload
-        for more.
+        for more information.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     MaterialFlowSimulationResultAspect:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/MaterialFlowSimulationResultAspect'
+            $ref: "#/components/schemas/MaterialFlowSimulationResultAspect"
       description: The request was successful.
   requestBodies:
     MaterialFlowSimulationResultAspect:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/MaterialFlowSimulationResultAspect'
+            $ref: "#/components/schemas/MaterialFlowSimulationResultAspect"

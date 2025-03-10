@@ -3,6 +3,7 @@ openapi: 3.0.3
 info:
   title: QualityTask
   version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#QualityTask"
 servers:
 - url: catenax.io/api/v1
   variables:
@@ -42,15 +43,15 @@ paths:
           type: boolean
       responses:
         "200":
-          $ref: '#/components/responses/QualityTask'
+          $ref: "#/components/responses/QualityTask"
+        "400":
+          $ref: "#/components/responses/ClientError"
         "401":
-          $ref: '#/components/responses/ClientError'
-        "402":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: '#/components/responses/Forbidden'
+          $ref: "#/components/responses/Forbidden"
         "404":
-          $ref: '#/components/responses/NotFoundError'
+          $ref: "#/components/responses/NotFoundError"
 components:
   schemas:
     ErrorResponse:
@@ -59,7 +60,7 @@ components:
       - error
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
     Error:
       type: object
       required:
@@ -85,7 +86,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/QualityTask'
+            $ref: "#/components/schemas/QualityTask"
         totalItems:
           type: number
         totalPages:
@@ -94,89 +95,108 @@ components:
           type: number
         currentPage:
           type: number
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+    Text:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
       description: "Describes a Property which contains plain text. This is intended\
         \ exclusively for human readable strings, not for identifiers, measurement\
         \ values, etc."
-    urn_samm_io.catenax.quality_task_1.0.0_StatusCharacteristic:
+    StatusCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#StatusCharacteristic"
       description: Enumeration of the different status values
       enum:
       - new
       - in progress
       - completed
       - closed
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+    Timestamp:
       type: string
       pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
         .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp"
       description: Describes a Property which contains the date and time with an optional
         timezone.
-    urn_samm_io.catenax.quality_task_1.0.0_DataDeletionEnumeration:
+    DataDeletionEnumeration:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#DataDeletionEnumeration"
       description: Enumeration of possible data deletions entries.
       enum:
       - delete-data-after-closing
       - no-deletion-after-closing
-    urn_samm_io.catenax.quality_task_1.0.0_EMailTrait:
+    EMailTrait:
       type: string
-      description: Regular expression for mail address as defined in W3C (see https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address)
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#EMailTrait"
+      description: "Regular expression for mail address as defined in W3C (see https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address)"
       pattern: "^[a-zA-Z0-9.!#$%&’*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
-    urn_samm_io.catenax.quality_task_1.0.0_Company:
+    Company:
       description: One company involved in this qTask
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#Company"
       type: object
       properties:
         cxBPN:
           description: Catena-X business partner number of this company
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#cxBPN"
+          $ref: "#/components/schemas/Text"
         name:
           description: Name of the comapny
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#name"
+          $ref: "#/components/schemas/Text"
         email:
           description: An email address
-          $ref: '#/components/schemas/urn_samm_io.catenax.quality_task_1.0.0_EMailTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#email"
+          $ref: "#/components/schemas/EMailTrait"
       required:
       - cxBPN
       - name
       - email
-    urn_samm_io.catenax.quality_task_1.0.0_ListOfCompanies:
+    ListOfCompanies:
       description: A list of all companies involved in this qTask
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#ListOfCompanies"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.quality_task_1.0.0_Company'
+        $ref: "#/components/schemas/Company"
     QualityTask:
       description: "A quality task (qTask) defines why data is exchanged between 2\
         \ or more companies and what insights should be generated out of the transferred\
         \ data. In addition there is a flag, what happens with the transferred data\
         \ when this qTask is closed"
       type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#QualityTask"
       properties:
         qualityTaskId:
           description: A unique quality task identifier where these list of parts
             analysis belong to.
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#qualityTaskId"
+          $ref: "#/components/schemas/Text"
         status:
           description: Status of this quality task
-          $ref: '#/components/schemas/urn_samm_io.catenax.quality_task_1.0.0_StatusCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#status"
+          $ref: "#/components/schemas/StatusCharacteristic"
         creationDate:
           description: Timestamp when this qTask was created
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#creationDate"
+          $ref: "#/components/schemas/Timestamp"
         title:
           description: Working title for this qTask
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#title"
+          $ref: "#/components/schemas/Text"
         description:
           description: Description what should be done in this qTask
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#description"
+          $ref: "#/components/schemas/Text"
         component:
           description: The component that should be investigated in this qTask.
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#component"
+          $ref: "#/components/schemas/Text"
         dataDeletion:
           description: What should be done with the data after this qTask is closed
-          $ref: '#/components/schemas/urn_samm_io.catenax.quality_task_1.0.0_DataDeletionEnumeration'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#dataDeletion"
+          $ref: "#/components/schemas/DataDeletionEnumeration"
         listOfCompanies:
           description: A list of companies involved in this quality task
-          $ref: '#/components/schemas/urn_samm_io.catenax.quality_task_1.0.0_ListOfCompanies'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.quality_task:1.0.0#listOfCompanies"
+          $ref: "#/components/schemas/ListOfCompanies"
       required:
       - qualityTaskId
       - status
@@ -190,26 +210,25 @@ components:
     Unauthorized:
       description: The requesting user or client is not authenticated.
     Forbidden:
-      description: The requesting user or client is not authorized to access resources
-        for the given tenant.
+      description: The requesting user or client is not authorized to access resources.
     NotFoundError:
-      description: The requested Twin has not been found.
+      description: The requested resource has not been found.
     ClientError:
       description: Payload or user input is invalid. See error details in the payload
-        for more.
+        for more information.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     QualityTask:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PagingSchema'
+            $ref: "#/components/schemas/PagingSchema"
       description: The request was successful.
   requestBodies:
     QualityTask:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/QualityTask'
+            $ref: "#/components/schemas/QualityTask"

@@ -3,6 +3,7 @@ openapi: 3.0.3
 info:
   title: Part as Specified
   version: v3
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#PartAsSpecified"
 servers:
 - url: catenax.io/api/v3
   variables:
@@ -24,15 +25,15 @@ paths:
           format: uuid
       responses:
         "200":
-          $ref: '#/components/responses/PartAsSpecified'
+          $ref: "#/components/responses/PartAsSpecified"
+        "400":
+          $ref: "#/components/responses/ClientError"
         "401":
-          $ref: '#/components/responses/ClientError'
-        "402":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: '#/components/responses/Forbidden'
+          $ref: "#/components/responses/Forbidden"
         "404":
-          $ref: '#/components/responses/NotFoundError'
+          $ref: "#/components/responses/NotFoundError"
 components:
   schemas:
     ErrorResponse:
@@ -41,7 +42,7 @@ components:
       - error
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
     Error:
       type: object
       required:
@@ -61,32 +62,38 @@ components:
         code:
           type: string
           nullable: true
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+    Text:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
       description: "Describes a Property which contains plain text. This is intended\
         \ exclusively for human readable strings, not for identifiers, measurement\
         \ values, etc."
-    urn_samm_io.catenax.part_as_specified_3.0.0_PartClassificationEntity:
+    PartClassificationEntity:
       description: The entity encapsulating the properties of the part classification
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#PartClassificationEntity"
       type: object
       properties:
         key:
           description: Key within the classification
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#key"
+          $ref: "#/components/schemas/Text"
         value:
           description: Value within the classification
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#value"
+          $ref: "#/components/schemas/Text"
       required:
       - key
       - value
-    urn_samm_io.catenax.part_as_specified_3.0.0_PartClassificationCharacteristic:
+    PartClassificationCharacteristic:
       description: The characteristic of the part classification
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#PartClassificationCharacteristic"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.part_as_specified_3.0.0_PartClassificationEntity'
+        $ref: "#/components/schemas/PartClassificationEntity"
       uniqueItems: true
-    urn_samm_io.catenax.part_as_specified_3.0.0_ItemCategoryCharacteristic:
+    ItemCategoryCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#ItemCategoryCharacteristic"
       description: "A part type must be placed into one of the following classes:\
         \ 'component', 'product', 'software', ‘assembly’, 'tool', or 'raw material'."
       enum:
@@ -96,34 +103,41 @@ components:
       - assembly
       - tool
       - raw material
-    urn_samm_io.catenax.part_as_specified_3.0.0_PartTypeInformationCharacteristic:
+    PartTypeInformationCharacteristic:
       description: The characteristic of the part type.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#PartTypeInformationCharacteristic"
       type: object
       properties:
         partClassification:
           description: The classification of the part type.
-          $ref: '#/components/schemas/urn_samm_io.catenax.part_as_specified_3.0.0_PartClassificationCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#partClassification"
+          $ref: "#/components/schemas/PartClassificationCharacteristic"
         nameAtOwner:
           description: Name of the part as assigned by the part owner.
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#nameAtOwner"
+          $ref: "#/components/schemas/Text"
         ownerPartId:
           description: PartID as assigned by the part owner. The PartID identifies
             the part in the part owner's data space. The PartId does not reference
             a specific instance of a part and thus should not be confused with the
             serial number.
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#ownerPartId"
+          $ref: "#/components/schemas/Text"
         partVersion:
           description: "This is the version of the part. The engineering will at times\
             \ supercede an older part version by a newer one, which might have different\
             \ material aspects, physical dimensions etc., still maintaining compatibility."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#partVersion"
+          $ref: "#/components/schemas/Text"
         itemCategory:
           description: "The item category (component, product, software, assembly,\
             \ tool, raw material) the part belongs to"
-          $ref: '#/components/schemas/urn_samm_io.catenax.part_as_specified_3.0.0_ItemCategoryCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#itemCategory"
+          $ref: "#/components/schemas/ItemCategoryCharacteristic"
         partDescription:
           description: Description of the part of interest
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#partDescription"
+          $ref: "#/components/schemas/Text"
       required:
       - partClassification
       - nameAtOwner
@@ -131,24 +145,29 @@ components:
       - partVersion
       - itemCategory
       - partDescription
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+    Timestamp:
       type: string
       pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
         .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp"
       description: Describes a Property which contains the date and time with an optional
         timezone.
-    urn_samm_io.catenax.part_as_specified_3.0.0_ValidityPeriodCharacteristic:
+    ValidityPeriodCharacteristic:
       description: The characteristic of the validity period.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#ValidityPeriodCharacteristic"
       type: object
       properties:
         validFrom:
           description: Start date of the validity period.
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#validFrom"
+          $ref: "#/components/schemas/Timestamp"
         validTo:
           description: End date of the validity period.
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
-    urn_samm_io.catenax.part_as_specified_3.0.0_CatenaXIdTrait:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#validTo"
+          $ref: "#/components/schemas/Timestamp"
+    CatenaXIdTrait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#CatenaXIdTrait"
       description: "The provided regular expression ensures that the UUID is composed\
         \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
         \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens)."
@@ -161,18 +180,22 @@ components:
         \ done if the respective DT was provided by the supplier within the value\
         \ chain."
       type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#PartAsSpecified"
       properties:
         partTypeInformation:
           description: Encapsulation for data related to the part type.
-          $ref: '#/components/schemas/urn_samm_io.catenax.part_as_specified_3.0.0_PartTypeInformationCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#partTypeInformation"
+          $ref: "#/components/schemas/PartTypeInformationCharacteristic"
         validityPeriod:
           description: "Describes the validity period of a part, as some parts are\
             \ just valid for a given period of time until newer versions of these\
             \ parts are available"
-          $ref: '#/components/schemas/urn_samm_io.catenax.part_as_specified_3.0.0_ValidityPeriodCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#validityPeriod"
+          $ref: "#/components/schemas/ValidityPeriodCharacteristic"
         catenaXId:
           description: The unique ID within Catena-X
-          $ref: '#/components/schemas/urn_samm_io.catenax.part_as_specified_3.0.0_CatenaXIdTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.part_as_specified:3.0.0#catenaXId"
+          $ref: "#/components/schemas/CatenaXIdTrait"
       required:
       - partTypeInformation
       - catenaXId
@@ -180,26 +203,25 @@ components:
     Unauthorized:
       description: The requesting user or client is not authenticated.
     Forbidden:
-      description: The requesting user or client is not authorized to access resources
-        for the given tenant.
+      description: The requesting user or client is not authorized to access resources.
     NotFoundError:
-      description: The requested Twin has not been found.
+      description: The requested resource has not been found.
     ClientError:
       description: Payload or user input is invalid. See error details in the payload
-        for more.
+        for more information.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     PartAsSpecified:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PartAsSpecified'
+            $ref: "#/components/schemas/PartAsSpecified"
       description: The request was successful.
   requestBodies:
     PartAsSpecified:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PartAsSpecified'
+            $ref: "#/components/schemas/PartAsSpecified"

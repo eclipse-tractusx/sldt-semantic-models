@@ -3,6 +3,7 @@ openapi: 3.0.3
 info:
   title: Batch
   version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#Batch"
 servers:
 - url: catenax.io/api/v1
   variables:
@@ -42,15 +43,15 @@ paths:
           type: boolean
       responses:
         "200":
-          $ref: '#/components/responses/Batch'
+          $ref: "#/components/responses/Batch"
+        "400":
+          $ref: "#/components/responses/ClientError"
         "401":
-          $ref: '#/components/responses/ClientError'
-        "402":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: '#/components/responses/Forbidden'
+          $ref: "#/components/responses/Forbidden"
         "404":
-          $ref: '#/components/responses/NotFoundError'
+          $ref: "#/components/responses/NotFoundError"
 components:
   schemas:
     ErrorResponse:
@@ -59,7 +60,7 @@ components:
       - error
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
     Error:
       type: object
       required:
@@ -85,7 +86,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/Batch'
+            $ref: "#/components/schemas/Batch"
         totalItems:
           type: number
         totalPages:
@@ -94,76 +95,91 @@ components:
           type: number
         currentPage:
           type: number
-    urn_bamm_io.catenax.batch_1.0.2_CatenaXIdTrait:
+    CatenaXIdTrait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#CatenaXIdTrait"
       description: "The provided regular expression ensures that the UUID is composed\
         \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
         \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
         \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
       pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
-    urn_bamm_io.catenax.batch_1.0.2_KeyCharacteristic:
+    KeyCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#KeyCharacteristic"
       description: |-
         The key characteristic of a local identifier. A specific subset of keys is predefined, but additionally any other custom key is allowed. Predefined keys (to be used when applicable):
         - "manufacturerId" - The Business Partner Number (BPN) of the manufacturer. Value: BPN-Nummer
         - "batchId" - The identifier of the batch, to which the serialzed part belongs
-    urn_bamm_io.catenax.batch_1.0.2_ValueCharacteristic:
+    ValueCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#ValueCharacteristic"
       description: The value of an identifier.
-    urn_bamm_io.catenax.batch_1.0.2_KeyValueList:
+    KeyValueList:
       description: "A list of key value pairs for local identifiers, which are composed\
         \ of a key and a corresponding value."
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#KeyValueList"
       type: object
       properties:
         key:
           description: 'The key of a local identifier. '
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_KeyCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#key"
+          $ref: "#/components/schemas/KeyCharacteristic"
         value:
           description: The value of an identifier.
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_ValueCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#value"
+          $ref: "#/components/schemas/ValueCharacteristic"
       required:
       - key
       - value
-    urn_bamm_io.catenax.batch_1.0.2_LocalIdentifierCharacteristic:
+    LocalIdentifierCharacteristic:
       description: "A batch may have multiple attributes, which uniquely identify\
         \ that batch in a specific dataspace (e.g. the manufacturer`s dataspace)"
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#LocalIdentifierCharacteristic"
       type: array
       items:
-        $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_KeyValueList'
+        $ref: "#/components/schemas/KeyValueList"
       uniqueItems: true
-    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp:
+    Timestamp:
       type: string
       pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
         .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp"
       description: Describes a Property which contains the date and time with an optional
         timezone.
-    urn_bamm_io.catenax.batch_1.0.2_ProductionCountryCodeTrait:
+    ProductionCountryCodeTrait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#ProductionCountryCodeTrait"
       description: 'Regular Expression that ensures a three-letter code '
       pattern: "^[A-Z][A-Z][A-Z]$"
-    urn_bamm_io.catenax.batch_1.0.2_ManufacturingCharacteristic:
+    ManufacturingCharacteristic:
       description: Characteristic to describe manufacturing related data
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#ManufacturingCharacteristic"
       type: object
       properties:
         date:
           description: "Timestamp of the manufacturing date as the final step in production\
             \ process (e.g. final quality check, ready-for-shipment event)"
-          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#date"
+          $ref: "#/components/schemas/Timestamp"
         country:
           description: Country code where the part was manufactured
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_ProductionCountryCodeTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#country"
+          $ref: "#/components/schemas/ProductionCountryCodeTrait"
       required:
       - date
-    urn_bamm_io.catenax.batch_1.0.2_PartIdCharacteristic:
+    PartIdCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#PartIdCharacteristic"
       description: "The part ID is a multi-character string, ususally assigned by\
         \ an ERP system"
-    urn_bamm_io.catenax.batch_1.0.2_PartNameCharacteristic:
+    PartNameCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#PartNameCharacteristic"
       description: Part Name in string format from the respective system in the value
         chain
-    urn_bamm_io.catenax.batch_1.0.2_ClassificationCharacteristic:
+    ClassificationCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#ClassificationCharacteristic"
       description: "A part type must be placed into one of the following classes:\
         \ 'component', 'product', 'software', ‘assembly’, 'tool', or 'raw material'."
       enum:
@@ -173,8 +189,9 @@ components:
       - assembly
       - tool
       - component
-    urn_bamm_io.catenax.batch_1.0.2_PartTypeInformationCharacteristic:
+    PartTypeInformationCharacteristic:
       description: The characteristics of the part type
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#PartTypeInformationCharacteristic"
       type: object
       properties:
         manufacturerPartId:
@@ -182,24 +199,29 @@ components:
             ID identifies the part (as designed) in the manufacturer`s dataspace.
             The Part ID does not reference a specific instance of a part and thus
             should not be confused with the serial number or batch number.
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_PartIdCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#manufacturerPartId"
+          $ref: "#/components/schemas/PartIdCharacteristic"
         customerPartId:
           description: "Part ID as assigned by the manufacturer of the part. The Part\
             \ ID identifies the part (as designed) in the customer`s dataspace. The\
             \ Part ID does not reference a specific instance of a part and thus should\
             \ not be confused with the serial number or batch number. Note: This property\
             \ may only be populated in case there is a single customer for the batch."
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_PartIdCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#customerPartId"
+          $ref: "#/components/schemas/PartIdCharacteristic"
         nameAtManufacturer:
           description: Name of the part as assigned by the manufacturer
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_PartNameCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#nameAtManufacturer"
+          $ref: "#/components/schemas/PartNameCharacteristic"
         nameAtCustomer:
           description: Name of the part as assigned by the customer
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_PartNameCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#nameAtCustomer"
+          $ref: "#/components/schemas/PartNameCharacteristic"
         classification:
           description: The classification of the part type according to STEP standard
             definition
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_ClassificationCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#classification"
+          $ref: "#/components/schemas/ClassificationCharacteristic"
       required:
       - manufacturerPartId
       - nameAtManufacturer
@@ -212,23 +234,28 @@ components:
         \ batches can have varied specifications, e.g., different colors. A batch\
         \ is identified via a Batch ID."
       type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#Batch"
       properties:
         catenaXId:
           description: "The fully anonymous Catena-X ID of the batch, valid for the\
             \ Catena-X dataspace."
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_CatenaXIdTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#catenaXId"
+          $ref: "#/components/schemas/CatenaXIdTrait"
         localIdentifiers:
           description: "A local identifier enables identification of a part in a specific\
             \ dataspace, but is not unique in Catena-X dataspace. Multiple local identifiers\
             \ may exist."
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_LocalIdentifierCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#localIdentifiers"
+          $ref: "#/components/schemas/LocalIdentifierCharacteristic"
         manufacturingInformation:
           description: "Information from manufacturing process, such as manufacturing\
             \ date and manufacturing country"
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_ManufacturingCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#manufacturingInformation"
+          $ref: "#/components/schemas/ManufacturingCharacteristic"
         partTypeInformation:
           description: The part type of which the batch has been instantiated of.
-          $ref: '#/components/schemas/urn_bamm_io.catenax.batch_1.0.2_PartTypeInformationCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batch:1.0.2#partTypeInformation"
+          $ref: "#/components/schemas/PartTypeInformationCharacteristic"
       required:
       - catenaXId
       - localIdentifiers
@@ -238,26 +265,25 @@ components:
     Unauthorized:
       description: The requesting user or client is not authenticated.
     Forbidden:
-      description: The requesting user or client is not authorized to access resources
-        for the given tenant.
+      description: The requesting user or client is not authorized to access resources.
     NotFoundError:
-      description: The requested Twin has not been found.
+      description: The requested resource has not been found.
     ClientError:
       description: Payload or user input is invalid. See error details in the payload
-        for more.
+        for more information.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     Batch:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PagingSchema'
+            $ref: "#/components/schemas/PagingSchema"
       description: The request was successful.
   requestBodies:
     Batch:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Batch'
+            $ref: "#/components/schemas/Batch"

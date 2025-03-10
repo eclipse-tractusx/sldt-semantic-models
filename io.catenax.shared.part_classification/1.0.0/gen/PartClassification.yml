@@ -3,6 +3,7 @@ openapi: 3.0.3
 info:
   title: PartClassification
   version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.part_classification:1.0.0#PartClassification"
 servers:
 - url: catenax.io/api/v1
   variables:
@@ -42,15 +43,15 @@ paths:
           type: boolean
       responses:
         "200":
-          $ref: '#/components/responses/PartClassification'
+          $ref: "#/components/responses/PartClassification"
+        "400":
+          $ref: "#/components/responses/ClientError"
         "401":
-          $ref: '#/components/responses/ClientError'
-        "402":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: '#/components/responses/Forbidden'
+          $ref: "#/components/responses/Forbidden"
         "404":
-          $ref: '#/components/responses/NotFoundError'
+          $ref: "#/components/responses/NotFoundError"
 components:
   schemas:
     ErrorResponse:
@@ -59,7 +60,7 @@ components:
       - error
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
     Error:
       type: object
       required:
@@ -85,7 +86,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/PartClassification'
+            $ref: "#/components/schemas/PartClassification"
         totalItems:
           type: number
         totalPages:
@@ -94,42 +95,50 @@ components:
           type: number
         currentPage:
           type: number
-    urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationStandardCharacteristic:
+    ClassificationStandardCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.part_classification:1.0.0#ClassificationStandardCharacteristic"
       description: Identified classification standards that align to the Catena-X
         needs.
-    urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationIDCharacteristic:
+    ClassificationIDCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.part_classification:1.0.0#ClassificationIDCharacteristic"
       description: "It can be numeric or a string, depending on the chosen classification\
         \ standard."
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+    Text:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
       description: "Describes a Property which contains plain text. This is intended\
         \ exclusively for human readable strings, not for identifiers, measurement\
         \ values, etc."
-    urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationEntity:
+    ClassificationEntity:
       description: Encapsulates data related to the classification of the part.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.part_classification:1.0.0#ClassificationEntity"
       type: object
       properties:
         classificationStandard:
           description: Identified classification standards that align to the Catena-X
             needs.
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationStandardCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.part_classification:1.0.0#classificationStandard"
+          $ref: "#/components/schemas/ClassificationStandardCharacteristic"
         classificationID:
           description: The classification ID of the part type according to the corresponding
             standard definition mentioned in the key value pair.
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationIDCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.part_classification:1.0.0#classificationID"
+          $ref: "#/components/schemas/ClassificationIDCharacteristic"
         classificationDescription:
           description: Optional property describing the classification standard.
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.part_classification:1.0.0#classificationDescription"
+          $ref: "#/components/schemas/Text"
       required:
       - classificationStandard
       - classificationID
-    urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationCharacteristic:
+    ClassificationCharacteristic:
       description: Classification characteristic enabling a set of further properties.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.part_classification:1.0.0#ClassificationCharacteristic"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationEntity'
+        $ref: "#/components/schemas/ClassificationEntity"
       uniqueItems: true
     PartClassification:
       description: "This model is used as a shared aspect, that integrates classification\
@@ -141,36 +150,37 @@ components:
         \ multiple standards can be used for one part these range from E-Class, to\
         \ ISO, IEC, or STEP."
       type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.part_classification:1.0.0#PartClassification"
       properties:
         partClassification:
           description: Property describing the classification of a part.
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.part_classification_1.0.0_ClassificationCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.part_classification:1.0.0#partClassification"
+          $ref: "#/components/schemas/ClassificationCharacteristic"
       required:
       - partClassification
   responses:
     Unauthorized:
       description: The requesting user or client is not authenticated.
     Forbidden:
-      description: The requesting user or client is not authorized to access resources
-        for the given tenant.
+      description: The requesting user or client is not authorized to access resources.
     NotFoundError:
-      description: The requested Twin has not been found.
+      description: The requested resource has not been found.
     ClientError:
       description: Payload or user input is invalid. See error details in the payload
-        for more.
+        for more information.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     PartClassification:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PagingSchema'
+            $ref: "#/components/schemas/PagingSchema"
       description: The request was successful.
   requestBodies:
     PartClassification:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PartClassification'
+            $ref: "#/components/schemas/PartClassification"

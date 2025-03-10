@@ -3,6 +3,7 @@ openapi: 3.0.3
 info:
   title: Product (Carbon) Footprint
   version: v7
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#Pcf"
 servers:
 - url: catenax.io/api/v7
   variables:
@@ -42,15 +43,15 @@ paths:
           type: boolean
       responses:
         "200":
-          $ref: '#/components/responses/Pcf'
+          $ref: "#/components/responses/Pcf"
+        "400":
+          $ref: "#/components/responses/ClientError"
         "401":
-          $ref: '#/components/responses/ClientError'
-        "402":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: '#/components/responses/Forbidden'
+          $ref: "#/components/responses/Forbidden"
         "404":
-          $ref: '#/components/responses/NotFoundError'
+          $ref: "#/components/responses/NotFoundError"
 components:
   schemas:
     ErrorResponse:
@@ -59,7 +60,7 @@ components:
       - error
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
     Error:
       type: object
       required:
@@ -85,7 +86,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/Pcf'
+            $ref: "#/components/schemas/Pcf"
         totalItems:
           type: number
         totalPages:
@@ -94,32 +95,36 @@ components:
           type: number
         currentPage:
           type: number
-    urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait:
+    UuidV4Trait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait"
       description: "The provided regular expression ensures that the UUID is composed\
         \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
         \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
         \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
       pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+    Text:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
       description: "Describes a Property which contains plain text. This is intended\
         \ exclusively for human readable strings, not for identifiers, measurement\
         \ values, etc."
-    urn_samm_io.catenax.pcf_7.0.0_PartialFullPcfCharacteristic:
+    PartialFullPcfCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#PartialFullPcfCharacteristic"
       description: Characteristic for defining an indicator for partial or full PCF
         (Product Carbon Footprint) declaration as specified in the Catena-X PCF Rulebook
         (Version 3.0.0).
       enum:
       - Cradle-to-gate
       - Cradle-to-grave
-    urn_samm_io.catenax.pcf_7.0.0_PrecedingPfId:
+    PrecedingPfId:
       description: Entity for defining a preceding PCF (Product Carbon Footprint)
         identifier entity as specified in the Catena-X PCF Rulebook (Version 3.0.0)
         in accordance with the technical specifications for PCF Data Exchange (Version
         2.0.0) from the WBCSD (World Business Council for Sustainable Development)/
         PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#PrecedingPfId"
       type: object
       properties:
         id:
@@ -127,33 +132,38 @@ components:
             \ the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical\
             \ specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD\
             \ (World Business Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#id"
+          $ref: "#/components/schemas/UuidV4Trait"
       required:
       - id
-    urn_samm_io.catenax.pcf_7.0.0_PrecedingPfIdsCharacteristic:
+    PrecedingPfIdsCharacteristic:
       description: Characteristic for defining a non-empty set of product (carbon)
         footprint identifiers as specified in the Catena-X PCF Rulebook (Version 3.0.0)
         in accordance with the WBCSD (World Business Council for Sustainable Development)
         Pathfinder framework and the technical specifications for PCF Data Exchange
         (Version 2.0.0) from the WBCSD/ PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#PrecedingPfIdsCharacteristic"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PrecedingPfId'
-    urn_samm_io.catenax.pcf_7.0.0_ProductFootprintVersion:
+        $ref: "#/components/schemas/PrecedingPfId"
+    ProductFootprintVersion:
       type: number
       minimum: 0
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#ProductFootprintVersion"
       description: Characteristic for defining a product footprint version as specified
         in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical
         specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World
         Business Council for Sustainable Development)/ PACT initiative.
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+    Timestamp:
       type: string
       pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
         .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp"
       description: Describes a Property which contains the date and time with an optional
         timezone.
-    urn_samm_io.catenax.pcf_7.0.0_PfStatusCharacteristic:
+    PfStatusCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#PfStatusCharacteristic"
       description: Characteristic for defining a status indicator of a product (carbon)
         footprint as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance
         with the technical specifications for PCF Data Exchange (Version 2.0.0) from
@@ -162,20 +172,23 @@ components:
       enum:
       - Active
       - Deprecated
-    urn_samm_io.catenax.pcf_7.0.0_NonEmptyStringTrait:
+    NonEmptyStringTrait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#NonEmptyStringTrait"
       description: Constraint for ensuring that a string has at least one character.
       minLength: 1
-    urn_samm_io.catenax.pcf_7.0.0_IdsTrait:
+    IdsTrait:
       description: Constraint for defining a non-empty set of URIs (Uniform Resource
         Identifieres).
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#IdsTrait"
       type: array
       items:
         type: string
         format: uri
       minItems: 1
-    urn_samm_io.catenax.pcf_7.0.0_DeclaredUnitCharacteristic:
+    DeclaredUnitCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#DeclaredUnitCharacteristic"
       description: "Unit of analysis of the product with accepted values as specified\
         \ in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical\
         \ specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World\
@@ -191,18 +204,21 @@ components:
       - ton kilometer
       - square meter
       - piece
-    urn_samm_io.catenax.pcf_7.0.0_StrictlyPositiveDecimalTrait:
+    StrictlyPositiveDecimalTrait:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#StrictlyPositiveDecimalTrait"
       description: "Constraint for defining a positive, non-zero decimal."
       minimum: 0.0
       exclusiveMinimum: true
-    urn_samm_io.catenax.pcf_7.0.0_PositiveDecimalWeightTrait:
+    PositiveDecimalWeightTrait:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#PositiveDecimalWeightTrait"
       description: Constraint for defining a decimal equal to or greater than zero.
       minimum: 0
       exclusiveMinimum: false
-    urn_samm_io.catenax.pcf_7.0.0_ExemptedEmissionsPercentTrait:
+    ExemptedEmissionsPercentTrait:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#ExemptedEmissionsPercentTrait"
       description: Characteristic for defining the percentage of emissions excluded
         from a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook
         (Version 3.0.0) in accordance with the technical specifications for PCF Data
@@ -212,23 +228,26 @@ components:
       exclusiveMaximum: false
       minimum: 0.0
       exclusiveMinimum: false
-    urn_samm_io.catenax.pcf_7.0.0_GeographyCountrySubdivisionTrait:
+    GeographyCountrySubdivisionTrait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#GeographyCountrySubdivisionTrait"
       description: Constraint for defining a geography country subdivision in compliance
         to ISO 3166-2 as specified in the Catena-X PCF Rulebook (Version 3.0.0) in
         accordance with the technical specifications for PCF Data Exchange (Version
         2.0.0) from the WBCSD (World Business Council for Sustainable Development)/
         PACT initiative.
       pattern: "([A-Z]{2}-[A-Z0-9]{1,3}|)"
-    urn_samm_io.catenax.pcf_7.0.0_GeographyCountryTrait:
+    GeographyCountryTrait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#GeographyCountryTrait"
       description: Constraint for defining a geography country conform to ISO 3166CC
         as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with
         the technical specifications for PCF Data Exchange (Version 2.0.0) from the
         WBCSD (World Business Council for Sustainable Development)/ PACT initiative.
       pattern: "([A-Z]{2})"
-    urn_samm_io.catenax.pcf_7.0.0_GeographyRegionOrSubregionCharacteristic:
+    GeographyRegionOrSubregionCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#GeographyRegionOrSubregionCharacteristic"
       description: Characteristic for defining a list of valid geographic regions
         as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with
         the technical specifications for PCF Data Exchange (Version 2.0.0) from the
@@ -259,8 +278,9 @@ components:
       - Western Europe
       - Global
       - Several
-    urn_samm_io.catenax.pcf_7.0.0_CrossSectoralStandardsUsedEnumerationCharacteristic:
+    CrossSectoralStandardsUsedEnumerationCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#CrossSectoralStandardsUsedEnumerationCharacteristic"
       description: Characteristic for defining the enumeration of valid accounting
         standards used for product carbon footprint calculation as specified in the
         Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical specifications
@@ -279,12 +299,13 @@ components:
       - PEF
       - Other
       - GHG Protocol Product Standard
-    urn_samm_io.catenax.pcf_7.0.0_CrossSectoralStandard:
+    CrossSectoralStandard:
       description: Entity for defining an accounting standard used for product carbon
         footprint calculation as specified in the Catena-X PCF Rulebook (Version 3.0.0)
         in accordance with the technical specifications for PCF Data Exchange (Version
         2.0.0) from the WBCSD (World Business Council for Sustainable Development)/
         PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#CrossSectoralStandard"
       type: object
       properties:
         crossSectoralStandard:
@@ -294,20 +315,23 @@ components:
             \ technical specifications for PCF Data Exchange (Version 2.0.0) from\
             \ the WBCSD (World Business Council for Sustainable Development)/ PACT\
             \ initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_CrossSectoralStandardsUsedEnumerationCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#crossSectoralStandard"
+          $ref: "#/components/schemas/CrossSectoralStandardsUsedEnumerationCharacteristic"
       required:
       - crossSectoralStandard
-    urn_samm_io.catenax.pcf_7.0.0_CrossSectoralStandardSet:
+    CrossSectoralStandardSet:
       description: Characteristic for defining the list of valid accounting standards
         used for product carbon footprint calculation as specified in the Catena-X
         PCF Rulebook (Version 3.0.0) in accordance with the technical specifications
         for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council
         for Sustainable Development)/ PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#CrossSectoralStandardSet"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_CrossSectoralStandard'
-    urn_samm_io.catenax.pcf_7.0.0_ProductOrSectorSpecificRuleOperator:
+        $ref: "#/components/schemas/CrossSectoralStandard"
+    ProductOrSectorSpecificRuleOperator:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#ProductOrSectorSpecificRuleOperator"
       description: Enumeration of PCR (Product Category Rule) operators as specified
         in the technical specifications for PCF Data Exchange (Version 2.0.0) from
         the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.
@@ -316,11 +340,12 @@ components:
       - PEF
       - EPD International
       - Other
-    urn_samm_io.catenax.pcf_7.0.0_RuleName:
+    RuleName:
       description: Name of a rule applied by a specified operator as specified in
         the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical
         specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World
         Business Council for Sustainable Development)/ PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#RuleName"
       type: object
       properties:
         ruleName:
@@ -328,25 +353,28 @@ components:
             in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical
             specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World
             Business Council for Sustainable Development)/ PACT initiative.
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_NonEmptyStringTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#ruleName"
+          $ref: "#/components/schemas/NonEmptyStringTrait"
       required:
       - ruleName
-    urn_samm_io.catenax.pcf_7.0.0_RuleNamesTrait:
+    RuleNamesTrait:
       description: Constraint for defining a non-empty set of rule names as specified
         in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical
         specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World
         Business Council for Sustainable Development)/ PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#RuleNamesTrait"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_RuleName'
+        $ref: "#/components/schemas/RuleName"
       uniqueItems: true
       minItems: 1
-    urn_samm_io.catenax.pcf_7.0.0_ProductOrSectorSpecificRule:
+    ProductOrSectorSpecificRule:
       description: Entity for defining a product or sector specific rule of a product
         carbon footprint as specified in the Catena-X PCF Rulebook (Version 3.0.0)
         in accordance with the technical specifications for PCF Data Exchange (Version
         2.0.0) from the WBCSD (World Business Council for Sustainable Development)/
         PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#ProductOrSectorSpecificRule"
       type: object
       properties:
         extWBCSD_operator:
@@ -355,7 +383,8 @@ components:
             \ Data Exchange (Version 2.0.0) from the WBCSD (World Business Council\
             \ for Sustainable Development)/ PACT initiative. WBCSD specific extension,\
             \ in Catena-X for example must always be \"Other\"."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_ProductOrSectorSpecificRuleOperator'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#operator"
+          $ref: "#/components/schemas/ProductOrSectorSpecificRuleOperator"
         productOrSectorSpecificRules:
           description: "Mandatory: Product-specific or sector-specific set of rules\
             \ used for calculating or allocating GHG (Greenhouse Gas) emissions applied\
@@ -363,29 +392,33 @@ components:
             \ (Version 3.0.0) in accordance with the technical specifications for\
             \ PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council\
             \ for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_RuleNamesTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#ruleNames"
+          $ref: "#/components/schemas/RuleNamesTrait"
         extWBCSD_otherOperatorName:
           description: "Optional: Other operator of PCR (Product Category Rule)/ PSR\
             \ (Product Specific Rule) as specified in the technical specifications\
             \ for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business\
             \ Council for Sustainable Development)/ PACT initiative. WBCSD specific\
             \ extension, in Catena-X for example specified by a default value."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_NonEmptyStringTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#otherOperatorName"
+          $ref: "#/components/schemas/NonEmptyStringTrait"
       required:
       - extWBCSD_operator
       - productOrSectorSpecificRules
-    urn_samm_io.catenax.pcf_7.0.0_ProductOrSectorSpecificRuleSet:
+    ProductOrSectorSpecificRuleSet:
       description: Characteristic for defining the set of product or sector specific
         rules of a product carbon footprint as specified in the Catena-X PCF Rulebook
         (Version 3.0.0) in accordance with the technical specifications for PCF Data
         Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable
         Development)/ PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#ProductOrSectorSpecificRuleSet"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_ProductOrSectorSpecificRule'
+        $ref: "#/components/schemas/ProductOrSectorSpecificRule"
       uniqueItems: true
-    urn_samm_io.catenax.pcf_7.0.0_CharacterizationFactorsCharacteristic:
+    CharacterizationFactorsCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#CharacterizationFactorsCharacteristic"
       description: Characteristic for defining the characterization factors of a product
         carbon footprint as specified in the Catena-X PCF Rulebook (Version 3.0.0)
         in accordance with the technical specifications for PCF Data Exchange (Version
@@ -394,28 +427,31 @@ components:
       enum:
       - AR5
       - AR6
-    urn_samm_io.catenax.pcf_7.0.0_AllocationWasteIncinerationCharacteristic:
+    AllocationWasteIncinerationCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#AllocationWasteIncinerationCharacteristic"
       description: Characteristic for defining the allocation approach used for waste
         incineration as specified by the TFS (Together For Sustainability) initiative.
       enum:
       - cut-off
       - reverse cut-off
       - system expansion
-    urn_samm_io.catenax.pcf_7.0.0_PercentTrait:
+    PercentTrait:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#PercentTrait"
       description: Constraint for a decimal number in the range of and including 0
         and 100.
       maximum: 100.0
       exclusiveMaximum: false
       minimum: 0.0
       exclusiveMinimum: false
-    urn_samm_io.catenax.pcf_7.0.0_EmissionFactorDS:
+    EmissionFactorDS:
       description: Entity for defining an emission factor data source used to calculate
         a product carbon footprint as specified in the Catena-X PCF Rulebook (Version
         3.0.0) in accordance with the technical specifications for PCF Data Exchange
         (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/
         PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#EmissionFactorDS"
       type: object
       properties:
         secondaryEmissionFactorSource:
@@ -424,32 +460,36 @@ components:
             \ 3.0.0) in accordance with the technical specifications for PCF Data\
             \ Exchange (Version 2.0.0) from the WBCSD (World Business Council for\
             \ Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#emissionFactorDS"
+          $ref: "#/components/schemas/Text"
       required:
       - secondaryEmissionFactorSource
-    urn_samm_io.catenax.pcf_7.0.0_EmissionFactorDSSet:
+    EmissionFactorDSSet:
       description: Characteristic for defining a set of emission factor sources used
         for calculating a product carbon footprint as specified in the Catena-X PCF
         Rulebook (Version 3.0.0) in accordance with the technical specifications for
         PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for
         Sustainable Development)/ PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#EmissionFactorDSSet"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_EmissionFactorDS'
+        $ref: "#/components/schemas/EmissionFactorDS"
       uniqueItems: true
-    urn_samm_io.catenax.pcf_7.0.0_DqiNumberTrait:
+    DqiNumberTrait:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#DqiNumberTrait"
       description: Constraint for defining a decimal between 1 and 3 including.
       maximum: 3
       exclusiveMaximum: false
       minimum: 1
       exclusiveMinimum: false
-    urn_samm_io.catenax.pcf_7.0.0_DataQualityIndicators:
+    DataQualityIndicators:
       description: Characteristic for defining the quantitative data quality indicators
         of a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook
         (Version 3.0.0) in accordance with the technical specifications for PCF Data
         Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable
         Development)/ PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#DataQualityIndicators"
       type: object
       properties:
         coveragePercent:
@@ -460,7 +500,8 @@ components:
             \ Exchange (Version 2.0.0) from the WBCSD (World Business Council for\
             \ Sustainable Development)/ PACT initiative. In Catena-X for example set\
             \ to \"100\" per default."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PercentTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#coveragePercent"
+          $ref: "#/components/schemas/PercentTrait"
         technologicalDQR:
           description: "Optional: Technological representativeness of the sources\
             \ used for PCF (Product Carbon Footprint) calculation based on weighted\
@@ -468,7 +509,8 @@ components:
             \ the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical\
             \ specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD\
             \ (World Business Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_DqiNumberTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#technologicalDQR"
+          $ref: "#/components/schemas/DqiNumberTrait"
         temporalDQR:
           description: "Optional: Temporal representativeness of the sources used\
             \ for PCF (Product Carbon Footprint) calculation based on weighted average\
@@ -476,7 +518,8 @@ components:
             \ PCF Rulebook (Version 3.0.0) in accordance with the technical specifications\
             \ for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business\
             \ Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_DqiNumberTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#temporalDQR"
+          $ref: "#/components/schemas/DqiNumberTrait"
         geographicalDQR:
           description: "Optional: Geographical representativeness of the sources used\
             \ for PCF (Product Carbon Footprint) calculation based on weighted average\
@@ -484,7 +527,8 @@ components:
             \ PCF Rulebook (Version 3.0.0) in accordance with the technical specifications\
             \ for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business\
             \ Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_DqiNumberTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#geographicalDQR"
+          $ref: "#/components/schemas/DqiNumberTrait"
         completenessDQR:
           description: "Optional: Completeness of the data collected for PCF (Product\
             \ Carbon Footprint) calculation based on weighted average of all inputs\
@@ -492,7 +536,8 @@ components:
             \ (Version 3.0.0) in accordance with the technical specifications for\
             \ PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council\
             \ for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_DqiNumberTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#completenessDQR"
+          $ref: "#/components/schemas/DqiNumberTrait"
         reliabilityDQR:
           description: "Optional: Reliability of the data collected for PCF (Product\
             \ Carbon Footprint) calculation based on weighted average of all inputs\
@@ -500,30 +545,36 @@ components:
             \ (Version 3.0.0) in accordance with the technical specifications for\
             \ PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council\
             \ for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_DqiNumberTrait'
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#reliabilityDQR"
+          $ref: "#/components/schemas/DqiNumberTrait"
+    Boolean:
       type: boolean
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Boolean"
       description: Represents a boolean value (i.e. a "flag").
-    urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait:
+    PositiveEmissionsTrait:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#PositiveEmissionsTrait"
       description: 'Only positive emission values (>0) are valid '
       minimum: 0.0
       exclusiveMinimum: false
-    urn_samm_io.catenax.pcf_7.0.0_PositiveOrNegativeEmission:
+    PositiveOrNegativeEmission:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#PositiveOrNegativeEmission"
       description: Characteristic for defining (positive or negative) emissions in
         context of a PCF (Product Carbon Footprint) as specified by the WBCSD (World
         Business Council for Sustainable Development) Pathfinder initiative.
-    urn_samm_io.catenax.pcf_7.0.0_NegativeEmissionsTrait:
+    NegativeEmissionsTrait:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#NegativeEmissionsTrait"
       description: Only negative emission values (<=0) are valid.
       maximum: 0.0
       exclusiveMaximum: false
-    urn_samm_io.catenax.pcf_7.0.0_PcfEntity:
-      description: Characteristic for defining a PCF (Product Carbon Footprint) as
-        specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with
-        the technical specifications for PCF Data Exchange (Version 2.0.0) from the
-        WBCSD (World Business Council for Sustainable Development)/ PACT initiative.
+    PcfEntity:
+      description: Entity for defining a PCF (Product Carbon Footprint) as specified
+        in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical
+        specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World
+        Business Council for Sustainable Development)/ PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#PcfEntity"
       type: object
       properties:
         declaredUnit:
@@ -533,58 +584,67 @@ components:
             \ PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council\
             \ for Sustainable Development)/ PACT initiative. In Catena-X for example\
             \ list of valid units includes \"piece\"."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_DeclaredUnitCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#declaredUnit"
+          $ref: "#/components/schemas/DeclaredUnitCharacteristic"
         unitaryProductAmount:
           description: "Mandatory: Amount of units contained within a product in context\
             \ of the PCF (Product Carbon Footprint) as specified in the Catena-X PCF\
             \ Rulebook (Version 3.0.0) in accordance with the technical specifications\
             \ for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business\
             \ Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_StrictlyPositiveDecimalTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#unitaryProductAmount"
+          $ref: "#/components/schemas/StrictlyPositiveDecimalTrait"
         productMassPerDeclaredUnit:
           description: "Mandatory: Mass of a product per declared unit (net, unpackaged)\
             \ in context of the PCF (Product Carbon Footprint) as specified in the\
             \ Catena-X PCF Rulebook (Version 3.0.0)."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveDecimalWeightTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#productMassPerDeclaredUnit"
+          $ref: "#/components/schemas/PositiveDecimalWeightTrait"
         exemptedEmissionsPercent:
           description: |-
             Mandatory: Applied cut-off percentage of emissions excluded from PCF (Product Carbon Footprint).
             For accordance with Catena-X PCF Rulebook (Version 3.0.0) <3%.
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_ExemptedEmissionsPercentTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#exemptedEmissionsPercent"
+          $ref: "#/components/schemas/ExemptedEmissionsPercentTrait"
         exemptedEmissionsDescription:
           description: "Optional: Rationale behind exclusion of specific PCF (Product\
             \ Carbon Footprint) emissions as specified in the Catena-X PCF Rulebook\
             \ (Version 3.0.0) in accordance with the technical specifications for\
             \ PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council\
             \ for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#exemptedEmissionsDescription"
+          $ref: "#/components/schemas/Text"
         boundaryProcessesDescription:
           description: "Optional: Processes attributable to each lifecycle stage as\
             \ specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance\
             \ with the technical specifications for PCF Data Exchange (Version 2.0.0)\
             \ from the WBCSD (World Business Council for Sustainable Development)/\
             \ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#boundaryProcessesDescription"
+          $ref: "#/components/schemas/Text"
         geographyCountrySubdivision:
           description: "Optional: Subdivision of a country which must be an ISO 3166-2\
             \ subdivision code as specified in the Catena-X PCF Rulebook (Version\
             \ 3.0.0) in accordance with the technical specifications for PCF Data\
             \ Exchange (Version 2.0.0) from the WBCSD (World Business Council for\
             \ Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_GeographyCountrySubdivisionTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#geographyCountrySubdivision"
+          $ref: "#/components/schemas/GeographyCountrySubdivisionTrait"
         geographyCountry:
           description: "Optional: Two letter country code that must conform to data\
             \ type ISO 3166CC as specified in the Catena-X PCF Rulebook (Version 3.0.0)\
             \ in accordance with the technical specifications for PCF Data Exchange\
             \ (Version 2.0.0) from the WBCSD (World Business Council for Sustainable\
             \ Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_GeographyCountryTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#geographyCountry"
+          $ref: "#/components/schemas/GeographyCountryTrait"
         geographyRegionOrSubregion:
           description: "Mandatory: Region according to list as specified in the Catena-X\
             \ PCF Rulebook (Version 3.0.0) in accordance with the technical specifications\
             \ for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business\
             \ Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_GeographyRegionOrSubregionCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#geographyRegionOrSubregion"
+          $ref: "#/components/schemas/GeographyRegionOrSubregionCharacteristic"
         referencePeriodStart:
           description: "Mandatory: Start of time boundary for which a PCF (Product\
             \ Carbon Footprint) value is considered to be representative as specified\
@@ -592,14 +652,16 @@ components:
             \ technical specifications for PCF Data Exchange (Version 2.0.0) from\
             \ the WBCSD (World Business Council for Sustainable Development)/ PACT\
             \ initiative."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#referencePeriodStart"
+          $ref: "#/components/schemas/Timestamp"
         referencePeriodEnd:
           description: "Mandatory: End of time boundary for which a PCF (Product Carbon\
             \ Footprint) value is considered to be representative as specified in\
             \ the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical\
             \ specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD\
             \ (World Business Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#referencePeriodEnd"
+          $ref: "#/components/schemas/Timestamp"
         crossSectoralStandardsUsed:
           description: "Mandatory: Discloses the cross-sectoral standards applied\
             \ for calculating or allocating GHG (Greenhouse Gas) emissions as specified\
@@ -607,7 +669,8 @@ components:
             \ technical specifications for PCF Data Exchange (Version 2.0.0) from\
             \ the WBCSD (World Business Council for Sustainable Development)/ PACT\
             \ initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_CrossSectoralStandardSet'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#crossSectoralStandardsUsed"
+          $ref: "#/components/schemas/CrossSectoralStandardSet"
         productOrSectorSpecificRules:
           description: "Mandatory: Product or sector specific rules applied for calculating\
             \ or allocating GHG (Greenhouse Gas) emissions, e.g. PCRs (Product Category\
@@ -616,7 +679,8 @@ components:
             \ with the technical specifications for PCF Data Exchange (Version 2.0.0)\
             \ from the WBCSD (World Business Council for Sustainable Development)/\
             \ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_ProductOrSectorSpecificRuleSet'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#productOrSectorSpecificRules"
+          $ref: "#/components/schemas/ProductOrSectorSpecificRuleSet"
         extWBCSD_characterizationFactors:
           description: "Mandatory: IPCC (Intergovernmental Panel on Climate Change)\
             \ version of the GWP (Global Warming Potential) characterization factors\
@@ -625,7 +689,8 @@ components:
             \ from the WBCSD (World Business Council for Sustainable Development)/\
             \ PACT initiative. WBCSD specific extension, in Catena-X for example specified\
             \ by default with value \\\"AR6\\\". Default value can be overwritten."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_CharacterizationFactorsCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#characterizationFactors"
+          $ref: "#/components/schemas/CharacterizationFactorsCharacteristic"
         extWBCSD_allocationRulesDescription:
           description: "Optional: Allocation rules used and underlying reasoning in\
             \ context of a product carbon footprint as specified in the technical\
@@ -634,46 +699,53 @@ components:
             \ WBCSD specific extension, in Catena-X for example specified by default\
             \ with value \"In accordance with Catena-X PCF Rulebook (Version 3.0.0)\"\
             ."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#allocationRulesDescription"
+          $ref: "#/components/schemas/Text"
         extTFS_allocationWasteIncineration:
           description: "Mandatory: Allocation approach used for waste incineration\
             \ with energy recovery as specified by the TFS (Together For Sustainability)\
             \ initiative. In Catena-X for example must be specified by value \"cut-off\"\
             ."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_AllocationWasteIncinerationCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#allocationWasteIncineration"
+          $ref: "#/components/schemas/AllocationWasteIncinerationCharacteristic"
         primaryDataShare:
           description: "Mandatory starting 2025: Share of primary data in percent\
             \ as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance\
             \ with the technical specifications for PCF Data Exchange (Version 2.0.0)\
             \ from the WBCSD (World Business Council for Sustainable Development)/\
             \ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PercentTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#primaryDataShare"
+          $ref: "#/components/schemas/PercentTrait"
         secondaryEmissionFactorSources:
           description: "Mandatory: Emission factors used for the PCF (Product Carbon\
             \ Footprint) calculation as specified in the Catena-X PCF Rulebook (Version\
             \ 3.0.0) in accordance with the technical specifications for PCF Data\
             \ Exchange (Version 2.0.0) from the WBCSD (World Business Council for\
             \ Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_EmissionFactorDSSet'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#secondaryEmissionFactorSources"
+          $ref: "#/components/schemas/EmissionFactorDSSet"
         dataQualityRating:
           description: "Mandatory starting 2025: Quantitative data quality indicators\
             \ of a PCF (Product Carbon Footprint) as specified in the Catena-X PCF\
             \ Rulebook (Version 3.0.0) in accordance with the technical specifications\
             \ for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business\
             \ Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_DataQualityIndicators'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#dqi"
+          $ref: "#/components/schemas/DataQualityIndicators"
         extWBCSD_packagingEmissionsIncluded:
           description: |-
             Mandatory: The Catena-X PCF Rulebook requires to include packaging from a system boundary perspective. "FALSE" is only possible due to the application of the cut-off rule.
             Flag indicating whether packaging emissions are included in a PCF (Product Carbon Footprint) as specified in the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. WBCSD specific extension.
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Boolean'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#packagingEmissionsIncluded"
+          $ref: "#/components/schemas/Boolean"
         pcfExcludingBiogenic:
           description: "Mandatory: Product carbon footprint of a product excluding\
             \ biogenic emissions as specified in the Catena-X PCF Rulebook (Version\
             \ 3.0.0) in accordance with the technical specifications for PCF Data\
             \ Exchange (Version 2.0.0) from the WBCSD (World Business Council for\
             \ Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#pcfExcludingBiogenic"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         pcfIncludingBiogenic:
           description: "Mandatory starting 2025: Product carbon footprint of a product\
             \ including biogenic emissions as specified in the Catena-X PCF Rulebook\
@@ -681,7 +753,8 @@ components:
             \ PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council\
             \ for Sustainable Development)/ PACT initiative. Optional value in current\
             \ specification version but will be mandatory in future version."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveOrNegativeEmission'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#pcfIncludingBiogenic"
+          $ref: "#/components/schemas/PositiveOrNegativeEmission"
         fossilGhgEmissions:
           description: "Mandatory starting 2025: Emissions from combustion of fossil\
             \ sources as specified in the Catena-X PCF Rulebook (Version 3.0.0) in\
@@ -689,32 +762,37 @@ components:
             \ 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/\
             \ PACT initiative. Identical to \"pcfExcludingBiogenic\", will be removed\
             \ in later version."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#fossilGhgEmissions"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         biogenicCarbonEmissionsOtherThanCO2:
           description: "Mandatory starting 2025: GWP (Global Warming Potential) of\
             \ biogenic CO2e-emissions in production phase which contain only GHG (Greenhouse\
             \ Gas) emissions other than CO2 - excludes biogenic CO2. For specification\
             \ see Catena-X PCF Rulebook (Version 3.0.0)."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#biogenicCarbonEmissionsOtherThanCO2"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         biogenicCarbonWithdrawal:
           description: "Mandatory starting 2025: Biogenic carbon content in the product\
             \ converted to CO2e as specified in the Catena-X PCF Rulebook (Version\
             \ 3.0.0) in accordance with the technical specifications for PCF Data\
             \ Exchange (Version 2.1.0) from the WBCSD (World Business Council for\
             \ Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_NegativeEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#biogenicCarbonWithdrawal"
+          $ref: "#/components/schemas/NegativeEmissionsTrait"
         dlucGhgEmissions:
           description: "Mandatory starting 2025: Direct land use change CO2e emissions\
             \ in context of a product carbon footprint as specified in the Catena-X\
             \ PCF Rulebook (Version 3.0.0) in accordance with the technical specifications\
             \ for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business\
             \ Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#dlucGhgEmissions"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         extTFS_luGhgEmissions:
           description: "Mandatory starting 2025: Land use CO2 emissions in context\
             \ of a product carbon footprint as specified by the TFS (Together For\
             \ Sustainability) initiative. TFS specific extension."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveOrNegativeEmission'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#luGhgEmissions"
+          $ref: "#/components/schemas/PositiveOrNegativeEmission"
         aircraftGhgEmissions:
           description: "Mandatory starting 2025: GHG (Greenhouse Gas) emissions resulting\
             \ from aircraft engine usage for the transport of the product as specified\
@@ -722,55 +800,65 @@ components:
             \ technical specifications for PCF Data Exchange (Version 2.0.0) from\
             \ the WBCSD (World Business Council for Sustainable Development)/ PACT\
             \ initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#aircraftGhgEmissions"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         extWBCSD_packagingGhgEmissions:
           description: "Optional: Emissions resulting from the packaging of the product\
             \ as specified in the technical specifications for PCF Data Exchange (Version\
             \ 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/\
             \ PACT initiative. WBCSD specific extension. In Catena-X not relevant\
             \ to be reported separately."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#packagingGhgEmissions"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         distributionStagePcfExcludingBiogenic:
           description: "Optional: Product carbon footprint for the distribution stage\
             \ of a product excluding biogenic emissions as specified in the Catena-X\
             \ PCF Rulebook (Version 3.0.0)."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#distributionStagePcfExcludingBiogenic"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         distributionStagePcfIncludingBiogenic:
           description: "Optional: Product carbon footprint for the distribution stage\
             \ of a product including biogenic emissions as specified in the Catena-X\
             \ PCF Rulebook (Version 3.0.0)."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveOrNegativeEmission'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#distributionStagePcfIncludingBiogenic"
+          $ref: "#/components/schemas/PositiveOrNegativeEmission"
         distributionStageFossilGhgEmissions:
           description: "Optional: Emissions from the combustion of fossil sources\
             \ in the distribution stage as specified in the Catena-X PCF Rulebook\
             \ (Version 3.0.0)."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#distributionStageFossilGhgEmissions"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         distributionStageBiogenicCarbonEmissionsOtherThanCO2:
           description: "Optional: GWP (Global Warming Potential) of biogenic CO2e-emissions\
             \ in distribution phase which contain only GHG (Greenhouse Gas) emissions\
             \ other than CO2 ? excludes biogenic CO2. For specification see Catena-X\
             \ PCF Rulebook (Version 3.0.0)."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#distributionStageBiogenicCarbonEmissionsOtherThanCO2"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         distributionStageBiogenicCarbonWithdrawal:
           description: "Optional: GWP (Global Warming Potential) of biogenic CO2-withdrawal\
             \ in distribution stage (biogenic CO2 contained in the product) as specified\
             \ in the Catena-X PCF Rulebook (Version 3.0.0)."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_NegativeEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#distributionStageBiogenicCarbonWithdrawal"
+          $ref: "#/components/schemas/NegativeEmissionsTrait"
         extTFS_distributionStageDlucGhgEmissions:
           description: "Optional: Direct land use change CO2 emissions during distribution\
             \ stage in context of a product carbon footprint as specified by the TFS\
             \ (Together For Sustainability) initiative. TFS specific extension."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#distributionStageDlucGhgEmissions"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         extTFS_distributionStageLuGhgEmissions:
           description: "Optional: Land use CO2 emissions in context of a product carbon\
             \ footprint as specified by the TFS (Together For Sustainability) initiative.\
             \ TFS specific extension."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveOrNegativeEmission'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#distributionStageLuGhgEmissions"
+          $ref: "#/components/schemas/PositiveOrNegativeEmission"
         carbonContentTotal:
           description: "Mandatory starting 2025: Total carbon content per declared\
             \ unit in context of a product carbon footprint as specified in the Catena-X\
             \ PCF Rulebook (Version 3.0.0)."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#carbonContentTotal"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         extWBCSD_fossilCarbonContent:
           description: "Mandatory starting 2025: Fossil carbon amount embodied in\
             \ a product as specified in the technical specifications for PCF Data\
@@ -778,7 +866,8 @@ components:
             \ Sustainable Development)/ PACT initiative. Must be calculated with kgC\
             \ (kilogram Carbon) / declaredUnit equal to or greater zero; WBCSD specific\
             \ extension, in Catena-X specified by a calculated value."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#fossilCarbonContent"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         carbonContentBiogenic:
           description: "Mandatory starting 2025: Biogenic carbon amount embodied in\
             \ a product as specified in the Catena-X PCF Rulebook (Version 3.0.0)\
@@ -786,7 +875,8 @@ components:
             \ (Version 2.1.0) from the WBCSD (World Business Council for Sustainable\
             \ Development)/ PACT initiative. Must be calculated with kgC (kilogram\
             \ Carbon) / declaredUnit equal to or greater zero."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#biogenicCarbonContent"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
         distributionStageAircraftGhgEmissions:
           description: "Optional: GHG (Greenhouse Gas) emissions for the distribution\
             \ stage resulting from aircraft engine usage for the transport of the\
@@ -794,7 +884,8 @@ components:
             \ accordance with the technical specifications for PCF Data Exchange (Version\
             \ 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/\
             \ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PositiveEmissionsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#distributionStageAircraftGhgEmissions"
+          $ref: "#/components/schemas/PositiveEmissionsTrait"
       required:
       - declaredUnit
       - unitaryProductAmount
@@ -810,6 +901,15 @@ components:
       - secondaryEmissionFactorSources
       - extWBCSD_packagingEmissionsIncluded
       - pcfExcludingBiogenic
+    CarbonFootprint:
+      description: Characteristic for defining a PCF (Product Carbon Footprint) as
+        specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with
+        the technical specifications for PCF Data Exchange (Version 2.0.0) from the
+        WBCSD (World Business Council for Sustainable Development)/ PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#CarbonFootprint"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/PcfEntity"
     Pcf:
       description: A Product (Carbon) Footprint represents the carbon footprint of
         a product with values as specified in the Catena-X PCF Rulebook (Version 3.0.0)
@@ -817,25 +917,29 @@ components:
         Pathfinder framework and the technical specifications for PCF Data Exchange
         (Version 2.0.0) from the WBCSD/ PACT initiative.
       type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#Pcf"
       properties:
         id:
           description: "Mandatory: The product footprint identifier as specified in\
             \ the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical\
             \ specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD\
             \ (World Business Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#id"
+          $ref: "#/components/schemas/UuidV4Trait"
         specVersion:
           description: "Mandatory: Version of the product footprint data specification\
             \ as defined in the Catena-X PCF Rulebook (Version 3.0.0) in accordance\
             \ with the technical specifications for PCF Data Exchange (Version 2.0.0)\
             \ from the WBCSD (World Business Council for Sustainable Development)/\
             \ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#specVersion"
+          $ref: "#/components/schemas/Text"
         partialFullPcf:
           description: "Mandatory: Indicator for partial or full PCF (Product Carbon\
             \ Footprint) declaration as specified in the Catena-X PCF Rulebook (Version\
             \ 3.0.0)."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PartialFullPcfCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#partialFullPcf"
+          $ref: "#/components/schemas/PartialFullPcfCharacteristic"
         precedingPfIds:
           description: "Optional: Set of preceding PCF (Product Carbon Footprint)\
             \ identifiers without duplicates as specified in the Catena-X PCF Rulebook\
@@ -844,28 +948,32 @@ components:
             \ specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD/\
             \ PACT initiative. Declared as \"optional\" in WBCSD, needs to be covered\
             \ by application."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PrecedingPfIdsCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#precedingPfIds"
+          $ref: "#/components/schemas/PrecedingPfIdsCharacteristic"
         version:
           description: "Mandatory: Version of the product (carbon) footprint as specified\
             \ in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the\
             \ technical specifications for PCF Data Exchange (Version 2.0.0) from\
             \ the WBCSD (World Business Council for Sustainable Development)/ PACT\
             \ initiative. In Catena-X for example set to \"0\" per default."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_ProductFootprintVersion'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#version"
+          $ref: "#/components/schemas/ProductFootprintVersion"
         created:
           description: "Mandatory: Timestamp of the creation of the Product (Carbon)\
             \ Footprint as specified in the Catena-X PCF Rulebook (Version 3.0.0)\
             \ in accordance with the technical specifications for PCF Data Exchange\
             \ (Version 2.0.0) from the WBCSD (World Business Council for Sustainable\
             \ Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#created"
+          $ref: "#/components/schemas/Timestamp"
         extWBCSD_pfStatus:
           description: "Mandatory: Status indicator of a product (carbon) footprint\
             \ as specified in the technical specifications for PCF Data Exchange (Version\
             \ 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/\
             \ PACT initiative. WBCSD specific extension, in Catena-X for example set\
             \ to \"Active\" per default."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PfStatusCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#status"
+          $ref: "#/components/schemas/PfStatusCharacteristic"
         validityPeriodStart:
           description: "Optional: Start of interval during which the product (carbon)\
             \ footprint is declared as valid as specified in the Catena-X PCF Rulebook\
@@ -873,28 +981,32 @@ components:
             \ PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council\
             \ for Sustainable Development)/ PACT initiative. If specified, the validity\
             \ period start must be equal to or greater than the reference period end."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#validityPeriodStart"
+          $ref: "#/components/schemas/Timestamp"
         validityPeriodEnd:
           description: "Optional: End of interval during which the product (carbon)\
             \ footprint is declared as valid as specified in the Catena-X PCF Rulebook\
             \ (Version 3.0.0) in accordance with the technical specifications for\
             \ PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council\
             \ for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#validityPeriodEnd"
+          $ref: "#/components/schemas/Timestamp"
         comment:
           description: "Optional: Additional information and instructions related\
             \ to the calculation of the product (carbon) footprint as specified in\
             \ the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical\
             \ specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD\
             \ (World Business Council for Sustainable Development)/ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#comment"
+          $ref: "#/components/schemas/Text"
         companyName:
           description: "Mandatory: Name of the product (carbon) footprint data owner\
             \ as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance\
             \ with the technical specifications for PCF Data Exchange (Version 2.0.0)\
             \ from the WBCSD (World Business Council for Sustainable Development)/\
             \ PACT initiative."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_NonEmptyStringTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#companyName"
+          $ref: "#/components/schemas/NonEmptyStringTrait"
         companyIds:
           description: "Mandatory: Non-empty set of Uniform Resource Names (URN).\
             \ Each value is supposed to uniquely identify the product (carbon) footprint\
@@ -904,14 +1016,16 @@ components:
             \ Development)/ PACT initiative. For Catena-X Industry Core compliance\
             \ the set of URNs must contain at least the Business Partner Number Legal\
             \ Entity (BPNL) in the specified format urn:bpn:id:BPNL[a-zA-Z0-9]{12}.\_"
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_IdsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#companyIds"
+          $ref: "#/components/schemas/IdsTrait"
         productDescription:
           description: "Optional: Free-form description of the product as specified\
             \ in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the\
             \ technical specifications for PCF Data Exchange (Version 2.0.0) from\
             \ the WBCSD (World Business Council for Sustainable Development)/ PACT\
             \ initiative."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#productDescription"
+          $ref: "#/components/schemas/Text"
         productIds:
           description: "Mandatory: Non-empty set of product identifiers. Each value\
             \ is supposed to uniquely identify the product as specified in the Catena-X\
@@ -919,7 +1033,8 @@ components:
             \ for PCF Data Exchange (Version 2.1.0) from the WBCSD (World Business\
             \ Council for Sustainable Development)/ PACT initiative. In Catena-X productId\
             \ corresponds with Industry Core manufacturerPartId."
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_IdsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#productIds"
+          $ref: "#/components/schemas/IdsTrait"
         extWBCSD_productCodeCpc:
           description: "Mandatory: UN (United Nations) Product Classification Code\
             \ (CPC - Central Classification Code) of a given product as specified\
@@ -928,7 +1043,8 @@ components:
             \ initiative. WBCSD specific extension, which will probably be declared\
             \ as \"optional\" in a later WBCSD specification version. In Catena-X\
             \ for example specified with default value \"011-99000\"."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#productCategoryCpc"
+          $ref: "#/components/schemas/Text"
         productName:
           description: "Mandatory: Non-empty trade name of a product as specified\
             \ in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the\
@@ -936,18 +1052,21 @@ components:
             \ the WBCSD (World Business Council for Sustainable Development)/ PACT\
             \ initiative. In Catena-X productNameCompany corresponds with Industry\
             \ Core nameAtManufacturer.\_"
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_NonEmptyStringTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#productNameCompany"
+          $ref: "#/components/schemas/NonEmptyStringTrait"
         pcf:
           description: A PCF (Product Carbon Footprint) represents the carbon footprint
             of a product and related data as specified in the Catena-X PCF Rulebook
             (Version 3.0.0) in accordance with the technical specifications for PCF
             Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for
             Sustainable Development)/ PACT initiative.
-          $ref: '#/components/schemas/urn_samm_io.catenax.pcf_7.0.0_PcfEntity'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#pcf"
+          $ref: "#/components/schemas/CarbonFootprint"
         pcfLegalStatement:
           description: "Optional: Option for legal statement/ disclaimer as specified\
             \ in the Catena-X PCF Rulebook (Version 3.0.0)."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:7.0.0#pcfLegalStatement"
+          $ref: "#/components/schemas/Text"
       required:
       - id
       - specVersion
@@ -965,26 +1084,25 @@ components:
     Unauthorized:
       description: The requesting user or client is not authenticated.
     Forbidden:
-      description: The requesting user or client is not authorized to access resources
-        for the given tenant.
+      description: The requesting user or client is not authorized to access resources.
     NotFoundError:
-      description: The requested Twin has not been found.
+      description: The requested resource has not been found.
     ClientError:
       description: Payload or user input is invalid. See error details in the payload
-        for more.
+        for more information.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     Pcf:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PagingSchema'
+            $ref: "#/components/schemas/PagingSchema"
       description: The request was successful.
   requestBodies:
     Pcf:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Pcf'
+            $ref: "#/components/schemas/Pcf"

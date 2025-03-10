@@ -3,6 +3,7 @@ openapi: 3.0.3
 info:
   title: Refurbishing certificate
   version: v2
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.refurbishing_certificate:2.0.0#RefurbishingCertificate"
 servers:
 - url: catenax.io/api/v2
   variables:
@@ -24,15 +25,15 @@ paths:
           format: uuid
       responses:
         "200":
-          $ref: '#/components/responses/RefurbishingCertificate'
+          $ref: "#/components/responses/RefurbishingCertificate"
+        "400":
+          $ref: "#/components/responses/ClientError"
         "401":
-          $ref: '#/components/responses/ClientError'
-        "402":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: '#/components/responses/Forbidden'
+          $ref: "#/components/responses/Forbidden"
         "404":
-          $ref: '#/components/responses/NotFoundError'
+          $ref: "#/components/responses/NotFoundError"
 components:
   schemas:
     ErrorResponse:
@@ -41,7 +42,7 @@ components:
       - error
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
     Error:
       type: object
       required:
@@ -61,56 +62,68 @@ components:
         code:
           type: string
           nullable: true
-    urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait:
+    BpnlTrait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:1.0.0#BpnlTrait"
       description: "The provided regular expression ensures that the BPNL is composed\
         \ of prefix 'BPNL', 10 digits and two uppercase letters."
       pattern: "^BPNL[0-9]{8}[a-zA-Z0-9]{4}$"
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+    Timestamp:
       type: string
       pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
         .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp"
       description: Describes a Property which contains the date and time with an optional
         timezone.
-    urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait:
+    UuidV4Trait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.uuid:1.0.0#UuidV4Trait"
       description: "The provided regular expression ensures that the UUID is composed\
         \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
         \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
         \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
       pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text:
+    Text:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
       description: "Describes a Property which contains plain text. This is intended\
         \ exclusively for human readable strings, not for identifiers, measurement\
         \ values, etc."
-    urn_samm_io.catenax.shared.recycling_strategy_certificate_2.0.0_RecyclingStrategyCertificateCharacteristic:
+    RecyclingStrategyCertificateCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.recycling_strategy_certificate:2.0.0#RecyclingStrategyCertificateCharacteristic"
       type: object
       properties:
         issuer:
           description: BPN of the business partner who creates this certificate
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_1.0.0_BpnlTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.recycling_strategy_certificate:2.0.0#issuer"
+          $ref: "#/components/schemas/BpnlTrait"
         issueDate:
           description: This is the date when the certificate was issued.
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.recycling_strategy_certificate:2.0.0#issueDate"
+          $ref: "#/components/schemas/Timestamp"
         catenaXIdPreviousLife:
           description: Twin identification previous life
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.recycling_strategy_certificate:2.0.0#catenaXIdPreviousLife"
+          $ref: "#/components/schemas/UuidV4Trait"
         catenaXId:
           description: "The Catena-X ID of the given part (e.g. the assembly), valid\
             \ for the Catena-X dataspace."
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_1.0.0_UuidV4Trait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.recycling_strategy_certificate:2.0.0#catenaXId"
+          $ref: "#/components/schemas/UuidV4Trait"
         articleNumber:
           description: Unique identification assigned by the authorized company for
             internal referencing
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.recycling_strategy_certificate:2.0.0#articleNumber"
+          $ref: "#/components/schemas/Text"
         vin:
           description: "Vehicle Identification Number. Remark: this should be deducted\
             \ from a reference to the vehicle TWIN"
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.recycling_strategy_certificate:2.0.0#vin"
+          $ref: "#/components/schemas/Text"
         oeNumber:
           description: original equipment number
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Text'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.recycling_strategy_certificate:2.0.0#oeNumber"
+          $ref: "#/components/schemas/Text"
       required:
       - issuer
       - issueDate
@@ -125,36 +138,37 @@ components:
         enters a new life. The eol (end of life) phase is completed and a new product
         life cycle is started.
       type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.refurbishing_certificate:2.0.0#RefurbishingCertificate"
       properties:
         certificate:
           description: "A property of the model, named certificate."
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.recycling_strategy_certificate_2.0.0_RecyclingStrategyCertificateCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.refurbishing_certificate:2.0.0#certificate"
+          $ref: "#/components/schemas/RecyclingStrategyCertificateCharacteristic"
       required:
       - certificate
   responses:
     Unauthorized:
       description: The requesting user or client is not authenticated.
     Forbidden:
-      description: The requesting user or client is not authorized to access resources
-        for the given tenant.
+      description: The requesting user or client is not authorized to access resources.
     NotFoundError:
-      description: The requested Twin has not been found.
+      description: The requested resource has not been found.
     ClientError:
       description: Payload or user input is invalid. See error details in the payload
-        for more.
+        for more information.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     RefurbishingCertificate:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/RefurbishingCertificate'
+            $ref: "#/components/schemas/RefurbishingCertificate"
       description: The request was successful.
   requestBodies:
     RefurbishingCertificate:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/RefurbishingCertificate'
+            $ref: "#/components/schemas/RefurbishingCertificate"

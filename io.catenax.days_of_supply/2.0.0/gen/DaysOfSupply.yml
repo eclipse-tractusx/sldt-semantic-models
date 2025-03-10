@@ -3,6 +3,7 @@ openapi: 3.0.3
 info:
   title: Days of Supply
   version: v2
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#DaysOfSupply"
 servers:
 - url: catenax.io/api/v2
   variables:
@@ -42,15 +43,15 @@ paths:
           type: boolean
       responses:
         "200":
-          $ref: '#/components/responses/DaysOfSupply'
+          $ref: "#/components/responses/DaysOfSupply"
+        "400":
+          $ref: "#/components/responses/ClientError"
         "401":
-          $ref: '#/components/responses/ClientError'
-        "402":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: '#/components/responses/Forbidden'
+          $ref: "#/components/responses/Forbidden"
         "404":
-          $ref: '#/components/responses/NotFoundError'
+          $ref: "#/components/responses/NotFoundError"
 components:
   schemas:
     ErrorResponse:
@@ -59,7 +60,7 @@ components:
       - error
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
     Error:
       type: object
       required:
@@ -85,7 +86,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/DaysOfSupply'
+            $ref: "#/components/schemas/DaysOfSupply"
         totalItems:
           type: number
         totalPages:
@@ -94,32 +95,37 @@ components:
           type: number
         currentPage:
           type: number
-    urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait:
+    UuidV4Trait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait"
       description: "The provided regular expression ensures that the UUID is composed\
         \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
         \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
         \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
       pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
-    urn_samm_io.catenax.days_of_supply_2.0.0_DirectionCharacteristic:
+    DirectionCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#DirectionCharacteristic"
       description: |-
         If a supplier provides stock information to a customer, use "OUTBOUND".
         If a customer provides stock information to a supplier, use "INBOUND".
       enum:
       - INBOUND
       - OUTBOUND
-    urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp:
+    Timestamp:
       type: string
       pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
         .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp"
       description: Describes a Property which contains the date and time with an optional
         timezone.
-    urn_samm_io.catenax.days_of_supply_2.0.0_DaysOfSupplyCharacteristic:
+    DaysOfSupplyCharacteristic:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#DaysOfSupplyCharacteristic"
       description: Provides days of supply
-    urn_samm_io.catenax.days_of_supply_2.0.0_QuantityOfDaysOfSupply:
+    QuantityOfDaysOfSupply:
       description: Days of supply for a specific date.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#QuantityOfDaysOfSupply"
       type: object
       properties:
         date:
@@ -127,67 +133,78 @@ components:
             \ associated with the measured (or expected) inventory level. It serves\
             \ as a timestamp for calculating Days of Supply, indicating when the inventory\
             \ count was taken or projected."
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#date"
+          $ref: "#/components/schemas/Timestamp"
         daysOfSupply:
           description: "Amount of days, before the current stock is expected to be\
             \ exhausted. Days of supply of a customer: Number of days where; (Stock)\
             \ - Σ(daily Demand) >= 0; Days of supply of a supplier: Number of days\
             \ where; (Stock) - Σ(daily Outgoing Shipments) >= 0"
-          $ref: '#/components/schemas/urn_samm_io.catenax.days_of_supply_2.0.0_DaysOfSupplyCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#daysOfSupply"
+          $ref: "#/components/schemas/DaysOfSupplyCharacteristic"
       required:
       - date
       - daysOfSupply
-    urn_samm_io.catenax.days_of_supply_2.0.0_QuantityCharacteristic:
+    QuantityCharacteristic:
       description: List of quantity of days of supply. It MUST include at least current
         date and it is recommended to include future dates.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#QuantityCharacteristic"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.days_of_supply_2.0.0_QuantityOfDaysOfSupply'
+        $ref: "#/components/schemas/QuantityOfDaysOfSupply"
       uniqueItems: true
-    urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait:
+    BpnsTrait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnsTrait"
       description: "The provided regular expression ensures that the BPNS is composed\
         \ of prefix 'BPNS', 10 digits and two alphanumeric letters."
       pattern: "^BPNS[a-zA-Z0-9]{12}$"
-    urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnaTrait:
+    BpnaTrait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnaTrait"
       description: "The provided regular expression ensures that the BPNA is composed\
         \ of prefix 'BPNA', 10 digits and two alphanumeric letters."
       pattern: "^BPNA[a-zA-Z0-9]{12}$"
-    urn_samm_io.catenax.days_of_supply_2.0.0_AllocatedDaysOfSupply:
+    AllocatedDaysOfSupply:
       description: "This defines the number of days with allocated supply for an item\
         \ stock in a given location that is available for the use in production or\
         \ deliveries. \nThe allocated days of supply are not available for other customers."
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#AllocatedDaysOfSupply"
       type: object
       properties:
         amountOfAllocatedDaysOfSupply:
           description: Amount of Days of supply of a given allocated item stock in
             a given location.
-          $ref: '#/components/schemas/urn_samm_io.catenax.days_of_supply_2.0.0_QuantityCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#amountOfAllocatedDaysOfSupply"
+          $ref: "#/components/schemas/QuantityCharacteristic"
         stockLocationBPNS:
           description: BPNS identifying the site the stock is located at. One stock
             has always one location.
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnsTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#stockLocationBPNS"
+          $ref: "#/components/schemas/BpnsTrait"
         stockLocationBPNA:
           description: BPNA identifying the address the stock is located at. One stock
             has always one location.
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.business_partner_number_2.0.0_BpnaTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#stockLocationBPNA"
+          $ref: "#/components/schemas/BpnaTrait"
         lastUpdatedOnDateTime:
           description: Date and time at which the allocated days of supply has been
             updated by reporting partner's system. Date and time are set according
             to a timezone.
-          $ref: '#/components/schemas/urn_samm_org.eclipse.esmf.samm_characteristic_2.1.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#lastUpdatedOnDateTime"
+          $ref: "#/components/schemas/Timestamp"
       required:
       - amountOfAllocatedDaysOfSupply
       - stockLocationBPNS
       - stockLocationBPNA
       - lastUpdatedOnDateTime
-    urn_samm_io.catenax.days_of_supply_2.0.0_AllocatedDaysOfSupplySet:
+    AllocatedDaysOfSupplySet:
       description: Set of allocated Days of Supply that may relate to different stock
         locations.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#AllocatedDaysOfSupplySet"
       type: array
       items:
-        $ref: '#/components/schemas/urn_samm_io.catenax.days_of_supply_2.0.0_AllocatedDaysOfSupply'
+        $ref: "#/components/schemas/AllocatedDaysOfSupply"
       uniqueItems: true
     DaysOfSupply:
       description: "Days of Supply refers to the amount of days where item stock is\
@@ -195,16 +212,20 @@ components:
         \ the main days-of-supply-equation, but they can still be included in the\
         \ projection of days-of-supply for the future days."
       type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#DaysOfSupply"
       properties:
         materialGlobalAssetId:
           description: Identifier used uniquely to identify part type twin.
-          $ref: '#/components/schemas/urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#materialGlobalAssetId"
+          $ref: "#/components/schemas/UuidV4Trait"
         direction:
           description: Direction of the stock from data provider perspective.
-          $ref: '#/components/schemas/urn_samm_io.catenax.days_of_supply_2.0.0_DirectionCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#direction"
+          $ref: "#/components/schemas/DirectionCharacteristic"
         allocatedDaysOfSupply:
           description: 'Days of supply that have been already allocated to the customer. '
-          $ref: '#/components/schemas/urn_samm_io.catenax.days_of_supply_2.0.0_AllocatedDaysOfSupplySet'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.days_of_supply:2.0.0#allocatedDaysOfSupply"
+          $ref: "#/components/schemas/AllocatedDaysOfSupplySet"
       required:
       - materialGlobalAssetId
       - direction
@@ -213,26 +234,25 @@ components:
     Unauthorized:
       description: The requesting user or client is not authenticated.
     Forbidden:
-      description: The requesting user or client is not authorized to access resources
-        for the given tenant.
+      description: The requesting user or client is not authorized to access resources.
     NotFoundError:
-      description: The requested Twin has not been found.
+      description: The requested resource has not been found.
     ClientError:
       description: Payload or user input is invalid. See error details in the payload
-        for more.
+        for more information.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     DaysOfSupply:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PagingSchema'
+            $ref: "#/components/schemas/PagingSchema"
       description: The request was successful.
   requestBodies:
     DaysOfSupply:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/DaysOfSupply'
+            $ref: "#/components/schemas/DaysOfSupply"

@@ -3,6 +3,7 @@ openapi: 3.0.3
 info:
   title: Single Level Bill of Material as Built
   version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt"
 servers:
 - url: catenax.io/api/v1
   variables:
@@ -42,15 +43,15 @@ paths:
           type: boolean
       responses:
         "200":
-          $ref: '#/components/responses/SingleLevelBomAsBuilt'
+          $ref: "#/components/responses/SingleLevelBomAsBuilt"
+        "400":
+          $ref: "#/components/responses/ClientError"
         "401":
-          $ref: '#/components/responses/ClientError'
-        "402":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: '#/components/responses/Forbidden'
+          $ref: "#/components/responses/Forbidden"
         "404":
-          $ref: '#/components/responses/NotFoundError'
+          $ref: "#/components/responses/NotFoundError"
 components:
   schemas:
     ErrorResponse:
@@ -59,7 +60,7 @@ components:
       - error
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
     Error:
       type: object
       required:
@@ -85,7 +86,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/SingleLevelBomAsBuilt'
+            $ref: "#/components/schemas/SingleLevelBomAsBuilt"
         totalItems:
           type: number
         totalPages:
@@ -94,81 +95,96 @@ components:
           type: number
         currentPage:
           type: number
-    urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_CatenaXIdTraitCharacteristic:
+    CatenaXIdTraitCharacteristic:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#CatenaXIdTraitCharacteristic"
       description: "The provided regular expression ensures that the UUID is composed\
         \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
         \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
         \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
       pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
-    urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp:
+    Timestamp:
       type: string
       pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
         .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp"
       description: Describes a Property which contains the date and time with an optional
         timezone.
-    urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_NumberOfObjects:
+    NumberOfObjects:
       type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#NumberOfObjects"
       description: Quantifiable number of objects in reference to the measurementUnit
-    urn_bamm_io.openmanufacturing_characteristic_2.0.0_UnitReference:
+    UnitReference:
       type: string
       pattern: "[a-zA-Z]*:[a-zA-Z]+"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#UnitReference"
       description: Describes a Property containing a reference to one of the units
         in the Unit Catalog.
-    urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_QuantityCharacteristic:
+    QuantityCharacteristic:
       description: Describes the quantity in which the child item is assembled in
         the given parent item by providing a quantity value and the measurement unit
         in which the quantity is measured.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#QuantityCharacteristic"
       type: object
       properties:
         quantityNumber:
           description: The number of objects related to the measurement unit
-          $ref: '#/components/schemas/urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_NumberOfObjects'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#quantityNumber"
+          $ref: "#/components/schemas/NumberOfObjects"
         measurementUnit:
           description: Unit of Measurement for the quantity of serialized objects
-          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_UnitReference'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#measurementUnit"
+          $ref: "#/components/schemas/UnitReference"
       required:
       - quantityNumber
       - measurementUnit
-    urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_BpnTrait:
+    BpnTrait:
       type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#BpnTrait"
       description: Business Partner Number Regular Expression allowing only BPNL which
         stands for a legal entity.
       pattern: "^(BPNL)([0-9]{8})([a-zA-Z0-9]{4})$"
-    urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_ChildData:
+    ChildData:
       description: Catena-X ID and meta data of the assembled child item.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#ChildData"
       type: object
       properties:
         createdOn:
           description: "Timestamp when the relation between the parent item and the\
             \ child item was created, e.g. when the serialized child part was assembled\
             \ into the given part."
-          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#createdOn"
+          $ref: "#/components/schemas/Timestamp"
         quantity:
           description: Quantity of which the child item is assembled into the parent
             item. In general it is '1' for serialized parts.
-          $ref: '#/components/schemas/urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_QuantityCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#quantity"
+          $ref: "#/components/schemas/QuantityCharacteristic"
         lastModifiedOn:
           description: Timestamp when the assembly relationship between parent item
             and child item was last modified.
-          $ref: '#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_2.0.0_Timestamp'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#lastModifiedOn"
+          $ref: "#/components/schemas/Timestamp"
         catenaXId:
           description: "The Catena-X ID of the given part (e.g. the assembly), valid\
             \ for the Catena-X dataspace."
-          $ref: '#/components/schemas/urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_CatenaXIdTraitCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#catenaXId"
+          $ref: "#/components/schemas/CatenaXIdTraitCharacteristic"
         businessPartner:
           description: The supplier of the given child item.
-          $ref: '#/components/schemas/urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_BpnTrait'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#businessPartner"
+          $ref: "#/components/schemas/BpnTrait"
       required:
       - createdOn
       - quantity
       - catenaXId
-    urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_SetOfChildItemsCharacteristic:
+    SetOfChildItemsCharacteristic:
       description: Set of child items the parent item is assembled by (one structural
         level down).
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#SetOfChildItemsCharacteristic"
       type: array
       items:
-        $ref: '#/components/schemas/urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_ChildData'
+        $ref: "#/components/schemas/ChildData"
       uniqueItems: true
     SingleLevelBomAsBuilt:
       description: "The single-level bill of material represents one sub-level of\
@@ -177,15 +193,18 @@ components:
         \ referencing only child items in an as built lifecycle themselves, e.g. serial\
         \ parts or batches."
       type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt"
       properties:
         catenaXId:
           description: "The Catena-X ID of the given part (e.g. the assembly), valid\
             \ for the Catena-X dataspace."
-          $ref: '#/components/schemas/urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_CatenaXIdTraitCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#catenaXId"
+          $ref: "#/components/schemas/CatenaXIdTraitCharacteristic"
         childItems:
           description: "Set of child items, of which the given parent item is assembled\
             \ by (one structural level down)."
-          $ref: '#/components/schemas/urn_bamm_io.catenax.single_level_bom_as_built_1.0.0_SetOfChildItemsCharacteristic'
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.single_level_bom_as_built:1.0.0#childItems"
+          $ref: "#/components/schemas/SetOfChildItemsCharacteristic"
       required:
       - catenaXId
       - childItems
@@ -193,26 +212,25 @@ components:
     Unauthorized:
       description: The requesting user or client is not authenticated.
     Forbidden:
-      description: The requesting user or client is not authorized to access resources
-        for the given tenant.
+      description: The requesting user or client is not authorized to access resources.
     NotFoundError:
-      description: The requested Twin has not been found.
+      description: The requested resource has not been found.
     ClientError:
       description: Payload or user input is invalid. See error details in the payload
-        for more.
+        for more information.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     SingleLevelBomAsBuilt:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PagingSchema'
+            $ref: "#/components/schemas/PagingSchema"
       description: The request was successful.
   requestBodies:
     SingleLevelBomAsBuilt:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/SingleLevelBomAsBuilt'
+            $ref: "#/components/schemas/SingleLevelBomAsBuilt"
