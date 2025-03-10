@@ -23,24 +23,6 @@
         "description" : "This regular expression enforces a hex string. It ensures 0-9, a-f, A-F with an optional prefix 0x. Valid examples: 0x0123456789abcdefABCDEF, 0123456789abcdefABCDEF",
         "pattern" : "^(0x)?[0-9a-fA-F]+$"
       },
-      "LatitudeTrait" : {
-        "type" : "number",
-        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#LatitudeTrait",
-        "description" : "Trait to define the latitude.",
-        "maximum" : 90.0,
-        "exclusiveMaximum" : false,
-        "minimum" : -90.0,
-        "exclusiveMinimum" : false
-      },
-      "LongitudeTrait" : {
-        "type" : "number",
-        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#LongitudeTrait",
-        "description" : "Trait to define the longitude.",
-        "maximum" : 180.0,
-        "exclusiveMaximum" : false,
-        "minimum" : -180.0,
-        "exclusiveMinimum" : false
-      },
       "RecordStatusEnumeration" : {
         "type" : "string",
         "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#RecordStatusEnumeration",
@@ -103,16 +85,6 @@
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#hexValue",
             "$ref" : "#/components/schemas/HexValueTrait"
           },
-          "latitude" : {
-            "description" : "Latitude property for GPS coordinates.",
-            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#latitude",
-            "$ref" : "#/components/schemas/LatitudeTrait"
-          },
-          "longitude" : {
-            "description" : "Longitude property for GPS coordinates.",
-            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#longitude",
-            "$ref" : "#/components/schemas/LongitudeTrait"
-          },
           "recordStatus" : {
             "description" : "The record operation enumeration can be used to realize delta update concept. An example using scenario that data delivery runs weekly: Week0: All data is transferred -> all rows have recordStatus=new. Week1: Only the changed data is transferred: That means new rows, or updated or deleted rows: New rows get recordStatus=new, changed rows get recordStatus=changed and deleted/removed rows get recordStatus=deleted.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#recordStatus",
@@ -133,18 +105,13 @@
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#supplierName",
             "$ref" : "#/components/schemas/Text"
           },
-          "workShopId" : {
-            "description" : "A company-specific identifier for a workshop that is unique in this company.",
-            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#workShopId",
-            "$ref" : "#/components/schemas/UniqueID"
-          },
           "additionalInformationList" : {
             "description" : "You can use this key:value list for additional properties that were not defined in this aspect model.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList",
             "$ref" : "#/components/schemas/AdditionalInformationList"
           }
         },
-        "required" : [ "qualityTaskId", "countryCode", "hexValue", "latitude", "longitude", "recordStatus", "sessionId", "supplierId", "supplierName", "workShopId", "additionalInformationList" ]
+        "required" : [ "qualityTaskId", "countryCode", "hexValue", "recordStatus", "sessionId", "supplierId", "supplierName", "additionalInformationList" ]
       },
       "MetaCharacteristic" : {
         "description" : "Characteristic for the meta information.",
@@ -335,6 +302,47 @@
           }
         },
         "required" : [ "anonymizedVIN", "mileage", "productionDate", "soldDate" ]
+      },
+      "LatitudeTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#LatitudeTrait",
+        "description" : "Trait to define the latitude.",
+        "maximum" : 90.0,
+        "exclusiveMaximum" : false,
+        "minimum" : -90.0,
+        "exclusiveMinimum" : false
+      },
+      "LongitudeTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#LongitudeTrait",
+        "description" : "Trait to define the longitude.",
+        "maximum" : 180.0,
+        "exclusiveMaximum" : false,
+        "minimum" : -180.0,
+        "exclusiveMinimum" : false
+      },
+      "WorkshopCharacteristic" : {
+        "description" : "Groups all workshop properties.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#WorkshopCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "workShopId" : {
+            "description" : "A company-specific identifier for a workshop that is unique in this company.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#workShopId",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "latitude" : {
+            "description" : "Latitude property for GPS coordinates.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#latitude",
+            "$ref" : "#/components/schemas/LatitudeTrait"
+          },
+          "longitude" : {
+            "description" : "Longitude property for GPS coordinates.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#longitude",
+            "$ref" : "#/components/schemas/LongitudeTrait"
+          }
+        },
+        "required" : [ "workShopId" ]
       }
     }
   },
@@ -363,7 +371,12 @@
       "description" : "Bundling vehicle/car properties like anonymizedVIN or mileage counter.",
       "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#vehicle",
       "$ref" : "#/components/schemas/VehicleCharacteristic"
+    },
+    "workshop" : {
+      "description" : "Groups workshop-related properties",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#workshop",
+      "$ref" : "#/components/schemas/WorkshopCharacteristic"
     }
   },
-  "required" : [ "general", "metaInformation", "part", "plant", "vehicle" ]
+  "required" : [ "general", "metaInformation", "part", "plant", "vehicle", "workshop" ]
 }

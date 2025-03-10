@@ -38,7 +38,7 @@
 :QualityCore a samm:Aspect ;
    samm:preferredName "Quality core"@en ;
    samm:description "This semantic model serves as library for other Catena-X models from Catena-X Quality Management. It ensures that same properties that are used in different models are defined in the same way. Please keep in mind: Due to the nature of a library all given example values are only for illustration and might not make sense from a domain-specific view. "@en ;
-   samm:properties ( :general :metaInformation :part :plant :vehicle ) ;
+   samm:properties ( :general :metaInformation :part :plant :vehicle :workshop ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -67,6 +67,11 @@
    samm:description "Bundling vehicle/car properties like anonymizedVIN or mileage counter."@en ;
    samm:characteristic :VehicleCharacteristic .
 
+:workshop a samm:Property ;
+   samm:preferredName "Workshop"@en ;
+   samm:description "Groups workshop-related properties"@en ;
+   samm:characteristic :WorkshopCharacteristic .
+
 :GeneralInformationCharacteristic a samm:Characteristic ;
    samm:preferredName "General information characteristic"@en ;
    samm:description "General information characteristic"@en ;
@@ -92,10 +97,15 @@
    samm:description "Vehicle characteristic"@en ;
    samm:dataType :Vehicle .
 
+:WorkshopCharacteristic a samm:Characteristic ;
+   samm:preferredName "Workshop properties"@en ;
+   samm:description "Groups all workshop properties."@en ;
+   samm:dataType :WorkshopProperties .
+
 :General a samm:Entity ;
    samm:preferredName "General"@en ;
    samm:description "Bundling general properties that do not belong to parts or vehicles."@en ;
-   samm:properties ( :qualityTaskId :countryCode :hexValue :latitude :longitude :recordStatus :sessionId :supplierId :supplierName :workShopId :additionalInformationList ) .
+   samm:properties ( :qualityTaskId :countryCode :hexValue :recordStatus :sessionId :supplierId :supplierName :additionalInformationList ) .
 
 :MetaInformation a samm:Entity ;
    samm:preferredName "Meta Information"@en ;
@@ -117,6 +127,11 @@
    samm:description "Bundling vehicle/car properties like anonymizedVIN or mileage counter."@en ;
    samm:properties ( :anonymizedVIN [ samm:property :vehicleId; samm:optional true ] :mileage :productionDate :soldDate ) .
 
+:WorkshopProperties a samm:Entity ;
+   samm:preferredName "Workshop Properties"@en ;
+   samm:description "All properties to clearly identify a workshop."@en ;
+   samm:properties ( :workShopId [ samm:property :latitude; samm:optional true ] [ samm:property :longitude; samm:optional true ] ) .
+
 :qualityTaskId a samm:Property ;
    samm:preferredName "Quality Task ID"@en ;
    samm:description "A unique quality task identifier within this data-space."@en ;
@@ -134,20 +149,6 @@
    samm:description "Hex values are encoded in 0-9,a-f or A-F to store information."@en ;
    samm:characteristic :HexValueTrait ;
    samm:exampleValue "0x343343443af" .
-
-:latitude a samm:Property ;
-   samm:preferredName "Latitude"@en ;
-   samm:description "Latitude property for GPS coordinates."@en ;
-   samm:see <https://www.w3.org/2003/01/geo/#overview> ;
-   samm:characteristic :LatitudeTrait ;
-   samm:exampleValue "9.165877215355193"^^xsd:float .
-
-:longitude a samm:Property ;
-   samm:preferredName "Longitude"@en ;
-   samm:description "Longitude property for GPS coordinates."@en ;
-   samm:see <https://www.w3.org/2003/01/geo/#overview> ;
-   samm:characteristic :LongitudeTrait ;
-   samm:exampleValue "48.81109356017604"^^xsd:float .
 
 :recordStatus a samm:Property ;
    samm:preferredName "Record status"@en ;
@@ -172,12 +173,6 @@
    samm:description "The name of one supplier company."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Robert Bosch GmbH" .
-
-:workShopId a samm:Property ;
-   samm:preferredName "Workshop ID"@en ;
-   samm:description "A company-specific identifier for a workshop that is unique in this company."@en ;
-   samm:characteristic :UniqueID ;
-   samm:exampleValue "workshop-4563328" .
 
 :additionalInformationList a samm:Property ;
    samm:preferredName "Additional information"@en ;
@@ -352,6 +347,26 @@
    samm:characteristic :ISO8601LocalDate ;
    samm:exampleValue "2025-01-30" .
 
+:workShopId a samm:Property ;
+   samm:preferredName "Workshop ID"@en ;
+   samm:description "A company-specific identifier for a workshop that is unique in this company."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "workshop-4563328" .
+
+:latitude a samm:Property ;
+   samm:preferredName "Latitude"@en ;
+   samm:description "Latitude property for GPS coordinates."@en ;
+   samm:see <https://www.w3.org/2003/01/geo/#overview> ;
+   samm:characteristic :LatitudeTrait ;
+   samm:exampleValue "9.165877215355193"^^xsd:float .
+
+:longitude a samm:Property ;
+   samm:preferredName "Longitude"@en ;
+   samm:description "Longitude property for GPS coordinates."@en ;
+   samm:see <https://www.w3.org/2003/01/geo/#overview> ;
+   samm:characteristic :LongitudeTrait ;
+   samm:exampleValue "48.81109356017604"^^xsd:float .
+
 :CountryCodeTrait a samm-c:Trait ;
    samm:preferredName "Country Code Definition"@en ;
    samm:description "This trait ensures a 3 characters country code."@en ;
@@ -363,18 +378,6 @@
    samm:description "This trait allows 0-9, a-f, A-F in a string value. Optional prefix is \"0x\"."@en ;
    samm-c:baseCharacteristic :HexCodeCharacteristic ;
    samm-c:constraint :HexRegularExpression .
-
-:LatitudeTrait a samm-c:Trait ;
-   samm:preferredName "Latitude Trait"@en ;
-   samm:description "Trait to define the latitude."@en ;
-   samm-c:baseCharacteristic :Float ;
-   samm-c:constraint :ConstraintLatitude .
-
-:LongitudeTrait a samm-c:Trait ;
-   samm:preferredName "Longitude Trait"@en ;
-   samm:description "Trait to define the longitude."@en ;
-   samm-c:baseCharacteristic :Float ;
-   samm-c:constraint :ConstraintLongitude .
 
 :RecordStatusEnumeration a samm-c:Enumeration ;
    samm:preferredName "Record status enumeration"@en ;
@@ -404,6 +407,18 @@
    samm-c:baseCharacteristic samm-c:Text ;
    samm-c:constraint :DateRegularExpressionNullable .
 
+:LatitudeTrait a samm-c:Trait ;
+   samm:preferredName "Latitude Trait"@en ;
+   samm:description "Trait to define the latitude."@en ;
+   samm-c:baseCharacteristic :Float ;
+   samm-c:constraint :ConstraintLatitude .
+
+:LongitudeTrait a samm-c:Trait ;
+   samm:preferredName "Longitude Trait"@en ;
+   samm:description "Trait to define the longitude."@en ;
+   samm-c:baseCharacteristic :Float ;
+   samm-c:constraint :ConstraintLongitude .
+
 :CountryCodeCharacteristic a samm:Characteristic ;
    samm:preferredName "Country Code Characteristic"@en ;
    samm:description "ISO 3166-1 alpha-3 ? three-letter country codes "@en ;
@@ -425,6 +440,16 @@
    samm:description "This regular expression enforces a hex string. It ensures 0-9, a-f, A-F with an optional prefix 0x. Valid examples: 0x0123456789abcdefABCDEF, 0123456789abcdefABCDEF"@en ;
    samm:value "^(0x)?[0-9a-fA-F]+$" .
 
+:AdditionalInformation a samm:Entity ;
+   samm:preferredName "Additional information"@en ;
+   samm:description "One key:value information pair"@en ;
+   samm:properties ( :key :value ) .
+
+:DateRegularExpressionNullable a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Date Regular Expression Nullable"@en ;
+   samm:description "This regular expressions enforces a given date according ISO 8601 local date. General format is YYYY-MM-DD. YYYY can be 0000..9999. MM-DD is checked together: months 01,03,05,07,08,10,12 must have DD in the range of  01..31 days, months 04,06,09,11 must have DD in the range of  01..30 days, month 02 must have DD in the range of  01..29 days."@en ;
+   samm:value "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$" .
+
 :Float a samm:Characteristic ;
    samm:preferredName "Float"@en ;
    samm:description "Characteristic of a float value."@en ;
@@ -441,16 +466,6 @@
    samm-c:maxValue "180.0"^^xsd:float ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:AT_MOST .
-
-:AdditionalInformation a samm:Entity ;
-   samm:preferredName "Additional information"@en ;
-   samm:description "One key:value information pair"@en ;
-   samm:properties ( :key :value ) .
-
-:DateRegularExpressionNullable a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "Date Regular Expression Nullable"@en ;
-   samm:description "This regular expressions enforces a given date according ISO 8601 local date. General format is YYYY-MM-DD. YYYY can be 0000..9999. MM-DD is checked together: months 01,03,05,07,08,10,12 must have DD in the range of  01..31 days, months 04,06,09,11 must have DD in the range of  01..30 days, month 02 must have DD in the range of  01..29 days."@en ;
-   samm:value "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$" .
 
 :key a samm:Property ;
    samm:preferredName "Key id"@en ;
