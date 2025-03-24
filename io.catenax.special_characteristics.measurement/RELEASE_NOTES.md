@@ -2,6 +2,13 @@
 
 All notable changes to this model will be documented in this file.
 
+## [1.1.0] 2025-0-31
+
+### Changed
+- changed current datatype of the property _value_ from float to string
+- adapted description of a few properties to be more understandable
+- adapted the exampleValue of a few properties to be more understandable
+
 ## [1.0.0] 2024-12-16
 
 ### Added
