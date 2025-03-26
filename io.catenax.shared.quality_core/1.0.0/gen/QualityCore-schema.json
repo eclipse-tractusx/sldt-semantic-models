@@ -15,13 +15,13 @@
         "type" : "string",
         "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#CountryCodeTrait",
         "description" : "Regular Expression that ensures a three-letter code ",
-        "pattern" : "^[A-Z][A-Z][A-Z]$"
+        "pattern" : "^[A-Z][A-Z][A-Z]$|^null$|^NULL$"
       },
       "HexValueTrait" : {
         "type" : "string",
         "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#HexValueTrait",
         "description" : "This regular expression enforces a hex string. It ensures 0-9, a-f, A-F with an optional prefix 0x. Valid examples: 0x0123456789abcdefABCDEF, 0123456789abcdefABCDEF",
-        "pattern" : "^(0x)?[0-9a-fA-F]+$"
+        "pattern" : "^(0x)?[0-9a-fA-F]*$|^null$|^NULL$"
       },
       "RecordStatusEnumeration" : {
         "type" : "string",
@@ -47,7 +47,7 @@
           "key" : {
             "description" : "Key identifier for this additional information",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#key",
-            "$ref" : "#/components/schemas/UniqueID"
+            "$ref" : "#/components/schemas/Text"
           },
           "value" : {
             "description" : "Value for this additional information",
@@ -91,12 +91,12 @@
             "$ref" : "#/components/schemas/RecordStatusEnumeration"
           },
           "sessionId" : {
-            "description" : "A company-specific session identifier that is unique in this company.",
+            "description" : "A unique identifier for a session. If you combine the session property with BPNL of data provider than you get a unique identifier for this session in this data-space.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#sessionId",
             "$ref" : "#/components/schemas/UniqueID"
           },
           "supplierId" : {
-            "description" : "Specific ID of the supplier that produced the part/component/subcomponent/chemicals/raw materials /etc. You can also use a Catena-X Business Partner Number (BPNL) in here.",
+            "description" : "A unique identifier for one supplier inside data provider's company. If you combine supplier ID with BPNL of data provider you get a unique identifier for this supplier in this data space. As an alternative you can use BPNL to identify a supplier.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#supplierId",
             "$ref" : "#/components/schemas/UniqueID"
           },
@@ -167,17 +167,17 @@
             "$ref" : "#/components/schemas/Text"
           },
           "partId" : {
-            "description" : "A unique part identifier in this data-space.  Optional as of now not all parts have such an identifier assigned.",
+            "description" : "A unique part identifier in this data-space. Property is optional as of now not all parts have this identifier.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partId",
             "$ref" : "#/components/schemas/UuidV4Trait"
           },
           "dataMatrixCode" : {
-            "description" : "String that is behind a data matrix code. Data matrix codes or short DMC are labelled/printed on components/parts. Example: A data matrix code can combine supplier name, part type, manufacturing and many more information. A DMC string is normally unique.",
+            "description" : "String that is encoded in a data matrix code. Data matrix codes or short DMC are labelled/printed on parts. Example: A data matrix code can combine supplier name, part type, manufacturing and many more information. A DMC string is often unique within this data provider.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#dataMatrixCode",
             "$ref" : "#/components/schemas/UniqueID"
           },
           "deliveryNote" : {
-            "description" : "The delivery note of package.",
+            "description" : "The delivery note of a package. A delivery note is unique within one logistics company.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#deliveryNote",
             "$ref" : "#/components/schemas/UniqueID"
           },
@@ -187,7 +187,7 @@
             "$ref" : "#/components/schemas/Text"
           },
           "orderNumber" : {
-            "description" : "The order number of this order. This is a unique identifier defined by the supplier.",
+            "description" : "The order number of this order. This is a unique identifier defined by the supplier of the order. If you combine order number and BPNL of the supplier you get a unique identifier in this data-space.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#orderNumber",
             "$ref" : "#/components/schemas/UniqueID"
           },
@@ -202,7 +202,7 @@
             "$ref" : "#/components/schemas/Text"
           },
           "serialNumber" : {
-            "description" : "Serial number one specific  part. A serial number is unique that means no other part/component has the same serial number on the world.",
+            "description" : "Serial number of one specific part. A serial number is unique within one company. If you combine serial number with BPNL of that company than you get a unique identifier for this part in this data-space.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#serialNumber",
             "$ref" : "#/components/schemas/UniqueID"
           },
@@ -236,7 +236,7 @@
         "type" : "object",
         "properties" : {
           "plantIdentifier" : {
-            "description" : "Plant id of the final assembly of the vehicle",
+            "description" : "Identifier of a plant within the company owning the plant. If you combing plant identifier with BPNL of the company owning the plant than you get a unique identifier fo this plant in this data-space.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#plantIdentifier",
             "$ref" : "#/components/schemas/UniqueID"
           },
@@ -246,7 +246,7 @@
             "$ref" : "#/components/schemas/Text"
           },
           "plantBPNS" : {
-            "description" : "A unique plant identifier according BPNS description. Optional as of now not all plants have a BPNS.",
+            "description" : "A unique plant identifier according BPNS definition. This property is optional as of now not all plants have assigned BPNS identifiers.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#plantBPNS",
             "$ref" : "#/components/schemas/BpnsTrait"
           },
@@ -258,17 +258,26 @@
         },
         "required" : [ "plantIdentifier", "plantDescription" ]
       },
-      "MileageCounter" : {
+      "MileageTrait" : {
         "type" : "number",
-        "minimum" : 0,
-        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#MileageCounter",
-        "description" : "The mileage counter of the car."
+        "minimum" : -1,
+        "maximum" : 2000000,
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#MileageTrait",
+        "description" : "Range for a valid mileage counter. -1 marks not available.",
+        "exclusiveMaximum" : true,
+        "exclusiveMinimum" : false
+      },
+      "MileageUnit" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#MileageUnit",
+        "description" : "Either km or mi.",
+        "enum" : [ "km", "mi" ]
       },
       "ISO8601LocalDate" : {
         "type" : "string",
         "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#ISO8601LocalDate",
         "description" : "This regular expressions enforces a given date according ISO 8601 local date. General format is YYYY-MM-DD. YYYY can be 0000..9999. MM-DD is checked together: months 01,03,05,07,08,10,12 must have DD in the range of  01..31 days, months 04,06,09,11 must have DD in the range of  01..30 days, month 02 must have DD in the range of  01..29 days.",
-        "pattern" : "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$"
+        "pattern" : "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$|^NULL$"
       },
       "VehicleCharacteristic" : {
         "description" : "Vehicle characteristic",
@@ -276,19 +285,24 @@
         "type" : "object",
         "properties" : {
           "anonymizedVIN" : {
-            "description" : "OEM-specific hashed VIN. Necessary to link current data set with other data sets.",
+            "description" : "Vehicle manufacturer-specific anonymized VIN, which is still a unique identifier within this data provider.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#anonymizedVIN",
             "$ref" : "#/components/schemas/UniqueID"
           },
           "vehicleId" : {
-            "description" : "A unique identifier for this vehicle in data-space. Optional as of now not all vehicles have such an identifier assigned.",
+            "description" : "A unique identifier for this vehicle in data-space. This property is optional as of now not all vehicles have this identifier assigned.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#vehicleId",
             "$ref" : "#/components/schemas/UuidV4Trait"
           },
           "mileage" : {
             "description" : "The mileage counter in the car. Only positive numbers are allowed.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#mileage",
-            "$ref" : "#/components/schemas/MileageCounter"
+            "$ref" : "#/components/schemas/MileageTrait"
+          },
+          "mileageUnit" : {
+            "description" : "Enumeration to define the unit of measure for mileage counter: Either kilometer (SI standard) or miles.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#mileageUnit",
+            "$ref" : "#/components/schemas/MileageUnit"
           },
           "productionDate" : {
             "description" : "Production Date of the vehicle in The sold date of the vehicle in ISO8601 local date notation - see java.time.format.ISO_LOCAL_DATE.",
@@ -301,7 +315,7 @@
             "$ref" : "#/components/schemas/ISO8601LocalDate"
           }
         },
-        "required" : [ "anonymizedVIN", "mileage", "productionDate", "soldDate" ]
+        "required" : [ "anonymizedVIN", "mileage", "mileageUnit", "productionDate", "soldDate" ]
       },
       "LatitudeTrait" : {
         "type" : "number",
@@ -327,7 +341,7 @@
         "type" : "object",
         "properties" : {
           "workShopId" : {
-            "description" : "A company-specific identifier for a workshop that is unique in this company.",
+            "description" : "A unique identifier for a workshop. This identifier is unique within data provider's company. If you combine this identifier with BPNL from data provider than you get a unique identifier for this workshop in this data space.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#workShopId",
             "$ref" : "#/components/schemas/UniqueID"
           },

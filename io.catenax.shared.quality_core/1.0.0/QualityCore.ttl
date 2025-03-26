@@ -125,7 +125,7 @@
 :Vehicle a samm:Entity ;
    samm:preferredName "Vehicle"@en ;
    samm:description "Bundling vehicle/car properties like anonymizedVIN or mileage counter."@en ;
-   samm:properties ( :anonymizedVIN [ samm:property :vehicleId; samm:optional true ] :mileage :productionDate :soldDate ) .
+   samm:properties ( :anonymizedVIN [ samm:property :vehicleId; samm:optional true ] :mileage :mileageUnit :productionDate :soldDate ) .
 
 :WorkshopProperties a samm:Entity ;
    samm:preferredName "Workshop Properties"@en ;
@@ -319,7 +319,7 @@
 
 :anonymizedVIN a samm:Property ;
    samm:preferredName "Anonymized VIN"@en ;
-   samm:description "OEM-specific hashed VIN. This hashed VIN is unique within this data provider."@en ;
+   samm:description "Vehicle manufacturer-specific anonymized VIN, which is still a unique identifier within this data provider."@en ;
    samm:characteristic :UniqueID ;
    samm:exampleValue "3747429FGH382923974682" .
 
@@ -332,8 +332,14 @@
 :mileage a samm:Property ;
    samm:preferredName "Mileage"@en ;
    samm:description "The mileage counter in the car. Only positive numbers are allowed."@en ;
-   samm:characteristic :MileageCounter ;
-   samm:exampleValue "23500"^^xsd:nonNegativeInteger .
+   samm:characteristic :MileageTrait ;
+   samm:exampleValue "30000"^^xsd:int .
+
+:mileageUnit a samm:Property ;
+   samm:preferredName "Mileage unit of measure"@en ;
+   samm:description "Enumeration to define the unit of measure for mileage counter: Either kilometer (SI standard) or miles."@en ;
+   samm:characteristic :MileageUnit ;
+   samm:exampleValue "km" .
 
 :productionDate a samm:Property ;
    samm:preferredName "Production Date"@en ;
@@ -395,11 +401,15 @@
    samm:description "A list of additional information."@en ;
    samm:dataType :AdditionalInformation .
 
-:MileageCounter a samm-c:Measurement ;
-   samm:preferredName "Mileage"@en ;
-   samm:description "The mileage counter of the car."@en ;
-   samm:dataType xsd:nonNegativeInteger ;
-   samm-c:unit unit:kilometre .
+:MileageTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :Integer ;
+   samm-c:constraint :MileageRangeConstraint .
+
+:MileageUnit a samm-c:Enumeration ;
+   samm:preferredName "Mileage Unit"@en ;
+   samm:description "Either km or mi."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "km" "mi" ) .
 
 :ISO8601LocalDate a samm-c:Trait ;
    samm:preferredName "ISO8601 local date"@en ;
@@ -428,7 +438,7 @@
    samm:preferredName "Country Code Regular Expression"@en ;
    samm:description "Regular Expression that ensures a three-letter code "@en ;
    samm:see <https://www.iso.org/iso-3166-country-codes.html> ;
-   samm:value "^[A-Z][A-Z][A-Z]$" .
+   samm:value "^[A-Z][A-Z][A-Z]$|^null$|^NULL$" .
 
 :HexCodeCharacteristic a samm:Characteristic ;
    samm:preferredName "Hex code characteristic"@en ;
@@ -438,17 +448,30 @@
 :HexRegularExpression a samm-c:RegularExpressionConstraint ;
    samm:preferredName "Hex regular expression"@en ;
    samm:description "This regular expression enforces a hex string. It ensures 0-9, a-f, A-F with an optional prefix 0x. Valid examples: 0x0123456789abcdefABCDEF, 0123456789abcdefABCDEF"@en ;
-   samm:value "^(0x)?[0-9a-fA-F]+$" .
+   samm:value "^(0x)?[0-9a-fA-F]*$|^null$|^NULL$" .
 
 :AdditionalInformation a samm:Entity ;
    samm:preferredName "Additional information"@en ;
    samm:description "One key:value information pair"@en ;
    samm:properties ( :key :value ) .
 
+:Integer a samm:Characteristic ;
+   samm:preferredName "Integer number"@en ;
+   samm:description "An integer number."@en ;
+   samm:dataType xsd:int .
+
+:MileageRangeConstraint a samm-c:RangeConstraint ;
+   samm:preferredName "Mileage Range Constraint"@en ;
+   samm:description "Range for a valid mileage counter. -1 marks not available."@en ;
+   samm-c:minValue "-1"^^xsd:int ;
+   samm-c:maxValue "2000000"^^xsd:int ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:LESS_THAN .
+
 :DateRegularExpressionNullable a samm-c:RegularExpressionConstraint ;
    samm:preferredName "Date Regular Expression Nullable"@en ;
    samm:description "This regular expressions enforces a given date according ISO 8601 local date. General format is YYYY-MM-DD. YYYY can be 0000..9999. MM-DD is checked together: months 01,03,05,07,08,10,12 must have DD in the range of  01..31 days, months 04,06,09,11 must have DD in the range of  01..30 days, month 02 must have DD in the range of  01..29 days."@en ;
-   samm:value "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$" .
+   samm:value "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$|^NULL$" .
 
 :Float a samm:Characteristic ;
    samm:preferredName "Float"@en ;
