@@ -1,0 +1,253 @@
+#######################################################################
+# Copyright (c) 2025 Mercedes-Benz Group AG
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.business_partner_certificate:3.1.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+
+
+:BusinessPartnerCertificate a samm:Aspect ;
+   samm:preferredName "Business Partner certificate"@en ;
+   samm:description "A business partner certifcate describes a certificate (eg ISO9001, IATF-16949) via a certifcate document  of a Catena-X business partner"@en ;
+   samm:properties ( :businessPartnerNumber :type :registrationNumber [ samm:property :areaOfApplication; samm:optional true ] [ samm:property :enclosedSites; samm:optional true ] :validFrom :validUntil [ samm:property :issuer; samm:optional true ] :trustLevel [ samm:property :validator; samm:optional true ] [ samm:property :uploader; samm:optional true ] :document ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:businessPartnerNumber a samm:Property ;
+   samm:preferredName "Business Partner Number"@en ;
+   samm:description "The Business Partner Number (BPN) of the certified legal entity ."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL00000003AYRE" .
+
+:type a samm:Property ;
+   samm:preferredName "Certificate type"@en ;
+   samm:description "Type of the certificate as defined on the document like IS09001, IATF 16949 or other"@en ;
+   samm:characteristic :CertificateTypeCharacteristic .
+
+:registrationNumber a samm:Property ;
+   samm:preferredName "Certificate registration number"@en ;
+   samm:description "Registration number of the certificate as defined on the certificate"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "12 198 54182 TMS" .
+
+:areaOfApplication a samm:Property ;
+   samm:preferredName "Area of application"@en ;
+   samm:description "Details on which areas / application types a certificate is valid for a company and/or site."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Development, Marketing und Sales and also Procurement for interior components" .
+
+:enclosedSites a samm:Property ;
+   samm:preferredName "Enclosed sites"@en ;
+   samm:description "Additional sites covered by the certificate, which can be either the Business Partner Number Site (BPNS) or Business Partner Number Address (BPNA)"@en ;
+   samm:characteristic :EnclosedSitesCharacteristic .
+
+:validFrom a samm:Property ;
+   samm:preferredName "Valid from"@en ;
+   samm:description "Valid from date as defined on the certificate."@en ;
+   samm:characteristic :Date ;
+   samm:exampleValue "2023-01-25"^^xsd:date .
+
+:validUntil a samm:Property ;
+   samm:preferredName "Valid until"@en ;
+   samm:description "Valid valid until as defined on the certificate. If certificate never expires value until expected to be 9999-12-31"@en ;
+   samm:characteristic :Date ;
+   samm:exampleValue "2026-01-24"^^xsd:date .
+
+:issuer a samm:Property ;
+   samm:preferredName "Issuing authority"@en ;
+   samm:description "The BPN of the issuing authority e.g. TUEV Sued "@en ;
+   samm:characteristic :IssuerCharacteristics .
+
+:trustLevel a samm:Property ;
+   samm:preferredName "Trust level"@en ;
+   samm:description "The trust level of the given certificate - none,low, high, trusted"@en ;
+   samm:characteristic :TrustLevelValue ;
+   samm:exampleValue "high" .
+
+:validator a samm:Property ;
+   samm:preferredName "Validator"@en ;
+   samm:description "The Business Partner Number (BPN) of the data service provider who validates the given certificate."@en ;
+   samm:characteristic :TrustValidatorCharacteristic .
+
+:uploader a samm:Property ;
+   samm:preferredName "Certifcate uploader"@en ;
+   samm:description "The Business Partner Number (BPN) of the business partner who originally provided the certifcate data or document."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL00000003AYRE" .
+
+:document a samm:Property ;
+   samm:preferredName "Document"@en ;
+   samm:description "The content and ID of the document."@en ;
+   samm:characteristic :DocumentCharacteristic .
+
+:CertificateTypeCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Certificate Type Characteristic"@en ;
+   samm:description "Describes the characteristics of the Certificate Type."@en ;
+   samm:dataType :CertificateTypeEntity .
+
+:EnclosedSitesCharacteristic a samm-c:List ;
+   samm:preferredName "Enclosed Sites Characteristic"@en ;
+   samm:description "Describes the characteristic of the attribute enclosedSites. "@en ;
+   samm:dataType :EnclosedSiteEntity .
+
+:Date a samm:Characteristic ;
+   samm:preferredName "Date"@en ;
+   samm:description "Describes a property which contains the date in english format."@en ;
+   samm:dataType xsd:date .
+
+:IssuerCharacteristics a samm:Characteristic ;
+   samm:preferredName "Issuer Characteristics"@en ;
+   samm:description "Issuer name and the Business Partner Number (BPN) Characteristics."@en ;
+   samm:dataType :IssuerEntity .
+
+:TrustLevelValue a samm-c:Enumeration ;
+   samm:preferredName "Trust level value"@en ;
+   samm:description "The possible trust level values of certificate"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "none" "low" "high" "trusted" ) .
+
+:TrustValidatorCharacteristic a samm:Characteristic ;
+   samm:preferredName "Validiator caracteristic"@en ;
+   samm:description "The Business Partner Number (BPN) of the data service provider who validated the given certificate"@en ;
+   samm:dataType :TrustValidatorEntitity .
+
+:DocumentCharacteristic a samm:Characteristic ;
+   samm:preferredName "Document Characteristic"@en ;
+   samm:description "Describes the characteristics of the attribute document."@en ;
+   samm:dataType :DocumentEntity .
+
+:CertificateTypeEntity a samm:Entity ;
+   samm:preferredName "Entity of a certificate type"@en ;
+   samm:description "Detailed entity of the certificate like IS09001:2015, IATF 16949:2015 or other, valid types are registered at BPN metadatacontroller"@en ;
+   samm:properties ( :certificateType [ samm:property :certificateVersion; samm:optional true ] ) .
+
+:EnclosedSiteEntity a samm:Entity ;
+   samm:preferredName "Enclosed Site Entity"@en ;
+   samm:description "Entity representing an enclosed site, can be the Business Partner Number Site (BPNS) or Business Partner Number Address (BPNA)."@en ;
+   samm:properties ( :enclosedSiteBpn [ samm:property :areaOfApplication; samm:optional true ] ) .
+
+:IssuerEntity a samm:Entity ;
+   samm:preferredName "Issuer Entity"@en ;
+   samm:description "The name and the BPNL of the Issuer. "@en ;
+   samm:properties ( :issuerName [ samm:property :issuerBpn; samm:optional true ] ) .
+
+:TrustValidatorEntitity a samm:Entity ;
+   samm:preferredName "Trust validator entity"@en ;
+   samm:description "The Business Partner Number (BPN) of the data service provider who validated the given certificate."@en ;
+   samm:properties ( [ samm:property :validatorName; samm:optional true ] [ samm:property :validatorBpn; samm:optional true ] ) .
+
+:DocumentEntity a samm:Entity ;
+   samm:preferredName "Document Entity"@en ;
+   samm:description "Encapsulation of all document relevant attributes."@en ;
+   samm:properties ( :creationDate :documentID :contentType :contentBase64 ) .
+
+:certificateType a samm:Property ;
+   samm:preferredName "Certificate type"@en ;
+   samm:description "Type of the certificate as defined on the document,valid types are registered at BPN metadatacontroller"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ISO9001" .
+
+:certificateVersion a samm:Property ;
+   samm:preferredName "Certificate version"@en ;
+   samm:description "Version of the certificate as defined on the document, usually the specific version of a certification standard"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2015" .
+
+:enclosedSiteBpn a samm:Property ;
+   samm:preferredName "enclosedSite BPN"@en ;
+   samm:description "The Business Partner Number (BPNS or BPNA) of an enclosed site"@en ;
+   samm:characteristic :BpnTrait ;
+   samm:exampleValue "BPNS00000003AYRE" .
+
+:issuerName a samm:Property ;
+   samm:preferredName "Issuer Name"@en ;
+   samm:description "Name of the Issuer i.e. Certifying Authority."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "TÜV" .
+
+:issuerBpn a samm:Property ;
+   samm:preferredName "Issuer BPN"@en ;
+   samm:description "The Business Partner Number (BPN) of the Issuer."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL133631123120" .
+
+:validatorName a samm:Property ;
+   samm:preferredName "Validator name"@en ;
+   samm:description "The optional name of the data service provider who validated the given certificate"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Data service provider X" .
+
+:validatorBpn a samm:Property ;
+   samm:preferredName "Certifcate validator Bpn"@en ;
+   samm:description "The Business Partner Number (BPN) of the data service provider who validated the given certificate"@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL00000007YREZ" .
+
+:creationDate a samm:Property ;
+   samm:preferredName "Creation Date"@en ;
+   samm:description "The creation date of the document."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2024-08-23T13:19:00.280+02:00"^^xsd:dateTime .
+
+:documentID a samm:Property ;
+   samm:preferredName "Document ID"@en ;
+   samm:description "The id of the certificate document as stored by the data service provider."@en ;
+   samm:characteristic :DocumentIdCharaccteristic ;
+   samm:exampleValue "UUID--123456789" .
+
+:contentType a samm:Property ;
+   samm:preferredName "Content Type"@en ;
+   samm:description "The content type of the document."@en ;
+   samm:characteristic samm-c:MimeType ;
+   samm:exampleValue "application/pdf" .
+
+:contentBase64 a samm:Property ;
+   samm:preferredName "Content Base 64"@en ;
+   samm:description "The data is encoded using the Base64 encoding scheme, which converts binary data into a string of ASCII characters. "@en ;
+   samm:characteristic :ContentBase64Characteristic ;
+   samm:exampleValue "iVBORw0KGgoAAdsfwerTETEfdgd" .
+
+:BpnTrait a samm-c:Trait ;
+   samm:preferredName "Bpn Trait"@en ;
+   samm:description "Trait to ensure data format for both BPNS and BPNA"@en ;
+   samm-c:baseCharacteristic :BpnNumberCharacteristic ;
+   samm-c:constraint :BpnNumberRegularExpression .
+
+:DocumentIdCharaccteristic a samm:Characteristic ;
+   samm:preferredName "DocumentId Characteristic"@en ;
+   samm:description "The characcteristics of the document ID."@en ;
+   samm:dataType xsd:string .
+
+:ContentBase64Characteristic a samm:Characteristic ;
+   samm:preferredName "Content Base 64 Characteristic"@en ;
+   samm:description "Describes the document's encoded value in a Content Base 64 String. "@en ;
+   samm:dataType xsd:string .
+
+:BpnNumberCharacteristic a samm:Characteristic ;
+   samm:preferredName "BPN Number Characteristic"@en ;
+   samm:description "The property enclosed site BPN can accept either BPNA or BPNS numbers. "@en ;
+   samm:dataType xsd:string .
+
+:BpnNumberRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "BPN Number Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the BPN Number is composed of prefix BPNS or BPNA, 10 digits and 2 alphanumeric letters. "@en ;
+   samm:value "^(?:BPNS|BPNA)[a-zA-Z0-9]{12}$" .
