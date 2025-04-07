@@ -2,6 +2,11 @@
 
 All notable changes to this model will be documented in this file.
 
+## [3.1.0] 24.03.2025
+
+### Changed
+- EnclosedSiteBpn property accepts either BPNA or BPNS. (previous version was only BPNS)
+
 ## [3.0.0] 16.12.2024
 
 ### Changed
