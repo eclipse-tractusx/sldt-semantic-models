@@ -2,7 +2,7 @@
 
 All notable changes to this model will be documented in this file.
 
-## [1.1.0] 2025-0-31
+## [2.0.0] 2025-04-07
 
 ### Changed
 - changed current datatype of the property _value_ from float to string
