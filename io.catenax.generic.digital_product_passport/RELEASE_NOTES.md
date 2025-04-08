@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
+## [6.0.0] - 2025-04-08
+### Changed
+- new attribute added: language
+- new attribute added: purchaseOrder
+- new attribute added: recallInformation
+
 ## [5.0.0] - 2024-05-21
 ### Changed
 - structure and pattern below chemicalName and chemicalId changed for materials
