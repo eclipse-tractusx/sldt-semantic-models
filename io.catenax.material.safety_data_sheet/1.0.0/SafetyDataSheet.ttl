@@ -1,0 +1,201 @@
+#######################################################################
+# Copyright (c) 2025 BASF SE & BASF Coatings GmbH
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.material.safety_data_sheet:1.0.0#> .
+
+:SafetyDataSheet a samm:Aspect ;
+   samm:preferredName "Safety Data Sheet"@en ;
+   samm:description "Model that represents the Safety Data Sheet document which is structured in 16 internationally agreed sections usually supplied via paper or digitally as PDF."@en ;
+   samm:properties ( [ samm:property :hasSafetyDataSheetLink; samm:payloadName "safetyDataSheetLink" ] [ samm:property :hasSafetyDataSheetBinary; samm:payloadName "safetyDataSheetBinary" ] [ samm:property :hasSafetyDataSheetPreFormatted; samm:payloadName "safetyDataSheetPreFormatted" ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:hasSafetyDataSheetLink a samm:Property ;
+   samm:preferredName "has safety data sheet link"@en ;
+   samm:characteristic :SafetyDataSheetLinkList .
+
+:hasSafetyDataSheetBinary a samm:Property ;
+   samm:preferredName "has safety data sheet binary"@en ;
+   samm:characteristic :SafetyDataSheetBinaryList .
+
+:hasSafetyDataSheetPreFormatted a samm:Property ;
+   samm:preferredName "has safety data sheet pre formatted"@en ;
+   samm:characteristic :SafetyDataSheetPreFormattedList .
+
+:SafetyDataSheetLinkList a samm-c:List ;
+   samm:preferredName "safety data sheet link list"@en ;
+   samm:dataType :SafetyDataSheetLinkEntity .
+
+:SafetyDataSheetBinaryList a samm-c:List ;
+   samm:preferredName "safety data sheet binary list"@en ;
+   samm:dataType :SafetyDataSheetBinaryEntity .
+
+:SafetyDataSheetPreFormattedList a samm-c:List ;
+   samm:preferredName "safety data sheet pre formatted list"@en ;
+   samm:dataType :SafetyDataSheetPreFormattedEntity .
+
+:SafetyDataSheetLinkEntity a samm:Entity ;
+   samm:extends :SafetyDataSheetAbstractEntity ;
+   samm:preferredName "safety data sheet link"@en ;
+   samm:description "Allows referencing a SDS via a (publically available) URL."@en ;
+   samm:properties ( [ samm:property :link; samm:payloadName "link" ] ) .
+
+:SafetyDataSheetBinaryEntity a samm:Entity ;
+   samm:extends :SafetyDataSheetAbstractEntity ;
+   samm:preferredName "safety data sheet binary"@en ;
+   samm:description "Represents a base64 encoded SDS. The binary PDF file will be encoded by the binary-to-text encoding \"Base64\" which is common to be transported safely throughout systems that may only support text characters."@en ;
+   samm:properties ( [ samm:property :payload; samm:payloadName "payload" ] ) .
+
+:SafetyDataSheetPreFormattedEntity a samm:Entity ;
+   samm:extends :SafetyDataSheetAbstractEntity ;
+   samm:preferredName "safety data sheet pre formatted"@en ;
+   samm:description "Represents the information from a SDS based on already defined or standardized data formats (\"pre-formatted\"). Those data formats define the structure of the data and the corresponding data is referenced as \"payload\" information. For the SDS, the idea is to utilize the sdscom-xml format, while the payload data itself is included in a base64-encoded string. Nevertheless, other formats could be specified and utilized, too."@en ;
+   samm:properties ( [ samm:property :format; samm:payloadName "format" ] [ samm:property :formatVersion; samm:payloadName "formatVersion" ] [ samm:property :preFormattedPayload; samm:payloadName "preFormattedPayload" ] [ samm:property :formatLink; samm:payloadName "formatLink" ] ) .
+
+:SafetyDataSheetAbstractEntity a samm:AbstractEntity ;
+   samm:preferredName "safety data sheet"@en ;
+   samm:description "Chemical products are supplied with a \"Safety Data Sheet\" (SDS) which is a document structured in 16 internationally agreed sections usually supplied via paper or digitally as PDF. A SDS lists information relating to occupational safety and health for the use of various substances and products."@en ;
+   samm:properties ( [ samm:property :issueVersion; samm:optional true ] [ samm:property :previousVersion; samm:optional true ] :language :applicableToCountryProperty [ samm:property :issueDate; samm:optional true ] ) .
+
+:link a samm:Property ;
+   samm:preferredName "link"@en ;
+   samm:description "HTTP(S) address according to RFC 3986"@en ;
+   samm:characteristic samm-c:ResourcePath ;
+   samm:exampleValue "https://sds.basf.com/view?bi=000001002234&material=000000000050719761&language=en&supplier=&salesOrg=D050&sbgv=SDS_GEN_GB"^^xsd:anyURI .
+
+:payload a samm:Property ;
+   samm:preferredName "payload"@en ;
+   samm:description "Base64-encoded string of PDF file"@en ;
+   samm:characteristic :PayloadCharacteristic ;
+   samm:exampleValue "3ZXRqhY="^^xsd:base64Binary .
+
+:format a samm:Property ;
+   samm:preferredName "format"@en ;
+   samm:description "Identifier of the format of the payload."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "sdscom-xml" .
+
+:formatVersion a samm:Property ;
+   samm:preferredName "format version"@en ;
+   samm:description "Corresponding version identifier of the given format"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "5.4" .
+
+:preFormattedPayload a samm:Property ;
+   samm:preferredName "pre formatted payload"@en ;
+   samm:description "Base64-encoded string of data according to format"@en ;
+   samm:characteristic :PreFormattedPayloadCharacteristic ;
+   samm:exampleValue "MkU6w4pf/JDae+tYIgQAtCsp"^^xsd:base64Binary .
+
+:formatLink a samm:Property ;
+   samm:preferredName "format link"@en ;
+   samm:description "URL to the format definition file"@en ;
+   samm:characteristic samm-c:ResourcePath ;
+   samm:exampleValue "https://github.com/esdscom/sdscom-xml/blob/master/SDSComXML.xsd"^^xsd:anyURI .
+
+:issueVersion a samm:Property ;
+   samm:preferredName "issue version"@en ;
+   samm:description "Versioning information of the Safety Data Sheet"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "8.1" .
+
+:previousVersion a samm:Property ;
+   samm:preferredName "previous version"@en ;
+   samm:description "Versioning information of the previous SDS"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "8.0" .
+
+:language a samm:Property ;
+   samm:preferredName "language"@en ;
+   samm:description "ISO-639-1 code of language"@en ;
+   samm:characteristic samm-c:Language ;
+   samm:exampleValue "de" .
+
+:applicableToCountryProperty a samm:Property ;
+   samm:preferredName "applies to country"@en ;
+   samm:description "Relationship between the Safety Data Sheet and the country to which it applies for."@en ;
+   samm:characteristic :CountryTrait .
+
+:issueDate a samm:Property ;
+   samm:preferredName "issue date"@en ;
+   samm:description "Issue date of Safety Data Sheet"@en ;
+   samm:characteristic :IssueDateCharacteristic ;
+   samm:exampleValue "2023-03-28"^^xsd:date .
+
+:PayloadCharacteristic a samm:Characteristic ;
+   samm:preferredName "payload characteristic"@en ;
+   samm:dataType xsd:base64Binary .
+
+:PreFormattedPayloadCharacteristic a samm:Characteristic ;
+   samm:preferredName "pre formatted payload characteristic"@en ;
+   samm:dataType xsd:base64Binary .
+
+:CountryTrait a samm-c:Trait ;
+   samm:preferredName "Country Trait"@en ;
+   samm-c:baseCharacteristic :SDSCountrySet ;
+   samm-c:constraint :CountryConstraint .
+
+:IssueDateCharacteristic a samm:Characteristic ;
+   samm:preferredName "issue date"@en ;
+   samm:dataType xsd:date .
+
+:SDSCountrySet a samm-c:Set ;
+   samm:preferredName "country set"@en ;
+   samm:description "Set of countries where the SDS is applicable."@en ;
+   samm:dataType :SDSCountryEntity .
+
+:CountryConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "Country Constraint"@en ;
+   samm:description "Limits the set of countries to at least to one element."@en ;
+   samm-c:minValue "1"^^xsd:nonNegativeInteger .
+
+:SDSCountryEntity a samm:Entity ;
+   samm:preferredName "country"@en ;
+   samm:description "A country is a distinct territorial body or political entity."@en ;
+   samm:properties ( [ samm:property :hasAlpha3CodeProperty; samm:payloadName "alpha3Code" ] [ samm:property :labelProperty; samm:payloadName "name" ] ) .
+
+:hasAlpha3CodeProperty a samm:Property ;
+   samm:preferredName "has alpha3 code"@en ;
+   samm:description "Country code consisting of three capital letters according to ISO 3166."@en ;
+   samm:characteristic :Alpha3CodeTrait ;
+   samm:exampleValue "DEU" .
+
+:labelProperty a samm:Property ;
+   samm:preferredName "label"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Germany" .
+
+:Alpha3CodeTrait a samm-c:Trait ;
+   samm:preferredName "Alpha 3 Code Trait"@en ;
+   samm-c:baseCharacteristic :Alpha3CodeCharacteristic ;
+   samm-c:constraint :ISO3166CodeConstraint .
+
+:Alpha3CodeCharacteristic a samm-c:Code ;
+   samm:preferredName "Alpha 3 Code"@en ;
+   samm:description "Three letter country code defined in ISO 3166"@en ;
+   samm:dataType xsd:string .
+
+:ISO3166CodeConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "ISO 3166 code constraint"@en ;
+   samm:description "Constrainst the value to only three capital letters to represent the country code according to ISO 3166."@en ;
+   samm:value "^[A-Z][A-Z][A-Z]" .
+
