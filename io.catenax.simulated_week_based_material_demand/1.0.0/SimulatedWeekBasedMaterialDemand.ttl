@@ -26,56 +26,56 @@
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 
 :SimulatedWeekBasedMaterialDemand a samm:Aspect ;
-   samm:preferredName "Material Demand"@en ;
-   samm:description "The requirements of a customer towards a specific supplier for a specific material. Each material demand is unique by its Customer, Supplier and Material Number."@en ;
-   samm:properties ( :simulationId :SimulatedWeekBasedMaterialDemandId :simulationPriority :simulationReadyDate :simulationLastChanged :listOfWeekBasedMaterialDemand ) ;
+   samm:preferredName "Simulated Material Demand"@en ;
+   samm:description "An entity that contains multiple modified WeekBasedMaterialDemand representing a simulation scenario and a request for evaluation from customer to supplier."@en ;
+   samm:properties ( :simulationId :SimulatedWeekBasedMaterialDemandId :simulationPriority :simulationDueDate :simulationChangedAt :listOfWeekBasedMaterialDemand ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
 :simulationId a samm:Property ;
-   samm:preferredName "Material Demand ID"@en ;
-   samm:description "The Material Demand ID uniquely identifies the material demand within the business relationship between a customer and its supplier."@en ;
+   samm:preferredName "Simulation ID"@en ;
+   samm:description "The simulation ID uniquely identifies a simulation scenario. All aspects that belong to the same simulation scenario share a simulation ID"@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110" .
 
 :SimulatedWeekBasedMaterialDemandId a samm:Property ;
-   samm:preferredName "Demand Series"@en ;
-   samm:description "The demands for a dedicated material in a given time period of a given demand rate, distinguished by their demand location and demand category."@en ;
+   samm:preferredName "Simulated Material Demand ID"@en ;
+   samm:description "The simulated capacity group ID uniquely identifies the simulated material demand within the business relationship between a customer and its supplier."@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110" .
 
 :simulationPriority a samm:Property ;
-   samm:preferredName "xxx"@en ;
-   samm:description "xxx"@en ;
+   samm:preferredName "Simulation Priority"@en ;
+   samm:description "The simulation priority expresses the urgency of the evaluation request. In addition it can be used to indicate that the evaluation can be aborted."@en ;
    samm:characteristic :SimulationStatusCharacteristic ;
    samm:exampleValue "MEDIUM" .
 
 :SimulationPriorityCharacteristic a samm-c:Enumeration ;
-   samm:preferredName "Simulation Status"@en ;
-   samm:description "."@en ;
+   samm:preferredName "Simulation Priority Characteristic"@en ;
+   samm:description "Values for simulation priority."@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "LOW" "MEDIUM" "HIGH" "ABORT" ) .
 
-:simulationReadyDate a samm:Property ;
-   samm:preferredName "Demand Series"@en ;
-   samm:description "The demands for a dedicated material in a given time period of a given demand rate, distinguished by their demand location and demand category."@en ;
+:simulationDueDate a samm:Property ;
+   samm:preferredName "Simulation Due Date"@en ;
+   samm:description "The simulation due date allows the customer to indicate to the supplier how long the evaluation of the simulation scenario should take."@en ;
    samm:characteristic samm-c:Timestamp ;
    samm:exampleValue "2018-02-03T00:00:00"^^xsd:dateTime .
 
-:simulationLastChanged a samm:Property ;
-   samm:preferredName "Demand Series"@en ;
-   samm:description "The demands for a dedicated material in a given time period of a given demand rate, distinguished by their demand location and demand category."@en ;
+:simulationChangedAt a samm:Property ;
+   samm:preferredName "Simulation Changed At"@en ;
+   samm:description "Point in time when the content (any property according to the data model) of the simulated material demand was changed, at the customer, either by a human user or an automated process."@en ;
    samm:characteristic samm-c:Timestamp ;
    samm:exampleValue "2018-02-03T00:00:00"^^xsd:dateTime .
 
 :listOfWeekBasedMaterialDemand a samm:Property ;
-   samm:preferredName "list Of Week Based Material Demand"@en ;
-   samm:description "The positions refer to positions within an order that refer to the given product (see materialNumberSupplier, materialNumberCustomer and materialNumberDataSpace) for which the stocks are transferred. The positions are differentiated by the orderPositionReference."@en ;
+   samm:preferredName "Material Demand List"@en ;
+   samm:description "List of material demands that allow the customer to spell out a simulation scenario."@en ;
    samm:characteristic :ListOfWeekBasedMaterialDemandCollection .
 
 :WeekBasedMaterialDemand a samm:Entity ;
-   samm:preferredName "Week Based Material Demand"@en ;
-   samm:description "xxx"@en ;
+   samm:preferredName "WeekBasedMaterialDemand"@en ;
+   samm:description "An existing WeekBasedMaterialDemand, potentially modified, used to spell out a simulation scenario."@en ;
    samm:properties ( 
       ext-week_based_material_demand:demandSeries 
       ext-week_based_material_demand:materialGlobalAssetId
@@ -92,6 +92,6 @@
        ) .
 
 :ListOfWeekBasedMaterialDemandCollection a samm-c:Collection ;
-   samm:preferredName "Positions Collection"@en ;
-   samm:description "If any stock is available, then there is at least one position. If the supplier does differentiate the stock according to the order positions (an OrderPositionReference is set), then multiple positions can be given. There could also be only one position without an OrderPositionReference indicating an anonymous stock which is allocated to the customer."@en ;
+   samm:preferredName "Material Demand Collection"@en ;
+   samm:description "Customer embed any number of existing and modified week based material demand in order to spell out a simulation scenario for the supplier to evaluate."@en ;
    samm:dataType :WeekBasedMaterialDemand .
