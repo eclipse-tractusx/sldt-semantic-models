@@ -26,55 +26,55 @@
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 
 :SimulatedWeekBasedCapacityGroup a samm:Aspect ;
-   samm:preferredName "Material Demand"@en ;
-   samm:description "The requirements of a customer towards a specific supplier for a specific material. Each material demand is unique by its Customer, Supplier and Material Number."@en ;
-   samm:properties ( :simulationId :simulatedWeekBasedCapacityGroupId :simulationStatus :simulationReadyDate :simulationLastChanged :listOfWeekBasedCapacityGroup ) ;
+   samm:preferredName "Simulated Capacity Group"@en ;
+   samm:description "An entity that can contain multiple WeekBasedCapacityGroup in addition to the evaluation of a simulation scenario, requested by the customer."@en ;
+   samm:properties ( :simulationId :simulatedWeekBasedCapacityGroupId :simulationStatus :simulationReadyDate :simulationChangedAt :listOfWeekBasedCapacityGroup ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
 :simulationId a samm:Property ;
-   samm:preferredName "Material Demand ID"@en ;
-   samm:description "The Material Demand ID uniquely identifies the material demand within the business relationship between a customer and its supplier."@en ;
+   samm:preferredName "Simulation ID"@en ;
+   samm:description "The simulation ID uniquely identifies a simulation scenario. All aspects that belong to the same simulation scenario share a simulation ID"@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110" .
 
 :simulatedWeekBasedCapacityGroupId a samm:Property ;
-   samm:preferredName "Demand Series"@en ;
-   samm:description "The demands for a dedicated material in a given time period of a given demand rate, distinguished by their demand location and demand category."@en ;
+   samm:preferredName "Simulated Capacity Group ID"@en ;
+   samm:description "The simulated capacity group ID uniquely identifies the simulated capacity group within the business relationship between a supplier and its customer.@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110" .
 
 :simulationStatus a samm:Property ;
-   samm:preferredName "xxx"@en ;
-   samm:description "xxx"@en ;
+   samm:preferredName "Simulation Status"@en ;
+   samm:description "The simulation status indicates whether the supplier will actively work on a simulation scenario (ACCEPTED) or not (REJECTED) In addition it can indicate the outcome of a simulation as scenario could be implemented (SUCCESS) or scenario cannot be implemented (FAILURE). Finally it can acknowledge that the customer has aborted the simulation scenario (ABORTED)."@en ;
    samm:characteristic :SimulationStatusCharacteristic ;
    samm:exampleValue "ACCEPTED" .
 
 :SimulationStatusCharacteristic a samm-c:Enumeration ;
-   samm:preferredName "Simulation Status"@en ;
-   samm:description "."@en ;
+   samm:preferredName "Simulation Status Characteristic"@en ;
+   samm:description "Values for simulation status"@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "SUCCESS" "FAILURE" "ACCEPTED" "REJECTED" "ABORTED" ) .
 
 :simulationReadyDate a samm:Property ;
-   samm:preferredName "Demand Series"@en ;
-   samm:description "The demands for a dedicated material in a given time period of a given demand rate, distinguished by their demand location and demand category."@en ;
+   samm:preferredName "Simulation Ready Date"@en ;
+   samm:description "The simulation ready date allows the supplier to indicate to the customer how long it will take to evaluate the simulation scenario."@en ;
    samm:characteristic samm-c:Timestamp ;
    samm:exampleValue "2018-02-03T00:00:00"^^xsd:dateTime .
 
-:simulationLastChanged a samm:Property ;
-   samm:preferredName "Demand Series"@en ;
-   samm:description "The demands for a dedicated material in a given time period of a given demand rate, distinguished by their demand location and demand category."@en ;
+:simulationChangedAt a samm:Property ;
+   samm:preferredName "Simulation Changed At"@en ;
+   samm:description "Point in time when the content (any property according to the data model) of the simulated capacity group was changed, at the supplier, either by a human user or an automated process."@en ;
    samm:characteristic samm-c:Timestamp ;
    samm:exampleValue "2018-02-03T00:00:00"^^xsd:dateTime .
 
 :listOfWeekBasedCapacityGroup a samm:Property ;
-   samm:preferredName "Positions"@en ;
-   samm:description "The positions refer to positions within an order that refer to the given product (see materialNumberSupplier, materialNumberCustomer and materialNumberDataSpace) for which the stocks are transferred. The positions are differentiated by the orderPositionReference."@en ;
+   samm:preferredName "Capacity Group List"@en ;
+   samm:description "List of capacity groups that allow the supplier to further detail the simulation scenario evaluation in addition to simulation status."@en ;
    samm:characteristic :ListOfWeekBasedCapacityGroupCollection .
 
-:WeekBasedCapacity a samm:Entity ;
-   samm:preferredName "WeekBasedCapacity"@en ;
+:WeekBasedCapacityGroup a samm:Entity ;
+   samm:preferredName "WeekBasedCapacityGroup"@en ;
    samm:description "xxx"@en ;
    samm:properties ( 
       ext-week_based_capacity_group:capacityGroupId 
@@ -93,6 +93,6 @@
        ) .
 
 :ListOfWeekBasedCapacityGroupCollection a samm-c:Collection ;
-   samm:preferredName "Positions Collection"@en ;
-   samm:description "If any stock is available, then there is at least one position. If the supplier does differentiate the stock according to the order positions (an OrderPositionReference is set), then multiple positions can be given. There could also be only one position without an OrderPositionReference indicating an anonymous stock which is allocated to the customer."@en ;
-   samm:dataType :WeekBasedCapacity .
+   samm:preferredName "Capacity Group Collection"@en ;
+   samm:description "If a supplier wants to he can embed any number of existing and modified week based capacity group with his simulated capacity group."@en ;
+   samm:dataType :WeekBasedCapacityGroup .
