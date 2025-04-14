@@ -11,6 +11,7 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 - integration of the shared BPNL trait
 - integration of shared e-Mail trait
 - using of Catena-X UUID as qualityTaskId
+- Added FlattenedQualityTask model. This model is nothing but a flattened view of QualityTask aspect model. No business or any kind of changes introduced in this model. This flattened model is referenced in the Industry core KITS documentation for Parquet file transfer.
 
 ### Changed
 - qTask aspect model is now able to held also lists of qTasks
