@@ -1,0 +1,504 @@
+#######################################################################
+# Copyright (c) 2025 Robert Bosch GmbH
+# Copyright (c) 2025 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2025 Volkswagen AG
+# Copyright (c) 2025 ZF Friedrichshafen AG
+# Copyright (c) 2025 SAP SE
+# Copyright (c) 2025 Siemens AG
+# Copyright (c) 2025 DENSO AUTOMOTIVE Deutschland GmbH
+# Copyright (c) 2025 WITTE Automotive GmbH
+# Copyright (c) 2025 Schaeffler Technologies AG & Co. KG
+# Copyright (c) 2025 Ford Werke GmbH
+#
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.shared.quality_core:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:QualityCore a samm:Aspect ;
+   samm:preferredName "Quality core"@en ;
+   samm:description "This semantic model serves as library for other Catena-X models from Catena-X Quality Management. It ensures that same properties that are used in different models are defined in the same way. Please keep in mind: Due to the nature of a library all given example values are only for illustration and might not make sense from a domain-specific view. "@en ;
+   samm:properties ( :general :metaInformation :part :plant :vehicle :workshop ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:general a samm:Property ;
+   samm:preferredName "General"@en ;
+   samm:description "Bundling general properties that do not belong to parts or vehicles."@en ;
+   samm:characteristic :GeneralInformationCharacteristic .
+
+:metaInformation a samm:Property ;
+   samm:preferredName "Meta information"@en ;
+   samm:description "This meta information is valid for all entries in this data set. The meta information is used to tell the data consumer which selection criteria were applied by the data provider. "@en ;
+   samm:characteristic :MetaCharacteristic .
+
+:part a samm:Property ;
+   samm:preferredName "Part"@en ;
+   samm:description "Bundling part/component properties. A part/component is meant as one piece in a vehicle. The terms part and component are synonymes."@en ;
+   samm:characteristic :PartCharacteristic .
+
+:plant a samm:Property ;
+   samm:preferredName "Plant properties"@en ;
+   samm:description "Bundling plant/production properties."@en ;
+   samm:characteristic :PlantCharacteristic .
+
+:vehicle a samm:Property ;
+   samm:preferredName "Vehicle"@en ;
+   samm:description "Bundling vehicle/car properties like anonymizedVIN or mileage counter."@en ;
+   samm:characteristic :VehicleCharacteristic .
+
+:workshop a samm:Property ;
+   samm:preferredName "Workshop"@en ;
+   samm:description "Groups workshop-related properties"@en ;
+   samm:characteristic :WorkshopCharacteristic .
+
+:GeneralInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "General information characteristic"@en ;
+   samm:description "General information characteristic"@en ;
+   samm:dataType :General .
+
+:MetaCharacteristic a samm:Characteristic ;
+   samm:preferredName "MetaCharacteristic"@en ;
+   samm:description "Characteristic for the meta information."@en ;
+   samm:dataType :MetaInformation .
+
+:PartCharacteristic a samm:Characteristic ;
+   samm:preferredName "Part characteristic"@en ;
+   samm:description "Part characteristic"@en ;
+   samm:dataType :Part .
+
+:PlantCharacteristic a samm:Characteristic ;
+   samm:preferredName "Plant characteristic"@en ;
+   samm:description "Plant characteristic"@en ;
+   samm:dataType :Plant .
+
+:VehicleCharacteristic a samm:Characteristic ;
+   samm:preferredName "Vehicle characteristic"@en ;
+   samm:description "Vehicle characteristic"@en ;
+   samm:dataType :Vehicle .
+
+:WorkshopCharacteristic a samm:Characteristic ;
+   samm:preferredName "Workshop properties"@en ;
+   samm:description "Groups all workshop properties."@en ;
+   samm:dataType :WorkshopProperties .
+
+:General a samm:Entity ;
+   samm:preferredName "General"@en ;
+   samm:description "Bundling general properties that do not belong to parts or vehicles."@en ;
+   samm:properties ( :qualityTaskId [ samm:property :countryCode; samm:optional true ] [ samm:property :hexValue; samm:optional true ] [ samm:property :recordStatus; samm:optional true ] [ samm:property :sessionId; samm:optional true ] [ samm:property :supplierId; samm:optional true ] [ samm:property :supplierName; samm:optional true ] [ samm:property :additionalInformationList; samm:optional true ] ) .
+
+:MetaInformation a samm:Entity ;
+   samm:preferredName "Meta Information"@en ;
+   samm:description "Meta information properties give hints for a Catena-X data consumer to better understand, how this data set was created on the Catena-X data provider side."@en ;
+   samm:properties ( :selectionCriteria [ samm:property :selectionStart; samm:optional true ] [ samm:property :selectionEnd; samm:optional true ] ) .
+
+:Part a samm:Entity ;
+   samm:preferredName "Part"@en ;
+   samm:description "A collection of part/component properties. A Catena-X data provider should provide the  properties that are useful for a Catena-X data consumer to clearly identify the part/component. For example, this can be done by using a serial number, data matrix code or delivery note"@en ;
+   samm:properties ( :partName [ samm:property :partDescription; samm:optional true ] [ samm:property :assemblyPartNumberVersion; samm:optional true ] [ samm:property :batchNumber; samm:optional true ] [ samm:property :calibrationInformation; samm:optional true ] [ samm:property :partId; samm:optional true ] [ samm:property :dataMatrixCode; samm:optional true ] [ samm:property :deliveryNote; samm:optional true ] [ samm:property :hwVersion; samm:optional true ] [ samm:property :orderNumber; samm:optional true ] [ samm:property :partNumber; samm:optional true ] [ samm:property :partVersion; samm:optional true ] [ samm:property :serialNumber; samm:optional true ] [ samm:property :swPartNumber; samm:optional true ] [ samm:property :swVersion; samm:optional true ] [ samm:property :variantInfomation; samm:optional true ] ) .
+
+:Plant a samm:Entity ;
+   samm:preferredName "Plant properties"@en ;
+   samm:description "Bundling plant/production properties."@en ;
+   samm:properties ( :plantIdentifier [ samm:property :plantDescription; samm:optional true ] [ samm:property :plantBPNS; samm:optional true ] [ samm:property :plantCountryCode; samm:optional true ] ) .
+
+:Vehicle a samm:Entity ;
+   samm:preferredName "Vehicle"@en ;
+   samm:description "Bundling vehicle/car properties like anonymizedVIN or mileage counter."@en ;
+   samm:properties ( :anonymizedVIN [ samm:property :vehicleId; samm:optional true ] [ samm:property :mileage; samm:optional true ] [ samm:property :mileageUnit; samm:optional true ] [ samm:property :productionDate; samm:optional true ] [ samm:property :soldDate; samm:optional true ] ) .
+
+:WorkshopProperties a samm:Entity ;
+   samm:preferredName "Workshop Properties"@en ;
+   samm:description "All properties to clearly identify a workshop."@en ;
+   samm:properties ( :workShopId [ samm:property :latitude; samm:optional true ] [ samm:property :longitude; samm:optional true ] ) .
+
+:qualityTaskId a samm:Property ;
+   samm:preferredName "Quality Task ID"@en ;
+   samm:description "A unique quality task identifier within this data-space."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "430f56d3-1234-1234-1234-abc123456789" .
+
+:countryCode a samm:Property ;
+   samm:preferredName "Country code"@en ;
+   samm:description "Country code in  ISO 3166-1 alpha-3 codes where this session took place"@en ;
+   samm:characteristic :CountryCodeTrait ;
+   samm:exampleValue "DEU" .
+
+:hexValue a samm:Property ;
+   samm:preferredName "Hex value"@en ;
+   samm:description "Hex values are encoded in 0-9,a-f or A-F to store information."@en ;
+   samm:characteristic :HexValueTrait ;
+   samm:exampleValue "0x343343443af" .
+
+:recordStatus a samm:Property ;
+   samm:preferredName "Record status"@en ;
+   samm:description "The record operation enumeration can be used to realize delta update concept. An example using scenario that data delivery runs weekly: Week0: All data is transferred -> all rows have recordStatus=new. Week1: Only the changed data is transferred: That means new rows, or updated or deleted rows: New rows get recordStatus=new, changed rows get recordStatus=changed and deleted/removed rows get recordStatus=deleted."@en ;
+   samm:characteristic :RecordStatusEnumeration ;
+   samm:exampleValue "updated" .
+
+:sessionId a samm:Property ;
+   samm:preferredName "Session identifier"@en ;
+   samm:description "A unique identifier for a session. If you combine the session property with BPNL of data provider than you get a unique identifier for this session in this data-space."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "3747429FGH382923974682_Session_2023-11-04T08:00:45" .
+
+:supplierId a samm:Property ;
+   samm:preferredName "SupplierID"@en ;
+   samm:description "A unique identifier for one supplier inside data provider's company. If you combine supplier ID with BPNL of data provider you get a unique identifier for this supplier in this data space. As an alternative you can use BPNL to identify a supplier."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "RB2064600502" .
+
+:supplierName a samm:Property ;
+   samm:preferredName "Supplier Name"@en ;
+   samm:description "The name of one supplier company."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Robert Bosch GmbH" .
+
+:additionalInformationList a samm:Property ;
+   samm:preferredName "Additional information"@en ;
+   samm:description "You can use this key:value list for additional properties that were not defined in this aspect model."@en ;
+   samm:characteristic :AdditionalInformationList .
+
+:selectionCriteria a samm:Property ;
+   samm:preferredName "Selection criteria"@en ;
+   samm:description "Describes the selection criteria a Catena-X data provider has applied to create this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Export of data that data that belongs to one or more Catena-X Quality tasks." .
+
+:selectionStart a samm:Property ;
+   samm:preferredName "Selection start"@en ;
+   samm:description "Describes the starting point for providing records in this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2023-01-01T00:00:00" .
+
+:selectionEnd a samm:Property ;
+   samm:preferredName "Selection end"@en ;
+   samm:description "Describes the end point for providing records in this data set."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2023-12-31T23:59:59" .
+
+:partName a samm:Property ;
+   samm:preferredName "OEM part name"@en ;
+   samm:description "The name of a part. A part name is not unique - same kinds of parts can have the same part name."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Gearbox ECU" .
+
+:partDescription a samm:Property ;
+   samm:preferredName "Part Description"@en ;
+   samm:description "A textual description of the part."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Gear control unit GBX, second generation." .
+
+:assemblyPartNumberVersion a samm:Property ;
+   samm:preferredName "Assembly part number version"@en ;
+   samm:description "Often vehicle manufacturer specific: An assembly part number version. Assembly parts are often produced by a supplier that combines his own parts with other parts from other suppliers and ships as one assembly to a vehicle manufacturer."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Steering-GBX-43353522" .
+
+:batchNumber a samm:Property ;
+   samm:preferredName "Batch Number"@en ;
+   samm:description "A batch number describes all parts that were manufactured in the same run."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "LB#LineA#20240731" .
+
+:calibrationInformation a samm:Property ;
+   samm:preferredName "Calibration information"@en ;
+   samm:description "Calibration for this ECU. This could be the result of a calibration process."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Calibration_file_4711" .
+
+:partId a samm:Property ;
+   samm:preferredName "Part identifier"@en ;
+   samm:description "A unique part identifier in this data-space. Property is optional as of now not all parts have this identifier."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9000" .
+
+:dataMatrixCode a samm:Property ;
+   samm:preferredName "Data matrix code"@en ;
+   samm:description "String that is encoded in a data matrix code. Data matrix codes or short DMC are labelled/printed on parts. Example: A data matrix code can combine supplier name, part type, manufacturing and many more information. A DMC string is often unique within this data provider."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "3#5ZZ9454554CE#2024-07-10#BR11" .
+
+:deliveryNote a samm:Property ;
+   samm:preferredName "Delivery Note"@en ;
+   samm:description "The delivery note of a package. A delivery note is unique within one logistics company."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "Package 439330220585844" .
+
+:hwVersion a samm:Property ;
+   samm:preferredName "Hardware version"@en ;
+   samm:description "The hardware version of this part."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Version H001" .
+
+:orderNumber a samm:Property ;
+   samm:preferredName "Order Number"@en ;
+   samm:description "The order number of this order. This is a unique identifier defined by the supplier of the order. If you combine order number and BPNL of the supplier you get a unique identifier in this data-space."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ORDER-1223324" .
+
+:partNumber a samm:Property ;
+   samm:preferredName "Part number"@en ;
+   samm:description "The number of a physical part. A part number is not unique - same kinds of parts can have same part numbers. Part numbers and part description normally relate to each other."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "GBX-3232455" .
+
+:partVersion a samm:Property ;
+   samm:preferredName "Part version"@en ;
+   samm:description "The version of this hardware part."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "0556A" .
+
+:serialNumber a samm:Property ;
+   samm:preferredName "OEM Serial number"@en ;
+   samm:description "Serial number of one specific part. A serial number is unique within one company. If you combine serial number with BPNL of that company than you get a unique identifier for this part in this data-space."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "ECU20646005020221" .
+
+:swPartNumber a samm:Property ;
+   samm:preferredName "ECU SW part number"@en ;
+   samm:description "Software number installed in this electronic control unit."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "SW3.23" .
+
+:swVersion a samm:Property ;
+   samm:preferredName "ECU SW version"@en ;
+   samm:description "Software version installed in this electronic control unit."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "V001" .
+
+:variantInfomation a samm:Property ;
+   samm:preferredName "Variant information"@en ;
+   samm:description "An electronic control unit has many parameters that have to be set to work correctly: Examples are target market (which functions need to be activated for the target market) or the equipment of the vehicle (e.g. navigation system is installed)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "C01,C02,C03,C10" .
+
+:plantIdentifier a samm:Property ;
+   samm:preferredName "Production plant id"@en ;
+   samm:description "Identifier of a plant within the company owning the plant. If you combing plant identifier with BPNL of the company owning the plant than you get a unique identifier fo this plant in this data-space."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "4711" .
+
+:plantDescription a samm:Property ;
+   samm:preferredName "Vehicle production plant name"@en ;
+   samm:description "Long name of the production plant."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Wolfsburg" .
+
+:plantBPNS a samm:Property ;
+   samm:preferredName "Plant BPNS"@en ;
+   samm:description "A unique plant identifier according BPNS definition. This property is optional as of now not all plants have assigned BPNS identifiers."@en ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS0123456789ZZ" .
+
+:plantCountryCode a samm:Property ;
+   samm:preferredName "Plant country"@en ;
+   samm:description "Country code of the plant, where the vehicle was produced."@en ;
+   samm:characteristic :CountryCodeTrait ;
+   samm:exampleValue "DEU" .
+
+:anonymizedVIN a samm:Property ;
+   samm:preferredName "Anonymized VIN"@en ;
+   samm:description "Vehicle manufacturer-specific anonymized VIN, which is still a unique identifier within this data provider."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "3747429FGH382923974682" .
+
+:vehicleId a samm:Property ;
+   samm:preferredName "Vehicle identifier"@en ;
+   samm:description "A unique identifier for this vehicle in data-space. This property is optional as of now not all vehicles have this identifier assigned."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:580d3adf-1981-44a0-a214-13d6ceed9379" .
+
+:mileage a samm:Property ;
+   samm:preferredName "Mileage"@en ;
+   samm:description "The mileage counter in the car. Only positive numbers are allowed."@en ;
+   samm:characteristic :MileageTrait ;
+   samm:exampleValue "30000"^^xsd:int .
+
+:mileageUnit a samm:Property ;
+   samm:preferredName "Mileage unit of measure"@en ;
+   samm:description "Enumeration to define the unit of measure for mileage counter: Either kilometer (SI standard) or miles."@en ;
+   samm:characteristic :MileageUnit ;
+   samm:exampleValue "km" .
+
+:productionDate a samm:Property ;
+   samm:preferredName "Production Date"@en ;
+   samm:description "Production Date of the vehicle in The sold date of the vehicle in ISO8601 local date notation - see java.time.format.ISO_LOCAL_DATE."@en ;
+   samm:characteristic :ISO8601LocalDate ;
+   samm:exampleValue "2024-12-05" .
+
+:soldDate a samm:Property ;
+   samm:preferredName "Sold date"@en ;
+   samm:description "The sold date of the vehicle in ISO notation."@en ;
+   samm:characteristic :ISO8601LocalDate ;
+   samm:exampleValue "2025-01-30" .
+
+:workShopId a samm:Property ;
+   samm:preferredName "Workshop ID"@en ;
+   samm:description "A unique identifier for a workshop. This identifier is unique within data provider's company. If you combine this identifier with BPNL from data provider than you get a unique identifier for this workshop in this data space."@en ;
+   samm:characteristic :UniqueID ;
+   samm:exampleValue "workshop-4563328" .
+
+:latitude a samm:Property ;
+   samm:preferredName "Latitude"@en ;
+   samm:description "Latitude property for GPS coordinates."@en ;
+   samm:see <https://www.w3.org/2003/01/geo/#overview> ;
+   samm:characteristic :LatitudeTrait ;
+   samm:exampleValue "9.165877215355193"^^xsd:float .
+
+:longitude a samm:Property ;
+   samm:preferredName "Longitude"@en ;
+   samm:description "Longitude property for GPS coordinates."@en ;
+   samm:see <https://www.w3.org/2003/01/geo/#overview> ;
+   samm:characteristic :LongitudeTrait ;
+   samm:exampleValue "48.81109356017604"^^xsd:float .
+
+:CountryCodeTrait a samm-c:Trait ;
+   samm:preferredName "Country Code Definition"@en ;
+   samm:description "This trait ensures a 3 characters country code."@en ;
+   samm-c:baseCharacteristic :CountryCodeCharacteristic ;
+   samm-c:constraint :CountryCodeRegularExpression .
+
+:HexValueTrait a samm-c:Trait ;
+   samm:preferredName "Hex Value Trait"@en ;
+   samm:description "This trait allows 0-9, a-f, A-F in a string value. Optional prefix is \"0x\"."@en ;
+   samm-c:baseCharacteristic :HexCodeCharacteristic ;
+   samm-c:constraint :HexRegularExpression .
+
+:RecordStatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Record status enumeration"@en ;
+   samm:description "Defining the enumeration for the record status"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "updated" "deleted" "same" ) .
+
+:UniqueID a samm:Characteristic ;
+   samm:preferredName "unique ID"@en ;
+   samm:description "This Characteristic is linked to a property that is unique. Please see description of the linked property to get more details about uniqueness."@en ;
+   samm:dataType xsd:string .
+
+:AdditionalInformationList a samm-c:List ;
+   samm:preferredName "Additional information list"@en ;
+   samm:description "A list of additional information."@en ;
+   samm:dataType :AdditionalInformation .
+
+:MileageTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :Integer ;
+   samm-c:constraint :MileageRangeConstraint .
+
+:MileageUnit a samm-c:Enumeration ;
+   samm:preferredName "Mileage Unit"@en ;
+   samm:description "Either km or mi."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "km" "mi" ) .
+
+:ISO8601LocalDate a samm-c:Trait ;
+   samm:preferredName "ISO8601 local date"@en ;
+   samm:description "As defined in java.time.format.ISO_LOCAL_DATE without timezone."@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :DateRegularExpressionNullable .
+
+:LatitudeTrait a samm-c:Trait ;
+   samm:preferredName "Latitude Trait"@en ;
+   samm:description "Trait to define the latitude."@en ;
+   samm-c:baseCharacteristic :Float ;
+   samm-c:constraint :ConstraintLatitude .
+
+:LongitudeTrait a samm-c:Trait ;
+   samm:preferredName "Longitude Trait"@en ;
+   samm:description "Trait to define the longitude."@en ;
+   samm-c:baseCharacteristic :Float ;
+   samm-c:constraint :ConstraintLongitude .
+
+:CountryCodeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Country Code Characteristic"@en ;
+   samm:description "ISO 3166-1 alpha-3 ? three-letter country codes "@en ;
+   samm:dataType xsd:string .
+
+:CountryCodeRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Country Code Regular Expression"@en ;
+   samm:description "Regular Expression that ensures a three-letter code "@en ;
+   samm:see <https://www.iso.org/iso-3166-country-codes.html> ;
+   samm:value "^[A-Z][A-Z][A-Z]$|^null$|^NULL$" .
+
+:HexCodeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Hex code characteristic"@en ;
+   samm:description "Describing a hex code: 0-9, a-f, A-F, optional 0x"@en ;
+   samm:dataType xsd:string .
+
+:HexRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Hex regular expression"@en ;
+   samm:description "This regular expression enforces a hex string. It ensures 0-9, a-f, A-F with an optional prefix 0x. Valid examples: 0x0123456789abcdefABCDEF, 0123456789abcdefABCDEF"@en ;
+   samm:value "^(0x)?[0-9a-fA-F]*$|^null$|^NULL$" .
+
+:AdditionalInformation a samm:Entity ;
+   samm:preferredName "Additional information"@en ;
+   samm:description "One key:value information pair"@en ;
+   samm:properties ( :key :value ) .
+
+:Integer a samm:Characteristic ;
+   samm:preferredName "Integer number"@en ;
+   samm:description "An integer number."@en ;
+   samm:dataType xsd:int .
+
+:MileageRangeConstraint a samm-c:RangeConstraint ;
+   samm:preferredName "Mileage Range Constraint"@en ;
+   samm:description "Range for a valid mileage counter. -1 marks not available."@en ;
+   samm-c:minValue "-1"^^xsd:int ;
+   samm-c:maxValue "2000000"^^xsd:int ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:LESS_THAN .
+
+:DateRegularExpressionNullable a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Date Regular Expression Nullable"@en ;
+   samm:description "This regular expressions enforces a given date according ISO 8601 local date. General format is YYYY-MM-DD. YYYY can be 0000..9999. MM-DD is checked together: months 01,03,05,07,08,10,12 must have DD in the range of  01..31 days, months 04,06,09,11 must have DD in the range of  01..30 days, month 02 must have DD in the range of  01..29 days."@en ;
+   samm:value "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$|^NULL$" .
+
+:Float a samm:Characteristic ;
+   samm:preferredName "Float"@en ;
+   samm:description "Characteristic of a float value."@en ;
+   samm:dataType xsd:float .
+
+:ConstraintLatitude a samm-c:RangeConstraint ;
+   samm-c:minValue "-90.0"^^xsd:float ;
+   samm-c:maxValue "90.0"^^xsd:float ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:AT_MOST .
+
+:ConstraintLongitude a samm-c:RangeConstraint ;
+   samm-c:minValue "-180.0"^^xsd:float ;
+   samm-c:maxValue "180.0"^^xsd:float ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:AT_MOST .
+
+:key a samm:Property ;
+   samm:preferredName "Key id"@en ;
+   samm:description "Key identifier for this additional information"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Steel quality" .
+
+:value a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "Value for this additional information"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Stainless steel" .
+
