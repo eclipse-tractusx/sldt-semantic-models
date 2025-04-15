@@ -1,0 +1,149 @@
+#######################################################################
+# Copyright (c) 2025 BASF SE & BASF Coatings GmbH
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.material.technical_information:1.0.0#> .
+
+:TechnicalInformation a samm:Aspect ;
+   samm:preferredName "Technical Information Model"@en ;
+   samm:description "Model that represents the Technical Information of Chemical Materials."@en ;
+   samm:properties ( [ samm:property :technicalInformationLinkProperty; samm:payloadName "technicalInformationLink" ] [ samm:property :technicalInformationBinaryProperty; samm:payloadName "technicalInformationBinary" ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:technicalInformationLinkProperty a samm:Property ;
+   samm:preferredName "technical information link"@en ;
+   samm:characteristic :TechnicalInformationCharacteristicList .
+
+:technicalInformationBinaryProperty a samm:Property ;
+   samm:preferredName "technical information binary"@en ;
+   samm:characteristic :TechnicalInformationBinaryCharacteristicList .
+
+:TechnicalInformationCharacteristicList a samm-c:List ;
+   samm:preferredName "technical information characteristic list"@en ;
+   samm:dataType :TechnicalInformationLinkEntity .
+
+:TechnicalInformationBinaryCharacteristicList a samm-c:List ;
+   samm:preferredName "technical information binary characteristic list"@en ;
+   samm:dataType :TechnicalInformationBinaryEntity .
+
+:TechnicalInformationLinkEntity a samm:Entity ;
+   samm:extends :TechnicalInformationAbstractEntity ;
+   samm:preferredName "technical information link"@en ;
+   samm:properties ( [ samm:property :linkProperty; samm:payloadName "link" ] ) .
+
+:TechnicalInformationBinaryEntity a samm:Entity ;
+   samm:extends :TechnicalInformationAbstractEntity ;
+   samm:preferredName "technical information binary"@en ;
+   samm:properties ( [ samm:property :payloadProperty; samm:payloadName "payload" ] ) .
+
+:TechnicalInformationAbstractEntity a samm:AbstractEntity ;
+   samm:preferredName "technical information"@en ;
+   samm:description "Represents the Technical Information document usually supplied via paper or digitally as PDF"@en ;
+   samm:properties ( [ samm:property :issueVersionProperty; samm:optional true; samm:payloadName "issueVersion" ] [ samm:property :appliesToCountryProperty; samm:payloadName "country" ] [ samm:property :issueDateProperty; samm:optional true; samm:payloadName "issueDate" ] [ samm:property :languageProperty; samm:payloadName "language" ] ) .
+
+:linkProperty a samm:Property ;
+   samm:preferredName "link"@en ;
+   samm:description "HTTP(S) address according to RFC 3986"@en ;
+   samm:characteristic samm-c:ResourcePath ;
+   samm:exampleValue "https://www.company.com/sds/240242892.pdf"^^xsd:anyURI .
+
+:payloadProperty a samm:Property ;
+   samm:preferredName "payload"@en ;
+   samm:description "Base64-encoded string of PDF file"@en ;
+   samm:characteristic :PayloadCharacteristic .
+
+:issueVersionProperty a samm:Property ;
+   samm:preferredName "issue version"@en ;
+   samm:description "Versioning information of the Technical Information"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "8.1" .
+
+:appliesToCountryProperty a samm:Property ;
+   samm:preferredName "applies to country"@en ;
+   samm:characteristic :CountryTrait .
+
+:issueDateProperty a samm:Property ;
+   samm:preferredName "issue date"@en ;
+   samm:description "Issue date of Technical Information"@en ;
+   samm:characteristic :IssueDateCharacteristic ;
+   samm:exampleValue "2023-03-28"^^xsd:date .
+
+:languageProperty a samm:Property ;
+   samm:preferredName "language"@en ;
+   samm:description "ISO-639-2/B code of language"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "\"de\"" .
+
+:PayloadCharacteristic a samm:Characteristic ;
+   samm:preferredName "payload characteristic"@en ;
+   samm:dataType xsd:base64Binary .
+
+:CountryTrait a samm-c:Trait ;
+   samm:preferredName "Country Trait"@en ;
+   samm-c:baseCharacteristic :CountrySet ;
+   samm-c:constraint :CountryConstraint .
+
+:IssueDateCharacteristic a samm:Characteristic ;
+   samm:preferredName "issue date characteristic"@en ;
+   samm:dataType xsd:date .
+
+:CountrySet a samm-c:Set ;
+   samm:preferredName "country characteristic set"@en ;
+   samm:description "Set of countries where the Technical Information is applicable."@en ;
+   samm:dataType :CountryEntity .
+
+:CountryConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "Country Constraint"@en ;
+   samm:description "Limits the set of countries to at least to one element."@en ;
+   samm-c:minValue "1"^^xsd:nonNegativeInteger .
+
+:CountryEntity a samm:Entity ;
+   samm:preferredName "country"@en ;
+   samm:description "A country is a distinct territorial body or political entity."@en ;
+   samm:properties ( [ samm:property :hasAlpha3CodeProperty; samm:payloadName "alpha3Code" ] [ samm:property :labelProperty; samm:payloadName "name" ] ) .
+
+:hasAlpha3CodeProperty a samm:Property ;
+   samm:preferredName "has alpha3 code"@en ;
+   samm:description "Country code consisting of three capital letters according to ISO 3166."@en ;
+   samm:characteristic :Alpha3CodeTrait ;
+   samm:exampleValue "DEU" .
+
+:labelProperty a samm:Property ;
+   samm:preferredName "label"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Germany" .
+
+:Alpha3CodeTrait a samm-c:Trait ;
+   samm:preferredName "Alpha 3 Code Trait"@en ;
+   samm-c:baseCharacteristic :Alpha3CodeCharacteristic ;
+   samm-c:constraint :ISO3166CodeConstraint .
+
+:Alpha3CodeCharacteristic a samm-c:Code ;
+   samm:preferredName "Alpha 3 Code"@en ;
+   samm:description "Three letter country code defined in ISO 3166"@en ;
+   samm:dataType xsd:string .
+
+:ISO3166CodeConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "ISO 3166 code constraint"@en ;
+   samm:description "Constrainst the value to only three capital letters to represent the country code according to ISO 3166."@en ;
+   samm:value " ^[A-Z][A-Z][A-Z]" .
+
