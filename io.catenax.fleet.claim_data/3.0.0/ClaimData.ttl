@@ -1,0 +1,211 @@
+#######################################################################
+# Copyright (c) 2022, 2024, 2025 Robert Bosch GmbH
+# Copyright (c) 2022, 2024, 2025 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2022, 2024, 2025 Volkswagen AG
+# Copyright (c) 2022, 2024, 2025 ZF Friedrichshafen AG
+# Copyright (c) 2022, 2024, 2025 SAP SE
+# Copyright (c) 2022, 2024, 2025 Siemens AG
+# Copyright (c) 2025 DENSO AUTOMOTIVE Deutschland GmbH
+# Copyright (c) 2025 WITTE Automotive GmbH
+# Copyright (c) 2025 Schaeffler Technologies AG & Co. KG
+# Copyright (c) 2025 Ford Werke GmbH
+# Copyright (c) 2022 Mercedes Benz AG
+#
+# Copyright (c) 2022, 2024, 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.fleet.claim_data:3.0.0#> .
+@prefix ext-core: <urn:samm:io.catenax.shared.quality_core:1.0.0#> .
+
+:ClaimData a samm:Aspect ;
+   samm:preferredName "ClaimData"@en ;
+   samm:description "For Catena-X(CX) business case Quality Management. Supported technical features: delta update feature, meta information feature and additionalInformationList key-value pairs. The supported model features are described in detail in the Catena-X Quality KIT. This model is used to exchange claim information. FleetClaim data model is used to exchange a list of claims. A Claim is a complaint of a vehicle owner. The assumption for this data model is that a customer is coming to a repair shop and complaining about a malfunction in his/her vehicle during vehicle's warranty period. The repair shop than diagnosis the car (this is the link to FleetDiagnostic data model) and can eventually exchange faulty parts. The repair shop later hands in the invoice to the OEM to compensate his work. Defining the uniqueness of a claim: A claim gets a unique claimId (unique within one OEM). A claim is related to one vehicle that can be identified by anonymizedVIN and refers to a potentially faulty part/component in the vehicle. A claim is coming from a specific country - this is normally the country of the repair shop. A claim can contain a list of replaced parts that were put out of the affected vehicle and a list of spare parts/new parts that were put into the affected vehicle. Some of the old, potentially faulty parts are send back to the part's manufacturer for detailed analyses (this is the link to the PartsAnalyses data model)."@en ;
+   samm:properties ( :claims [ samm:property ext-core:metaInformation; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:claims a samm:Property ;
+   samm:preferredName "Claims"@en ;
+   samm:description "A list of customer complaints or workshop repairs that belong to one or more quality tasks."@en ;
+   samm:characteristic :Claims .
+
+:Claims a samm-c:List ;
+   samm:preferredName "Claims"@en ;
+   samm:description "A list of claims."@en ;
+   samm:dataType :Claim .
+
+:Claim a samm:Entity ;
+   samm:preferredName "Claim"@en ;
+   samm:description "A claim is when a customer has a problem with his vehicle and goes to the workshop to get this problem fixed. Sometimes potentially faulty parts are exchanged."@en ;
+   samm:properties ( ext-core:anonymizedVIN ext-core:qualityTaskId ext-core:countryCode :claimId [ samm:property :repairDate; samm:optional true ] [ samm:property :repairMileage; samm:optional true ] [ samm:property :repairMileageUnit; samm:optional true ] [ samm:property ext-core:vehicleId; samm:optional true ] [ samm:property ext-core:recordStatus; samm:optional true ] [ samm:property :customerComment; samm:optional true ] [ samm:property :damageCode; samm:optional true ] [ samm:property :damageCodeDescription; samm:optional true ] [ samm:property :technicianComment; samm:optional true ] [ samm:property ext-core:workshop; samm:optional true ] [ samm:property :diagnosticSessions; samm:optional true ] [ samm:property :claimedParts; samm:optional true ] [ samm:property :spareParts; samm:optional true ] [ samm:property ext-core:additionalInformationList; samm:optional true ] [ samm:property :monthInService; samm:optional true ] [ samm:property :breakdown; samm:optional true ] [ samm:property :repeatedRepair; samm:optional true ] [ samm:property :dateOfPreviousRepair; samm:optional true ] ) .
+
+:claimId a samm:Property ;
+   samm:preferredName "ClaimID"@en ;
+   samm:description "Each claim from this data provider has a unique claim ID.If you combine the BPNL of the data provider with this claim ID you get a unique claim ID in the data space."@en ;
+   samm:characteristic ext-core:UniqueID ;
+   samm:exampleValue "a214-13d6" .
+
+:repairDate a samm:Property ;
+   samm:preferredName "RepairDate"@en ;
+   samm:description "references the date when claim was initially reported"@en ;
+   samm:characteristic ext-core:ISO8601LocalDate ;
+   samm:exampleValue "2022-02-04" .
+
+:repairMileage a samm:Property ;
+   samm:preferredName "Repair mileage"@en ;
+   samm:description "The mileage counter of the vehicle when it was in the workshop."@en ;
+   samm:characteristic ext-core:MileageTrait ;
+   samm:exampleValue "30000"^^xsd:int .
+
+:repairMileageUnit a samm:Property ;
+   samm:preferredName "Repair Mileage Unit"@en ;
+   samm:description "The unit of the repair mileage - either km or mi. Default is km."@en ;
+   samm:characteristic ext-core:MileageUnit ;
+   samm:exampleValue "km" .
+
+:customerComment a samm:Property ;
+   samm:preferredName "CustomerComment"@en ;
+   samm:description "End customer comment (e.g. from the vehicle owner, rental car user, etc. ) about the malfunction of this vehicle."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Steering is making strange noises during parking." .
+
+:damageCode a samm:Property ;
+   samm:preferredName "DamageCode"@en ;
+   samm:description "OEM-specific damage code"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ST12345" .
+
+:damageCodeDescription a samm:Property ;
+   samm:description "Description of the damage code."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Steering adapter" .
+
+:technicianComment a samm:Property ;
+   samm:preferredName "TechnicianComment"@en ;
+   samm:description "short description of the claim from the technicians"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Defect steering." .
+
+:diagnosticSessions a samm:Property ;
+   samm:preferredName "Diagnostic sessions"@en ;
+   samm:description "A list of diagnostic sessions linked to this claim."@en ;
+   samm:characteristic :DiagnosticSessions .
+
+:claimedParts a samm:Property ;
+   samm:preferredName "Claimed parts"@en ;
+   samm:description "A list of claimed parts which were replaced or repaired."@en ;
+   samm:characteristic :ClaimedParts .
+
+:spareParts a samm:Property ;
+   samm:preferredName "Spare Parts"@en ;
+   samm:description "A list of spare parts that were built into the vehicle."@en ;
+   samm:characteristic :SpareParts .
+
+:monthInService a samm:Property ;
+   samm:preferredName "Month In Service"@en ;
+   samm:description "The number of month the vehicle is in service."@en ;
+   samm:characteristic :NonNegativeInteger ;
+   samm:exampleValue "10"^^xsd:nonNegativeInteger .
+
+:breakdown a samm:Property ;
+   samm:preferredName "Breakdown"@en ;
+   samm:description "Had the vehicle a breakdown and could not drive any more?"@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
+:repeatedRepair a samm:Property ;
+   samm:preferredName "Repeated Repair"@en ;
+   samm:description "Was there a repeated repair for the same part in this vehicle."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
+:dateOfPreviousRepair a samm:Property ;
+   samm:preferredName "Date Of Previous Repair"@en ;
+   samm:description "The date of the previous repair."@en ;
+   samm:characteristic ext-core:ISO8601LocalDate ;
+   samm:exampleValue "2023-02-20" .
+
+:DiagnosticSessions a samm-c:List ;
+   samm:preferredName "Diagnostic sessions"@en ;
+   samm:description "A list of diagnostic sessions that are linked to this claim."@en ;
+   samm:dataType :DiagnosticSession .
+
+:ClaimedParts a samm-c:List ;
+   samm:preferredName "Parts list characteristic"@en ;
+   samm:description "Characteristic for a list of parts that are linked to a claim."@en ;
+   samm:dataType :ClaimedPart .
+
+:SpareParts a samm-c:List ;
+   samm:preferredName "Spare parts"@en ;
+   samm:description "A list of spare parts."@en ;
+   samm:dataType :SparePart .
+
+:NonNegativeInteger a samm:Characteristic ;
+   samm:preferredName "Non Negative Integer"@en ;
+   samm:description "An integer that is 0 or bigger. Please round."@en ;
+   samm:dataType xsd:nonNegativeInteger .
+
+:DiagnosticSession a samm:Entity ;
+   samm:preferredName "Diagnostic Session"@en ;
+   samm:description "One diagnostic session of one vehicle: Either this is a diagnostic session done in a workshop or via over-the-air diagnostic."@en ;
+   samm:properties ( ext-core:sessionId ) .
+
+:ClaimedPart a samm:Entity ;
+   samm:extends ext-core:Part ;
+   samm:description "One part in the vehicle that was treated during the repair."@en ;
+   samm:properties ( [ samm:property :isPartCausal; samm:optional true ] [ samm:property :isPartReplaced; samm:optional true ] [ samm:property :amountOfReplacedParts; samm:optional true ] [ samm:property :partTreatment; samm:optional true ] ) .
+
+:SparePart a samm:Entity ;
+   samm:extends ext-core:Part ;
+   samm:preferredName "Spare part"@en ;
+   samm:description "A generic description to identify a spare part."@en ;
+   samm:properties ( [ samm:property ext-core:supplierId; samm:optional true ] [ samm:property ext-core:supplierName; samm:optional true ] ) .
+
+:isPartCausal a samm:Property ;
+   samm:preferredName "IsPartCausal"@en ;
+   samm:description "Flag is set to true if part was causing the problem-otherwise false."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:isPartReplaced a samm:Property ;
+   samm:preferredName "IsPartReplaced"@en ;
+   samm:description "Flag is set to true if part was replaced-otherwise false."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:amountOfReplacedParts a samm:Property ;
+   samm:preferredName "AmountOfReplacedParts"@en ;
+   samm:description "counter for non-serial parts which have been replaced"@en ;
+   samm:characteristic :AmountOfReplacedPartsCharacteristic ;
+   samm:exampleValue "1"^^xsd:nonNegativeInteger .
+
+:partTreatment a samm:Property ;
+   samm:preferredName "Part treatment"@en ;
+   samm:description "Describes what happened to this part in the claim."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Part was defect and replaced by a spare part." .
+
+:AmountOfReplacedPartsCharacteristic a samm:Characteristic ;
+   samm:preferredName "Amount of replaced Parts"@en ;
+   samm:description "counter for non-serial parts"@en ;
+   samm:dataType xsd:nonNegativeInteger .
+

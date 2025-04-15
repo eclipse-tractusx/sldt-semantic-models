@@ -3,6 +3,22 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [3.0.0] - 2025-05-05
+A conversion table from previous version 2.0.0 to 3.0.0 of this model is provided with the updated KIT Quality Management for CX release Saturn.
+
+### Added
+- model feature additionalInformation key:value pair added
+
+### Changed
+- to reduce redundancies in modelling some properties are now used form share quality core model
+- listOfClaims from version 2.0.0 has changed to claims only
+- using parts definition from shared quality core model (via samm:extends) to unify part's properties for claimed parts and spare parts
+- at least one primary identifier per entity is now mandatory
+- claims_anonymizedVIN, claims_countryCode, claims_qualityTaskId are now mandatory properties
+
+### Removed
+- listOfClaims_repairCountryCode: redundant property
+
 ## [2.0.0] - 2024-01-29
 ### Added
 - metaInformation property added to root entity
