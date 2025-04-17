@@ -1,7 +1,7 @@
 {
   "$schema" : "http://json-schema.org/draft-04/schema",
   "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#SimulatedWeekBasedMaterialDemand",
-  "description" : "The requirements of a customer towards a specific supplier for a specific material. Each material demand is unique by its Customer, Supplier and Material Number.",
+  "description" : "An entity that contains multiple modified WeekBasedMaterialDemand representing a simulation scenario and a request for evaluation from customer to supplier.",
   "type" : "object",
   "components" : {
     "schemas" : {
@@ -11,11 +11,11 @@
         "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
         "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
       },
-      "SimulationStatusCharacteristic" : {
+      "SimulationPriorityCharacteristic" : {
         "type" : "string",
-        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#SimulationStatusCharacteristic",
-        "description" : ".",
-        "enum" : [ "SUCCESS", "FAILURE", "ACCEPTED", "REJECTED", "ABORTED" ]
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#SimulationPriorityCharacteristic",
+        "description" : "Values for simulation priority.",
+        "enum" : [ "ABORTED", "LOW", "MEDIUM", "HIGH" ]
       },
       "Timestamp" : {
         "type" : "string",
@@ -253,7 +253,7 @@
         "description" : "Point in time."
       },
       "WeekBasedMaterialDemand" : {
-        "description" : "xxx",
+        "description" : "An existing WeekBasedMaterialDemand, potentially modified, used to spell out a simulation scenario.",
         "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#WeekBasedMaterialDemand",
         "type" : "object",
         "properties" : {
@@ -321,7 +321,7 @@
         "required" : [ "demandSeries", "materialGlobalAssetId", "materialDemandId", "supplier", "customer", "materialDemandIsInactive", "unitOfMeasureIsOmitted", "materialNumberSupplier", "materialNumberCustomer", "materialDescriptionCustomer", "unitOfMeasure", "changedAt" ]
       },
       "ListOfWeekBasedMaterialDemandCollection" : {
-        "description" : "If any stock is available, then there is at least one position. If the supplier does differentiate the stock according to the order positions (an OrderPositionReference is set), then multiple positions can be given. There could also be only one position without an OrderPositionReference indicating an anonymous stock which is allocated to the customer.",
+        "description" : "Customers may embed any number of existing and modified week based material demand in order to spell out a simulation scenario for the supplier to evaluate.",
         "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#ListOfWeekBasedMaterialDemandCollection",
         "type" : "array",
         "items" : {
@@ -332,35 +332,35 @@
   },
   "properties" : {
     "simulationId" : {
-      "description" : "The Material Demand ID uniquely identifies the material demand within the business relationship between a customer and its supplier.",
+      "description" : "The simulation ID uniquely identifies a simulation scenario. All aspects that belong to the same simulation scenario share a simulation ID",
       "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationId",
       "$ref" : "#/components/schemas/UuidV4Trait"
     },
     "SimulatedWeekBasedMaterialDemandId" : {
-      "description" : "The demands for a dedicated material in a given time period of a given demand rate, distinguished by their demand location and demand category.",
+      "description" : "The simulated capacity group ID uniquely identifies the simulated material demand within the business relationship between a customer and its supplier.",
       "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#SimulatedWeekBasedMaterialDemandId",
       "$ref" : "#/components/schemas/UuidV4Trait"
     },
-    "simulationStatus" : {
-      "description" : "xxx",
-      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationStatus",
-      "$ref" : "#/components/schemas/SimulationStatusCharacteristic"
+    "simulationPriority" : {
+      "description" : "The simulation priority expresses the urgency of the evaluation request. In addition it can be used to indicate that the evaluation can be aborted.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationPriority",
+      "$ref" : "#/components/schemas/SimulationPriorityCharacteristic"
     },
-    "simulationReadyDate" : {
-      "description" : "The demands for a dedicated material in a given time period of a given demand rate, distinguished by their demand location and demand category.",
-      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationReadyDate",
+    "simulationDueDate" : {
+      "description" : "The simulation due date allows the customer to indicate to the supplier the date until the evaluation of the simulation scenario should be finished.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationDueDate",
       "$ref" : "#/components/schemas/Timestamp"
     },
-    "simulationLastChanged" : {
-      "description" : "The demands for a dedicated material in a given time period of a given demand rate, distinguished by their demand location and demand category.",
-      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationLastChanged",
+    "simulationChangedAt" : {
+      "description" : "Point in time when the content (any property according to the data model) of the simulated material demand was changed, at the customer, either by a human user or an automated process.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationChangedAt",
       "$ref" : "#/components/schemas/Timestamp"
     },
     "listOfWeekBasedMaterialDemand" : {
-      "description" : "The positions refer to positions within an order that refer to the given product (see materialNumberSupplier, materialNumberCustomer and materialNumberDataSpace) for which the stocks are transferred. The positions are differentiated by the orderPositionReference.",
+      "description" : "List of material demands that allow the customer to spell out a simulation scenario.",
       "x-samm-aspect-model-urn" : "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#listOfWeekBasedMaterialDemand",
       "$ref" : "#/components/schemas/ListOfWeekBasedMaterialDemandCollection"
     }
   },
-  "required" : [ "simulationId", "SimulatedWeekBasedMaterialDemandId", "simulationStatus", "simulationReadyDate", "simulationLastChanged", "listOfWeekBasedMaterialDemand" ]
+  "required" : [ "simulationId", "SimulatedWeekBasedMaterialDemandId", "simulationPriority", "simulationDueDate", "simulationChangedAt", "listOfWeekBasedMaterialDemand" ]
 }
