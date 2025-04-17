@@ -1,9 +1,9 @@
 ---
 openapi: 3.0.3
 info:
-  title: Material Demand
+  title: Simulated Capacity Group
   version: v1
-  x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#SimulatedWeekBasedCapacityGroup"
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#SimulatedWeekBasedCapacityGroup"
 servers:
 - url: catenax.io/api/v1
   variables:
@@ -105,14 +105,14 @@ components:
       pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
     SimulationStatusCharacteristic:
       type: string
-      x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#SimulationStatusCharacteristic"
-      description: .
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#SimulationStatusCharacteristic"
+      description: Values for simulation status
       enum:
-      - SUCCESS
-      - FAILURE
       - ACCEPTED
       - REJECTED
       - ABORTED
+      - SUCCESS
+      - FAILURE
     Timestamp:
       type: string
       pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
@@ -426,8 +426,8 @@ components:
       description: Represents a boolean value (i.e. a "flag").
     MeasurementTrait:
       type: number
-      maximum: 999
       minimum: 1
+      maximum: 999
       x-samm-aspect-model-urn: "urn:samm:io.catenax.week_based_capacity_group:3.0.1#MeasurementTrait"
       description: Trait for measurement parameters to be an integer > 0
       exclusiveMaximum: false
@@ -515,9 +515,10 @@ components:
       required:
       - startReferenceDateTime
       - measurementInterval
-    WeekBasedCapacity:
-      description: xxx
-      x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#WeekBasedCapacity"
+    WeekBasedCapacityGroup:
+      description: "An existing WeekBasedCapacityGroup, potentially modified, that\
+        \ can be used to further detail the evaluation of the simulation scenario."
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#WeekBasedCapacityGroup"
       type: object
       properties:
         capacityGroupId:
@@ -601,62 +602,61 @@ components:
       - demandVolatilityParameters
       - capacityGroupIsInactive
     ListOfWeekBasedCapacityGroupCollection:
-      description: "If any stock is available, then there is at least one position.\
-        \ If the supplier does differentiate the stock according to the order positions\
-        \ (an OrderPositionReference is set), then multiple positions can be given.\
-        \ There could also be only one position without an OrderPositionReference\
-        \ indicating an anonymous stock which is allocated to the customer."
-      x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#ListOfWeekBasedCapacityGroupCollection"
+      description: If a supplier wants to he can embed any number of existing and
+        modified WeekBasedCapacityGroup with his simulated capacity group.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#ListOfWeekBasedCapacityGroupCollection"
       type: array
       items:
-        $ref: "#/components/schemas/WeekBasedCapacity"
+        $ref: "#/components/schemas/WeekBasedCapacityGroup"
     SimulatedWeekBasedCapacityGroup:
-      description: "The requirements of a customer towards a specific supplier for\
-        \ a specific material. Each material demand is unique by its Customer, Supplier\
-        \ and Material Number."
+      description: "An entity that can contain multiple WeekBasedCapacityGroup in\
+        \ addition to the evaluation of a simulation scenario, requested by the customer."
       type: object
-      x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#SimulatedWeekBasedCapacityGroup"
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#SimulatedWeekBasedCapacityGroup"
       properties:
         simulationId:
-          description: The Material Demand ID uniquely identifies the material demand
-            within the business relationship between a customer and its supplier.
-          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationId"
+          description: The simulation ID uniquely identifies a simulation scenario.
+            All aspects that belong to the same simulation scenario share a simulation
+            ID
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#simulationId"
           $ref: "#/components/schemas/UuidV4Trait"
         simulatedWeekBasedCapacityGroupId:
-          description: "The demands for a dedicated material in a given time period\
-            \ of a given demand rate, distinguished by their demand location and demand\
-            \ category."
-          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulatedWeekBasedCapacityGroupId"
+          description: The simulated capacity group ID uniquely identifies the simulated
+            capacity group within the business relationship between a supplier and
+            its customer.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#simulatedWeekBasedCapacityGroupId"
           $ref: "#/components/schemas/UuidV4Trait"
         simulationStatus:
-          description: xxx
-          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationStatus"
+          description: "The simulation status indicates whether the supplier will\
+            \ actively work on a simulation scenario (ACCEPTED) or not (REJECTED).\
+            \ In addition it can indicate the outcome of a simulation, as scenario\
+            \ could be implemented (SUCCESS) or scenario cannot be implemented (FAILURE).\
+            \ Finally it can acknowledge that the customer has aborted the simulation\
+            \ scenario (ABORTED)."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#simulationStatus"
           $ref: "#/components/schemas/SimulationStatusCharacteristic"
         simulationReadyDate:
-          description: "The demands for a dedicated material in a given time period\
-            \ of a given demand rate, distinguished by their demand location and demand\
-            \ category."
-          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationReadyDate"
+          description: The simulation ready date allows the supplier to indicate to
+            the customer the date until the simulation scenario will be evaluated.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#simulationReadyDate"
           $ref: "#/components/schemas/Timestamp"
-        simulationLastChanged:
-          description: "The demands for a dedicated material in a given time period\
-            \ of a given demand rate, distinguished by their demand location and demand\
-            \ category."
-          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#simulationLastChanged"
+        simulationChangedAt:
+          description: "Point in time when the content (any property according to\
+            \ the data model) of the simulated capacity group was changed, at the\
+            \ supplier, either by a human user or an automated process."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#simulationChangedAt"
           $ref: "#/components/schemas/Timestamp"
         listOfWeekBasedCapacityGroup:
-          description: "The positions refer to positions within an order that refer\
-            \ to the given product (see materialNumberSupplier, materialNumberCustomer\
-            \ and materialNumberDataSpace) for which the stocks are transferred. The\
-            \ positions are differentiated by the orderPositionReference."
-          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#listOfWeekBasedCapacityGroup"
+          description: List of capacity groups that allow the supplier to further
+            detail the simulation scenario evaluation in addition to simulation status.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.simulated_week_based_capacity_group:1.0.0#listOfWeekBasedCapacityGroup"
           $ref: "#/components/schemas/ListOfWeekBasedCapacityGroupCollection"
       required:
       - simulationId
       - simulatedWeekBasedCapacityGroupId
       - simulationStatus
       - simulationReadyDate
-      - simulationLastChanged
+      - simulationChangedAt
       - listOfWeekBasedCapacityGroup
   responses:
     Unauthorized:
