@@ -1,0 +1,231 @@
+
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:org.eclipse.examples:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:CustomsInformation a samm:Aspect ;
+   samm:preferredName "Customs Information"@en ;
+   samm:description "To carry out a preference calculation, customs-specific master data is required for all installed parts within a product. For this purpose, the manufacturer of the product requests this information from the relevant suppliers for all purchased parts (part numbers)and uses it for the preference calculation.\n\nThe exchange takes place peer-to-peer from one value-added participant across the two tier levels."@en ;
+   samm:properties ( :catenaXId :contactInformation :confirmationDate :validFrom :tracedWorth :type :commercialCountryOfOrigin :federalState :originInformation :preferredStatus :status ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X Identifier"@en ;
+   samm:description "The fully anonymous Catena-X ID of the corresponding part, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "580d3adf-1981-44a0-a214-13d6ceed9379" .
+
+:contactInformation a samm:Property ;
+   samm:preferredName "Contact Information"@en ;
+   samm:description "Contact information for the responsible."@en ;
+   samm:characteristic :ContactInformationCharacteristic .
+
+:confirmationDate a samm:Property ;
+   samm:preferredName "Confirmation Date"@en ;
+   samm:description "Confirmation Date is the date of issue of a long-term supplier's declaration."@en ;
+   samm:characteristic :DateCharacteristic ;
+   samm:exampleValue "2025-01-15"^^xsd:date .
+
+:validFrom a samm:Property ;
+   samm:preferredName "Valid From"@en ;
+   samm:description "Valid From is the date from which a long-term supplier declaration is valid. This date can be in the future."@en ;
+   samm:characteristic :DateCharacteristic ;
+   samm:exampleValue "2025-02-10"^^xsd:date .
+
+:tracedWorth a samm:Property ;
+   samm:preferredName "Traced Worth"@en ;
+   samm:description "Material value of the part in a currency unit."@en ;
+   samm:characteristic :TracedWorthCharacteristic .
+
+:type a samm:Property ;
+   samm:preferredName "Type"@en ;
+   samm:description "Type is the reason for submitting a long-term supplier's declaration. This may be due to a recurring annual enquiry by the customer or at the start of a supply relationship."@en ;
+   samm:characteristic :TypeEnumeration ;
+   samm:exampleValue "AnnualRequest" .
+
+:commercialCountryOfOrigin a samm:Property ;
+   samm:preferredName "Commercial Country of Origin"@en ;
+   samm:description "The term \"Commercial Country Of Origin\" specifically refers to the country where the goods were originally produced, manufactured or significantly transformed"@en ;
+   samm:characteristic :CountryAndStateCodeTrait ;
+   samm:exampleValue "DE" .
+
+:federalState a samm:Property ;
+   samm:preferredName "Federal State"@en ;
+   samm:description "German federal state in which the part was manufactured."@en ;
+   samm:characteristic :FederatedStateEnumeration ;
+   samm:exampleValue "BW" .
+
+:originInformation a samm:Property ;
+   samm:preferredName "Origin Information"@en ;
+   samm:description "OriginInformation contains all the information required to determine that the part is eligible for preferential treatment, i.e. the determination of preferential origin."@en ;
+   samm:characteristic :OriginInformationTrait ;
+   samm:exampleValue "EU-MX" .
+
+:preferredStatus a samm:Property ;
+   samm:preferredName "Preferred Status"@en ;
+   samm:description "This is the preference status of the part."@en ;
+   samm:characteristic :PreferredStatusEnumeration ;
+   samm:exampleValue "Y-Certified" .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "Status represents the stage of a long-term supplier's declaration. Committed indicates to the data recipient that all data has been provided correctly."@en ;
+   samm:characteristic :StatusEnumeration ;
+   samm:exampleValue "Committed" .
+
+:ContactInformationCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Contact Information Characteristic"@en ;
+   samm:description "Characteristic of the contact information property."@en ;
+   samm:dataType :ContactInformationEntity .
+
+:DateCharacteristic a samm:Characteristic ;
+   samm:preferredName "Date Characteristic"@en ;
+   samm:dataType xsd:date .
+
+:TracedWorthCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "TracedWorth Characteristic"@en ;
+   samm:description "Characteristic of the traced worth property."@en ;
+   samm:dataType :TracedWorthEntity .
+
+:TypeEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Type Enumeration"@en ;
+   samm:description "Characteristic of the type property defined as an Enumeration."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "AnnualRequest" "InitialRequest" "Reminder-1" "Reminder-2" "Reminder-3" ) .
+
+:CountryAndStateCodeTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :CountryAndStateCodeConstraint .
+
+:FederatedStateEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Federated State Enumeration"@en ;
+   samm:description "Characteristic of the federal state property defined as Enumeration with Regular Expression."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "BW" "BY" "BE" "BB" "HB" "HH" "HE" "MV" "NI" "NW" "RP" "SL" "SN" "ST" "SH" "TH" ) .
+
+:OriginInformationTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :OriginInformation ;
+   samm-c:constraint :OriginInformationConstraint .
+
+:PreferredStatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Preferred Status Enumeration"@en ;
+   samm:description "Characteristic of the preferred status property defined as an enumeration."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Y-Certified" "N-NotCertified" "NoLongerUsed" "NoLongerSupplied" ) .
+
+:StatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Status Enumeration"@en ;
+   samm:description "Status represents the stage of a long-term supplier's declaration. Committed indicates to the data recipient that all data has been provided correctly."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Not-Completed" "Committed" ) .
+
+:ContactInformationEntity a samm:Entity ;
+   samm:preferredName "Contact Information Entity"@en ;
+   samm:properties ( :person :phoneNumber :email :jobTitle ) .
+
+:TracedWorthEntity a samm:Entity ;
+   samm:preferredName "Traced Worth Entity"@en ;
+   samm:description "Entity of the traced worth."@en ;
+   samm:properties ( :value :currency ) .
+
+:CountryAndStateCodeConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Country And State Code Regular Expression"@en ;
+   samm:description "Regular expression to restrict a country code or federal state based on the ISO 3166."@en ;
+   samm:see <https://www.iso.org/iso-3166-country-codes.html> ;
+   samm:value "^[A-Z]{2}$" .
+
+:OriginInformation a samm-c:Set ;
+   samm:preferredName "Origin Information"@en ;
+   samm:description "Characteristic of the origin information property."@en ;
+   samm:dataType xsd:string .
+
+:OriginInformationConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Origin Information Constraint"@en ;
+   samm:value "^([A-Z]{2})-([A-Z]{2})$" .
+
+:person a samm:Property ;
+   samm:preferredName "Person"@en ;
+   samm:description "Name of the person responsible for the customs information provided."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Max Mustermann" .
+
+:phoneNumber a samm:Property ;
+   samm:preferredName "Phone Number"@en ;
+   samm:description "Phone number of the responsible for the customs information provided."@en ;
+   samm:characteristic :PhoneNumberTrait ;
+   samm:exampleValue "+49 89 123456" .
+
+:email a samm:Property ;
+   samm:preferredName "Email"@en ;
+   samm:description "E-Mail of the responsible for the customs information provided."@en ;
+   samm:characteristic :EmailTrait ;
+   samm:exampleValue "max.mustermann@ziel.de" .
+
+:jobTitle a samm:Property ;
+   samm:preferredName "Job Title"@en ;
+   samm:description "Jobtitle of the responsible for the customs information provided."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "executive position" .
+
+:value a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "Value of traced Value  depending on the currency."@en ;
+   samm:characteristic :TracedWorthValueCharacteristic ;
+   samm:exampleValue "300.45"^^xsd:double .
+
+:currency a samm:Property ;
+   samm:preferredName "Currency"@en ;
+   samm:description "This is the currency of the traced value."@en ;
+   samm:characteristic :CurrencyTrait ;
+   samm:exampleValue "EUR" .
+
+:PhoneNumberTrait a samm-c:Trait ;
+   samm:preferredName "PhoneNumber Trait"@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :PhoneNumberConstraint .
+
+:EmailTrait a samm-c:Trait ;
+   samm:preferredName "Email Trait"@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :EmailConstraint .
+
+:TracedWorthValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "Traced Worth Value Characteristic"@en ;
+   samm:description "Characteristic of the value property defined as double. "@en ;
+   samm:dataType xsd:double .
+
+:CurrencyTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :TracedWorthCurrenyCharacteristic ;
+   samm-c:constraint :CurrencyRegularExpression .
+
+:PhoneNumberConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "PhoneNumber Constraint"@en ;
+   samm:description "Constraint to allow only numbers, whitespaces and an optional leading + sign."@en ;
+   samm:value "^[+]?[0-9 ]+$" .
+
+:EmailConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Email Constraint"@en ;
+   samm:description "Regular expression for mail address as defined in W3C."@en ;
+   samm:see <https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address> ;
+   samm:value "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$" .
+
+:TracedWorthCurrenyCharacteristic a samm:Characteristic ;
+   samm:preferredName "Traced Worth Curreny Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:CurrencyRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Currency Regular Expression"@en ;
+   samm:description "Regular expression to restrict the currency based on the ISO 4217."@en ;
+   samm:see <https://www.iso.org/iso-4217-currency-codes.html> ;
+   samm:value "^[A-Z]{3}$" .
+
