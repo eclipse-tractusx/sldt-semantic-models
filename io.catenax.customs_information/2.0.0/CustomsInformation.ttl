@@ -1,4 +1,26 @@
-
+#######################################################################
+# Copyright(c) 2024 BASF SE
+# Copyright(c) 2024 Bayerische Motoren Werke Aktiengesellschaft(BMW AG)
+# Copyright(c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V.(represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright(c) 2024 German Edge Cloud GmbH & Co. KG
+# Copyright(c) 2024 Mercedes Benz AG
+# Copyright(c) 2025 msg for automotive gmbh
+# Copyright(c) 2024 Robert Bosch Manufacturing Solutions GmbH
+# Copyright(c) 2024 SAP SE
+# Copyright(c) 2024 Siemens AG
+# Copyright(c) 2024 ZF Friedrichshafen AG
+# Copyright(c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International(CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
 
 
 
@@ -9,13 +31,14 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <urn:samm:org.eclipse.examples:2.0.0#> .
+@prefix : <urn:samm:io.catenax.customs_information:2.0.0#> .
+@prefix ext-information: <urn:samm:io.catenax.shared.contact_information:4.0.0#> .
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 
 :CustomsInformation a samm:Aspect ;
    samm:preferredName "Customs Information"@en ;
    samm:description "To carry out a preference calculation, customs-specific master data is required for all installed parts within a product. For this purpose, the manufacturer of the product requests this information from the relevant suppliers for all purchased parts (part numbers)and uses it for the preference calculation.\n\nThe exchange takes place peer-to-peer from one value-added participant across the two tier levels."@en ;
-   samm:properties ( :catenaXId :contactInformation :confirmationDate :validFrom :tracedWorth :type :commercialCountryOfOrigin :federalState :originInformation :preferredStatus :status ) ;
+   samm:properties ( :catenaXId :contactInformation :confirmationDate :validFrom :tracedWorth :type :commercialCountryOfOrigin :federalState :tradeRelation :preferredStatus :status ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -65,11 +88,11 @@
    samm:characteristic :FederatedStateEnumeration ;
    samm:exampleValue "BW" .
 
-:originInformation a samm:Property ;
-   samm:preferredName "Origin Information"@en ;
-   samm:description "OriginInformation contains all the information required to determine that the part is eligible for preferential treatment, i.e. the determination of preferential origin."@en ;
-   samm:characteristic :OriginInformationTrait ;
-   samm:exampleValue "EU-MX" .
+:tradeRelation a samm:Property ;
+   samm:preferredName "Trade Relation"@en ;
+   samm:description "TradeRelation contains all underlying trade agreements"@en ;
+   samm:characteristic :TradeRelationTrait ;
+   samm:exampleValue "EU-MX, EU-CA" .
 
 :preferredStatus a samm:Property ;
    samm:preferredName "Preferred Status"@en ;
@@ -113,9 +136,9 @@
    samm:dataType xsd:string ;
    samm-c:values ( "BW" "BY" "BE" "BB" "HB" "HH" "HE" "MV" "NI" "NW" "RP" "SL" "SN" "ST" "SH" "TH" ) .
 
-:OriginInformationTrait a samm-c:Trait ;
-   samm-c:baseCharacteristic :OriginInformation ;
-   samm-c:constraint :OriginInformationConstraint .
+:TradeRelationTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :TradeRelation ;
+   samm-c:constraint :TradeRelationConstraint .
 
 :PreferredStatusEnumeration a samm-c:Enumeration ;
    samm:preferredName "Preferred Status Enumeration"@en ;
@@ -131,7 +154,7 @@
 
 :ContactInformationEntity a samm:Entity ;
    samm:preferredName "Contact Information Entity"@en ;
-   samm:properties ( :person :phoneNumber :email :jobTitle ) .
+   samm:properties ( :person :jobTitle ext-information:email ext-information:phoneNumber ) .
 
 :TracedWorthEntity a samm:Entity ;
    samm:preferredName "Traced Worth Entity"@en ;
@@ -144,13 +167,13 @@
    samm:see <https://www.iso.org/iso-3166-country-codes.html> ;
    samm:value "^[A-Z]{2}$" .
 
-:OriginInformation a samm-c:Set ;
-   samm:preferredName "Origin Information"@en ;
-   samm:description "Characteristic of the origin information property."@en ;
+:TradeRelation a samm-c:Set ;
+   samm:preferredName "Trade Relation"@en ;
+   samm:description "Characteristic of the trade relation property."@en ;
    samm:dataType xsd:string .
 
-:OriginInformationConstraint a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "Origin Information Constraint"@en ;
+:TradeRelationConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Trade Relation Constraint"@en ;
    samm:value "^([A-Z]{2})-([A-Z]{2})$" .
 
 :person a samm:Property ;
@@ -158,18 +181,6 @@
    samm:description "Name of the person responsible for the customs information provided."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Max Mustermann" .
-
-:phoneNumber a samm:Property ;
-   samm:preferredName "Phone Number"@en ;
-   samm:description "Phone number of the responsible for the customs information provided."@en ;
-   samm:characteristic :PhoneNumberTrait ;
-   samm:exampleValue "+49 89 123456" .
-
-:email a samm:Property ;
-   samm:preferredName "Email"@en ;
-   samm:description "E-Mail of the responsible for the customs information provided."@en ;
-   samm:characteristic :EmailTrait ;
-   samm:exampleValue "max.mustermann@ziel.de" .
 
 :jobTitle a samm:Property ;
    samm:preferredName "Job Title"@en ;
@@ -189,16 +200,6 @@
    samm:characteristic :CurrencyTrait ;
    samm:exampleValue "EUR" .
 
-:PhoneNumberTrait a samm-c:Trait ;
-   samm:preferredName "PhoneNumber Trait"@en ;
-   samm-c:baseCharacteristic samm-c:Text ;
-   samm-c:constraint :PhoneNumberConstraint .
-
-:EmailTrait a samm-c:Trait ;
-   samm:preferredName "Email Trait"@en ;
-   samm-c:baseCharacteristic samm-c:Text ;
-   samm-c:constraint :EmailConstraint .
-
 :TracedWorthValueCharacteristic a samm:Characteristic ;
    samm:preferredName "Traced Worth Value Characteristic"@en ;
    samm:description "Characteristic of the value property defined as double. "@en ;
@@ -207,17 +208,6 @@
 :CurrencyTrait a samm-c:Trait ;
    samm-c:baseCharacteristic :TracedWorthCurrenyCharacteristic ;
    samm-c:constraint :CurrencyRegularExpression .
-
-:PhoneNumberConstraint a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "PhoneNumber Constraint"@en ;
-   samm:description "Constraint to allow only numbers, whitespaces and an optional leading + sign."@en ;
-   samm:value "^[+]?[0-9 ]+$" .
-
-:EmailConstraint a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "Email Constraint"@en ;
-   samm:description "Regular expression for mail address as defined in W3C."@en ;
-   samm:see <https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address> ;
-   samm:value "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$" .
 
 :TracedWorthCurrenyCharacteristic a samm:Characteristic ;
    samm:preferredName "Traced Worth Curreny Characteristic"@en ;
@@ -228,4 +218,25 @@
    samm:description "Regular expression to restrict the currency based on the ISO 4217."@en ;
    samm:see <https://www.iso.org/iso-4217-currency-codes.html> ;
    samm:value "^[A-Z]{3}$" .
+
+:PhoneNumberTrait a samm-c:Trait ;
+   samm:preferredName "PhoneNumber Trait"@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :PhoneNumberConstraint .
+
+:PhoneNumberConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "PhoneNumber Constraint"@en ;
+   samm:description "Constraint to allow only numbers, whitespaces and an optional leading + sign."@en ;
+   samm:value "^[+]?[0-9 ]+$" .
+
+:EmailTrait a samm-c:Trait ;
+   samm:preferredName "Email Trait"@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :EmailConstraint .
+
+:EmailConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Email Constraint"@en ;
+   samm:description "Regular expression for mail address as defined in W3C."@en ;
+   samm:see <https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address> ;
+   samm:value "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$" .
 
