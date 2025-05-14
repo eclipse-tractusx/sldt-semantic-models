@@ -4,7 +4,7 @@ All notable changes to this model will be documented in this file.
 ## [Purpose of this model]
 This aspect model was created in the Catena-X use case quality. The purpose of this aspect model is to describe a quality task between companies.
 
-## [3.0.0] - 2025-05-05
+## [3.0.0] - 2025-05-13
 ### Added
 - model feature additionalInformation key:value pair added
 
