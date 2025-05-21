@@ -4,6 +4,23 @@ All notable changes to this model will be documented in this file.
 ## [Unreleased]
 - Version 2.0.0 of model is deprecated. It has a wrong regex for BPNS validation from the old shared model for BPNS trait.
 
+## [4.0.0] - 2025-05-05
+A conversion table from previous version 3.0.0 to 4.0.0 of this model is provided with the updated KIT Quality Management for CX release Saturn.
+
+### Added
+- model feature additionalInformation key:value pair added
+- vehicles_transmissions entity added
+
+### Changed
+- to reduce redundancies in modelling some properties are now used form share quality core model
+- using parts definition from shared quality core model (via samm:extends) to unify previous components list
+- at least one primary identifier per entity is now mandatory
+- vehicles_soldDate is now mandatory properties
+
+### Removed
+- vehicles_components: replaced by vehicles_parts
+
+
 ## [3.0.0] - 2024-04-29
 ### Added
 - Added optional property components: to be able to store focus components in the semantic model as requested by BMW
