@@ -63,6 +63,7 @@ commands=(aas aas schema json openapi html)
 endings=(-aas.xml .aasx -schema.json .json .yml .html)
 toggles=("-f xml" "-f aasx" "" "" "-b=catenax.io" "-c $CATENAXCSS")
 
+set -e
 for i in ${!commands[@]}; do
     echo "generate ${commands[$i]} into $PATHTEMPLATE${endings[$i]}"
     java -jar $SAMMCLI aspect "$1" to ${commands[$i]} ${toggles[$i]} -o $PATHTEMPLATE${endings[$i]}

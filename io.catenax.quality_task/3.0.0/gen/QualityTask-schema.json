@@ -1,0 +1,216 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#QualityTask",
+  "description" : "For Catena-X business case Quality Management. Supported technical features: delta update feature, meta information feature and can be used along the supply chain - also for supplier-to-supplier data exchange. The supported model features are described in detail in the Catena-X Quality KIT. This model is used to exchange quality tasks. A quality task is used to link  information from different Catena-X Quality Management data models together.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "UuidV4Trait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "ISO8601LocalDate" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#ISO8601LocalDate",
+        "description" : "This regular expressions enforces a given date according ISO 8601 local date. General format is YYYY-MM-DD. YYYY can be 0000..9999. MM-DD is checked together: months 01,03,05,07,08,10,12 must have DD in the range of  01..31 days, months 04,06,09,11 must have DD in the range of  01..30 days, month 02 must have DD in the range of  01..29 days.",
+        "pattern" : "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$|^NULL$"
+      },
+      "DataDeletionEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#DataDeletionEnumeration",
+        "description" : "Enumeration of possible data deletions entries.",
+        "enum" : [ "delete-data-after-closing", "no-deletion-after-closing", "delete-data-after-closing", "no-deletion-after-closing" ]
+      },
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "StatusCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#StatusCharacteristic",
+        "description" : "Enumeration of the different status values",
+        "enum" : [ "new", "in progress", "completed", "closed", "new", "in progress", "completed", "closed" ]
+      },
+      "BpnlTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnlTrait",
+        "description" : "The provided regular expression ensures that the BPNL is composed of prefix 'BPNL', 10 digits and two alphanumeric letters.",
+        "pattern" : "^BPNL[a-zA-Z0-9]{12}$"
+      },
+      "EMailTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.contact_information:4.0.0#EMailTrait",
+        "description" : "Regular expression for mail address as defined in W3C.",
+        "pattern" : "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+      },
+      "Company" : {
+        "description" : "One company involved in this quality task",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#Company",
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "description" : "Name of the company",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#name",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "bpnlProperty" : {
+            "description" : "Property based on a BPNL.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.business_partner_number:2.0.0#bpnlProperty",
+            "$ref" : "#/components/schemas/BpnlTrait"
+          },
+          "email" : {
+            "description" : "An email address.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.contact_information:4.0.0#email",
+            "$ref" : "#/components/schemas/EMailTrait"
+          }
+        },
+        "required" : [ "name", "bpnlProperty" ]
+      },
+      "Companies" : {
+        "description" : "A list of all companies involved in this quality task",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#Companies",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/Company"
+        }
+      },
+      "RecordStatusEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#RecordStatusEnumeration",
+        "description" : "Defining the enumeration for the record status",
+        "enum" : [ "new", "updated", "deleted", "same" ]
+      },
+      "AdditionalInformation" : {
+        "description" : "One key:value information pair",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#AdditionalInformation",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "description" : "Key identifier for this additional information",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#key",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "value" : {
+            "description" : "Value for this additional information",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#value",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "key", "value" ]
+      },
+      "AdditionalInformationList" : {
+        "description" : "A list of additional information.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#AdditionalInformationList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/AdditionalInformation"
+        }
+      },
+      "SingleQualityTask" : {
+        "description" : "A single quality task defines why data is exchanged between 2 or more companies and what insights should be generated out of the transferred data. In addition there is a flag, what happens with the transferred data when this quality task is closed",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#SingleQualityTask",
+        "type" : "object",
+        "properties" : {
+          "qualityTaskId" : {
+            "description" : "A unique quality task identifier within this data-space.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#qualityTaskId",
+            "$ref" : "#/components/schemas/UuidV4Trait"
+          },
+          "creationDate" : {
+            "description" : "Timestamp when this quality task was created in ISO8601 local date notation.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#creationDate",
+            "$ref" : "#/components/schemas/ISO8601LocalDate"
+          },
+          "dataDeletion" : {
+            "description" : "What should be done with the data after this quality task is closed",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#dataDeletion",
+            "$ref" : "#/components/schemas/DataDeletionEnumeration"
+          },
+          "description" : {
+            "description" : "Description what should be done in this quality task",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#description",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "partName" : {
+            "description" : "The name of a part. A part name is not unique - same kinds of parts can have the same part name.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partName",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "status" : {
+            "description" : "Status of this quality task",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#status",
+            "$ref" : "#/components/schemas/StatusCharacteristic"
+          },
+          "title" : {
+            "description" : "Working title for this quality task",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#title",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "companies" : {
+            "description" : "A list of companies involved in this quality task",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#companies",
+            "$ref" : "#/components/schemas/Companies"
+          },
+          "recordStatus" : {
+            "description" : "The record operation enumeration can be used to realize delta update concept. An example using scenario that data delivery runs weekly: Week0: All data is transferred -> all rows have recordStatus=new. Week1: Only the changed data is transferred: That means new rows, or updated or deleted rows: New rows get recordStatus=new, changed rows get recordStatus=changed and deleted/removed rows get recordStatus=deleted.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#recordStatus",
+            "$ref" : "#/components/schemas/RecordStatusEnumeration"
+          },
+          "additionalInformationList" : {
+            "description" : "You can use this key:value list for additional properties that were not defined in this aspect model.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList",
+            "$ref" : "#/components/schemas/AdditionalInformationList"
+          }
+        },
+        "required" : [ "qualityTaskId", "creationDate", "title", "companies" ]
+      },
+      "QualityTaskList" : {
+        "description" : "The list of quality tasks itself.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#QualityTaskList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/SingleQualityTask"
+        }
+      },
+      "MetaCharacteristic" : {
+        "description" : "Characteristic for the meta information.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#MetaCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "selectionCriteria" : {
+            "description" : "Describes the selection criteria a Catena-X data provider has applied to create this data set.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#selectionCriteria",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "selectionStart" : {
+            "description" : "Describes the starting point for providing records in this data set.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#selectionStart",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "selectionEnd" : {
+            "description" : "Describes the end point for providing records in this data set.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#selectionEnd",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "selectionCriteria" ]
+      }
+    }
+  },
+  "properties" : {
+    "qualityTasks" : {
+      "description" : "Property for the list of quality tasks.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.quality_task:3.0.0#qualityTasks",
+      "$ref" : "#/components/schemas/QualityTaskList"
+    },
+    "metaInformation" : {
+      "description" : "This meta information is valid for all entries in this data set. The meta information is used to tell the data consumer which selection criteria were applied by the data provider. ",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#metaInformation",
+      "$ref" : "#/components/schemas/MetaCharacteristic"
+    }
+  },
+  "required" : [ "qualityTasks" ]
+}
