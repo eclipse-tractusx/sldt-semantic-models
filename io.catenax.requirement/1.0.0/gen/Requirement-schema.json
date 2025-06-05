@@ -1,0 +1,393 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#Requirement",
+  "description": "Aspect model for requirements.",
+  "type": "object",
+  "components": {
+    "schemas": {
+      "UuidV4Trait": {
+        "type": "string",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description": "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern": "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "Text": {
+        "type": "string",
+        "x-samm-aspect-model-urn": "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text",
+        "description": "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "ReqIFTypeEnum": {
+        "type": "string",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#ReqIFTypeEnum",
+        "description": "Enumeration of requirement types.",
+        "enum": [
+          "Functional",
+          "Non-Functional",
+          "User Story",
+          "Use Case"
+        ]
+      },
+      "VersionNumberTrait": {
+        "type": "string",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#VersionNumberTrait",
+        "description": "String that is semantic versioning compatible",
+        "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+      },
+      "VersionCharacteristic": {
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#VersionCharacteristic",
+        "type": "object",
+        "properties": {
+          "versionNumber": {
+            "description": "https://semver.org/",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#versionNumber",
+            "$ref": "#/components/schemas/VersionNumberTrait"
+          },
+          "versionId": {
+            "description": "The identifier of this exact version of the requirement represented by a Catena-X ID, valid for the Catena-X dataspace.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#versionId",
+            "$ref": "#/components/schemas/UuidV4Trait"
+          }
+        },
+        "required": [
+          "versionNumber",
+          "versionId"
+        ],
+        "description": "Characteristic for the version"
+      },
+      "Timestamp": {
+        "type": "string",
+        "pattern": "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "x-samm-aspect-model-urn": "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp",
+        "description": "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "Trait1": {
+        "type": "string",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#Trait1",
+        "description": "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc.",
+        "pattern": "^[\\w-]+$"
+      },
+      "MetadataEntity": {
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#MetadataEntity",
+        "type": "object",
+        "properties": {
+          "key": {
+            "description": "The key may contain only letters, digits, underscores, and hyphens.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#key",
+            "$ref": "#/components/schemas/Trait1"
+          },
+          "value": {
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#value",
+            "$ref": "#/components/schemas/Text"
+          },
+          "metadataDescription": {
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#metadataDescription",
+            "$ref": "#/components/schemas/Text"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "MetadataList": {
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#MetadataList",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/MetadataEntity"
+        }
+      },
+      "SpecificationList": {
+        "description": "A list of all related specifications (e.g. norms)",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#SpecificationList",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "VersionPredecessorCharacteristic": {
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#VersionPredecessorCharacteristic",
+        "type": "object",
+        "properties": {
+          "versionPredecessorNumber": {
+            "description": "https://semver.org/",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#versionPredecessorNumber",
+            "$ref": "#/components/schemas/VersionNumberTrait"
+          },
+          "versionPredecessorId": {
+            "description": "The identifier of the predecessor version of the requirement represented by a Catena-X ID, valid for the Catena-X dataspace.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#versionPredecessorId",
+            "$ref": "#/components/schemas/UuidV4Trait"
+          }
+        },
+        "required": [
+          "versionPredecessorNumber",
+          "versionPredecessorId"
+        ]
+      },
+      "RequirementInformationCharacteristic": {
+        "description": "Mainnode for all the Requirement related information",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#RequirementInformationCharacteristic",
+        "type": "object",
+        "properties": {
+          "reqifName": {
+            "description": "Name of the requirement (from ReqIF).",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#reqifName",
+            "$ref": "#/components/schemas/Text"
+          },
+          "reqifType": {
+            "description": "Type of the requirement (e.g., 'Functional', 'Non-Functional').",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#reqifType",
+            "$ref": "#/components/schemas/ReqIFTypeEnum"
+          },
+          "version": {
+            "description": "Version of the requirement with it's predecessor",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#version",
+            "$ref": "#/components/schemas/VersionCharacteristic"
+          },
+          "description": {
+            "description": "Textual description of the requirement.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#description",
+            "$ref": "#/components/schemas/Text"
+          },
+          "creationdate": {
+            "description": "Date of requirement/version creation.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#creationdate",
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "author": {
+            "description": "Company that created the requirement. ",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#author",
+            "$ref": "#/components/schemas/Text"
+          },
+          "foreignId": {
+            "description": "Identifier from an external system (e.g. the chapter in a set of requirements)",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#foreignId",
+            "$ref": "#/components/schemas/Text"
+          },
+          "longname": {
+            "description": "Descriptive name for the requirement.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#longname",
+            "$ref": "#/components/schemas/Text"
+          },
+          "metadata": {
+            "description": "Additional metadata that is associated with the requirement and not standartized in the aspect model.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#metadata",
+            "$ref": "#/components/schemas/MetadataList"
+          },
+          "specification": {
+            "description": "Link to the specification document.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#specification",
+            "$ref": "#/components/schemas/SpecificationList"
+          },
+          "versionPredecessor": {
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#versionPredecessor",
+            "$ref": "#/components/schemas/VersionPredecessorCharacteristic"
+          }
+        },
+        "required": [
+          "reqifName",
+          "reqifType",
+          "version",
+          "description",
+          "creationdate"
+        ]
+      },
+      "StatusValueEnum": {
+        "type": "string",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#StatusValueEnum",
+        "description": "Characteristic for the status",
+        "enum": [
+          "transition status",
+          "invalid transition",
+          "final status"
+        ]
+      },
+      "CustomerStatusValueEnum": {
+        "type": "string",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#CustomerStatusValueEnum",
+        "description": "Characteristic for the value of customer status",
+        "enum": [
+          "<empty>",
+          "NotToEvaluate",
+          "ToEvaluate",
+          "Accepted",
+          "ToBeClarified",
+          "NotAccepted",
+          "ProposedToDeiscard",
+          "Discarded"
+        ]
+      },
+      "CustomerStatusEntity": {
+        "description": "Entity for the customer status",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#CustomerStatusEntity",
+        "type": "object",
+        "properties": {
+          "customerStatusValue": {
+            "description": "Value for customer status",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#customerStatusValue",
+            "$ref": "#/components/schemas/CustomerStatusValueEnum"
+          },
+          "customerStatusComment": {
+            "description": "Comment from the customer.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#customerStatusComment",
+            "$ref": "#/components/schemas/Text"
+          },
+          "customerStatusTimestamp": {
+            "description": "Property for the customer status timestamp",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#customerStatusTimestamp",
+            "$ref": "#/components/schemas/Timestamp"
+          }
+        },
+        "required": [
+          "customerStatusValue",
+          "customerStatusTimestamp"
+        ]
+      },
+      "CustomerStatusList": {
+        "description": "Characteristic for the customer status",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#CustomerStatusList",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/CustomerStatusEntity"
+        }
+      },
+      "SupplierStatusValueEnum": {
+        "type": "string",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#SupplierStatusValueEnum",
+        "description": "Characteristic for the value of supplier status",
+        "enum": [
+          "<empty>",
+          "Agreed",
+          "ToBeClarified",
+          "AgreedWithComment",
+          "NotAgreed",
+          "DiscardDeployed"
+        ]
+      },
+      "SupplierStatusEntity": {
+        "description": "Entity for the supplier status",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#SupplierStatusEntity",
+        "type": "object",
+        "properties": {
+          "supplierStatusValue": {
+            "description": "Value for the supplier status",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#supplierStatusValue",
+            "$ref": "#/components/schemas/SupplierStatusValueEnum"
+          },
+          "supplierStatusComment": {
+            "description": "Comment from the supplier.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#supplierStatusComment",
+            "$ref": "#/components/schemas/Text"
+          },
+          "supplierStatusTimestamp": {
+            "description": "Property for the supplier status timestamp",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#supplierStatusTimestamp",
+            "$ref": "#/components/schemas/Timestamp"
+          }
+        },
+        "required": [
+          "supplierStatusValue",
+          "supplierStatusTimestamp"
+        ]
+      },
+      "SupplierStatusList": {
+        "description": "Characteristic for the supplier status",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#SupplierStatusList",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SupplierStatusEntity"
+        }
+      },
+      "RequirementStatusCharacteristic": {
+        "description": "Status of the Requirement",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#RequirementStatusCharacteristic",
+        "type": "object",
+        "properties": {
+          "statusValue": {
+            "description": "Overall status of the requirement",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#statusValue",
+            "$ref": "#/components/schemas/StatusValueEnum"
+          },
+          "statusTimestamp": {
+            "description": "Timestamp of the status change.",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#statusTimestamp",
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "customerStatus": {
+            "description": "Property for the requirement status of customer",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#customerStatus",
+            "$ref": "#/components/schemas/CustomerStatusList"
+          },
+          "supplierStatus": {
+            "description": "Property for the requirement status of supplier",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#supplierStatus",
+            "$ref": "#/components/schemas/SupplierStatusList"
+          }
+        },
+        "required": [
+          "statusValue",
+          "statusTimestamp",
+          "customerStatus",
+          "supplierStatus"
+        ]
+      },
+      "RequirementRelationEntity": {
+        "description": "Entity to link to related requirements",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#RequirementRelationEntity",
+        "type": "object",
+        "properties": {
+          "relatedRequirementId": {
+            "description": "Id of related requirement in form of a UUID",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#relatedRequirementId",
+            "$ref": "#/components/schemas/UuidV4Trait"
+          },
+          "requiremementRelationshipType": {
+            "description": "The type of relationship of the two related requirements",
+            "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#requiremementRelationshipType",
+            "$ref": "#/components/schemas/Text"
+          }
+        },
+        "required": [
+          "relatedRequirementId",
+          "requiremementRelationshipType"
+        ]
+      },
+      "RequirementRelationSet": {
+        "description": "Entity for relations between requirements.",
+        "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#RequirementRelationSet",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/RequirementRelationEntity"
+        },
+        "uniqueItems": true
+      }
+    }
+  },
+  "properties": {
+    "requirementId": {
+      "description": "The identifier of a requirement represented by a Catena-X ID, valid for the Catena-X dataspace.",
+      "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#requirementId",
+      "$ref": "#/components/schemas/UuidV4Trait"
+    },
+    "requirementInformation": {
+      "description": "Mainnode for all the Requirement related information",
+      "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#requirementInformation",
+      "$ref": "#/components/schemas/RequirementInformationCharacteristic"
+    },
+    "requirementStatus": {
+      "description": "Status of the Requirement",
+      "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#requirementStatus",
+      "$ref": "#/components/schemas/RequirementStatusCharacteristic"
+    },
+    "requirementRelations": {
+      "description": "Links to related requirements",
+      "x-samm-aspect-model-urn": "urn:samm:io.catenax.requirements:1.0.0#requirementRelations",
+      "$ref": "#/components/schemas/RequirementRelationSet"
+    }
+  },
+  "required": [
+    "requirementId",
+    "requirementInformation",
+    "requirementStatus"
+  ]
+}
