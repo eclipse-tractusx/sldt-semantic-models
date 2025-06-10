@@ -1,0 +1,212 @@
+#######################################################################
+# Copyright (c) 2024 BASF SE
+# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IML and Fraunhofer ISST)
+# Copyright (c) 2024 Henkel AG & Co. KGaA
+# Copyright (c) 2024 ISTOS GmbH (a member of the DMG Mori Group)
+# Copyright (c) 2024 Mercedes Benz AG
+# Copyright (c) 2024 SAP SE
+# Copyright (c) 2024 SupplyOn AG
+# Copyright (c) 2024 TRUMPF Werkzeugmaschinen SE + Co. KG
+# Copyright (c) 2024 Volkswagen AG
+# Copyright (c) 2024 ZF Friedrichshafen AG
+# Copyright (c) 2025 Ford Werke GmbH
+# Copyright (c) 2025 Siemens AG
+# Copyright (c) 2025 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#> .
+@prefix ext-information: <urn:samm:io.catenax.part_type_information:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:DemandAndCapacityNotification a samm:Aspect ;
+   samm:preferredName "Demand and Capacity Notification"@en ;
+   samm:description "This aspect model defines the standard for demand and capacity notification exchange between business partners. Demand and Capacity Notifications refer to specific events within the supply chain which affect production or demand."@en ;
+   samm:properties ( [ samm:property :affectedSitesSender; samm:optional true ] [ samm:property :affectedSitesRecipient; samm:optional true ] :leadingRootCause :effect [ samm:property :text; samm:optional true ] :startDateOfEffect [ samm:property :expectedEndDateOfEffect; samm:optional true ] :status :contentChangedAt [ samm:property :sourceDisruptionId; samm:optional true ] :notificationId [ samm:property :relatedNotificationIds; samm:optional true ] [ samm:property :materialsAffected; samm:optional true ] [ samm:property :resolvingMeasureDescription; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:affectedSitesSender a samm:Property ;
+   samm:preferredName "Affected sites of the sender"@en ;
+   samm:description "The affected Business Partner Site Numbers of the sender of the notification. It is RECOMMENDED to set this property."@en ;
+   samm:characteristic :AffectedSitesCharacteristic ;
+   samm:exampleValue "BPNS7588787849VQ" .
+
+:affectedSitesRecipient a samm:Property ;
+   samm:preferredName "Affected sites of the recipient"@en ;
+   samm:description "The affected Business Partner Site Numbers of the recipient of the notification. It is RECOMMENDED to set this property. It MUST NOT contain any BPNS that doesn't belong to the receiver."@en ;
+   samm:characteristic :AffectedSitesCharacteristic ;
+   samm:exampleValue "BPNS6666787765VQ" .
+
+:leadingRootCause a samm:Property ;
+   samm:preferredName "Leading root cause"@en ;
+   samm:description "The main cause that has or may have an impact on the supply of goods."@en ;
+   samm:characteristic :LeadingRootCauseEnumeration ;
+   samm:exampleValue "strike" .
+
+:effect a samm:Property ;
+   samm:preferredName "Effect"@en ;
+   samm:description "Effect or impact on the supply of goods as a consequence mentioned in the leadingRootCause. From business perspective demand/capacity reduction are most relevant values in connection with mentioned root causes. For technical completeness demand/capacity increase are also added to the enumeration."@en ;
+   samm:characteristic :EffectEnumeration ;
+   samm:exampleValue "capacity-reduction" .
+
+:text a samm:Property ;
+   samm:preferredName "Text"@en ;
+   samm:description "Free text description for notification (max. 4000 characters)."@en ;
+   samm:characteristic :UserInputTrait ;
+   samm:exampleValue "Capacity reduction due to ongoing strike." .
+
+:startDateOfEffect a samm:Property ;
+   samm:preferredName "Start date of the effect."@en ;
+   samm:description "This property defines the start date and time of the effect regardless of the time the notification was sent."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-12-13T15:00:00+01:00"^^xsd:dateTime .
+
+:expectedEndDateOfEffect a samm:Property ;
+   samm:preferredName "Expected end date of effect."@en ;
+   samm:description "Expected end date of the impact MAY be defined by the sender of the notification."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-12-17T08:00:00+01:00"^^xsd:dateTime .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "Status \"open\" should be used in the context of an effect which remains active. Status \"resolved\" should be used to inform the partner that the effect of the initial notification stopped or has been resolved."@en ;
+   samm:characteristic :StatusEnumeration ;
+   samm:exampleValue "open" .
+
+:contentChangedAt a samm:Property ;
+   samm:preferredName "Content changed at"@en ;
+   samm:description "The timestamp of the latest change of this notification. Date and time are set according to a timezone."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-12-13T15:00:00+01:00"^^xsd:dateTime .
+
+:sourceDisruptionId a samm:Property ;
+   samm:preferredName "Source Disruption ID"@en ;
+   samm:description "Unique ID identifying a source of the disruption to which the notification may relate. The sender of the first disruption notification generates the Source Disruption ID. Multiple notifications, in multiple disruptions may relate to the same disruption ID."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:c69cb3e4-16ad-43c3-82b9-0deac75ecf9e" .
+
+:notificationId a samm:Property ;
+   samm:preferredName "Notification ID"@en ;
+   samm:description "Unique ID identifying the notification."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:d9452f24-3bf3-4134-b3eb-68858f1b2362" .
+
+:relatedNotificationIds a samm:Property ;
+   samm:preferredName "Related Notification IDs"@en ;
+   samm:description """Unique IDs identifying a previously received notification triggering the exchange of the current notification.
+
+A notification must be considered a Related Notification ID, if the following fields are equally filled:
+- Source Disruption ID
+- Leading Root Cause
+- Effect"""@en ;
+   samm:characteristic :NotificationIdSet ;
+   samm:exampleValue "urn:uuid:d05cef4a-b692-45bf-87cc-eda2d84e4c04" .
+
+:materialsAffected a samm:Property ;
+   samm:preferredName "Materials Affected"@en ;
+   samm:description "Materials affected by the disruption within the customer-supplier-relationship."@en ;
+   samm:characteristic :MaterialsSet .
+
+:resolvingMeasureDescription a samm:Property ;
+   samm:preferredName "Resolving Measure Description"@en ;
+   samm:description "Measure taken to resolve the disruption. Must be set when closing the notification."@en ;
+   samm:characteristic :UserInputTrait ;
+   samm:exampleValue "We buffered the disruption period with safety stock. Alternative transports have been arranged to replenish the safety stocks." .
+
+:AffectedSitesCharacteristic a samm-c:Set ;
+   samm:preferredName "Affected Sites Characteristic"@en ;
+   samm:description "A set of Business Partner Number Sites (BPNS) that are affected."@en ;
+   samm-c:elementCharacteristic ext-number:BpnsTrait .
+
+:LeadingRootCauseEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Leading root cause enumeration"@en ;
+   samm:description "Enumeration of the available leading root causes."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "strike" "natural-disaster" "production-incident" "pandemic-or-epidemic" "logistics-disruption" "war" "third-party-misplanning" "insolvency" "other" ) .
+
+:EffectEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Effect enumeration"@en ;
+   samm:description "Enumeration of the available effects due to the mentioned leadingRootCause."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "demand-reduction" "demand-increase" "capacity-reduction" "capacity-increase" ) .
+
+:UserInputTrait a samm-c:Trait ;
+   samm:preferredName "User Input Trait"@en ;
+   samm:description "Trait to ensure correct values for the user input."@en ;
+   samm-c:baseCharacteristic :UserInputCharacteristic ;
+   samm-c:constraint :TextLengthConstraint .
+
+:StatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Status enumeration."@en ;
+   samm:description "Status can be either \"open\" or \"resolved\"."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "resolved" "open" ) .
+
+:NotificationIdSet a samm-c:Set ;
+   samm:preferredName "Notification ID Set"@en ;
+   samm:description "A set of unique Notification IDs."@en ;
+   samm-c:elementCharacteristic ext-uuid:UuidV4Trait .
+
+:MaterialsSet a samm-c:Set ;
+   samm:preferredName "Materials Set"@en ;
+   samm:description "Set providing identification information for materials."@en ;
+   samm:dataType :Material .
+
+:UserInputCharacteristic a samm:Characteristic ;
+   samm:preferredName "User input characteristic"@en ;
+   samm:description "User input can be any string that is max. 4000 characters."@en ;
+   samm:dataType xsd:string .
+
+:TextLengthConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "User Input Constraint"@en ;
+   samm:description "Constraint for a string to be max. 4000 characters long."@en ;
+   samm-c:maxValue "4000"^^xsd:nonNegativeInteger .
+
+:Material a samm:Entity ;
+   samm:preferredName "Material"@en ;
+   samm:description """Specifies the material. A material MUST be identified by at least one of the material numbers:
+- Material Number Customer MUST be set if the customer is the sender.
+- Material Number Supplier MUST be set if the sender is the supplier. It is RECOMMENDED to be set in all cases.
+- Material Global Asset ID MUST be set if a digital twin exists."""@en ;
+   samm:properties ( [ samm:property :materialGlobalAssetId; samm:optional true ] [ samm:property :materialNumberCustomer; samm:optional true ] :materialNumberSupplier ) .
+
+:materialGlobalAssetId a samm:Property ;
+   samm:preferredName "UUID of the Part Type Twin"@en ;
+   samm:description "Identifier used uniquely to identify the part type twin."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df" .
+
+:materialNumberCustomer a samm:Property ;
+   samm:preferredName "Material Number Customer"@en ;
+   samm:description "Material identifier as assigned by the customer. This property identifies the material in the customer's database. For standard materials (e.g. screws) for which a customer does not have an own ID, the manufacturer material ID should be set in this field, too. If the customer is the data provider, sending this property is RECOMMENDED."@en ;
+   samm:see <urn:samm:io.catenax.serial_part:3.0.0#customerPartId> ;
+   samm:characteristic ext-information:PartIdCharacteristic ;
+   samm:exampleValue "MNR-7307-AU340474.002" .
+
+:materialNumberSupplier a samm:Property ;
+   samm:preferredName "Material Number Supplier"@en ;
+   samm:description "Material identifiers as assigned by the supplier or manufacturer. This property identifies the material in the supplier's database. If the supplier is the data provider, sending this property is RECOMMENDED."@en ;
+   samm:see ext-information:manufacturerPartId ;
+   samm:characteristic ext-information:PartIdCharacteristic ;
+   samm:exampleValue "MNR-8101-ID146955.001" .
+
