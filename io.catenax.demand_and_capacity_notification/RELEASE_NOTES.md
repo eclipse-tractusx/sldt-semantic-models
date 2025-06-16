@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this model will be documented in this file.
 
 ## [3.0.0] - 2025-06-23
@@ -9,17 +10,16 @@ All notable changes to this model will be documented in this file.
 
 ### Changed
 
-- `sourceNotificationId`: 
+- `sourceNotificationId`:
   - renamed to `sourceNotificationId` and elaborated semantics
   - now is mandatory
-- `relatedNotificationId`: 
+- `relatedNotificationId`:
   - changed to be a collection (`relatedNotificationIds`)
   - added logic when a notification can be considered a related notification
-- `leadingRootCauseEnumeration`: added `thirdPartyMisplanning`, `insolvency`
+- `leadingRootCauseEnumeration`: added `insolvency`
 - Introduce a Set of Material Entities with `materialNumberCustomer`, `materialNumberSupplier` and `materialGlobalAssetId`
- - `materialNumberSupplier` and `materialNumberCustomer` use the `PartIdCharacterstic` from `PartTypeInformation`
- - `materialNumberSupplier` is mandatory
- - `materialGlobalAssetId` uses the UUID characteristic directly
+  - `materialNumberSupplier` and `materialNumberCustomer` use the `PartIdCharacterstic` from `PartTypeInformation`
+  - `materialGlobalAssetId` uses the UUID characteristic directly
 
 ### Removed
 
