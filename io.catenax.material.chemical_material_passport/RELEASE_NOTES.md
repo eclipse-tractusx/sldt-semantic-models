@@ -4,13 +4,10 @@ All notable changes to this model will be documented in this file.
 
 ## [3.0.0] - 2025-03-21
 
-### Added
-
-- ...
-
 ### Changed
 
-- ...
+### Changed
+- Certificate of Analysis (CoA), Technical Information & Safety Data Sheets (SDS) can be included in Chemical Material Passport in structured or (less favored for legacy in) binary formats.
 
 ### Removed
 
