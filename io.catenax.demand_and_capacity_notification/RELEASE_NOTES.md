@@ -20,6 +20,10 @@ All notable changes to this model will be documented in this file.
 - Introduce a Set of Material Entities with `materialNumberCustomer`, `materialNumberSupplier` and `materialGlobalAssetId`
   - `materialNumberSupplier` and `materialNumberCustomer` use the `PartIdCharacterstic` from `PartTypeInformation`
   - `materialGlobalAssetId` uses the UUID characteristic directly
+- `text`:
+  - enhanced semantics to inform about information to set and rules.
+    - MUST be set during creation, update and forwarding
+    - CAN be set during resolving
 
 ### Removed
 
