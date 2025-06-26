@@ -17,6 +17,7 @@
 #######################################################################
 
 
+
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -33,22 +34,19 @@
 :DigitalMasterData a samm:Aspect ;
    samm:preferredName "Digital Master Data"@en ;
    samm:description "Aspect Model to transport structured master data â€“ including product, material and 3D related data "@en ;
-   samm:properties ( :operational :engineering :basicdata :digitalMasterDataID ) ;
+   samm:properties ( :engineering :basicdata :digitalMasterDataID :compliancedata ) ;
    samm:operations ( ) ;
    samm:events ( ) .
-
-:operational a samm:Property ;
-   samm:preferredName "Operational"@en ;
-   samm:characteristic :Characteristic4 .
 
 :engineering a samm:Property ;
    samm:preferredName "Engineering"@en ;
    samm:description "top node of the Engineering cluster"@en ;
-   samm:characteristic :Characteristic1 .
+   samm:characteristic :EngineeringCharacteristic .
 
 :basicdata a samm:Property ;
    samm:preferredName "Basic data"@en ;
-   samm:characteristic :Characteristic2 .
+   samm:description "Property representing/collecting all the Basic Data of the Digital Master Data Mdoel"@en ;
+   samm:characteristic :BasicDataCharacteristic .
 
 :digitalMasterDataID a samm:Property ;
    samm:preferredName "Digital Master Data ID"@en ;
@@ -56,39 +54,52 @@
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df" .
 
-:Characteristic4 a samm:Characteristic ;
-   samm:dataType :Entity4 .
-
-:Characteristic1 a samm:Characteristic ;
-   samm:dataType :Entity1 .
-
-:Characteristic2 a samm:Characteristic ;
-   samm:dataType :Entity2 .
-
-:Entity4 a samm:Entity ;
-   samm:properties ( :compliancedata ) .
-
-:Entity1 a samm:Entity ;
-   samm:properties ( ext-requirements:requirementInformation :softwareData :mechanicsData :electronicsData ) .
-
-:Entity2 a samm:Entity ;
-   samm:properties ( :validTo :validFrom :supplier :supersededVersion :successorPart :releaseDate :partNumber :notes :nomenclature :description :category :status :version ) .
-
 :compliancedata a samm:Property ;
    samm:preferredName "Compliance Data"@en ;
-   samm:characteristic :Characteristic6 .
+   samm:description "Property representing/collecting all the Compliance Data of the Digital Master Data Model"@en ;
+   samm:characteristic :ComplianceDataCharacteristic .
+
+:EngineeringCharacteristic a samm:Characteristic ;
+   samm:preferredName "Engineering Characteristic"@en ;
+   samm:dataType :EngneeringEntity .
+
+:BasicDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Basic DataC haracteristic"@en ;
+   samm:dataType :BasicDataEntity .
+
+:ComplianceDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Compliance Data Characteristic"@en ;
+   samm:dataType :ComplianceDataEntity .
+
+:EngneeringEntity a samm:Entity ;
+   samm:preferredName "Engneering Entity"@en ;
+   samm:description "Entity for all the Engineering Data of/in the Digital Master Data Model"@en ;
+   samm:properties ( ext-requirements:requirementInformation :softwareData :mechanicsData :electronicsData ) .
+
+:BasicDataEntity a samm:Entity ;
+   samm:preferredName "Basic Data Entity"@en ;
+   samm:description "Entity for the Basic Data"@en ;
+   samm:properties ( :validTo :validFrom :supplier :supersededVersion :successorPart :releaseDate :partNumber :notes :nomenclature :description :category :status :version ) .
+
+:ComplianceDataEntity a samm:Entity ;
+   samm:preferredName "Compliance Data Entity"@en ;
+   samm:description "Entity of  all the Compliance Data of the Digital Master Data Model"@en ;
+   samm:properties ( :homologationApprovalNumber :safetyRelevant :safetyRelevantFeatures :statutoryFeature ) .
 
 :softwareData a samm:Property ;
    samm:preferredName "Software Data"@en ;
-   samm:characteristic :Characteristic5 .
+   samm:description "Property representing/collecting all the Software Data of the Digital Master Data Model"@en ;
+   samm:characteristic :SoftwareDataCharacteristic .
 
 :mechanicsData a samm:Property ;
    samm:preferredName "Mechanics Data"@en ;
-   samm:characteristic :Characteristic3 .
+   samm:description "Entity representing/collecting all the Mechanics Data of the Digital Master Data Model"@en ;
+   samm:characteristic :MechanicsDataCharacteristic .
 
 :electronicsData a samm:Property ;
    samm:preferredName "Electronics Data"@en ;
-   samm:characteristic :Characteristic12 .
+   samm:description "Property representing/collecting all the Electronics Data of the Digital Master Data Model"@en ;
+   samm:characteristic :ElectronicsDataCharacteristic .
 
 :validTo a samm:Property ;
    samm:preferredName "Valid To"@en ;
@@ -166,17 +177,37 @@
    samm:description "Versioning identifier for design updates and modifications."@en ;
    samm:characteristic :VersionCharacteristic .
 
-:Characteristic6 a samm:Characteristic ;
-   samm:dataType :Entity6 .
+:homologationApprovalNumber a samm:Property ;
+   samm:preferredName "Homologation Approval Number"@en ;
+   samm:description "Official certification number confirming compliance with regulatory requirements"@en ;
+   samm:exampleValue "E1 2007/46*1234*01" .
 
-:Characteristic5 a samm:Characteristic ;
-   samm:dataType :Entity5 .
+:safetyRelevant a samm:Property ;
+   samm:preferredName "Safety Relevant"@en ;
+   samm:description "Describes, if safety relevance is required"@en ;
+   samm:exampleValue "true" .
 
-:Characteristic3 a samm:Characteristic ;
-   samm:dataType :Entity3 .
+:safetyRelevantFeatures a samm:Property ;
+   samm:preferredName "Safety-relevant Features"@en ;
+   samm:description "Number of safety relevant properties according to partner\n\nDaimler: DS und DZ Merkmale (Dokumentationspflichtig Sicherheitsrelevant und Dokumentationspflichtig Zertifizierungsrelevant)\nVW: D und S Merkmale (Dokumentationspflichtig und Sicherheitsrelevant)\nBMW: L und S und F Merkmale (Legal: Zulassungs- oder homologationsrelevant, Sicherheitsrelevant, Funktions- oder fertigungsrelevant)\nGM / Opel: S/C und F/F Merkmale (Safety and Compliance / Fit and Function)\nFord: CC und SC Merkmale (Critical Characteristic / Significant Characteristic)\nFiat / Alfa Romeo / Renault / PSA: R und S Merkmale (Réglementation und Sécurité)\nConti: D und W Merkmale (Dokumentationspflichtige und Wichtige Merkmale)"@en ;
+   samm:exampleValue "[\"X\"]" .
 
-:Characteristic12 a samm:Characteristic ;
-   samm:dataType :Entity9 .
+:statutoryFeature a samm:Property ;
+   samm:preferredName "Statutory Feature"@en ;
+   samm:description "Specifies the legal and industry standards the part complies with"@en ;
+   samm:exampleValue "REACH, RoHS, ISO 26262, DBL 5307.10" .
+
+:SoftwareDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "SoftwareDataCharacteristic"@en ;
+   samm:dataType :SoftwareDataEntity .
+
+:MechanicsDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Mechanics Data Characteristic"@en ;
+   samm:dataType :MechanicsDataEntity .
+
+:ElectronicsDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Electronics Data Characteristic"@en ;
+   samm:dataType :ElectronicsDataEntity .
 
 :SupersededVersionCharacteristic a samm:Characteristic ;
    samm:preferredName "Superseded Version Characteristic"@en .
@@ -209,16 +240,19 @@
    samm:description "Characteristic for the version"@en ;
    samm:dataType :VersionEntity .
 
-:Entity6 a samm:Entity ;
-   samm:properties ( :homologationApprovalNumber :safetyRelevant :safetyRelevantFeatures :statutoryFeature ) .
-
-:Entity5 a samm:Entity ;
+:SoftwareDataEntity a samm:Entity ;
+   samm:preferredName "Software Data Entity"@en ;
+   samm:description "Entity for all the Software Data of the Digital Master Data Model"@en ;
    samm:properties ( :securityAndEncryptionStandards :signatureSign :softwareVersion ) .
 
-:Entity3 a samm:Entity ;
+:MechanicsDataEntity a samm:Entity ;
+   samm:preferredName "Mechanics Data Entity"@en ;
+   samm:description "Entity for all the Mechanics Data of the Digital Master Data Model"@en ;
    samm:properties ( :materialData :geometryData ) .
 
-:Entity9 a samm:Entity ;
+:ElectronicsDataEntity a samm:Entity ;
+   samm:preferredName "Electronics Data Entity"@en ;
+   samm:description "Entity for the Electronics Data"@en ;
    samm:properties ( :diagnosticsAndErrorCodes :flashingMethod ) .
 
 :NotesEntity a samm:Entity ;
@@ -230,57 +264,44 @@
    samm:description "Entity for the Digital Master Data version"@en ;
    samm:properties ( :versionNumber :versionID ) .
 
-:homologationApprovalNumber a samm:Property ;
-   samm:preferredName "Homologation Approval Number"@en ;
-   samm:description "Official certification number confirming compliance with regulatory requirements"@en ;
-   samm:exampleValue "E1 2007/46*1234*01" .
-
-:safetyRelevant a samm:Property ;
-   samm:preferredName "Safety Relevant"@en ;
-   samm:description "Describes, if safety relevance is required"@en ;
-   samm:exampleValue "true" .
-
-:safetyRelevantFeatures a samm:Property ;
-   samm:preferredName "Safety-relevant Features"@en ;
-   samm:description "Number of safety relevant properties according to partner\n\nDaimler: DS und DZ Merkmale (Dokumentationspflichtig Sicherheitsrelevant und Dokumentationspflichtig Zertifizierungsrelevant)\nVW: D und S Merkmale (Dokumentationspflichtig und Sicherheitsrelevant)\nBMW: L und S und F Merkmale (Legal: Zulassungs- oder homologationsrelevant, Sicherheitsrelevant, Funktions- oder fertigungsrelevant)\nGM / Opel: S/C und F/F Merkmale (Safety and Compliance / Fit and Function)\nFord: CC und SC Merkmale (Critical Characteristic / Significant Characteristic)\nFiat / Alfa Romeo / Renault / PSA: R und S Merkmale (Réglementation und Sécurité)\nConti: D und W Merkmale (Dokumentationspflichtige und Wichtige Merkmale)"@en ;
-   samm:exampleValue "[\"X\"]" .
-
-:statutoryFeature a samm:Property ;
-   samm:preferredName "Statutory Feature"@en ;
-   samm:description "Specifies the legal and industry standards the part complies with"@en ;
-   samm:exampleValue "REACH, RoHS, ISO 26262, DBL 5307.10" .
-
 :securityAndEncryptionStandards a samm:Property ;
    samm:preferredName "Security & Encryption Standards"@en ;
    samm:description "Defines cybersecurity measures implemented in the software"@en ;
+   samm:characteristic samm-c:Text ;
    samm:exampleValue "AES-256, TLS 1.2, Secure Boot" .
 
 :signatureSign a samm:Property ;
    samm:preferredName "Signature Sign"@en ;
    samm:description "Flashware must be signed according to securtiy class CCC"@en ;
+   samm:characteristic samm-c:Text ;
    samm:exampleValue "SH" .
 
 :softwareVersion a samm:Property ;
    samm:preferredName "Software Version"@en ;
    samm:description "Defines the version number of the embedded software or firmware"@en ;
+   samm:characteristic samm-c:Text ;
    samm:exampleValue "v3.2.1" .
 
 :materialData a samm:Property ;
    samm:preferredName "Material Data"@en ;
-   samm:characteristic :Characteristic7 .
+   samm:description "Property representing/collecting all the Material Data of the Digital Master Data Model"@en ;
+   samm:characteristic :MaterialDataCharacteristic .
 
 :geometryData a samm:Property ;
    samm:preferredName "Geometry Data"@en ;
-   samm:characteristic :Characteristic8 .
+   samm:description "Property representing/collecting all the Geometry Data of the Digital Master Data Model"@en ;
+   samm:characteristic :GeometryDataCharacteristic .
 
 :diagnosticsAndErrorCodes a samm:Property ;
    samm:preferredName "Diagnostics & Error Codes (DTCs)"@en ;
    samm:description "List of standardized trouble codes used for diagnostics"@en ;
+   samm:characteristic samm-c:Text ;
    samm:exampleValue "P0420 - Catalyst System Efficiency Below Threshold" .
 
 :flashingMethod a samm:Property ;
    samm:preferredName "Flashing Method"@en ;
    samm:description "Flash type"@en ;
+   samm:characteristic samm-c:Text ;
    samm:exampleValue "UDS Flash via DoIP" .
 
 :notesFilesProperty a samm:Property ;
@@ -301,25 +322,32 @@
    samm:description "The identifier of this exact version of the Digital Master Data represented by a Catena-X ID or Part ID, valid for the Catena-X dataspace."@en ;
    samm:characteristic ext-uuid:UuidV4Trait .
 
-:Characteristic7 a samm:Characteristic ;
-   samm:dataType :Entity7 .
+:MaterialDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Material Data Characteristic"@en ;
+   samm:dataType :MaterialDataEntity .
 
-:Characteristic8 a samm:Characteristic ;
-   samm:dataType :Entity8 .
+:GeometryDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Geometry Data Characteristic"@en ;
+   samm:dataType :GeometryDataEntity .
 
 :NotesList a samm-c:List ;
    samm:preferredName "Notes List"@en ;
    samm:description "List of notes that can be attached as additional information in engineering process."@en .
 
-:Entity7 a samm:Entity ;
+:MaterialDataEntity a samm:Entity ;
+   samm:preferredName "Material Data Entity"@en ;
+   samm:description "Entity for all the Material Data of the Digital Master Data Model"@en ;
    samm:properties ( :density :materialDescription :materialID :thermalExpansionCoefficient ) .
 
-:Entity8 a samm:Entity ;
+:GeometryDataEntity a samm:Entity ;
+   samm:preferredName "Geometry Data Entity"@en ;
+   samm:description "Entity for all the Geometry Data of the Digital Master Data "@en ;
    samm:properties ( :reference2DCADDrawing :reference3DCADDrawing :boundingBox :boundingSphere :calculatedWeight :calculatedWeightTolerance :centerOfGravity :estimatedWeight :estimatedWeightTolerance :momentOfInertia :surfaceArea :volume :weightedWeight :weightedWeightTolerance ) .
 
 :density a samm:Property ;
    samm:preferredName "Density"@en ;
    samm:description "Density of the material for CAD model usage"@en ;
+   samm:characteristic :Characteristic9 ;
    samm:exampleValue "7850 kg/m³" .
 
 :materialDescription a samm:Property ;
@@ -408,5 +436,5 @@
    samm:description "Tolerance range of the measured or actual weighted weight of a part or assembly."@en ;
    samm:exampleValue "±0.5 kg or ±2%" .
 
-:Characteristic13 a samm:Characteristic .
+:Characteristic9 a samm:Characteristic .
 
