@@ -1,3 +1,20 @@
+######################################################################
+# Copyright(c) 2025 Lisa Dräxlmaier GmbH
+# Copyright(c) 2025 Schaeffler AG
+# Copyright(c) 2025 Mercedes-Benz AG
+# Copyright(c) 2025 ZF Friedrichshafen AG
+# Copyright(c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
 
 
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
@@ -8,13 +25,15 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:org.eclipse.esmf:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
 @prefix ext-requirements: <urn:samm:io.catenax.requirements:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 @prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 
 :DigitalMasterData a samm:Aspect ;
    samm:preferredName "Digital Master Data"@en ;
    samm:description "Aspect Model to transport structured master data â€“ including product, material and 3D related data "@en ;
-   samm:properties ( :operational :engineering :basicdata ) ;
+   samm:properties ( :operational :engineering :basicdata :digitalMasterDataID ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -30,6 +49,12 @@
 :basicdata a samm:Property ;
    samm:preferredName "Basic data"@en ;
    samm:characteristic :Characteristic2 .
+
+:digitalMasterDataID a samm:Property ;
+   samm:preferredName "Digital Master Data ID"@en ;
+   samm:description "The identifier of a requirement represented by a UUID, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df" .
 
 :Characteristic4 a samm:Characteristic ;
    samm:dataType :Entity4 .
@@ -79,9 +104,9 @@
 
 :supplier a samm:Property ;
    samm:preferredName "Supplier"@en ;
-   samm:description "Supplier, producing the part primarily"@en ;
-   samm:characteristic :SupplierCharacteristic ;
-   samm:exampleValue "Bosch" .
+   samm:description "The Business Partner Number Legal Entity (BPNL) of the Supplier, producing the part primarily"@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL6666666666YY" .
 
 :supersededVersion a samm:Property ;
    samm:preferredName "Superseded Version"@en ;
@@ -98,8 +123,8 @@
 :releaseDate a samm:Property ;
    samm:preferredName "Release Date"@en ;
    samm:description "The official date when the part was approved."@en ;
-   samm:characteristic :ReleaseDateCharacteristic ;
-   samm:exampleValue "2025-03-15"^^xsd:date .
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2025-03-15"^^xsd:dateTime .
 
 :partNumber a samm:Property ;
    samm:preferredName "Part Number"@en ;
@@ -110,13 +135,12 @@
 :notes a samm:Property ;
    samm:preferredName "Notes"@en ;
    samm:description "List of notes that can be attached as additional information in engineering process."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "2025-06-17: Updated hole diameter from 10mm to 12mm" .
+   samm:characteristic :NotesCharacteristic .
 
 :nomenclature a samm:Property ;
    samm:preferredName "Nomenclature"@en ;
    samm:description "Standardized name of the part based on its function or application"@en ;
-   samm:characteristic :NomenclatureCharacteristic ;
+   samm:characteristic samm-c:Text ;
    samm:exampleValue "Head Unit" .
 
 :description a samm:Property ;
@@ -140,8 +164,7 @@
 :version a samm:Property ;
    samm:preferredName "Version"@en ;
    samm:description "Versioning identifier for design updates and modifications."@en ;
-   samm:characteristic :Characteristic9 ;
-   samm:exampleValue "v3.2.1" .
+   samm:characteristic :VersionCharacteristic .
 
 :Characteristic6 a samm:Characteristic ;
    samm:dataType :Entity6 .
@@ -155,54 +178,36 @@
 :Characteristic12 a samm:Characteristic ;
    samm:dataType :Entity9 .
 
-:SupplierCharacteristic a samm:Characteristic ;
-   samm:preferredName "Supplier Characteristic"@en ;
-   samm:dataType xsd:string .
-
 :SupersededVersionCharacteristic a samm:Characteristic ;
    samm:preferredName "Superseded Version Characteristic"@en .
 
 :SuccessorPartCharacteristic a samm:Characteristic ;
    samm:preferredName "Successor Part Characteristic"@en .
 
-:ReleaseDateCharacteristic a samm:Characteristic ;
-   samm:preferredName "Release Date Characteristic"@en ;
-   samm:dataType xsd:date .
-
 :PartNumberCharacteristic a samm:Characteristic ;
    samm:preferredName "Part Number Characteristic"@en .
 
-:NomenclatureCharacteristic a samm:Characteristic ;
-   samm:preferredName "Nomenclature Characteristic"@en ;
-   samm:dataType xsd:string .
+:NotesCharacteristic a samm:Characteristic ;
+   samm:preferredName "Notes Characteristic"@en ;
+   samm:description "List of notes that can be attached as additional information in engineering process plus a Time Stamp"@en ;
+   samm:dataType :NotesEntity .
 
 :CategoryCharacteristic a samm-c:Enumeration ;
    samm:preferredName "Category Characteristic"@en ;
-   samm:description "CateCategory, the part belongs to. Based on VDA 4993.gory, the part belongs to. Based on VDA 4993."@en ;
+   samm:description "Category, the part belongs to. Based on VDA 4993."@en ;
    samm:dataType xsd:string ;
-   samm-c:values ( """- Body & Structure\r
--  Interior\r
-- Exterior\r
-- Electrical & Electronics\r
-- Powertrain & Drivetrain\r
-- Chassis & Brake Systems\r
-- Thermal Management & HVAC\r
-- Fasteners & Connectors\r
-- Software & Embedded Systems\r
-- Testing & Auxiliary Equipment""" ) .
+   samm-c:values ( "Body & Structure" "Interior" "Exterior" "Electrical & Electronics" "Powertrain & Drivetrain" "Chassis & Brake Systems" "Thermal Management & HVAC" "Fasteners & Connectors" "Software & Embedded Systems" "Testing & Auxiliary Equipment" ) .
 
 :StatusCharacteristic a samm-c:Enumeration ;
    samm:preferredName "Status"@en ;
    samm:description "Status of the part exchanged."@en ;
    samm:dataType xsd:string ;
-   samm-c:values ( """- In Progress\r
-- Engineered\r
-- In Approval\r
-- Rejected\r
-- Approved\r
-- Superseded""" ) .
+   samm-c:values ( "In Progress" "Engineered" "In Approval" "Rejected" "Approved" "Superseded" ) .
 
-:Characteristic9 a samm:Characteristic .
+:VersionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Version Characteristic (en)"@en ;
+   samm:description "Characteristic for the version"@en ;
+   samm:dataType :VersionEntity .
 
 :Entity6 a samm:Entity ;
    samm:properties ( :homologationApprovalNumber :safetyRelevant :safetyRelevantFeatures :statutoryFeature ) .
@@ -215,6 +220,15 @@
 
 :Entity9 a samm:Entity ;
    samm:properties ( :diagnosticsAndErrorCodes :flashingMethod ) .
+
+:NotesEntity a samm:Entity ;
+   samm:preferredName "Notes Entity"@en ;
+   samm:properties ( :notesFilesProperty :notesTimestampProperty ) .
+
+:VersionEntity a samm:Entity ;
+   samm:preferredName "Version Entity (en)"@en ;
+   samm:description "Entity for the Digital Master Data version"@en ;
+   samm:properties ( :versionNumber :versionID ) .
 
 :homologationApprovalNumber a samm:Property ;
    samm:preferredName "Homologation Approval Number"@en ;
@@ -269,11 +283,33 @@
    samm:description "Flash type"@en ;
    samm:exampleValue "UDS Flash via DoIP" .
 
+:notesFilesProperty a samm:Property ;
+   samm:preferredName "Notes Files Property"@en ;
+   samm:characteristic :NotesList .
+
+:notesTimestampProperty a samm:Property ;
+   samm:preferredName "Notes Timestamp Property"@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:versionNumber a samm:Property ;
+   samm:preferredName "VersionNumber"@en ;
+   samm:description "https://semver.org/"@en ;
+   samm:exampleValue "3.1.0" .
+
+:versionID a samm:Property ;
+   samm:preferredName "version ID (en)"@en ;
+   samm:description "The identifier of this exact version of the Digital Master Data represented by a Catena-X ID or Part ID, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait .
+
 :Characteristic7 a samm:Characteristic ;
    samm:dataType :Entity7 .
 
 :Characteristic8 a samm:Characteristic ;
    samm:dataType :Entity8 .
+
+:NotesList a samm-c:List ;
+   samm:preferredName "Notes List"@en ;
+   samm:description "List of notes that can be attached as additional information in engineering process."@en .
 
 :Entity7 a samm:Entity ;
    samm:properties ( :density :materialDescription :materialID :thermalExpansionCoefficient ) .
@@ -359,6 +395,7 @@
 :volume a samm:Property ;
    samm:preferredName "Volume"@en ;
    samm:description "volume of the part in mm3"@en ;
+   samm:characteristic :Characteristic13 ;
    samm:exampleValue "400 mm3" .
 
 :weightedWeight a samm:Property ;
@@ -370,4 +407,6 @@
    samm:preferredName "weighted Weight Tolerance"@en ;
    samm:description "Tolerance range of the measured or actual weighted weight of a part or assembly."@en ;
    samm:exampleValue "±0.5 kg or ±2%" .
+
+:Characteristic13 a samm:Characteristic .
 
