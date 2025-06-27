@@ -4,7 +4,7 @@ All notable changes to this model will be documented in this file.
 
 ## [Purpose of this model]
 
-The Battery Pass Aspect Model is designed to enable transparent, standardized, and interoperable documentation of battery-related data across the entire lifecycle - from raw material extraction to manufacturing, usage, and end-of-life recycling. Its primary purpose is to support compliance with the EU Battery Regulation, which mandates the use of Digital Product Passports (DPPs) for batteries used in electric vehicles.
+The "Chemical Material Passport" data model implements a digital product passport for chemical and intermediate products.  It addresses the description of raw materials and (chemical) products, the starting point for essential automotive components and the processing of the like. The Chemical Material Passport is intended to summarize all relevant information as required by regulation, in particular the EU Ecodesign Regulation (ESPR) but also enabling partners in the value chain to exchange information about this material in digital formats, including safety data sheets, certificates of analysis and other data.
 
 ## [3.0.0] - 2025-03-21
 
