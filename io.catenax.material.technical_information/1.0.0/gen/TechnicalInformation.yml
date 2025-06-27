@@ -1,0 +1,263 @@
+---
+openapi: 3.0.3
+info:
+  title: Technical Information Model
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#TechnicalInformation"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/technical-information:
+    get:
+      tags:
+      - TechnicalInformation
+      operationId: getTechnicalInformation
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: "#/components/responses/TechnicalInformation"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TechnicalInformation"
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    ResourcePath:
+      type: string
+      format: uri
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#ResourcePath"
+      description: The path of a resource.
+    Text:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    Alpha3CodeTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#Alpha3CodeTrait"
+      description: Constrainst the value to only three capital letters to represent
+        the country code according to ISO 3166.
+      pattern: "^[A-Z][A-Z][A-Z]"
+    CountryEntity:
+      description: A country is a distinct territorial body or political entity.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#CountryEntity"
+      type: object
+      properties:
+        alpha3Code:
+          description: Country code consisting of three capital letters according
+            to ISO 3166.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#hasAlpha3Code"
+          $ref: "#/components/schemas/Alpha3CodeTrait"
+        name:
+          description: Country name.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#label"
+          $ref: "#/components/schemas/Text"
+      required:
+      - alpha3Code
+      - name
+    CountryTrait:
+      description: Limits the set of countries to at least to one element.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#CountryTrait"
+      type: array
+      items:
+        $ref: "#/components/schemas/CountryEntity"
+      uniqueItems: true
+      minItems: 1
+    IssueDateCharacteristic:
+      type: string
+      format: date
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#IssueDateCharacteristic"
+      description: Describes the date of the Property.
+    PayloadCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#PayloadCharacteristic"
+      description: Describes a Property which contains the Base64-encoded payload
+        representation of the Technical Information.
+    TechnicalInformationBinaryEntity:
+      description: Represents a base64 encoded Technical Information document. The
+        binary PDF file will be encoded by the binary-to-text encoding "Base64" which
+        is common to be transported safely throughout systems that may only support
+        text characters.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#TechnicalInformationBinaryEntity"
+      type: object
+      properties:
+        payload:
+          description: Base64-encoded string of PDF file
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#payload"
+          $ref: "#/components/schemas/PayloadCharacteristic"
+      required:
+      - payload
+      allOf:
+      - $ref: "#/components/schemas/TechnicalInformationAbstractEntity"
+    TechnicalInformationLinkEntity:
+      description: Allows referencing a Technical Information document via a (publically
+        available) URL.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#TechnicalInformationLinkEntity"
+      type: object
+      properties:
+        link:
+          description: HTTP(S) address according to RFC 3986
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#link"
+          $ref: "#/components/schemas/ResourcePath"
+      required:
+      - link
+      allOf:
+      - $ref: "#/components/schemas/TechnicalInformationAbstractEntity"
+    TechnicalInformationAbstractEntity:
+      description: Represents the Technical Information document usually supplied
+        via paper or digitally as PDF.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#TechnicalInformationAbstractEntity"
+      type: object
+      properties:
+        issueVersion:
+          description: Versioning information of the Technical Information
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#issueVersion"
+          $ref: "#/components/schemas/Text"
+        country:
+          description: Relationship between the Technical Information and the country
+            to which it applies for.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#appliesToCountry"
+          $ref: "#/components/schemas/CountryTrait"
+        issueDate:
+          description: Issue date of Technical Information
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#issueDate"
+          $ref: "#/components/schemas/IssueDateCharacteristic"
+        language:
+          description: ISO-639-2/B code of language
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#language"
+          $ref: "#/components/schemas/Text"
+      required:
+      - country
+      - language
+    TechnicalInformationCharacteristicList:
+      description: Characteristic to describe the properties of the link representation
+        of the Technical Information.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#TechnicalInformationCharacteristicList"
+      type: array
+      items:
+        $ref: "#/components/schemas/TechnicalInformationLinkEntity"
+    TechnicalInformationBinaryCharacteristicList:
+      description: Characteristic to describe the properties of the binary representation
+        of the Technical Information.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#TechnicalInformationBinaryCharacteristicList"
+      type: array
+      items:
+        $ref: "#/components/schemas/TechnicalInformationBinaryEntity"
+    TechnicalInformation:
+      description: Model that represents the Technical Information of Chemical Materials.
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#TechnicalInformation"
+      properties:
+        technicalInformationLink:
+          description: Property that references the link representation of the Technical
+            Information.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#technicalInformationLink"
+          $ref: "#/components/schemas/TechnicalInformationCharacteristicList"
+        technicalInformationBinary:
+          description: Property that references the binary representation of the Technical
+            Information.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.material.technical_information:1.0.0#technicalInformationBinary"
+          $ref: "#/components/schemas/TechnicalInformationBinaryCharacteristicList"
+      required:
+      - technicalInformationLink
+      - technicalInformationBinary
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    TechnicalInformation:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PagingSchema"
+      description: The request was successful.
+  requestBodies:
+    TechnicalInformation:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/TechnicalInformation"
