@@ -19,7 +19,6 @@
 
 
 
-
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -37,7 +36,7 @@
 :DigitalMasterData a samm:Aspect ;
    samm:preferredName "Digital Master Data"@en ;
    samm:description "Aspect Model to transport structured master data â€“ including product, material and 3D related data "@en ;
-   samm:properties ( :engineering :basicdata :digitalMasterDataID :compliancedata ) ;
+   samm:properties ( :engineering :basicdata :digitalMasterDataID :complianceData ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -57,7 +56,7 @@
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df" .
 
-:compliancedata a samm:Property ;
+:complianceData a samm:Property ;
    samm:preferredName "Compliance Data"@en ;
    samm:description "Property representing/collecting all the Compliance Data of the Digital Master Data Model"@en ;
    samm:characteristic :ComplianceDataCharacteristic .
@@ -87,7 +86,7 @@
 :ComplianceDataEntity a samm:Entity ;
    samm:preferredName "Compliance Data Entity"@en ;
    samm:description "Entity of  all the Compliance Data of the Digital Master Data Model"@en ;
-   samm:properties ( :homologationApprovalNumber :safetyRelevant :safetyRelevantFeatures :statutoryFeature ) .
+   samm:properties ( :homologationApprovalNumber :safetyRelevant :safetyRelevantFeatures :statutoryFeatures ) .
 
 :softwareData a samm:Property ;
    samm:preferredName "Software Data"@en ;
@@ -194,13 +193,13 @@
 :safetyRelevantFeatures a samm:Property ;
    samm:preferredName "Safety-relevant Features"@en ;
    samm:description "Number of safety relevant properties according to partner\n\nDaimler: DS und DZ Merkmale (Dokumentationspflichtig Sicherheitsrelevant und Dokumentationspflichtig Zertifizierungsrelevant)\nVW: D und S Merkmale (Dokumentationspflichtig und Sicherheitsrelevant)\nBMW: L und S und F Merkmale (Legal: Zulassungs- oder homologationsrelevant, Sicherheitsrelevant, Funktions- oder fertigungsrelevant)\nGM / Opel: S/C und F/F Merkmale (Safety and Compliance / Fit and Function)\nFord: CC und SC Merkmale (Critical Characteristic / Significant Characteristic)\nFiat / Alfa Romeo / Renault / PSA: R und S Merkmale (Réglementation und Sécurité)\nConti: D und W Merkmale (Dokumentationspflichtige und Wichtige Merkmale)"@en ;
-   samm:characteristic :SafetyRelevantFeaturesCharacteristic ;
+   samm:characteristic :SafetyRelevantFeaturesList ;
    samm:exampleValue "[\"X\"]" .
 
-:statutoryFeature a samm:Property ;
+:statutoryFeatures a samm:Property ;
    samm:preferredName "Statutory Feature"@en ;
    samm:description "Specifies the legal and industry standards the part complies with"@en ;
-   samm:characteristic samm-c:Text ;
+   samm:characteristic :StatutoryFeaturesList ;
    samm:exampleValue "REACH, RoHS, ISO 26262, DBL 5307.10" .
 
 :SoftwareDataCharacteristic a samm:Characteristic ;
@@ -251,10 +250,16 @@
 
 :HomologationApprovalNumberCharacteristic a samm:Characteristic ;
    samm:preferredName "Homologation Approval Number Characteristic"@en ;
-   samm:dataType :HomologationApprovalNumberEntity .
+   samm:dataType xsd:string .
 
-:SafetyRelevantFeaturesCharacteristic a samm-c:List ;
-   samm:preferredName "Safety Relevant Features Characteristic"@en ;
+:SafetyRelevantFeaturesList a samm-c:List ;
+   samm:preferredName "Safety Relevant Features List"@en ;
+   samm:description "List of all the safety relevant properties according to partner"@en ;
+   samm:dataType xsd:string .
+
+:StatutoryFeaturesList a samm-c:List ;
+   samm:preferredName "Statutory  Features List"@en ;
+   samm:description "List of all  the legal and industry standards the part complies with"@en ;
    samm:dataType xsd:string .
 
 :SoftwareDataEntity a samm:Entity ;
@@ -274,16 +279,12 @@
 
 :NotesEntity a samm:Entity ;
    samm:preferredName "Notes Entity"@en ;
-   samm:properties ( :notesFilesProperty :notesTimestampProperty ) .
+   samm:properties ( :noteProperty :timestamp ) .
 
 :VersionEntity a samm:Entity ;
    samm:preferredName "Version Entity (en)"@en ;
    samm:description "Entity for the Digital Master Data version"@en ;
    samm:properties ( :versionNumber :versionID ) .
-
-:HomologationApprovalNumberEntity a samm:Entity ;
-   samm:preferredName "Homologation Approval Number Entity"@en ;
-   samm:properties ( ) .
 
 :securityAndEncryptionStandards a samm:Property ;
    samm:preferredName "Security & Encryption Standards"@en ;
@@ -325,17 +326,18 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "UDS Flash via DoIP" .
 
-:notesFilesProperty a samm:Property ;
-   samm:preferredName "Notes Files Property"@en ;
+:noteProperty a samm:Property ;
+   samm:preferredName "Note Property"@en ;
    samm:characteristic :NotesList .
 
-:notesTimestampProperty a samm:Property ;
-   samm:preferredName "Notes Timestamp Property"@en ;
+:timestamp a samm:Property ;
+   samm:preferredName "Timestamp"@en ;
    samm:characteristic samm-c:Timestamp .
 
 :versionNumber a samm:Property ;
    samm:preferredName "VersionNumber"@en ;
    samm:description "https://semver.org/"@en ;
+   samm:characteristic :Characteristic1 ;
    samm:exampleValue "3.1.0" .
 
 :versionID a samm:Property ;
@@ -355,6 +357,9 @@
    samm:preferredName "Notes List"@en ;
    samm:description "List of notes that can be attached as additional information in engineering process."@en .
 
+:Characteristic1 a samm:Characteristic ;
+   samm:dataType xsd:string .
+
 :MaterialDataEntity a samm:Entity ;
    samm:preferredName "Material Data Entity"@en ;
    samm:description "Entity for all the Material Data of the Digital Master Data Model"@en ;
@@ -368,8 +373,8 @@
 :density a samm:Property ;
    samm:preferredName "Density"@en ;
    samm:description "Density of the material for CAD model usage"@en ;
-   samm:characteristic ext-quantity:MiscQuantityCharacteristic ;
-   samm:exampleValue "7850 kg/m³"^^ext-quantity:MiscQuantityEntity .
+   samm:characteristic :Characteristic8 ;
+   samm:exampleValue "7850 kg/m³" .
 
 :materialDescription a samm:Property ;
    samm:preferredName "Material Description"@en ;
@@ -379,43 +384,44 @@
 :materialID a samm:Property ;
    samm:preferredName "Material ID"@en ;
    samm:description "Identification of the material from defined material database or standard"@en ;
+   samm:characteristic :Characteristic7 ;
    samm:exampleValue "type: IMDS ID: 123456789" .
 
 :thermalExpansionCoefficient a samm:Property ;
    samm:preferredName "Thermal Expansion Coefficient"@en ;
    samm:description "Rate of material expansion per degree of temperature change"@en ;
-   samm:characteristic ext-quantity:MiscQuantityCharacteristic ;
-   samm:exampleValue "2.3 × 10?? 1/K"^^ext-quantity:MiscQuantityEntity .
+   samm:characteristic :Characteristic6 ;
+   samm:exampleValue "2.3 × 10?? 1/K" .
 
 :reference2DCADDrawing a samm:Property ;
    samm:preferredName "Reference to 2D CAD Drawing"@en ;
    samm:description "Link to the digital 2D model used for design and manufacturing (external and Catena-X-internal ressources, URN's). Based on IDTA SMT 020026 “Provision of 3D Models”\n\nsee https://github.com/admin-shell-io/submodel-templates/tree/main/published/Provision%20of%203D%20Models/1/0"@en ;
    samm:characteristic :Reference2DCADDrawingCharacteristic ;
-   samm:exampleValue "urn:samm:io.catenax.2dm:a2f115cd-b9dd-4c5d-94c1-52fdf5b99a88" .
+   samm:exampleValue "urn:samm:io.catenax.2dm:a2f115cd-b9dd-4c5d-94c1-52fdf5b99a88"^^xsd:anyURI .
 
 :reference3DCADDrawing a samm:Property ;
    samm:preferredName " Reference to 3D CAD Drawing"@en ;
    samm:description "Link  the digital CAD model used for design and manufacturing (external and Catena-X-internal ressources, URN's). Based on IDTA SMT 020026 “Provision of 3D Models”\n\nsee https://github.com/admin-shell-io/submodel-templates/tree/main/published/Provision%20of%203D%20Models/1/0"@en ;
    samm:characteristic :Reference3DCADDrawingCharacteristic ;
-   samm:exampleValue "urn:samm:io.catenax.3dm:a2f115cd-b9dd-4c5d-94c1-52fdf5b99a88" .
+   samm:exampleValue "urn:samm:io.catenax.3dm:a2f115cd-b9dd-4c5d-94c1-52fdf5b99a88"^^xsd:anyURI .
 
 :boundingBox a samm:Property ;
    samm:preferredName "Bounding Box"@en ;
    samm:description "The minimal 3D box that fully encloses the part geometry (length × width × height)."@en ;
-   samm:characteristic ext-quantity:LinearCharacteristic ;
-   samm:exampleValue "{ \"length\": 120.0, \"width\": 45.0, \"height\": 30.0, \"unit\": \"mm\" }"^^ext-quantity:LinearEntity .
+   samm:characteristic :Characteristic5 ;
+   samm:exampleValue "{ \"length\": 120.0, \"width\": 45.0, \"height\": 30.0, \"unit\": \"mm\" }" .
 
 :boundingSphere a samm:Property ;
    samm:preferredName "Bounding Sphere"@en ;
    samm:description "Diameter of the smallest possible sphere that fully encloses the part geometry."@en ;
-   samm:characteristic ext-quantity:LinearCharacteristic ;
-   samm:exampleValue "{ \"value\": 315.0, \"unit\": \"mm\" }"^^ext-quantity:LinearEntity .
+   samm:characteristic :Characteristic4 ;
+   samm:exampleValue "{ \"value\": 315.0, \"unit\": \"mm\" }" .
 
 :calculatedWeight a samm:Property ;
    samm:preferredName "Calculated Weight"@en ;
    samm:description "Mass of the part, typically in kilograms. Calculated out of all belonging 3D-models"@en ;
-   samm:characteristic ext-quantity:MassCharacteristic ;
-   samm:exampleValue "2.35 kg"^^ext-quantity:MassEntity .
+   samm:characteristic :CalculatedWeightCharacteristic ;
+   samm:exampleValue "2.35 kg" .
 
 :calculatedWeightTolerance a samm:Property ;
    samm:preferredName "Calculated Weight Tolerance"@en ;
@@ -431,8 +437,8 @@
 :estimatedWeight a samm:Property ;
    samm:preferredName "Estimated Weight"@en ;
    samm:description "Estimated mass of the part, typically in kilograms. Based on early design assumptions or incomplete data."@en ;
-   samm:characteristic ext-quantity:MassCharacteristic ;
-   samm:exampleValue "2.35 kg"^^ext-quantity:MassEntity .
+   samm:characteristic :EstimatedWeightCharacteristic ;
+   samm:exampleValue "2.35 kg" .
 
 :estimatedWeightTolerance a samm:Property ;
    samm:preferredName "Estimated Weight Tolerance"@en ;
@@ -449,20 +455,20 @@
 :surfaceArea a samm:Property ;
    samm:preferredName "Surface Area"@en ;
    samm:description "surface area in mm2"@en ;
-   samm:characteristic ext-quantity:AreaCharacteristic ;
-   samm:exampleValue "200 mm2"^^ext-quantity:AreaEntity .
+   samm:characteristic :Characteristic9 ;
+   samm:exampleValue "200 mm2" .
 
 :volume a samm:Property ;
    samm:preferredName "Volume"@en ;
    samm:description "volume of the part in mm3"@en ;
-   samm:characteristic ext-quantity:VolumeCharacteristic ;
-   samm:exampleValue "400 mm3"^^ext-quantity:VolumeEntity .
+   samm:characteristic :Characteristic10 ;
+   samm:exampleValue "400 mm3" .
 
 :weightedWeight a samm:Property ;
    samm:preferredName "weighted Weight"@en ;
    samm:description "Mass of the part, typically in kilograms. Calculated out of all belonging 3D-models (== Actual weight)"@en ;
-   samm:characteristic ext-quantity:MassCharacteristic ;
-   samm:exampleValue "2.35 kg"^^ext-quantity:MassEntity .
+   samm:characteristic :WeightedWeightCharacteristic ;
+   samm:exampleValue "2.35 kg" .
 
 :weightedWeightTolerance a samm:Property ;
    samm:preferredName "weighted Weight Tolerance"@en ;
@@ -470,24 +476,64 @@
    samm:characteristic :WeightedWeightToleranceCharacteristic ;
    samm:exampleValue "±0.5 kg or ±2%" .
 
+:Characteristic8 a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:Characteristic7 a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:Characteristic6 a samm:Characteristic ;
+   samm:dataType xsd:string .
+
 :Reference2DCADDrawingCharacteristic a samm:Characteristic ;
-   samm:preferredName "Reference 2D CAD Drawing Characteristic"@en .
+   samm:preferredName "Reference 2D CAD Drawing Characteristic"@en ;
+   samm:dataType xsd:anyURI .
 
 :Reference3DCADDrawingCharacteristic a samm:Characteristic ;
-   samm:preferredName "Reference 3D CAD Drawing Characteristic"@en .
+   samm:preferredName "Reference 3D CAD Drawing Characteristic"@en ;
+   samm:dataType xsd:anyURI .
+
+:Characteristic5 a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:Characteristic4 a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:CalculatedWeightCharacteristic a samm:Characteristic ;
+   samm:preferredName "Calculated Weight Characteristic"@en ;
+   samm:dataType xsd:string .
 
 :CalculatedWeightToleranceCharacteristic a samm:Characteristic ;
-   samm:preferredName "Calculated Weight Tolerance Characteristic"@en .
+   samm:preferredName "Calculated Weight Tolerance Characteristic"@en ;
+   samm:dataType xsd:float .
 
 :CenterOfGravityCharacteristic a samm:Characteristic ;
-   samm:preferredName "Center Of Gravity Characteristic"@en .
+   samm:preferredName "Center Of Gravity Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:EstimatedWeightCharacteristic a samm:Characteristic ;
+   samm:preferredName "Estimated Weight Characteristic"@en ;
+   samm:dataType xsd:string .
 
 :EstmatedWeightToleranceCharacteristic a samm:Characteristic ;
-   samm:preferredName "Estmated Weight Tolerance Characteristic"@en .
+   samm:preferredName "Estmated Weight Tolerance Characteristic"@en ;
+   samm:dataType xsd:string .
 
 :MomentOfInertiaCharacteristic a samm:Characteristic ;
-   samm:preferredName "Momen tOf Inertia Characteristic"@en .
+   samm:preferredName "Moment Of Inertia Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:Characteristic9 a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:Characteristic10 a samm:Characteristic ;
+   samm:dataType xsd:string .
+
+:WeightedWeightCharacteristic a samm:Characteristic ;
+   samm:preferredName "Weighted Weight Characteristic"@en ;
+   samm:dataType xsd:string .
 
 :WeightedWeightToleranceCharacteristic a samm:Characteristic ;
-   samm:preferredName "Weighted Weight Tolerance Characteristic"@en .
+   samm:preferredName "Weighted Weight Tolerance Characteristic"@en ;
+   samm:dataType xsd:string .
 
