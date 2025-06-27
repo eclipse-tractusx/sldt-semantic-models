@@ -19,75 +19,97 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <urn:samm:io.catenax.us_tariff_information:1.0.0#> .
+@prefix : <urn:samm:org.eclipse.esmf:2.0.0#> .
 @prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
-@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:3.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 @prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 
 :UsTariffInformation a samm:Aspect ;
    samm:preferredName "Us Tariff Information"@en ;
    samm:description "Information required for US tariff declaration"@en ;
-   samm:properties ( :materialList ext-uuid:uuidV4Property ) ;
+   samm:properties ( :materialList :catenaxId :partWeight ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
 :materialList a samm:Property ;
    samm:preferredName "Material List"@en ;
-   samm:description "Material List"@en ;
+   samm:description "Includes all materials required by the data consumer to submit a U.S. tariff declaration for their component."@en ;
    samm:characteristic :MaterialListCollection .
+
+:catenaxId a samm:Property ;
+   samm:preferredName "Catena-X ID"@en ;
+   samm:description "The fully anonymous Catena-X ID of the serialized part, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "580d3adf-1981-44a0-a214-13d6ceed9379" .
+
+:partWeight a samm:Property ;
+   samm:preferredName "Part Weight"@en ;
+   samm:description "Total weight of the part"@en ;
+   samm:characteristic ext-quantity:MassCharacteristic .
 
 :MaterialListCollection a samm-c:Collection ;
    samm:preferredName "Material List Collection"@en ;
-   samm:description "Material List Collection"@en ;
+   samm:description "Characteristic of the materialList property defined as a Collection."@en ;
    samm:dataType :MaterialListEntity .
 
 :MaterialListEntity a samm:Entity ;
    samm:preferredName "Material List Entity"@en ;
-   samm:description "MaterialListEntity"@en ;
-   samm:properties ( :processing :origin :currency :value :partWeight :materialName :materialClassification ) .
+   samm:description "Entity of the materialList Entity"@en ;
+   samm:properties ( :processing :origin :currency :value :material :htsCode :referenceNumber :htsCodingSystem ) .
 
 :processing a samm:Property ;
    samm:preferredName "Processing"@en ;
+   samm:description "processing details all operations performed during the production of the part."@en ;
    samm:characteristic :ProcessingListCollection .
 
 :origin a samm:Property ;
    samm:preferredName "Origin"@en ;
-   samm:description "Origin"@en ;
+   samm:description "List the countries of origin from which the material originates"@en ;
    samm:characteristic :OriginListCollection .
 
 :currency a samm:Property ;
    samm:preferredName "Currency"@en ;
+   samm:description "Currency in which the value is specified."@en ;
    samm:characteristic :CurrencyTrait ;
    samm:exampleValue "USD" .
 
 :value a samm:Property ;
    samm:preferredName "Value"@en ;
+   samm:description "Total value of material"@en ;
    samm:characteristic :ValueCharacteristic ;
    samm:exampleValue "500"^^xsd:decimal .
 
-:partWeight a samm:Property ;
-   samm:preferredName "Part Weight"@en ;
-   samm:description "Part Weight"@en ;
-   samm:characteristic ext-quantity:MassCharacteristic .
+:material a samm:Property ;
+   samm:preferredName "Material"@en ;
+   samm:description "Material the part is made of"@en ;
+   samm:characteristic :MaterialCharacteristic .
 
-:materialName a samm:Property ;
-   samm:preferredName "Material name"@en ;
-   samm:description "Name of the material"@en ;
-   samm:characteristic :MaterialNameCharacteristic ;
-   samm:exampleValue "Steels / cast steel / sintered steel" .
+:htsCode a samm:Property ;
+   samm:preferredName "HTS Code"@en ;
+   samm:description "HTS code"@en ;
+   samm:characteristic :HtsTrait ;
+   samm:exampleValue "1234.56.7890" .
 
-:materialClassification a samm:Property ;
-   samm:preferredName "Material Classification"@en ;
-   samm:description "Classification of the material"@en ;
-   samm:characteristic :MaterialClassificationCharacteristic ;
-   samm:exampleValue "1.1" .
+:referenceNumber a samm:Property ;
+   samm:preferredName "Reference numnber"@en ;
+   samm:description "Latest PO Number  (or ASN)"@en ;
+   samm:characteristic :ReferenceNumberCharacteristic ;
+   samm:exampleValue "774773he878" .
+
+:htsCodingSystem a samm:Property ;
+   samm:preferredName "HTS Coding System"@en ;
+   samm:description "Coding system according to which the HTS code was created"@en ;
+   samm:characteristic :HtsCodingsSytemCharacteristic ;
+   samm:exampleValue "HS" .
 
 :ProcessingListCollection a samm-c:Collection ;
+   samm:preferredName "Processing List Collection"@en ;
+   samm:description "Characteristic of the processing information property  defined as a Collection."@en ;
    samm:dataType :ProcessingListEntity .
 
 :OriginListCollection a samm-c:Collection ;
    samm:preferredName "Origin List Collection"@en ;
-   samm:description "Origin List Collection"@en ;
+   samm:description "Characteristic of the origin property defined as a Collection."@en ;
    samm:dataType :OriginListEntity .
 
 :CurrencyTrait a samm-c:Trait ;
@@ -95,25 +117,39 @@
    samm-c:constraint :CurrencyRegularExpression .
 
 :ValueCharacteristic a samm:Characteristic ;
-   samm:preferredName "Value"@en ;
+   samm:preferredName "Value Characteristic"@en ;
+   samm:description "Characteristic of the value property"@en ;
    samm:dataType xsd:decimal .
 
-:MaterialNameCharacteristic a samm-c:Enumeration ;
-   samm:preferredName "Material name characteristic"@en ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "undefined" "Steel and iron materials" "Steels / cast steel / sintered steel" "unalloyed, low alloyed" "highly alloyed" "Cast iron" "Cast iron with lamellar graphite / tempered cast iron" "Cast iron with nodular graphite / vermicular cast iron" "Highly alloyed cast iron" "Light alloys, cast and wrought alloys" "Aluminium and aluminium alloys" "Cast aluminium alloys" "Wrought aluminium alloys" "Magnesium and magnesium alloys" "Cast magnesium alloys" "Wrought magnesium alloys" "Titanium and titanium alloys" "Heavy metals, cast and wrought alloys" "Copper (e.g. copper amounts in cable harnesses)" "Copper alloys" "Zinc alloys" "Nickel alloys" "Lead" "Special metals" "Platinum / rhodium" "Other special metals" "Polymer materials" "Thermoplastics" "filled Thermoplastics" "unfilled Thermoplastics" "Thermoplastic elastomers" "Elastomers / elastomeric compounds" "Duromers" "Polyurethane" "Unsaturated polyester" "Other duromers" "Polymeric compounds (e.g. inseparable laminated trim parts)" "Plastics (in polymeric compounds)" "Textiles (in polymeric compounds)" "Process polymers" "Lacquers" "Adhesives, sealants" "Underseal" "Other materials and material compounds (scope of mixture)" "Modified organic natural materials (e.g. leather, wood, cardboard, cotton fleece)" "Ceramics / glass" "Other compounds (e.g. friction linings)" "Electronics / electrics" "Electronics (e.g. pc boards, displays)" "Electrics" "Fuels and auxiliary means" "Fuels" "Lubricants" "Brake fluid" "Coolant / other glycols" "Refrigerant" "Washing water, battery acids" "Preservative" "Other fuels and auxiliary means" "Cement" "Elastomers" "Fluids" "Glass" "Metals" "MONM (Modified organic natural materials)" "Others" "Polymers, excluding Elastomers" ) .
+:MaterialCharacteristic a samm:Characteristic ;
+   samm:preferredName "Material Characteristic"@en ;
+   samm:description "Characteristic of the material property"@en ;
+   samm:dataType :MaterialEntity .
 
-:MaterialClassificationCharacteristic a samm-c:Enumeration ;
-   samm:preferredName "Materia lClassification Characteristic"@en ;
-   samm-c:values ( "0" "1" "1.1" "1.1.1" "1.1.2" "1.2" "1.2.1" "1.2.2" "1.2.3" "2" "2.1" "2.1.1" ) .
+:HtsTrait a samm-c:Trait ;
+   samm:preferredName "HTS Trait"@en ;
+   samm:description "HTS Trait"@en ;
+   samm-c:baseCharacteristic :HtsCharacteristic ;
+   samm-c:constraint :HtsRegularExpression .
+
+:ReferenceNumberCharacteristic a samm:Characteristic ;
+   samm:preferredName "Reference Number Characteristic"@en ;
+   samm:description "Characteristic of the Reference Number"@en ;
+   samm:dataType xsd:string .
+
+:HtsCodingsSytemCharacteristic a samm:Characteristic ;
+   samm:preferredName "Hts Codings Sytem Characteristic"@en ;
+   samm:description "Characteristic of the Hts Codings Sytem "@en ;
+   samm:dataType xsd:string .
 
 :ProcessingListEntity a samm:Entity ;
    samm:preferredName "Processing List Entity"@en ;
+   samm:description "Entity of the processing property"@en ;
    samm:properties ( :processingCountry :successor :processingType :processingId :certificateId ) .
 
 :OriginListEntity a samm:Entity ;
    samm:preferredName "Origin List Entity"@en ;
-   samm:description "Origin List Entity"@en ;
+   samm:description "Entiy of the origin property"@en ;
    samm:properties ( :originWeight :valuePercentage :originCountry ) .
 
 :CurrencyCharacteristic a samm:Characteristic ;
@@ -126,6 +162,21 @@
    samm:description "Regular expression to restrict the currency based on the ISO 4217."@en ;
    samm:value "^[A-Z]{3}$" .
 
+:MaterialEntity a samm:Entity ;
+   samm:preferredName "Material Entity"@en ;
+   samm:description "Entity of the material property"@en ;
+   samm:properties ( :classificationType :classificationId :materialName ) .
+
+:HtsCharacteristic a samm:Characteristic ;
+   samm:preferredName "HTS Characteristic"@en ;
+   samm:description "Characteristic of the HTS property"@en ;
+   samm:dataType xsd:string .
+
+:HtsRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "HTS Regular Expression"@en ;
+   samm:description "HTS Regular Expression"@en ;
+   samm:value "^\\d{4}[-.\\s]?\\d{2}[-.\\s]?\\d{4}$" .
+
 :processingCountry a samm:Property ;
    samm:preferredName "Processing Country"@en ;
    samm:description "Processing Country"@en ;
@@ -134,36 +185,61 @@
 
 :successor a samm:Property ;
    samm:preferredName "Successor"@en ;
+   samm:description "Sucessor(s) of the processing step"@en ;
    samm:characteristic :SuccessorListCollection .
 
 :processingType a samm:Property ;
    samm:preferredName "Processing Type"@en ;
+   samm:description "Description of the processing type"@en ;
    samm:characteristic :ProcessingTypeCharacteristic ;
    samm:exampleValue "Melting" .
 
 :processingId a samm:Property ;
    samm:preferredName "Processing Id"@en ;
+   samm:description "Identifier of the processing step"@en ;
    samm:characteristic :ProcessingIdCharacteristic ;
    samm:exampleValue 1 .
 
 :certificateId a samm:Property ;
    samm:preferredName "Certificate Id"@en ;
+   samm:description "Certificate of the processing site"@en ;
    samm:characteristic :CertificateIdCharacteristic ;
    samm:exampleValue "djhsoi918734627" .
 
 :originWeight a samm:Property ;
    samm:preferredName "OriginWeight"@en ;
+   samm:description "Total weight of the material for one originCountry"@en ;
    samm:characteristic ext-quantity:MassCharacteristic .
 
 :valuePercentage a samm:Property ;
    samm:preferredName "Value Percentage"@en ;
+   samm:description "Percentage of the total value is attributed to origin property"@en ;
    samm:characteristic :ValuePercentageCharacteristic ;
    samm:exampleValue "80"^^xsd:decimal .
 
 :originCountry a samm:Property ;
    samm:preferredName "Origin Country"@en ;
+   samm:description "Country of origin for the material"@en ;
    samm:characteristic :CountryTrait ;
    samm:exampleValue "DE" .
+
+:classificationType a samm:Property ;
+   samm:preferredName "Classification type"@en ;
+   samm:description "Standard according to which the material is classified"@en ;
+   samm:characteristic :ClassificationTypeCharacteristic ;
+   samm:exampleValue "IMDS" .
+
+:classificationId a samm:Property ;
+   samm:preferredName "ClassificationId"@en ;
+   samm:description "Classification code of the material according to the classificationType property"@en ;
+   samm:characteristic :ClassificationIdCharacteristic ;
+   samm:exampleValue "1.1" .
+
+:materialName a samm:Property ;
+   samm:preferredName "Material name"@en ;
+   samm:description "Name of the material"@en ;
+   samm:characteristic :MaterialNameCharacteristic ;
+   samm:exampleValue "Steels / cast steel / sintered steel" .
 
 :CountryTrait a samm-c:Trait ;
    samm:preferredName "Country Trait"@en ;
@@ -172,26 +248,50 @@
    samm-c:constraint :CountryRegularExpression .
 
 :SuccessorListCollection a samm-c:Collection ;
+   samm:preferredName "Successor List Collection"@en ;
+   samm:description "Characteristic of the successor property defined as a Collection."@en ;
    samm:dataType :SuccessorListEntity .
 
 :ProcessingTypeCharacteristic a samm-c:Enumeration ;
    samm:preferredName "Processing Type Characteristic"@en ;
+   samm:description "Enumeration of processingTypes"@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "Pourring" "Smelting" "Melting" ) .
 
 :ProcessingIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "Processing Id Characteristic"@en ;
+   samm:description "Characteristic of a processing Id"@en ;
    samm:dataType xsd:integer .
 
 :CertificateIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "Certificate Id Characteristic"@en ;
+   samm:description "Characteristic of the Certificate Id"@en ;
    samm:dataType xsd:string .
 
 :ValuePercentageCharacteristic a samm-c:Measurement ;
    samm:preferredName "Value Percentage Characteristic"@en ;
+   samm:description "Characteristic of the valuePercentage property"@en ;
    samm:dataType xsd:decimal ;
    samm-c:unit samm-u:percent .
 
+:ClassificationTypeCharacteristic a samm:Characteristic ;
+   samm:preferredName "Classification Type Characteristic"@en ;
+   samm:description "Characteristic of the classificationType property"@en ;
+   samm:dataType xsd:string .
+
+:ClassificationIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "Classification Id Characteristic"@en ;
+   samm:description "Characteristic of the Classification Id property"@en ;
+   samm:dataType xsd:string .
+
+:MaterialNameCharacteristic a samm:Characteristic ;
+   samm:preferredName "Material name characteristic"@en ;
+   samm:description "Characteristic of material name property"@en ;
+   samm:dataType xsd:string .
+
 :CountryCharacteristic a samm:Characteristic ;
    samm:preferredName "Country of Origin"@en ;
+   samm:description "Characteristic of a country property"@en ;
    samm:dataType xsd:string .
 
 :CountryRegularExpression a samm-c:RegularExpressionConstraint ;
@@ -201,10 +301,11 @@
 
 :SuccessorListEntity a samm:Entity ;
    samm:preferredName "Successor List Entity"@en ;
+   samm:description "Entity of the successor entity"@en ;
    samm:properties ( :successorId ) .
 
 :successorId a samm:Property ;
    samm:preferredName "Successor Id"@en ;
+   samm:description "Identifier of the successor"@en ;
    samm:characteristic :ProcessingIdCharacteristic ;
    samm:exampleValue 2 .
-
