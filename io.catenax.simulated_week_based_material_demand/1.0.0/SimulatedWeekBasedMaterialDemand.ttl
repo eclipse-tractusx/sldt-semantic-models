@@ -1,0 +1,97 @@
+
+#######################################################################
+# Copyright (c) 2025 Catena-X Automotive Network e.V.
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.simulated_week_based_material_demand:1.0.0#> .
+@prefix ext-week_based_material_demand: <urn:samm:io.catenax.week_based_material_demand:3.0.1#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:SimulatedWeekBasedMaterialDemand a samm:Aspect ;
+   samm:preferredName "Simulated Material Demand"@en ;
+   samm:description "An entity that contains multiple modified WeekBasedMaterialDemand representing a simulation scenario and a request for evaluation from customer to supplier."@en ;
+   samm:properties ( :simulationId :simulatedWeekBasedMaterialDemandId :simulationPriority :simulationDueDate :simulationChangedAt :listOfWeekBasedMaterialDemand ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:simulationId a samm:Property ;
+   samm:preferredName "Simulation ID"@en ;
+   samm:description "The simulation ID uniquely identifies a simulation scenario. All aspects that belong to the same simulation scenario share a simulation ID"@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110" .
+
+:simulatedWeekBasedMaterialDemandId a samm:Property ;
+   samm:preferredName "Simulated Material Demand ID"@en ;
+   samm:description "The simulated capacity group ID uniquely identifies the simulated material demand within the business relationship between a customer and its supplier."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "0157ba42-d2a8-4e28-8565-7b07830c1110" .
+
+:simulationPriority a samm:Property ;
+   samm:preferredName "Simulation Priority"@en ;
+   samm:description "The simulation priority expresses the urgency of the evaluation request. In addition it can be used to indicate that the evaluation can be aborted."@en ;
+   samm:characteristic :SimulationPriorityCharacteristic ;
+   samm:exampleValue "MEDIUM" .
+
+:SimulationPriorityCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Simulation Priority Characteristic"@en ;
+   samm:description "Values for simulation priority."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "ABORTED" "LOW" "MEDIUM" "HIGH" ) .
+
+:simulationDueDate a samm:Property ;
+   samm:preferredName "Simulation Due Date"@en ;
+   samm:description "The simulation due date allows the customer to indicate to the supplier the date until the evaluation of the simulation scenario should be finished."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2018-02-03T00:00:00"^^xsd:dateTime .
+
+:simulationChangedAt a samm:Property ;
+   samm:preferredName "Simulation Changed At"@en ;
+   samm:description "Point in time when the content (any property according to the data model) of the simulated material demand was changed, at the customer, either by a human user or an automated process."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2018-02-03T00:00:00"^^xsd:dateTime .
+
+:listOfWeekBasedMaterialDemand a samm:Property ;
+   samm:preferredName "Material Demand List"@en ;
+   samm:description "List of material demands that allow the customer to spell out a simulation scenario."@en ;
+   samm:characteristic :ListOfWeekBasedMaterialDemandCollection .
+
+:WeekBasedMaterialDemand a samm:Entity ;
+   samm:preferredName "WeekBasedMaterialDemand"@en ;
+   samm:description "An existing WeekBasedMaterialDemand, potentially modified, used to spell out a simulation scenario."@en ;
+   samm:properties ( 
+      ext-week_based_material_demand:demandSeries 
+      ext-week_based_material_demand:materialGlobalAssetId
+      ext-week_based_material_demand:materialDemandId
+      ext-week_based_material_demand:supplier
+      ext-week_based_material_demand:customer
+      ext-week_based_material_demand:materialDemandIsInactive
+      ext-week_based_material_demand:unitOfMeasureIsOmitted
+      ext-week_based_material_demand:materialNumberSupplier
+      ext-week_based_material_demand:materialNumberCustomer
+      ext-week_based_material_demand:materialDescriptionCustomer
+      ext-week_based_material_demand:unitOfMeasure
+      ext-week_based_material_demand:changedAt
+       ) .
+
+:ListOfWeekBasedMaterialDemandCollection a samm-c:Collection ;
+   samm:preferredName "Material Demand Collection"@en ;
+   samm:description "Customers may embed any number of existing and modified week based material demand in order to spell out a simulation scenario for the supplier to evaluate."@en ;
+   samm:dataType :WeekBasedMaterialDemand .
