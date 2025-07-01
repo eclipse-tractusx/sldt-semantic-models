@@ -1,0 +1,138 @@
+#######################################################################
+# Copyright (c) 2025 Robert Bosch GmbH
+# Copyright (c) 2025 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2025 Volkswagen AG
+# Copyright (c) 2025 ZF Friedrichshafen AG
+# Copyright (c) 2025 SAP SE
+# Copyright (c) 2025 Siemens AG
+# Copyright (c) 2025 DENSO AUTOMOTIVE Deutschland GmbH
+# Copyright (c) 2025 WITTE Automotive GmbH
+# Copyright (c) 2025 Schaeffler Technologies AG & Co. KG
+# Copyright (c) 2025 Ford Werke GmbH
+#
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.warranty_claim_request_verification:1.0.0#> .
+@prefix ext-core: <urn:samm:io.catenax.shared.quality_core:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:WarrantyClaimRequestVerification a samm:Aspect ;
+   samm:preferredName "Warranty Claim Request"@en ;
+   samm:description "For Catena-X business case Quality Management. This model is used to send back the answer for a WarrantyClaimRequest from a component manufacturer to a vehicle manufacturer (OEM). "@en ;
+   samm:properties ( :claimId ext-core:qualityTaskId ext-number:bpnlProperty [ samm:property ext-core:vehicleId; samm:optional true ] ext-core:anonymizedVIN :billingId :billingDate :agreedTechnicalFactor :debitValueJustified :billedCurrency :claimPlausible :claimImplausible :billingStatus :statementDate :statementReason ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:claimId a samm:Property ;
+   samm:preferredName "Claim ID"@en ;
+   samm:description "Each claim from this data provider has a unique claim ID.If you combine the BPNL of the data provider with this claim ID you get a unique claim ID in the data space."@en ;
+   samm:characteristic ext-core:UniqueID ;
+   samm:exampleValue "a214-13d6" .
+
+:billingId a samm:Property ;
+   samm:preferredName "Billing Identifier"@en ;
+   samm:description "A unique identifier for one billing. It is data provider individual."@en ;
+   samm:characteristic ext-core:UniqueID ;
+   samm:exampleValue "B123456789" .
+
+:billingDate a samm:Property ;
+   samm:preferredName "Billing Date"@en ;
+   samm:description "References the date when the claim was billed. Date format: ISO (YYYY-MM-DD)"@en ;
+   samm:characteristic ext-core:ISO8601LocalDate ;
+   samm:exampleValue "2025-02-13" .
+
+:agreedTechnicalFactor a samm:Property ;
+   samm:preferredName "Agreed Technical Factor"@en ;
+   samm:description "Technical factor which was agreed upon."@en ;
+   samm:characteristic :PositiveInteger ;
+   samm:exampleValue "50"^^xsd:positiveInteger .
+
+:debitValueJustified a samm:Property ;
+   samm:preferredName "Debit Value Justified"@en ;
+   samm:description "Check between billed technical factor & agreed technical factor; other plausibility checks"@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:billedCurrency a samm:Property ;
+   samm:preferredName "Billed Currency"@en ;
+   samm:description "Billing currency"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "EUR" .
+
+:claimPlausible a samm:Property ;
+   samm:preferredName "Claim Plausible"@en ;
+   samm:description "Check between billed technical factor & agreed technical factor"@en ;
+   samm:characteristic :PositiveFloatNumber ;
+   samm:exampleValue "500.00"^^xsd:float .
+
+:claimImplausible a samm:Property ;
+   samm:preferredName "Claim Implausible"@en ;
+   samm:description "Check between billed technical factor & agreed technical factor"@en ;
+   samm:characteristic :PositiveFloatNumber ;
+   samm:exampleValue "500.00"^^xsd:float .
+
+:billingStatus a samm:Property ;
+   samm:preferredName "Billing Status"@en ;
+   samm:description "Status of the bill based on claim_request_verification assessment (approved / disputed / …)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "approved" .
+
+:statementDate a samm:Property ;
+   samm:preferredName "Statement Date"@en ;
+   samm:description "Due date for the claim_request_verification to approve / dispute the bill"@en ;
+   samm:characteristic ext-core:ISO8601LocalDate ;
+   samm:exampleValue "2025-02-13" .
+
+:statementReason a samm:Property ;
+   samm:preferredName "Statement Reason"@en ;
+   samm:description "Reason give by the claim_request_verification, why the bill / claim was disputed"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Technical factor too high" .
+
+:PositiveInteger a samm:Characteristic ;
+   samm:preferredName "Positive Integer"@en ;
+   samm:description "Defines a positive integer number."@en ;
+   samm:dataType xsd:positiveInteger .
+
+:PositiveFloatNumber a samm-c:Trait ;
+   samm:preferredName "Positive Float Number"@en ;
+   samm:description "Represents a positive float number."@en ;
+   samm-c:baseCharacteristic :Float ;
+   samm-c:constraint :GreaterZero .
+
+:Float a samm:Characteristic ;
+   samm:preferredName "Float"@en ;
+   samm:description "Defines a float number."@en ;
+   samm:dataType xsd:float .
+
+:GreaterZero a samm-c:RangeConstraint ;
+   samm:preferredName "Greatere Zero"@en ;
+   samm:description "Range constraint for numbers including or bigger than 0."@en ;
+   samm-c:minValue "0"^^xsd:float ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:LESS_THAN .
+
+:BillableMinutesCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:positiveInteger .
+
