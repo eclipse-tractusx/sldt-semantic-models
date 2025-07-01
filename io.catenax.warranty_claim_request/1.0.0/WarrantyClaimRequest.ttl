@@ -1,0 +1,191 @@
+#######################################################################
+# Copyright (c) 2025 Robert Bosch GmbH
+# Copyright (c) 2025 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2025 Volkswagen AG
+# Copyright (c) 2025 ZF Friedrichshafen AG
+# Copyright (c) 2025 SAP SE
+# Copyright (c) 2025 Siemens AG
+# Copyright (c) 2025 DENSO AUTOMOTIVE Deutschland GmbH
+# Copyright (c) 2025 WITTE Automotive GmbH
+# Copyright (c) 2025 Schaeffler Technologies AG & Co. KG
+# Copyright (c) 2025 Ford Werke GmbH
+#
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.warranty_claim_request:1.0.0#> .
+@prefix ext-bpn: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-core: <urn:samm:io.catenax.shared.quality_core:1.0.0#> .
+
+:WarrantyClaimRequest a samm:Aspect ;
+   samm:preferredName "Warranty Claim Request"@en ;
+   samm:description "The focus of the data model is on standardizing the exchange of warranty information within the Catena-X network. This issue primarily affects suppliers who do not receive quality data from their customers (OEMs) and do not exchange data with their own suppliers (Tier 2 - n). These suppliers receive warranty claims from their customers (OEMs) at regular or irregular intervals. Due to a lack of “real” quality data, these claims are used to derive a quality analysis of the faulty components. "@en ;
+   samm:properties ( :claimId :billingId :billingDate :repairIndicator [ samm:property :recoveryType; samm:optional true ] [ samm:property :warrantyType; samm:optional true ] [ samm:property :recoveryGroupCode; samm:optional true ] [ samm:property :recoveryGroupName; samm:optional true ] :billedCurrency :billedAmount :billedTF [ samm:property :repairCostsTF100; samm:optional true ] [ samm:property :materialCosts; samm:optional true ] [ samm:property :laborCosts; samm:optional true ] [ samm:property :otherCosts; samm:optional true ] [ samm:property :hourlyRate; samm:optional true ] [ samm:property :globalLaborCode; samm:optional true ] [ samm:property :globalLaborCodeDesc; samm:optional true ] [ samm:property :baseLaborTime; samm:optional true ] [ samm:property :otherLaborTime; samm:optional true ] [ samm:property :supplementalLaborTime; samm:optional true ] [ samm:property :diagnosticLaborTime; samm:optional true ] [ samm:property :totalTime; samm:optional true ] ext-core:qualityTaskId [ samm:property ext-core:vehicleId; samm:optional true ] ext-core:anonymizedVIN [ samm:property ext-bpn:bpnsProperty; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:claimId a samm:Property ;
+   samm:preferredName "Claim Identifier"@en ;
+   samm:description "Each claim from this data provider has a unique claim ID. If you combine the BPNL of the data provider with this claim ID you get a unique claim ID in the data space."@en ;
+   samm:characteristic ext-core:UniqueID ;
+   samm:exampleValue "a214-13d6" .
+
+:billingId a samm:Property ;
+   samm:preferredName "Billing ID"@en ;
+   samm:description "A unique identifier for one billing. It is data provider individual."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "B123456789" .
+
+:billingDate a samm:Property ;
+   samm:preferredName "Billing date"@en ;
+   samm:description "References the date when the claim was billed. Date format: ISO (JJJJ-MM-DD)"@en ;
+   samm:characteristic ext-core:ISO8601LocalDate ;
+   samm:exampleValue "2025-01-15" .
+
+:repairIndicator a samm:Property ;
+   samm:preferredName "Repair Indicator"@en ;
+   samm:description "A unique identifier for one type of activity. It is data provider individual."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Regular" .
+
+:recoveryType a samm:Property ;
+   samm:preferredName "Recovery type"@en ;
+   samm:description "A unique identifier for one type of recovery. It is data provider individual."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Standard" .
+
+:warrantyType a samm:Property ;
+   samm:preferredName "Warranty type"@en ;
+   samm:description "A unique identifier for one type of warranty. It is data provider individual."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Vehicle warranty" .
+
+:recoveryGroupCode a samm:Property ;
+   samm:preferredName "Recovery group code"@en ;
+   samm:description "A unique code for one specific part family (technically similar to Product Groups)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "A258" .
+
+:recoveryGroupName a samm:Property ;
+   samm:preferredName "Recovery group name"@en ;
+   samm:description "A name for one specific part family (technically similar to Product Groups)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Part family A" .
+
+:billedCurrency a samm:Property ;
+   samm:preferredName "Billed currency"@en ;
+   samm:description "Billing currency according to ISO 4217 (latest version)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "EUR" .
+
+:billedAmount a samm:Property ;
+   samm:preferredName "billed Amount"@en ;
+   samm:description "Billing amount for the specific repair."@en ;
+   samm:characteristic :CurrencyCharacteristic ;
+   samm:exampleValue "1000.00"^^xsd:float .
+
+:billedTF a samm:Property ;
+   samm:preferredName "Billed technical factor"@en ;
+   samm:description "Technical Factor which is charged"@en ;
+   samm:characteristic :CurrencyCharacteristic ;
+   samm:exampleValue "100.00"^^xsd:float .
+
+:repairCostsTF100 a samm:Property ;
+   samm:preferredName "Repair costs technical factor 100"@en ;
+   samm:description "Cost for the repair - overall"@en ;
+   samm:characteristic :CurrencyCharacteristic ;
+   samm:exampleValue "1000.00"^^xsd:float .
+
+:materialCosts a samm:Property ;
+   samm:preferredName "Material costs"@en ;
+   samm:description "Cost for the repair - parts"@en ;
+   samm:characteristic :CurrencyCharacteristic ;
+   samm:exampleValue "200.00"^^xsd:float .
+
+:laborCosts a samm:Property ;
+   samm:preferredName "Labor costs"@en ;
+   samm:description "Labor costs for the repair"@en ;
+   samm:characteristic :CurrencyCharacteristic ;
+   samm:exampleValue "700.00"^^xsd:float .
+
+:otherCosts a samm:Property ;
+   samm:preferredName "Other costs"@en ;
+   samm:description "Cost for the repair - others (consumables, handling fees, etc.)"@en ;
+   samm:characteristic :CurrencyCharacteristic ;
+   samm:exampleValue "100.00"^^xsd:float .
+
+:hourlyRate a samm:Property ;
+   samm:preferredName "Hourly rate"@en ;
+   samm:description "Individual hourly rate per OEM / per country"@en ;
+   samm:characteristic :CurrencyCharacteristic ;
+   samm:exampleValue "100.00"^^xsd:float .
+
+:globalLaborCode a samm:Property ;
+   samm:preferredName "Global labor code"@en ;
+   samm:description "Code for OEM specific definition of the repair performed / billed"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "L968574" .
+
+:globalLaborCodeDesc a samm:Property ;
+   samm:preferredName "Global labor code description"@en ;
+   samm:description "Description for OEM specific definition of the repair performed / billed"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Replacement of Mickey Mouse" .
+
+:baseLaborTime a samm:Property ;
+   samm:preferredName "Base labor time"@en ;
+   samm:description "Labor time (minutes) - base labor"@en ;
+   samm:characteristic :BillableMinutesCharacteristic ;
+   samm:exampleValue "300"^^xsd:positiveInteger .
+
+:otherLaborTime a samm:Property ;
+   samm:preferredName "Other labor time"@en ;
+   samm:description "Labor time (minutes) - other"@en ;
+   samm:characteristic :BillableMinutesCharacteristic ;
+   samm:exampleValue "60"^^xsd:positiveInteger .
+
+:supplementalLaborTime a samm:Property ;
+   samm:preferredName "Supplemental labor time"@en ;
+   samm:description "Labor time (minutes) - supplemental"@en ;
+   samm:characteristic :BillableMinutesCharacteristic ;
+   samm:exampleValue "30"^^xsd:positiveInteger .
+
+:diagnosticLaborTime a samm:Property ;
+   samm:preferredName "Diagnostic labor time"@en ;
+   samm:description "Labor time (minutes) - diagnostic"@en ;
+   samm:characteristic :BillableMinutesCharacteristic ;
+   samm:exampleValue "30"^^xsd:positiveInteger .
+
+:totalTime a samm:Property ;
+   samm:preferredName "Total time"@en ;
+   samm:description "Labor time (minutes) - total"@en ;
+   samm:characteristic :BillableMinutesCharacteristic ;
+   samm:exampleValue "420"^^xsd:positiveInteger .
+
+:CurrencyCharacteristic a samm:Characteristic ;
+   samm:preferredName "Currency characteristic"@en ;
+   samm:description "Currency Characteristic is used for all currency related aspects having a positive float values"@en ;
+   samm:dataType xsd:float .
+
+:BillableMinutesCharacteristic a samm:Characteristic ;
+   samm:preferredName "Billable minutes characteristic"@en ;
+   samm:description "Characteristic used for time related values (minutes)"@en ;
+   samm:dataType xsd:positiveInteger .
+
