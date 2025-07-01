@@ -37,7 +37,7 @@
 @prefix ext-core: <urn:samm:io.catenax.shared.quality_core:1.0.0#> .
 
 :DiagnosticData a samm:Aspect ;
-   samm:description "For Catena-X(CX) business case Quality Management. Supported technical features: delta update feature, meta information feature and additionalInformationList key-value pairs. The supported model features are described in detail in the Catena-X Quality KIT. FleetDiagnostic data model is used to exchange digital trouble codes (DTC) which are read out from electronic control units (ECU). This model supports diagnostic sessions from workshops as well as over-the-air (OTA) diagnostic sessions. FleetDiagnostic data model can also be used to exchange whole interactive workshop diagnostic sessions in which procedures/commands are send to the car and an answer is coming back. As diagnostic data is coming from a vehicle manufacturer only vehicle manuacturer's set of part properties are integrated in this semantic model."@en ;
+   samm:description "For Catena-X(CX) business case Quality Management. Supported technical features: delta update feature, meta information feature and additionalInformationList key-value pairs. The supported model features are described in detail in the Catena-X Quality KIT. FleetDiagnostic data model is used to exchange digital trouble codes (DTC) which are read out from electronic control units (ECU). This model supports diagnostic sessions from workshops as well as over-the-air (OTA) diagnostic sessions. FleetDiagnostic data model can also be used to exchange whole interactive workshop diagnostic sessions in which procedures/commands are send to the car and an answer is coming back. As diagnostic data is coming from a vehicle manufacturer only vehicle manufacturer's set of part properties are integrated in this semantic model."@en ;
    samm:properties ( :diagnosticSessions [ samm:property ext-core:metaInformation; samm:optional true ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
@@ -45,9 +45,9 @@
 :diagnosticSessions a samm:Property ;
    samm:preferredName "Diagnostic sessions"@en ;
    samm:description "A list of diagnostic sessions."@en ;
-   samm:characteristic :Sessions .
+   samm:characteristic :SessionList .
 
-:Sessions a samm-c:List ;
+:SessionList a samm-c:List ;
    samm:preferredName "Diagnostic sessions"@en ;
    samm:description "A list of diagnostic sessions coming from multiple vehicles."@en ;
    samm:dataType :DiagnosticSession .
@@ -90,12 +90,12 @@
 :ecus a samm:Property ;
    samm:preferredName "ECU list"@en ;
    samm:description "List of ECUs that had an entry in its internal failure memory during the diagnostic session"@en ;
-   samm:characteristic :Ecus .
+   samm:characteristic :EcuList .
 
 :procedures a samm:Property ;
    samm:preferredName "Procedures"@en ;
    samm:description "List of procedures / sub-procedures."@en ;
-   samm:characteristic :Procedures .
+   samm:characteristic :ProceduresList .
 
 :sessionEnd a samm:Property ;
    samm:preferredName "Selection end timestamp"@en ;
@@ -115,14 +115,14 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "3.5.0001.001" .
 
-:Ecus a samm-c:List ;
-   samm:preferredName "ECU List"@en ;
+:EcuList a samm-c:List ;
+   samm:preferredName "A list of electronic control units"@en ;
    samm:description "A list of electronic control units in this diagnostic session."@en ;
    samm:dataType :ECU .
 
-:Procedures a samm-c:List ;
-   samm:preferredName "Procedures"@en ;
-   samm:description "A list of procedure calls in the diagnostic software."@en ;
+:ProceduresList a samm-c:List ;
+   samm:preferredName "Procedures list"@en ;
+   samm:description "A list of procedure calls from the diagnostic software to the vehicle."@en ;
    samm:dataType :ProcedureCall .
 
 :ECU a samm:Entity ;
@@ -143,8 +143,9 @@
    samm:exampleValue "2022-01-30T14:45:54"^^xsd:dateTime .
 
 :dtcs a samm:Property ;
-   samm:description "list of diagnostic trouble codes"@en ;
-   samm:characteristic :DTCs .
+   samm:preferredName "A list of DTCs"@en ;
+   samm:description "A list of diagnostic trouble codes."@en ;
+   samm:characteristic :DTCList .
 
 :procedureID a samm:Property ;
    samm:preferredName "Procedure identifier"@en ;
@@ -181,7 +182,7 @@
    samm:description "A list of sub-procedures"@en ;
    samm:characteristic :SubProcedures .
 
-:DTCs a samm-c:List ;
+:DTCList a samm-c:List ;
    samm:preferredName "DTC List"@en ;
    samm:description "A list of DTCs that are present in this diagnostic session."@en ;
    samm:dataType :DiagnosticTroubleCode .
@@ -258,7 +259,7 @@
    samm:exampleValue "15000"^^xsd:int .
 
 :occurenceMileageUnit a samm:Property ;
-   samm:preferredName "Occurence Mileage Unit"@en ;
+   samm:preferredName "Occurrence Mileage Unit"@en ;
    samm:description "Unit of occurrence mileage - either km or mi."@en ;
    samm:characteristic ext-core:MileageUnit ;
    samm:exampleValue "km" .
@@ -284,7 +285,7 @@
 :envConditions a samm:Property ;
    samm:preferredName "Environment Conditions"@en ;
    samm:description "A list of environment conditions: E.g. outside temperature measured by the vehicle, a specific value measured by on ECU, ...."@en ;
-   samm:characteristic :EnvironmentConditions .
+   samm:characteristic :EnvironmentalConditionsList .
 
 :Long a samm:Characteristic ;
    samm:preferredName "Long"@en ;
@@ -297,9 +298,9 @@
    samm:dataType xsd:string ;
    samm-c:values ( "Error" "Info" ) .
 
-:EnvironmentConditions a samm-c:List ;
-   samm:preferredName "Environment Conditions"@en ;
-   samm:description "A list of environment conditions, like surrounding temperature, rpm, ..."@en ;
+:EnvironmentalConditionsList a samm-c:List ;
+   samm:preferredName "Environmental Conditions"@en ;
+   samm:description "A list of environmental conditions, like surrounding temperature, rpm, ..."@en ;
    samm:dataType :EnvironmentCondition .
 
 :EnvironmentCondition a samm:Entity ;
@@ -326,7 +327,7 @@
    samm:exampleValue "RPM" .
 
 :conditionHexValue a samm:Property ;
-   samm:preferredName "Condition hex value"@en ;
+   samm:preferredName "Hex condition value"@en ;
    samm:description "Hex value of the condition."@en ;
    samm:characteristic ext-core:HexValueTrait ;
    samm:exampleValue "0x46346347af" .
@@ -338,6 +339,7 @@
    samm:exampleValue "2000.0"^^xsd:double .
 
 :conditionTextValue a samm:Property ;
+   samm:preferredName "Textual condition value"@en ;
    samm:description "Text value of the condition."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "ECU has reached abnormal status." .
