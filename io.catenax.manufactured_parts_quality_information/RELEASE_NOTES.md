@@ -4,7 +4,7 @@ All notable changes to this model will be documented in this file.
 ## [Unreleased]
 - Version 2.0.0 of model is deprecated. It has a wrong regex for BPNS validation from the old shared model for BPNS trait.
 
-## [3.0.0] - 2025-05-05
+## [3.0.0] - 2025-07-07
 A conversion table from previous version 2.1.0 to 3.0.0 of this model is provided with the updated KIT Quality Management for CX release Saturn.
 
 ### Added
