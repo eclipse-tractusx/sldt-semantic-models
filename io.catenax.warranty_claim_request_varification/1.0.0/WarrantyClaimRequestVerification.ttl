@@ -23,8 +23,6 @@
 # SPDX-License-Identifier: CC-BY-4.0
 #######################################################################
 
-
-
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -38,14 +36,14 @@
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 
 :WarrantyClaimRequestVerification a samm:Aspect ;
-   samm:preferredName "Warranty Claim Request"@en ;
-   samm:description "For Catena-X business case Quality Management. This model is used to send back the answer for a WarrantyClaimRequest from a component manufacturer to a vehicle manufacturer (OEM). "@en ;
-   samm:properties ( :claimId ext-core:qualityTaskId ext-number:bpnlProperty [ samm:property ext-core:vehicleId; samm:optional true ] ext-core:anonymizedVIN :billingId :billingDate :agreedTechnicalFactor :debitValueJustified :billedCurrency :claimPlausible :claimImplausible :billingStatus :statementDate :statementReason ) ;
+   samm:preferredName "Warranty Claim Request Verification"@en ;
+   samm:description "Aspect Model for the Quality Management business case. This model is used to send back the answer for a WarrantyClaimRequest from a component manufacturer to a vehicle manufacturer (OEM). "@en ;
+   samm:properties ( :claimId :billingId :billingDate :agreedTechnicalFactor :debitValueJustified :billedCurrency :claimPlausible :claimImplausible :billingStatus :statementDate :statementReason ext-core:qualityTaskId ext-number:bpnlProperty [ samm:property ext-core:vehicleId; samm:optional true ] ext-core:anonymizedVIN ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
 :claimId a samm:Property ;
-   samm:preferredName "Claim ID"@en ;
+   samm:preferredName "Claim Identifier"@en ;
    samm:description "Each claim from this data provider has a unique claim ID.If you combine the BPNL of the data provider with this claim ID you get a unique claim ID in the data space."@en ;
    samm:characteristic ext-core:UniqueID ;
    samm:exampleValue "a214-13d6" .
@@ -94,8 +92,8 @@
 
 :billingStatus a samm:Property ;
    samm:preferredName "Billing Status"@en ;
-   samm:description "Status of the bill based on claim_request_verification assessment (approved / disputed / …)"@en ;
-   samm:characteristic samm-c:Text ;
+   samm:description "Status of the bill based on claim_request_verification assessment (approved / disputed)"@en ;
+   samm:characteristic :BillingStatusEnumeration ;
    samm:exampleValue "approved" .
 
 :statementDate a samm:Property ;
@@ -121,6 +119,12 @@
    samm-c:baseCharacteristic :Float ;
    samm-c:constraint :GreaterZero .
 
+:BillingStatusEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Billing Status Enumeration"@en ;
+   samm:description "An enumeration to describe whether the billing status is approved or disputed"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "approved" "disputed" ) .
+
 :Float a samm:Characteristic ;
    samm:preferredName "Float"@en ;
    samm:description "Defines a float number."@en ;
@@ -132,7 +136,4 @@
    samm-c:minValue "0"^^xsd:float ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:LESS_THAN .
-
-:BillableMinutesCharacteristic a samm:Characteristic ;
-   samm:dataType xsd:positiveInteger .
 
