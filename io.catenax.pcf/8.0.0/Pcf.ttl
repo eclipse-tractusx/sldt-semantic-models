@@ -32,7 +32,7 @@
    samm:preferredName "Product (Carbon) Footprint"@en ;
    samm:description "A Product (Carbon) Footprint represents the carbon footprint of a product with values as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the WBCSD (World Business Council for Sustainable Development) Pathfinder framework and the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD/ PACT initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:properties ( [ samm:property :id; samm:payloadName "id" ] [ samm:property :specVersion; samm:payloadName "specVersion" ] [ samm:property :partialFullPcf; samm:payloadName "partialFullPcf" ] [ samm:property :precedingPfIds; samm:optional true; samm:payloadName "precedingPfIds" ] [ samm:property :version; samm:payloadName "version" ] [ samm:property :created; samm:payloadName "created" ] [ samm:property :status; samm:payloadName "extWBCSD_pfStatus" ] [ samm:property :validityPeriodStart; samm:optional true; samm:payloadName "validityPeriodStart" ] [ samm:property :validityPeriodEnd; samm:payloadName "validityPeriodEnd" ] [ samm:property :pcfLegalStatement; samm:optional true; samm:payloadName "pcfLegalStatement" ] [ samm:property :companyName; samm:payloadName "companyName" ] [ samm:property :companyIds; samm:payloadName "companyIds" ] [ samm:property :productDescription; samm:optional true; samm:payloadName "productDescription" ] [ samm:property :productIds; samm:payloadName "productIds" ] [ samm:property :productNameCompany; samm:payloadName "productName" ] [ samm:property :pcf; samm:payloadName "pcf" ] [ samm:property :pcfLegalStatement; samm:optional true; samm:payloadName "pcfLegalStatement" ] [ samm:property :productClassifications; samm:optional true ] :retroOrProspectivePcfType :ccsTechnologicalCO2CaptureIncluded ) ;
+   samm:properties ( [ samm:property :id; samm:payloadName "id" ] [ samm:property :specVersion; samm:payloadName "specVersion" ] [ samm:property :partialFullPcf; samm:payloadName "partialFullPcf" ] [ samm:property :precedingPfIds; samm:optional true; samm:payloadName "precedingPfIds" ] [ samm:property :version; samm:payloadName "version" ] [ samm:property :created; samm:payloadName "created" ] [ samm:property :status; samm:payloadName "status" ] [ samm:property :validityPeriodStart; samm:optional true; samm:payloadName "validityPeriodStart" ] [ samm:property :validityPeriodEnd; samm:payloadName "validityPeriodEnd" ] [ samm:property :pcfLegalStatement; samm:optional true; samm:payloadName "pcfLegalStatement" ] [ samm:property :companyName; samm:payloadName "companyName" ] [ samm:property :companyIds; samm:payloadName "companyIds" ] [ samm:property :productDescription; samm:optional true; samm:payloadName "productDescription" ] [ samm:property :productIds; samm:payloadName "productIds" ] [ samm:property :productNameCompany; samm:payloadName "productNameCompany" ] [ samm:property :pcf; samm:payloadName "pcf" ] [ samm:property :pcfLegalStatement; samm:optional true; samm:payloadName "pcfLegalStatement" ] [ samm:property :productClassifications; samm:optional true ] :retroOrProspectivePcfType :ccsTechnologicalCO2CaptureIncluded ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -115,7 +115,7 @@
    samm:description "Mandatory: Non-empty set of Uniform Resource Names (URN). Each value is supposed to uniquely identify the product (carbon) footprint data owner as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical specifications for PCF Data Exchange (Version 2.1.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. For Catena-X Industry Core compliance the set of URNs must contain at least the Business Partner Number Legal Entity (BPNL) in the specified format urn:bpn:id:BPNL[a-zA-Z0-9]{12}. "@en ;
    samm:see <urn:samm:io.catenax.shared.business_partner_number:2.0.0#bpnlProperty> ;
    samm:characteristic :IdsTrait ;
-   samm:exampleValue "urn:bpn:id:BPNL000000000DW"^^xsd:anyURI .
+   samm:exampleValue ( "urn:bpn:BPNL000000000DWF"^^xsd:string) .
 
 :productDescription a samm:Property ;
    samm:preferredName "Product Description"@en ;
@@ -128,8 +128,8 @@
    samm:preferredName "Product IDs"@en ;
    samm:description "Mandatory: Non-empty set of product identifiers. Each value is supposed to uniquely identify the product as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical specifications for PCF Data Exchange (Version 2.1.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. In Catena-X productId corresponds with Industry Core manufacturerPartId."@en ;
    samm:see <urn:samm:io.catenax.part_type_information:1.0.0#manufacturerPartId> ;
-   samm:characteristic :NonEmptyStringTrait ;
-   samm:exampleValue "urn:gtin:4712345060507" .
+   samm:characteristic :IdsTrait ;
+   samm:exampleValue ( "urn:mycompany.com:product-id:401765" "urn:mysupplier.com:SupplierComponent-id:ABCD1234" "urn:registry.cas.org:cas-number:71-43-2") .
 
 :productNameCompany a samm:Property ;
    samm:preferredName "Product Trade Name"@en ;
@@ -200,7 +200,8 @@
    samm:preferredName "IDs Trait"@en ;
    samm:description "Trait for URIs (Uniform Resource Identifiers)."@en ;
    samm-c:baseCharacteristic :IdSet ;
-   samm-c:constraint :NonEmptySetConstraint .
+   samm-c:constraint :NonEmptySetConstraint ; 
+   samm:exampleValue ( "urn:bpn:BPNL000000000DWF"^^xsd:string) .
 
 :CarbonFootprint a samm-c:SingleEntity ;
    samm:preferredName "PCF (Product Carbon Footprint) Characteristic"@en ;
@@ -237,27 +238,28 @@
 :NonEmptySetConstraint a samm-c:LengthConstraint ;
    samm:preferredName "Non Empty Set Constraint"@en ;
    samm:description "Constraint for defining a non-empty set of URIs (Uniform Resource Identifieres)."@en ;
-   samm-c:minValue "1"^^xsd:nonNegativeInteger .
+   samm-c:minValue "1"^^xsd:nonNegativeInteger ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST .
 
 :PcfEntity a samm:Entity ;
    samm:preferredName "PCF (Product Carbon Footprint) Entity"@en ;
    samm:description "Entity for defining a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:properties ( [ samm:property :declaredUnit; samm:payloadName "declaredUnit" ] [ samm:property :unitaryProductAmount; samm:payloadName "unitaryProductAmount" ] [ samm:property :productMassPerDeclaredUnit; samm:payloadName "productMassPerDeclaredUnit" ] [ samm:property :exemptedEmissionsPercent; samm:payloadName "exemptedEmissionsPercent" ] [ samm:property :exemptedEmissionsDescription; samm:optional true; samm:payloadName "exemptedEmissionsDescription" ] [ samm:property :boundaryProcessesDescription; samm:optional true; samm:payloadName "boundaryProcessesDescription" ] [ samm:property :geographyCountrySubdivision; samm:optional true; samm:payloadName "geographyCountrySubdivision" ] [ samm:property :geographyCountry; samm:optional true; samm:payloadName "geographyCountry" ] [ samm:property :geographyRegionOrSubregion; samm:payloadName "geographyRegionOrSubregion" ] [ samm:property :referencePeriodStart; samm:payloadName "referencePeriodStart" ] [ samm:property :referencePeriodEnd; samm:payloadName "referencePeriodEnd" ] [ samm:property :crossSectoralStandardsUsed; samm:payloadName "crossSectoralStandardsUsed" ] [ samm:property :productOrSectorSpecificRules; samm:payloadName "productOrSectorSpecificRules" ] [ samm:property :ipccCharacterizationFactors; samm:payloadName "extWBCSD_characterizationFactors" ] [ samm:property :allocationRulesDescription; samm:optional true; samm:payloadName "extWBCSD_allocationRulesDescription" ] [ samm:property :allocationWasteIncineration; samm:payloadName "extTFS_allocationWasteIncineration" ] [ samm:property :primaryDataShare; samm:optional true; samm:payloadName "primaryDataShare" ] [ samm:property :secondaryEmissionFactorSources; samm:payloadName "secondaryEmissionFactorSources" ] [ samm:property :dqi; samm:optional true; samm:payloadName "dataQualityRating" ] [ samm:property :packagingEmissionsIncluded; samm:payloadName "extWBCSD_packagingEmissionsIncluded" ] [ samm:property :pcfExcludingBiogenicUptake; samm:payloadName "pcfExcludingBiogenic" ] [ samm:property :pcfIncludingBiogenicUptake; samm:payloadName "pcfIncludingBiogenic" ] [ samm:property :fossilGhgEmissions; samm:optional true; samm:payloadName "fossilGhgEmissions" ] [ samm:property :biogenicNonCO2Emissions; samm:optional true; samm:payloadName "biogenicCarbonEmissionsOtherThanCO2" ] [ samm:property :biogenicCarbonWithdrawal; samm:optional true; samm:payloadName "biogenicCarbonWithdrawal" ] [ samm:property :landUseChangeGhgEmissions; samm:optional true; samm:payloadName "dlucGhgEmissions" ] [ samm:property :aircraftGhgEmissions; samm:optional true; samm:payloadName "aircraftGhgEmissions" ] [ samm:property :packagingPcfExcludingBiogenicUptake; samm:optional true; samm:payloadName "extWBCSD_packagingGhgEmissions" ] [ samm:property :distributionStagePcfExcludingBiogenicUptake; samm:optional true; samm:payloadName "distributionStagePcfExcludingBiogenicUptake" ] [ samm:property :distributionStagePcfIncludingBiogenicUptake; samm:optional true; samm:payloadName "distributionStagePcfIncludingBiogenicUptake" ] [ samm:property :distributionStageFossilGhgEmissions; samm:optional true; samm:payloadName "distributionStageFossilGhgEmissions" ] [ samm:property :distributionStageBiogenicNonCO2Emissions; samm:optional true; samm:payloadName "distributionStageBiogenicNonCO2Emissions" ] [ samm:property :distributionStageBiogenicCarbonWithdrawal; samm:optional true; samm:payloadName "distributionStageBiogenicCarbonWithdrawal" ] [ samm:property :distributionStageLandUseChangeGhgEmissions; samm:optional true; samm:payloadName "extTFS_distributionStageLandUseChangeGhgEmissions" ] [ samm:property :carbonContentTotal; samm:optional true; samm:payloadName "carbonContentTotal" ] [ samm:property :fossilCarbonContent; samm:optional true; samm:payloadName "extWBCSD_fossilCarbonContent" ] [ samm:property :biogenicCO2Uptake; samm:optional true; samm:payloadName "carbonContentBiogenic" ] [ samm:property :distributionStageAircraftGhgEmissions; samm:optional true; samm:payloadName "distributionStageAircraftGhgEmissions" ] [ samm:property :allocationRecycledCarbon; samm:optional true ] :massBalancingUsed [ samm:property :freeAttributionInMassBalancing; samm:optional true ] [ samm:property :massBalancingCertificateScheme; samm:optional true ] [ samm:property :programCertificationShare; samm:optional true ] [ samm:property :productVerificationShare3rdParty; samm:optional true ] [ samm:property :productVerificationShare2ndParty; samm:optional true ] [ samm:property :productVerificationShare1stParty; samm:optional true ] :packagingPcfIncludingBiogenicUptake [ samm:property :packagingFossilGhgEmissions; samm:optional true ] [ samm:property :packagingBiogenicNonCO2Emissions; samm:optional true ] [ samm:property :packagingAircraftGhgEmissions; samm:optional true ] [ samm:property :packagingLandUseChangeGhgEmissions; samm:optional true ] [ samm:property :packagingLandManagementBiogenicCO2Emissions; samm:optional true ] [ samm:property :packagingLandManagementBiogenicCO2Removals; samm:optional true ] [ samm:property :packagingAircraftGhgEmissions; samm:optional true ] [ samm:property :packagingBiogenicCO2Uptake; samm:optional true ] :distributionStageIncluded [ samm:property :distributionStageBiogenicCO2Uptake; samm:optional true ] [ samm:property :distributionStageLandManagementBiogenicCO2Emissions; samm:optional true ] [ samm:property :distributionStageLandManagementBiogenicCO2Removals; samm:optional true ] [ samm:property :biogenicCarbonContent; samm:optional true ] [ samm:property :attestationType; samm:optional true ] [ samm:property :standardName; samm:optional true ] [ samm:property :attestationStandard; samm:optional true ] [ samm:property :attestationOfConformanceId; samm:optional true ] [ samm:property :providerName; samm:optional true ] [ samm:property :attestationOfConformanceLink; samm:optional true ] [ samm:property :providerId; samm:optional true ] [ samm:property :completedAt; samm:optional true ] ) .
+   samm:properties ( [ samm:property :declaredUnitOfMeasurement; samm:payloadName "declaredUnitOfMeasurement" ] [ samm:property :declaredUnitAmount; samm:payloadName "declaredUnitAmount" ] [ samm:property :productMassPerDeclaredUnit; samm:payloadName "productMassPerDeclaredUnit" ] [ samm:property :exemptedEmissionsPercent; samm:payloadName "exemptedEmissionsPercent" ] [ samm:property :exemptedEmissionsDescription; samm:optional true; samm:payloadName "exemptedEmissionsDescription" ] [ samm:property :boundaryProcessesDescription; samm:optional true; samm:payloadName "boundaryProcessesDescription" ] [ samm:property :geographyCountrySubdivision; samm:optional true; samm:payloadName "geographyCountrySubdivision" ] [ samm:property :geographyCountry; samm:optional true; samm:payloadName "geographyCountry" ] [ samm:property :geographyRegionOrSubregion; samm:payloadName "geographyRegionOrSubregion" ] [ samm:property :referencePeriodStart; samm:payloadName "referencePeriodStart" ] [ samm:property :referencePeriodEnd; samm:payloadName "referencePeriodEnd" ] [ samm:property :crossSectoralStandardsUsed; samm:payloadName "crossSectoralStandardsUsed" ] [ samm:property :productOrSectorSpecificRules; samm:payloadName "productOrSectorSpecificRules" ] [ samm:property :ipccCharacterizationFactors; samm:payloadName "ipccCharacterizationFactors" ] [ samm:property :allocationRulesDescription; samm:optional true; samm:payloadName "allocationRulesDescription" ] [ samm:property :allocationWasteIncineration; samm:payloadName "allocationWasteIncineration" ] [ samm:property :primaryDataShare; samm:optional true; samm:payloadName "primaryDataShare" ] [ samm:property :secondaryEmissionFactorSources; samm:payloadName "secondaryEmissionFactorSources" ] [ samm:property :dqi; samm:optional true; samm:payloadName "dataQualityRating" ] [ samm:property :packagingEmissionsIncluded; samm:payloadName "packagingEmissionsIncluded" ] [ samm:property :pcfExcludingBiogenicUptake; samm:payloadName "pcfExcludingBiogenicUptake" ] [ samm:property :pcfIncludingBiogenicUptake; samm:payloadName "pcfIncludingBiogenicUptake" ] [ samm:property :fossilGhgEmissions; samm:optional true; samm:payloadName "fossilGhgEmissions" ] [ samm:property :biogenicNonCO2Emissions; samm:optional true; samm:payloadName "biogenicNonCO2Emissions" ] [ samm:property :biogenicCarbonWithdrawal; samm:optional true; samm:payloadName "biogenicCarbonWithdrawal" ] [ samm:property :landUseChangeGhgEmissions; samm:optional true; samm:payloadName "landUseChangeGhgEmissions" ] [ samm:property :aircraftGhgEmissions; samm:optional true; samm:payloadName "aircraftGhgEmissions" ] [ samm:property :packagingPcfExcludingBiogenicUptake; samm:optional true; samm:payloadName "packagingPcfExcludingBiogenicUptake" ] [ samm:property :distributionStagePcfExcludingBiogenicUptake; samm:optional true; samm:payloadName "distributionStagePcfExcludingBiogenicUptake" ] [ samm:property :distributionStagePcfIncludingBiogenicUptake; samm:optional true; samm:payloadName "distributionStagePcfIncludingBiogenicUptake" ] [ samm:property :distributionStageFossilGhgEmissions; samm:optional true; samm:payloadName "distributionStageFossilGhgEmissions" ] [ samm:property :distributionStageBiogenicNonCO2Emissions; samm:optional true; samm:payloadName "distributionStageBiogenicNonCO2Emissions" ] [ samm:property :distributionStageLandUseChangeGhgEmissions; samm:optional true; samm:payloadName "distributionStageLandUseChangeGhgEmissions" ] [ samm:property :carbonContentTotal; samm:optional true; samm:payloadName "carbonContentTotal" ] [ samm:property :fossilCarbonContent; samm:optional true; samm:payloadName "extWBCSD_fossilCarbonContent" ] [ samm:property :biogenicCO2Uptake; samm:optional true; samm:payloadName "biogenicCO2Uptake" ] [ samm:property :distributionStageAircraftGhgEmissions; samm:optional true; samm:payloadName "distributionStageAircraftGhgEmissions" ] [ samm:property :allocationRecycledCarbon; samm:optional true ] :massBalancingUsed [ samm:property :freeAttributionInMassBalancing; samm:optional true ] [ samm:property :massBalancingCertificateScheme; samm:optional true ] [ samm:property :programCertificationShare; samm:optional true ] [ samm:property :productVerificationShare3rdParty; samm:optional true ] [ samm:property :productVerificationShare2ndParty; samm:optional true ] [ samm:property :productVerificationShare1stParty; samm:optional true ] :packagingPcfIncludingBiogenicUptake [ samm:property :packagingFossilGhgEmissions; samm:optional true ] [ samm:property :packagingBiogenicNonCO2Emissions; samm:optional true ] [ samm:property :packagingAircraftGhgEmissions; samm:optional true ] [ samm:property :packagingLandUseChangeGhgEmissions; samm:optional true ] [ samm:property :packagingLandManagementBiogenicCO2Emissions; samm:optional true ] [ samm:property :landManagementBiogenicCO2Removals; samm:optional true ] [ samm:property :landManagementBiogenicCO2Emissions; samm:optional true ] [ samm:property :packagingLandManagementBiogenicCO2Removals; samm:optional true ] [ samm:property :packagingAircraftGhgEmissions; samm:optional true ] [ samm:property :packagingBiogenicCO2Uptake; samm:optional true ] :distributionStageIncluded [ samm:property :distributionStageBiogenicCO2Uptake; samm:optional true ] [ samm:property :distributionStageLandManagementBiogenicCO2Emissions; samm:optional true ] [ samm:property :distributionStageLandManagementBiogenicCO2Removals; samm:optional true ] [ samm:property :biogenicCarbonContent; samm:optional true ] [ samm:property :attestationType; samm:optional true ] [ samm:property :standardName; samm:optional true ] [ samm:property :attestationStandard; samm:optional true ] [ samm:property :attestationOfConformanceId; samm:optional true ] [ samm:property :providerName; samm:optional true ] [ samm:property :attestationOfConformanceLink; samm:optional true ] [ samm:property :providerId; samm:optional true ] [ samm:property :completedAt; samm:optional true ] ) .
 
-:declaredUnit a samm:Property ;
+:declaredUnitOfMeasurement a samm:Property ;
    samm:preferredName "Unit of measurement"@en ;
    samm:description "Mandatory: Unit of analysis of a product in context of the PCF (product carbon footprint) as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. In Catena-X for example list of valid units includes \"piece\"."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
    samm:characteristic :DeclaredUnitOfMeasurementCharacteristic ;
    samm:exampleValue "kilogram" .
 
-:unitaryProductAmount a samm:Property ;
+:declaredUnitAmount a samm:Property ;
    samm:preferredName "Unitary Product Amount"@en ;
    samm:description "Mandatory: Amount of units contained within a product in context of the PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
    samm:characteristic :StrictlyPositiveDecimalTrait ;
-   samm:exampleValue "1000.0"^^xsd:float .
+   samm:exampleValue "1.0"^^xsd:float .
 
 :productMassPerDeclaredUnit a samm:Property ;
    samm:preferredName "Product mass [kg] per declared unit amount"@en ;
@@ -456,12 +458,6 @@
    samm:characteristic :PositiveEmissionsTrait ;
    samm:exampleValue "0.00"^^xsd:decimal .
 
-:distributionStageBiogenicCarbonWithdrawal a samm:Property ;
-   samm:preferredName "Distribution Stage Biogenic Carbon Withdrawal"@en ;
-   samm:description "Optional: GWP (Global Warming Potential) of biogenic CO2-withdrawal in distribution stage (biogenic CO2 contained in the product) as specified in the Catena-X PCF Rulebook (Version 3.0.0)."@en ;
-   samm:characteristic :NegativeEmissionsTrait ;
-   samm:exampleValue "0.0"^^xsd:decimal .
-
 :distributionStageLandUseChangeGhgEmissions a samm:Property ;
    samm:preferredName "Distribution stage  GWP land use change (LUC, excluding iLUC)"@en ;
    samm:description "Position E: Emissions from LUC constitute a release of GHG emissions due to a change in land use from one land use category or subcategory to another, such as primary forest to agricultural land, or peat land (type of wetland) to cropland. This position encompasses dLUC (direct land use change) emissions. If that data is not available, companies should account for LUC using statistical land-use change (sLUC) emissions. iLUC emissions are excluded. Refer to PACT v3.0 for details."@en ;
@@ -489,7 +485,7 @@
    samm:exampleValue "-1.00"^^xsd:decimal .
 
 :distributionStageAircraftGhgEmissions a samm:Property ;
-   samm:preferredName "Distribution stage  GWP aviation emissions (production gate to customer gate if applicable)"@en ;
+   samm:preferredName "Distribution stage GWP aviation emissions (production gate to customer gate if applicable)"@en ;
    samm:description "Position H: Aviation emissions occurring in the reported distribution stage after the production gate until customer gate."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
    samm:characteristic :PositiveEmissionsTrait ;
@@ -594,7 +590,7 @@
    samm:preferredName "Packaging  GWP biogenic CO2-uptake (biogenic CO2 contained in the product)"@en ;
    samm:description "Position D (negative contribution): Biogenic CO2 uptake. The CO2 which was absorbed from the atmosphere during the growth period of the biomass and of which the C is now bound in the product as biogenic carbon content."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:characteristic :PositiveEmissionsTrait ;
+   samm:characteristic :NegativeEmissionsTrait ;
    samm:exampleValue "0.00"^^xsd:decimal .
 
 :distributionStageIncluded a samm:Property ;
@@ -606,7 +602,7 @@
 :distributionStageBiogenicCO2Uptake a samm:Property ;
    samm:preferredName "Distribution stage  GWP biogenic CO2-uptake (biogenic CO2 contained in the product)"@en ;
    samm:description "Position D (negative contributuion): Biogenic CO2 uptake. The CO2 which was absorbed from the atmosphere during the growth period of the biomass and of which the C is now bound in the product as biogenic carbon content."@en ;
-   samm:characteristic :PositiveOrNegativeEmission ;
+   samm:characteristic :NegativeEmission ;
    samm:exampleValue "0.00"^^xsd:decimal .
 
 :distributionStageLandManagementBiogenicCO2Emissions a samm:Property ;
@@ -847,8 +843,7 @@
    samm:preferredName "Positive Decimal Constraint"@en ;
    samm:description "Constraint for defining a decimal equal to or greater than zero."@en ;
    samm-c:minValue "0"^^xsd:decimal ;
-   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
-   samm-c:upperBoundDefinition samm-c:LESS_THAN .
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST .
 
 :ExemptedEmissionsPercentCharacteristic a samm-c:Quantifiable ;
    samm:preferredName "Exempted Emissions Percent Characteristic"@en ;
@@ -861,7 +856,7 @@
    samm:description "Characteristic for defining the percentage of emissions excluded from a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
    samm-c:minValue "0.0"^^xsd:decimal ;
-   samm-c:maxValue "5.0"^^xsd:decimal ;
+   samm-c:maxValue "10.0"^^xsd:decimal ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:AT_MOST .
 
@@ -913,7 +908,7 @@
    samm:preferredName "Data Quality Indicator"@en ;
    samm:description "Entity for defining a quantitative data quality indicator of a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:properties ( [ samm:property :coveragePercent; samm:optional true; samm:payloadName "coveragePercent" ] [ samm:property :technologicalDQR; samm:optional true; samm:payloadName "technologicalDQR" ] [ samm:property :temporalDQR; samm:optional true; samm:payloadName "temporalDQR" ] [ samm:property :geographicalDQR; samm:optional true; samm:payloadName "geographicalDQR" ] ) .
+   samm:properties ( [ samm:property :technologicalDQR; samm:optional true; samm:payloadName "technologicalDQR" ] [ samm:property :temporalDQR; samm:optional true; samm:payloadName "temporalDQR" ] [ samm:property :geographicalDQR; samm:optional true; samm:payloadName "geographicalDQR" ] ) .
 
 :PositiveEmission a samm-c:Quantifiable ;
    samm:preferredName "Positive Emission"@en ;
@@ -923,7 +918,7 @@
 
 :PositiveEmissionConstraint a samm-c:RangeConstraint ;
    samm:preferredName "PositiveEmissionConstraint"@en ;
-   samm:description "Only positive emission values (>0) are valid "@en ;
+   samm:description "Only positive emission values (>=0) are valid "@en ;
    samm-c:minValue "0.0"^^xsd:decimal ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:LESS_THAN .
@@ -950,7 +945,7 @@
    samm:description "Constarint to ensure ProgramCertificationShare is between  0-100"@en ;
    samm-c:minValue "0"^^xsd:decimal ;
    samm-c:maxValue "100"^^xsd:decimal ;
-   samm-c:lowerBoundDefinition samm-c:GREATER_THAN ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:LESS_THAN .
 
 :crossSectoralStandard a samm:Property ;
@@ -970,13 +965,6 @@
    samm:preferredName "Text"@en ;
    samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
    samm:characteristic samm-c:Text .
-
-:coveragePercent a samm:Property ;
-   samm:preferredName "Coverage Percent"@en ;
-   samm:description "Mandatory starting 2025: Percentage of PCF (Product Carbon Footprint) included in the data quality assessment based on the >5% emissions threshold as specified in the Catena-X PCF Rulebook (Version 3.0.0) in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. In Catena-X for example set to \"100\" per default."@en ;
-   samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:characteristic :PercentTrait ;
-   samm:exampleValue "100"^^xsd:decimal .
 
 :technologicalDQR a samm:Property ;
    samm:preferredName "Technological DQR (Data Quality Rating)"@en ;
@@ -1074,7 +1062,7 @@
 :landManagementBiogenicCO2Removals a samm:Property ;
    samm:preferredName "GWP land Management CO2 Removals"@en ;
    samm:description "Position G (negative contribution): Land management removals are net CO2 removals resulting from net increases to carbon stored in land-based carbon pools (biomass, dead organic matter and soil carbon pools) due to ongoing land management practices. This extra net carbon stock is gained over the crop rotation or crop cultivation cycle (e.g., multiple years for perennial crops and multiple years in a rotation that includes annual crops). Refer to PACT v3.0 for details."@en ;
-   samm:characteristic :PositiveEmissionsTrait ;
+   samm:characteristic :NegativeEmissionsTrait ;
    samm:exampleValue "0.00"^^xsd:decimal .
 
 :landManagementBiogenicCO2Emissions a samm:Property ;
@@ -1089,4 +1077,3 @@
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20231207/> ;
    samm:characteristic :PositiveEmissionsTrait ;
    samm:exampleValue "0.00"^^xsd:decimal .
-
