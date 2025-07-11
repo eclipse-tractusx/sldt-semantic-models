@@ -15,19 +15,18 @@
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
-@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <urn:samm:org.eclipse.esmf:2.0.0#> .
+@prefix : <urn:samm:io.catenax.us_tariff_information:1.0.0#> .
 @prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
-@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 
 :UsTariffInformation a samm:Aspect ;
    samm:preferredName "Us Tariff Information"@en ;
    samm:description "Information required for US tariff declaration"@en ;
-   samm:properties ( :materialList :catenaxId :partWeight ) ;
+   samm:properties ( :materialList :partId :partWeight ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -36,9 +35,9 @@
    samm:description "Includes all materials required by the data consumer to submit a U.S. tariff declaration for their component."@en ;
    samm:characteristic :MaterialListCollection .
 
-:catenaxId a samm:Property ;
-   samm:preferredName "Catena-X ID"@en ;
-   samm:description "The fully anonymous Catena-X ID of the serialized part, valid for the Catena-X dataspace."@en ;
+:partId a samm:Property ;
+   samm:preferredName "partId"@en ;
+   samm:description "The fully anonymous partId (catenaxId) of the serialized part, valid for the Catena-X dataspace."@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "580d3adf-1981-44a0-a214-13d6ceed9379" .
 
@@ -86,8 +85,9 @@
 
 :htsCode a samm:Property ;
    samm:preferredName "HTS Code"@en ;
-   samm:description "HTS code"@en ;
+   samm:description "Harmonized Tariff Schedule (HTS) code"@en ;
    samm:characteristic :HtsTrait ;
+   samm:see <https://hts.usitc.gov> ;
    samm:exampleValue "1234.56.7890" .
 
 :referenceNumber a samm:Property ;
@@ -98,8 +98,9 @@
 
 :htsCodingSystem a samm:Property ;
    samm:preferredName "HTS Coding System"@en ;
-   samm:description "Coding system according to which the HTS code was created"@en ;
+   samm:description "Coding system according to which the Harmonized Tariff Schedule (HTS) code was created"@en ;
    samm:characteristic :HtsCodingsSytemCharacteristic ;
+   samm:see <https://hts.usitc.gov> ;
    samm:exampleValue "HS" .
 
 :ProcessingListCollection a samm-c:Collection ;
@@ -128,7 +129,7 @@
 
 :HtsTrait a samm-c:Trait ;
    samm:preferredName "HTS Trait"@en ;
-   samm:description "HTS Trait"@en ;
+   samm:description "Harmonized Tariff Schedule (HTS) Trait"@en ;
    samm-c:baseCharacteristic :HtsCharacteristic ;
    samm-c:constraint :HtsRegularExpression .
 
@@ -138,18 +139,18 @@
    samm:dataType xsd:string .
 
 :HtsCodingsSytemCharacteristic a samm:Characteristic ;
-   samm:preferredName "Hts Codings Sytem Characteristic"@en ;
-   samm:description "Characteristic of the Hts Codings Sytem "@en ;
+   samm:preferredName "HTS Codings Sytem Characteristic"@en ;
+   samm:description "Characteristic of the Harmonized Tariff Schedule (HTS) Codings System."@en ;
    samm:dataType xsd:string .
 
 :ProcessingListEntity a samm:Entity ;
    samm:preferredName "Processing List Entity"@en ;
    samm:description "Entity of the processing property"@en ;
-   samm:properties ( :processingCountry :successor :processingType :processingId :certificateId ) .
+   samm:properties ( :processingCountry  [ samm:property :successor; samm:optional true ] :processingType :processingId [ samm:property :certificateId; samm:optional true ] ) .
 
 :OriginListEntity a samm:Entity ;
    samm:preferredName "Origin List Entity"@en ;
-   samm:description "Entiy of the origin property"@en ;
+   samm:description "Entity of the origin property"@en ;
    samm:properties ( :originWeight :valuePercentage :originCountry ) .
 
 :CurrencyCharacteristic a samm:Characteristic ;
@@ -179,7 +180,7 @@
 
 :processingCountry a samm:Property ;
    samm:preferredName "Processing Country"@en ;
-   samm:description "Processing Country"@en ;
+   samm:description "Processing Country (two letter country code that must conform to data type ISO 3166CC)"@en ;
    samm:characteristic :CountryTrait ;
    samm:exampleValue "US" .
 
@@ -204,7 +205,7 @@
    samm:preferredName "Certificate Id"@en ;
    samm:description "Certificate of the processing site"@en ;
    samm:characteristic :CertificateIdCharacteristic ;
-   samm:exampleValue "djhsoi918734627" .
+   samm:exampleValue "https://www.catena-x.net/certificates/93e4gfsef4Gg_r3ihjdsf" .
 
 :originWeight a samm:Property ;
    samm:preferredName "Origin Weight"@en ;
@@ -220,14 +221,14 @@
 
 :originCountry a samm:Property ;
    samm:preferredName "Origin Country"@en ;
-   samm:description "Country of origin for the material"@en ;
+   samm:description "Country of origin for the material (two letter country code that must conform to data type ISO 3166CC)"@en ;
    samm:characteristic :CountryTrait ;
    samm:exampleValue "DE" .
 
 :classificationType a samm:Property ;
    samm:preferredName "Classification type"@en ;
    samm:description "Standard according to which the material is classified"@en ;
-   samm:characteristic :ClassificationTypeCharacteristic ;
+   samm:characteristic :ClassificationTypeEnumeration ;
    samm:exampleValue "IMDS" .
 
 :classificationId a samm:Property ;
@@ -267,7 +268,7 @@
 :CertificateIdCharacteristic a samm:Characteristic ;
    samm:preferredName "Certificate Id Characteristic"@en ;
    samm:description "Characteristic of the Certificate Id"@en ;
-   samm:dataType xsd:string .
+   samm:dataType xsd:anyURI .
 
 :ValuePercentageCharacteristic a samm-c:Measurement ;
    samm:preferredName "Value Percentage Characteristic"@en ;
@@ -275,19 +276,20 @@
    samm:dataType xsd:decimal ;
    samm-c:unit samm-u:percent .
 
-:ClassificationTypeCharacteristic a samm:Characteristic ;
-   samm:preferredName "Classification Type Characteristic"@en ;
-   samm:description "Characteristic of the classificationType property"@en ;
-   samm:dataType xsd:string .
+:ClassificationTypeEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Enumeration for the Classification Type"@en ;
+   samm:description "Enumeration of the classification Type property"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "IMDS" "IHS" "ISO" ) .
 
 :ClassificationIdCharacteristic a samm:Characteristic ;
    samm:preferredName "Classification Id Characteristic"@en ;
-   samm:description "Characteristic of the Classification Id property"@en ;
+   samm:description "Characteristic of the classification Id property"@en ;
    samm:dataType xsd:string .
 
 :MaterialNameCharacteristic a samm:Characteristic ;
    samm:preferredName "Material name characteristic"@en ;
-   samm:description "Characteristic of material name property"@en ;
+   samm:description "Characteristic of materialName property"@en ;
    samm:dataType xsd:string .
 
 :CountryCharacteristic a samm:Characteristic ;
