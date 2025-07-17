@@ -1,0 +1,95 @@
+#######################################################################
+# Copyright (c) 2023 Robert Bosch GmbH
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 Siemens AG
+# Copyright (c) 2025 DENSO AUTOMOTIVE Deutschland GmbH
+# Copyright (c) 2025 WITTE Automotive GmbH
+# Copyright (c) 2025 Schaeffler Technologies AG & Co. KG
+# Copyright (c) 2025 Ford Werke GmbH
+#
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.parts_analyses:4.0.0#> .
+@prefix ext-core: <urn:samm:io.catenax.shared.quality_core:1.0.0#> .
+
+:PartsAnalyses a samm:Aspect ;
+   samm:preferredName "Parts Analysis"@en ;
+   samm:description "For Catena-X(CX) business case Quality Management. Supported technical features: delta update feature, meta information feature and additionalInformationList key-value pairs. The supported model features are described in detail in the Catena-X Quality KIT. PartsAnalyses (hint: analyses is plural of one analysis) data model is usd to exchange analysis results of parts. Assumption: If a Quality Task exist a random sample of parts are sent to parts manufacturer to analyze these parts for potential malfunction."@en ;
+   samm:properties ( :partsAnalyses [ samm:property ext-core:metaInformation; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:partsAnalyses a samm:Property ;
+   samm:preferredName "Parts Analyses"@en ;
+   samm:description "A list of analysis result of several parts."@en ;
+   samm:characteristic :PartsAnalysesList .
+
+:PartsAnalysesList a samm-c:List ;
+   samm:preferredName "Part Analyses List"@en ;
+   samm:description "A list for multiple part analyses"@en ;
+   samm:dataType :PartAnalysis .
+
+:PartAnalysis a samm:Entity ;
+   samm:extends ext-core:Part ;
+   samm:preferredName "Part Analysis"@en ;
+   samm:description "The analysis results of ONE part"@en ;
+   samm:properties ( :componentManufacturerAnalysisID ext-core:anonymizedVIN ext-core:qualityTaskId [ samm:property :catenaXPartnerAnalysisID; samm:optional true ] [ samm:property :isDefect; samm:optional true ] [ samm:property :resultsDescription; samm:optional true ] [ samm:property :status; samm:optional true ] [ samm:property ext-core:recordStatus; samm:optional true ] [ samm:property ext-core:additionalInformationList; samm:optional true ] ) .
+
+:isDefect a samm:Property ;
+   samm:preferredName "Part Defect Flag"@en ;
+   samm:description "True: Analysis turned out that analysed part is defect according part's specification."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:componentManufacturerAnalysisID a samm:Property ;
+   samm:preferredName "Component Manufacturer Analysis Identifier"@en ;
+   samm:description "Internal identifier for this analysis inside component manufacturer company."@en ;
+   samm:characteristic ext-core:UniqueID ;
+   samm:exampleValue "TIER-647439403403" .
+
+:catenaXPartnerAnalysisID a samm:Property ;
+   samm:preferredName "Catena-X Partner Analysis Identifier"@en ;
+   samm:description "The analysis identifier of your Catena-X partner company. Catena-X partner could be a vehicle manufacturer."@en ;
+   samm:characteristic ext-core:UniqueID ;
+   samm:exampleValue "OE-43673473438" .
+
+:resultsDescription a samm:Property ;
+   samm:preferredName "Results Description"@en ;
+   samm:description "Detailed description of part analysis results."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Corrosion on component xyz in steering motor" .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "Status of this part analysis"@en ;
+   samm:characteristic :StatusCharacteristic ;
+   samm:exampleValue "new" .
+
+:StatusCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Status Characteristic"@en ;
+   samm:description "Enumeration of the different status values"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "in progress" "completed" "closed" ) .
