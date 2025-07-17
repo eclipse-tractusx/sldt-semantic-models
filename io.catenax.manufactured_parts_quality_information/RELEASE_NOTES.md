@@ -4,6 +4,23 @@ All notable changes to this model will be documented in this file.
 ## [Unreleased]
 - Version 2.0.0 of model is deprecated. It has a wrong regex for BPNS validation from the old shared model for BPNS trait.
 
+## [3.0.0] - 2025-07-07
+A conversion table from previous version 2.1.0 to 3.0.0 of this model is provided with the updated KIT Quality Management for CX release Saturn.
+
+### Added
+
+### Changed
+- to reduce redundancies in modelling some properties are now used form share quality core model
+- listOfManufacturedParts
+ from version 2.1.0 has changed to manufacturedParts only
+- using parts definition from shared quality core model (via samm:extends) to unify manufacturedParts properties 
+- at least one primary identifier per entity is now mandatory
+- manufacturedParts_partName and manufacturedParts_plant_plantIdentifier are now mandatory properties
+
+### Removed
+- listOfManufacturedParts_parentPartNumber,listOfManufacturedParts_parentSerialNumber,listOfManufacturedParts_productionLine
+
+
 ## [2.1.0] - 2024-02-19
 ### Added
 - optional properties added: parentSerialNumber and parentPartNumber
