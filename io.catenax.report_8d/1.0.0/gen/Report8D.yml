@@ -1,0 +1,817 @@
+---
+openapi: 3.0.3
+info:
+  title: 8D Report
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#Report8D"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/report8-d:
+    get:
+      tags:
+      - Report8D
+      operationId: getReport8D
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: "#/components/responses/Report8D"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    ISO8601LocalDate:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#ISO8601LocalDate"
+      description: "This regular expressions enforces a given date according ISO 8601\
+        \ local date. General format is YYYY-MM-DD. YYYY can be 0000..9999. MM-DD\
+        \ is checked together: months 01,03,05,07,08,10,12 must have DD in the range\
+        \ of  01..31 days, months 04,06,09,11 must have DD in the range of  01..30\
+        \ days, month 02 must have DD in the range of  01..29 days."
+      pattern: "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$|^NULL$"
+    Text:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    BpnlTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnlTrait"
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two alphanumeric letters."
+      pattern: "^BPNL[a-zA-Z0-9]{12}$"
+    EMailTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.contact_information:4.0.0#EMailTrait"
+      description: Regular expression for mail address as defined in W3C.
+      pattern: "^[a-zA-Z0-9.!#$%&?*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+    PhoneNumberTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.contact_information:4.0.0#PhoneNumberTrait"
+      description: "Constraint to allow only numbers, whitespaces and an optional\
+        \ leading + sign."
+      pattern: "^[+]?[0-9 ]+$"
+    ContactCharacteristic:
+      description: Characteristic for contacts
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#ContactCharacteristic"
+      type: object
+      properties:
+        companyName:
+          description: The name of the buyer company is the official registered name
+            of the buyer's business.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#companyName"
+          $ref: "#/components/schemas/Text"
+        street:
+          description: The street of the contact refers to the street address where
+            the contact's business is located.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#street"
+          $ref: "#/components/schemas/Text"
+        city:
+          description: The location of the contact indicates the city or town where
+            the contact operates.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#city"
+          $ref: "#/components/schemas/Text"
+        postalCode:
+          description: The postal code of the contact is the ZIP or postal code for
+            the contact's address.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#postalCode"
+          $ref: "#/components/schemas/Text"
+        country:
+          description: The country of the contact specifies the nation where the contact's
+            business is based.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#country"
+          $ref: "#/components/schemas/Text"
+        bpnlProperty:
+          description: Property based on a BPNL.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:2.0.0#bpnlProperty"
+          $ref: "#/components/schemas/BpnlTrait"
+        email:
+          description: An email address.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.contact_information:4.0.0#email"
+          $ref: "#/components/schemas/EMailTrait"
+        phoneNumber:
+          description: Phone number with country and area code.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.contact_information:4.0.0#phoneNumber"
+          $ref: "#/components/schemas/PhoneNumberTrait"
+      required:
+      - companyName
+      - city
+      - country
+      - bpnlProperty
+      - email
+    UniqueID:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#UniqueID"
+      description: This Characteristic is linked to a property that is unique. Please
+        see description of the linked property to get more details about uniqueness.
+    UuidV4Trait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait"
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    PartEntity:
+      description: Entity of the Characteristic PartCharacteristic
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#PartEntity"
+      type: object
+      properties:
+        supplierPartNumber:
+          description: The part number of the supplier is the identifier assigned
+            to the part by the supplier.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#supplierPartNumber"
+          $ref: "#/components/schemas/Text"
+        customerPartNumber:
+          description: The part number of the customer is the identifier assigned
+            to the part by the customer.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#customerPartNumber"
+          $ref: "#/components/schemas/Text"
+        orderNumber:
+          description: The order number of the part is the number associated with
+            the purchase order for the part.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#orderNumber"
+          $ref: "#/components/schemas/Text"
+        serialNumber:
+          description: Serial number of one specific part. A serial number is unique
+            within one company. If you combine serial number with BPNL of that company
+            than you get a unique identifier for this part in this data-space.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#serialNumber"
+          $ref: "#/components/schemas/UniqueID"
+        batchNumber:
+          description: A batch number describes all parts that were manufactured in
+            the same run.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#batchNumber"
+          $ref: "#/components/schemas/Text"
+        partName:
+          description: The name of a part. A part name is not unique - same kinds
+            of parts can have the same part name.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#partName"
+          $ref: "#/components/schemas/Text"
+        hwVersion:
+          description: The hardware version of this part.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#hwVersion"
+          $ref: "#/components/schemas/Text"
+        partId:
+          description: A unique part identifier in this data-space. Property is optional
+            as of now not all parts have this identifier.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#partId"
+          $ref: "#/components/schemas/UuidV4Trait"
+      required:
+      - customerPartNumber
+      - orderNumber
+    PartCharacteristic:
+      description: Characteristic of the property part
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#PartCharacteristic"
+      type: array
+      items:
+        $ref: "#/components/schemas/PartEntity"
+    AdditionalInformation:
+      description: One key:value information pair
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#AdditionalInformation"
+      type: object
+      properties:
+        key:
+          description: Key identifier for this additional information
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#key"
+          $ref: "#/components/schemas/Text"
+        value:
+          description: Value for this additional information
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#value"
+          $ref: "#/components/schemas/Text"
+      required:
+      - key
+      - value
+    AdditionalInformationList:
+      description: A list of additional information.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#AdditionalInformationList"
+      type: array
+      items:
+        $ref: "#/components/schemas/AdditionalInformation"
+    HeaderCharacteristic:
+      description: Characteristic for the property Header
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#HeaderCharacteristic"
+      type: object
+      properties:
+        complaintDate:
+          description: The date of claim is the specific date on which the claim was
+            filed.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#complaintDate"
+          $ref: "#/components/schemas/ISO8601LocalDate"
+        lastRevisionDate:
+          description: The date of last revision refers to the most recent date on
+            which the document was updated.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#lastRevisionDate"
+          $ref: "#/components/schemas/ISO8601LocalDate"
+        title:
+          description: The title of the 8D report is the official title given to the
+            8D report.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#title"
+          $ref: "#/components/schemas/Text"
+        customerComplaintId:
+          description: The customer specific ID of the complaint process is the identifier
+            assigned to the complaint process by the customer.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#customerComplaintId"
+          $ref: "#/components/schemas/Text"
+        supplierComplaintId:
+          description: The supplier specific ID of the complaint process is the identifier
+            assigned to the complaint process by the supplier.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#supplierComplaintId"
+          $ref: "#/components/schemas/Text"
+        customerContact:
+          description: The Contact of the customer
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#customerContact"
+          $ref: "#/components/schemas/ContactCharacteristic"
+        supplierContact:
+          description: The Contact of the supplier
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#supplierContact"
+          $ref: "#/components/schemas/ContactCharacteristic"
+        parts:
+          description: Information about the effected parts
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#parts"
+          $ref: "#/components/schemas/PartCharacteristic"
+        complaintLocation:
+          description: Defines the location of the complaint
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#complaintLocation"
+          $ref: "#/components/schemas/Text"
+        supplierId:
+          description: A unique identifier for one supplier inside data provider's
+            company. If you combine supplier ID with BPNL of data provider you get
+            a unique identifier for this supplier in this data space. As an alternative
+            you can use BPNL to identify a supplier.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#supplierId"
+          $ref: "#/components/schemas/UniqueID"
+        supplierName:
+          description: The name of one supplier company.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#supplierName"
+          $ref: "#/components/schemas/Text"
+        qualityTaskId:
+          description: A unique quality task identifier within this data-space.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#qualityTaskId"
+          $ref: "#/components/schemas/UuidV4Trait"
+        additionalInformationList:
+          description: You can use this key:value list for additional properties that
+            were not defined in this aspect model.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList"
+          $ref: "#/components/schemas/AdditionalInformationList"
+      required:
+      - complaintDate
+      - lastRevisionDate
+      - customerComplaintId
+      - customerContact
+      - parts
+      - supplierId
+    PersonCharacteristic:
+      description: Information about one specific person
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#PersonCharacteristic"
+      type: object
+      properties:
+        name:
+          description: The name of the person working on the 8D-report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#name"
+          $ref: "#/components/schemas/Text"
+        department:
+          description: The department of the person working on the 8D-report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#department"
+          $ref: "#/components/schemas/Text"
+        role:
+          description: The role in the company of the person working on the 8D-report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#role"
+          $ref: "#/components/schemas/Text"
+        phoneNumber:
+          description: Phone number with country and area code.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.contact_information:4.0.0#phoneNumber"
+          $ref: "#/components/schemas/PhoneNumberTrait"
+        email:
+          description: An email address.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.contact_information:4.0.0#email"
+          $ref: "#/components/schemas/EMailTrait"
+      required:
+      - name
+      - email
+    PersonEntity:
+      description: Information about one specific person
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#PersonCharacteristic"
+      type: object
+      properties:
+        name:
+          description: The name of the person working on the 8D-report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#name"
+          $ref: "#/components/schemas/Text"
+        department:
+          description: The department of the person working on the 8D-report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#department"
+          $ref: "#/components/schemas/Text"
+        role:
+          description: The role in the company of the person working on the 8D-report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#role"
+          $ref: "#/components/schemas/Text"
+        phoneNumber:
+          description: Phone number with country and area code.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.contact_information:4.0.0#phoneNumber"
+          $ref: "#/components/schemas/PhoneNumberTrait"
+        email:
+          description: An email address.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.contact_information:4.0.0#email"
+          $ref: "#/components/schemas/EMailTrait"
+      required:
+      - name
+      - email
+    TeamMemberList:
+      description: TeamMemberList
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#TeamMemberList"
+      type: array
+      items:
+        $ref: "#/components/schemas/PersonEntity"
+    StepD1Characteristic:
+      description: Characteristic for the step D1
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#StepD1Characteristic"
+      type: object
+      properties:
+        sponsor:
+          description: Sponsor of the 8D Report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#sponsor"
+          $ref: "#/components/schemas/PersonCharacteristic"
+        teamLeader:
+          description: team leader
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#teamLeader"
+          $ref: "#/components/schemas/PersonCharacteristic"
+        contactPerson:
+          description: contact person
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#contactPerson"
+          $ref: "#/components/schemas/PersonCharacteristic"
+        teamMembers:
+          description: Team members
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#teamMembers"
+          $ref: "#/components/schemas/TeamMemberList"
+      required:
+      - contactPerson
+    StepD2Characteristic:
+      description: Characteristic for the step D2
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#StepD2Characteristic"
+      type: object
+      properties:
+        symptomDescription:
+          description: Describes which symptoms lead to the claim
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#symptomDescription"
+          $ref: "#/components/schemas/Text"
+        problemDescription:
+          description: Describes the problem of the complaint and the consequences
+            that arise from it
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#problemDescription"
+          $ref: "#/components/schemas/Text"
+        errorType:
+          description: Describes the error type to be classified
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#errorType"
+          $ref: "#/components/schemas/Text"
+        riskAssessmentStarted:
+          description: Describes at what point the risk assessment was started - the
+            date as yyyy-mm-dd
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#riskAssessmentStarted"
+          $ref: "#/components/schemas/ISO8601LocalDate"
+        riskAssessmentUpdated:
+          description: Describes at what point the risk assessment was updated - the
+            date as yyyy-mm-dd
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#riskAssessmentUpdated"
+          $ref: "#/components/schemas/ISO8601LocalDate"
+        qualityTaskAttachmentId:
+          description: "Allows to link an quality task attachment with added information\
+            \ about the complaint e.g. dimensions, photos, production data,…."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#qualityTaskAttachmentId"
+          $ref: "#/components/schemas/UniqueID"
+        errorLocation:
+          description: Describes at which component or location the error occurred
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#errorLocation"
+          $ref: "#/components/schemas/Text"
+        additionalInformationList:
+          description: You can use this key:value list for additional properties that
+            were not defined in this aspect model.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList"
+          $ref: "#/components/schemas/AdditionalInformationList"
+      required:
+      - symptomDescription
+      - problemDescription
+      - riskAssessmentStarted
+    Percentage:
+      type: number
+      minimum: -2147483648
+      maximum: 2147483647
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#Percentage"
+      description: A number between 0 and 100
+    DescriptionofInterimContainmentAction:
+      description: Describes the immediate technical measure to resolve the quality
+        problem in the short term
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#DescriptionofInterimContainmentAction"
+      type: object
+      properties:
+        proofOfEffectiveness:
+          description: Explain how the effectiveness of this measure has been validated
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#proofOfEffectiveness"
+          $ref: "#/components/schemas/Text"
+        effectivenessResult:
+          description: Explain to which extend / percentage the measure is effective
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#effectivenessResult"
+          $ref: "#/components/schemas/Percentage"
+        introductionDate:
+          description: Definition of the date of introduction of the immediate measures
+            - the date as yyyy-mm-dd
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#introductionDate"
+          $ref: "#/components/schemas/ISO8601LocalDate"
+        responsiblePerson:
+          description: Person responsible for the implementation of the planned corrective
+            measure
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#responsiblePerson"
+          $ref: "#/components/schemas/Text"
+        riskOfImmediateMeasure:
+          description: Describes the risk of introduction an immediate measure
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#riskOfImmediateMeasure"
+          $ref: "#/components/schemas/Text"
+        methodForEffectivenessCheck:
+          description: Describes the method for testing and demonstrating effectiveness
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#methodForEffectivenessCheck"
+          $ref: "#/components/schemas/Text"
+      required:
+      - proofOfEffectiveness
+      - introductionDate
+    DescriptionOfInterimContainmentActionList:
+      description: A list of Descriptions of Interim Containment Actions
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#DescriptionOfInterimContainmentActionList"
+      type: array
+      items:
+        $ref: "#/components/schemas/DescriptionofInterimContainmentAction"
+    StepD3Characteristic:
+      description: Characteristic for the step D3
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#StepD3Characteristic"
+      type: object
+      properties:
+        descriptionOfInterimContainmentActions:
+          description: Describes interim containment action to resolve the quality
+            problem in the short term
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#descriptionOfInterimContainmentActions"
+          $ref: "#/components/schemas/DescriptionOfInterimContainmentActionList"
+        additionalInformationList:
+          description: You can use this key:value list for additional properties that
+            were not defined in this aspect model.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList"
+          $ref: "#/components/schemas/AdditionalInformationList"
+      required:
+      - descriptionOfInterimContainmentActions
+    TypeOfCausesEnumeration:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#TypeOfCausesEnumeration"
+      description: Describes the valid inputs for the aspect typeOfCausesEnumeration
+      enum:
+      - TUA
+      - TUN
+      - SUA
+      - SUN
+    Cause:
+      description: Describes a cause for the 8D Report
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#Cause"
+      type: object
+      properties:
+        typeOfCauses:
+          description: There are different types of causes which are defined in 4
+            different categories.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#typeOfCauses"
+          $ref: "#/components/schemas/TypeOfCausesEnumeration"
+        causeHypothesisDescription:
+          description: Describes the causal hypothesis
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#causeHypothesisDescription"
+          $ref: "#/components/schemas/Text"
+        verificationBy:
+          description: Name the person responsible for investigating the hypothesis
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#verificationBy"
+          $ref: "#/components/schemas/Text"
+        clarificationDate:
+          description: Determination of the date of clarification of the cause - the
+            date as yyyy-mm-dd
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#clarificationDate"
+          $ref: "#/components/schemas/ISO8601LocalDate"
+        result:
+          description: The result describes the outcome of a causal hypothesis
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#result"
+          $ref: "#/components/schemas/Text"
+        method:
+          description: Describes the method for forming the causal hypothesis
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#method"
+          $ref: "#/components/schemas/Text"
+        report:
+          description: Describes in detail the result of the investigated root cause
+            hypothesis
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#report"
+          $ref: "#/components/schemas/Text"
+        errorCauseCategory:
+          description: Describes the error cause category (ID) according to the VDA
+            error catalog
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#errorCauseCategory"
+          $ref: "#/components/schemas/Text"
+      required:
+      - typeOfCauses
+      - causeHypothesisDescription
+      - clarificationDate
+      - result
+    CauseList:
+      description: The Characteristic to describe a list of causes
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#CauseList"
+      type: array
+      items:
+        $ref: "#/components/schemas/Cause"
+    StepD4Characteristic:
+      description: Characteristic for the Step D4
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#StepD4Characteristic"
+      type: object
+      properties:
+        causes:
+          description: Describes and lists the root cause(s)
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#causes"
+          $ref: "#/components/schemas/CauseList"
+        additionalInformationList:
+          description: You can use this key:value list for additional properties that
+            were not defined in this aspect model.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList"
+          $ref: "#/components/schemas/AdditionalInformationList"
+      required:
+      - causes
+    StatusEnumeration:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#StatusEnumeration"
+      description: Defines valid values for the field Status
+      enum:
+      - closed
+      - open
+      - in progress
+    Measure:
+      description: Measure to resolve the quality problem permanently
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#Measure"
+      type: object
+      properties:
+        introductionDate:
+          description: Definition of the date of introduction of the immediate measures
+            - the date as yyyy-mm-dd
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#introductionDate"
+          $ref: "#/components/schemas/ISO8601LocalDate"
+        responsiblePerson:
+          description: Person responsible for the implementation of the planned corrective
+            measure
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#responsiblePerson"
+          $ref: "#/components/schemas/Text"
+        causeAssignment:
+          description: Define for which root cause the measure is relevant
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#causeAssignment"
+          $ref: "#/components/schemas/Text"
+        proofOfEffectiveness:
+          description: Explain how the effectiveness of this measure has been validated
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#proofOfEffectiveness"
+          $ref: "#/components/schemas/Text"
+        effectivenessResult:
+          description: Explain to which extend / percentage the measure is effective
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#effectivenessResult"
+          $ref: "#/components/schemas/Percentage"
+        status:
+          description: Implementation status
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#status"
+          $ref: "#/components/schemas/StatusEnumeration"
+        measure:
+          description: Plan technical measure to resolve the quality problem permanently
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#measure"
+          $ref: "#/components/schemas/Text"
+      required:
+      - introductionDate
+      - proofOfEffectiveness
+      - measure
+    MeasuresList:
+      description: A List of measures
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#MeasuresList"
+      type: array
+      items:
+        $ref: "#/components/schemas/Measure"
+    StepD5Characteristic:
+      description: Characteristic for the Step D5
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#StepD5Characteristic"
+      type: object
+      properties:
+        definePermanentCorrectiveActions:
+          description: Describes and lists planned permanent corrective measure(s)
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#definePermanentCorrectiveActions"
+          $ref: "#/components/schemas/MeasuresList"
+        additionalInformationList:
+          description: You can use this key:value list for additional properties that
+            were not defined in this aspect model.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList"
+          $ref: "#/components/schemas/AdditionalInformationList"
+      required:
+      - definePermanentCorrectiveActions
+    StepD6Characteristic:
+      description: Characteristic for the Step D6
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#StepD6Characteristic"
+      type: object
+      properties:
+        implementedCorrectiveMeasures:
+          description: A List of implemented corrective measures
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#implementedCorrectiveMeasures"
+          $ref: "#/components/schemas/MeasuresList"
+        additionalInformationList:
+          description: You can use this key:value list for additional properties that
+            were not defined in this aspect model.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList"
+          $ref: "#/components/schemas/AdditionalInformationList"
+      required:
+      - implementedCorrectiveMeasures
+    StepD7Characteristic:
+      description: Characteristic for the Step D8
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#StepD7Characteristic"
+      type: object
+      properties:
+        errorPreventiveMeasures:
+          description: Describes and lists error preventive measure(s)
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#errorPreventiveMeasures"
+          $ref: "#/components/schemas/MeasuresList"
+        additionalInformationList:
+          description: You can use this key:value list for additional properties that
+            were not defined in this aspect model.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList"
+          $ref: "#/components/schemas/AdditionalInformationList"
+      required:
+      - errorPreventiveMeasures
+    StepD8Characteristic:
+      description: Characteristic for the Step D8
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#StepD8Characteristic"
+      type: object
+      properties:
+        resultAssesment:
+          description: Allows a summary of the measure and a final statement on its
+            effectiveness
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#resultAssesment"
+          $ref: "#/components/schemas/Text"
+        closingDate:
+          description: Determining the time of 8D completion
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#closingDate"
+          $ref: "#/components/schemas/ISO8601LocalDate"
+      required:
+      - closingDate
+    StepD0Characteristic:
+      description: Characteristic for the Step D0
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#StepD0Characteristic"
+      type: object
+      properties:
+        defineEmergencyResponseAction:
+          description: Describes and lists planned permanent corrective measure(s)
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#defineEmergencyResponseAction"
+          $ref: "#/components/schemas/MeasuresList"
+        customerComplaintId:
+          description: The customer specific ID of the complaint process is the identifier
+            assigned to the complaint process by the customer.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#customerComplaintId"
+          $ref: "#/components/schemas/Text"
+        supplierComplaintId:
+          description: The supplier specific ID of the complaint process is the identifier
+            assigned to the complaint process by the supplier.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#supplierComplaintId"
+          $ref: "#/components/schemas/Text"
+        problemDescription:
+          description: Describes the problem of the complaint and the consequences
+            that arise from it
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#problemDescription"
+          $ref: "#/components/schemas/Text"
+        complaintDate:
+          description: The date of claim is the specific date on which the claim was
+            filed.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#complaintDate"
+          $ref: "#/components/schemas/ISO8601LocalDate"
+        complaintLocation:
+          description: Defines the location of the complaint
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#complaintLocation"
+          $ref: "#/components/schemas/Text"
+        additionalInformationList:
+          description: You can use this key:value list for additional properties that
+            were not defined in this aspect model.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList"
+          $ref: "#/components/schemas/AdditionalInformationList"
+      required:
+      - defineEmergencyResponseAction
+      - customerComplaintId
+      - problemDescription
+      - complaintDate
+    Report8D:
+      description: "Aspect Model for the Quality Management business case describing\
+        \ an 8D report. An 8D report (Eight Disciplines) is a structured problem-solving\
+        \ method used primarily in quality management to identify, correct, and eliminate\
+        \ recurring issues. It guides teams through eight steps, including root cause\
+        \ analysis and implementation of permanent corrective actions. The goal is\
+        \ to improve processes, prevent future problems, and ensure customer satisfaction."
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#Report8D"
+      properties:
+        header:
+          description: The header of the 8D Report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#header"
+          $ref: "#/components/schemas/HeaderCharacteristic"
+        stepD1:
+          description: First step of the 8D Report. Containing information about the
+            team members working on the root cause analysis
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#stepD1"
+          $ref: "#/components/schemas/StepD1Characteristic"
+        stepD2:
+          description: Second step of the 8D Report.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#stepD2"
+          $ref: "#/components/schemas/StepD2Characteristic"
+        stepD3:
+          description: Third step of the 8D Report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#stepD3"
+          $ref: "#/components/schemas/StepD3Characteristic"
+        stepD4:
+          description: Fourth Step of the 8D Report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#stepD4"
+          $ref: "#/components/schemas/StepD4Characteristic"
+        stepD5:
+          description: Fifth step of the 8D Report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#stepD5"
+          $ref: "#/components/schemas/StepD5Characteristic"
+        stepD6:
+          description: Sixth step of the 8D Report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#stepD6"
+          $ref: "#/components/schemas/StepD6Characteristic"
+        stepD7:
+          description: Seventh step of the 8D Report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#stepD7"
+          $ref: "#/components/schemas/StepD7Characteristic"
+        stepD8:
+          description: Eighth step of the 8D Report
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#stepD8"
+          $ref: "#/components/schemas/StepD8Characteristic"
+        stepD0:
+          description: Optional Step D0 used for the Global 8D Standard
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.report_8d:1.0.0#stepD0"
+          $ref: "#/components/schemas/StepD0Characteristic"
+      required:
+      - header
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Report8D:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Report8D"
+      description: The request was successful.
+  requestBodies:
+    Report8D:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Report8D"
