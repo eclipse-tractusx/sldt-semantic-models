@@ -1,0 +1,276 @@
+---
+openapi: 3.0.3
+info:
+  title: Warranty Claim Request
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#WarrantyClaimRequest"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/warranty-claim-request:
+    get:
+      tags:
+      - WarrantyClaimRequest
+      operationId: getWarrantyClaimRequest
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: "#/components/responses/WarrantyClaimRequest"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    UniqueID:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#UniqueID"
+      description: This Characteristic is linked to a property that is unique. Please
+        see description of the linked property to get more details about uniqueness.
+    Text:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    ISO8601LocalDate:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#ISO8601LocalDate"
+      description: "This regular expressions enforces a given date according ISO 8601\
+        \ local date. General format is YYYY-MM-DD. YYYY can be 0000..9999. MM-DD\
+        \ is checked together: months 01,03,05,07,08,10,12 must have DD in the range\
+        \ of  01..31 days, months 04,06,09,11 must have DD in the range of  01..30\
+        \ days, month 02 must have DD in the range of  01..29 days."
+      pattern: "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$|^NULL$"
+    CurrencyCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#CurrencyCharacteristic"
+      description: Currency Characteristic is used for all currency related aspects
+        having a positive float values
+    BillableMinutesCharacteristic:
+      type: number
+      minimum: 1
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#BillableMinutesCharacteristic"
+      description: Characteristic used for time related values (minutes)
+    UuidV4Trait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait"
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    BpnsTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnsTrait"
+      description: "The provided regular expression ensures that the BPNS is composed\
+        \ of prefix 'BPNS', 10 digits and two alphanumeric letters."
+      pattern: "^BPNS[a-zA-Z0-9]{12}$"
+    WarrantyClaimRequest:
+      description: "The focus of the data model is on standardizing the exchange of\
+        \ warranty information within the Catena-X network. This issue primarily affects\
+        \ suppliers who do not receive quality data from their customers (OEMs) and\
+        \ do not exchange data with their own suppliers (Tier 2 - n). These suppliers\
+        \ receive warranty claims from their customers (OEMs) at regular or irregular\
+        \ intervals. Due to a lack of “real” quality data, these claims are used to\
+        \ derive a quality analysis of the faulty components. "
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#WarrantyClaimRequest"
+      properties:
+        claimId:
+          description: Each claim from this data provider has a unique claim ID. If
+            you combine the BPNL of the data provider with this claim ID you get a
+            unique claim ID in the data space.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#claimId"
+          $ref: "#/components/schemas/UniqueID"
+        billingId:
+          description: A unique identifier for one billing. It is data provider individual.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#billingId"
+          $ref: "#/components/schemas/Text"
+        billingDate:
+          description: "References the date when the claim was billed. Date format:\
+            \ ISO (JJJJ-MM-DD)"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#billingDate"
+          $ref: "#/components/schemas/ISO8601LocalDate"
+        repairIndicator:
+          description: A unique identifier for one type of activity. It is data provider
+            individual.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#repairIndicator"
+          $ref: "#/components/schemas/Text"
+        recoveryType:
+          description: A unique identifier for one type of recovery. It is data provider
+            individual.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#recoveryType"
+          $ref: "#/components/schemas/Text"
+        warrantyType:
+          description: A unique identifier for one type of warranty. It is data provider
+            individual.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#warrantyType"
+          $ref: "#/components/schemas/Text"
+        recoveryGroupCode:
+          description: A unique code for one specific part family (technically similar
+            to Product Groups).
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#recoveryGroupCode"
+          $ref: "#/components/schemas/Text"
+        recoveryGroupName:
+          description: A name for one specific part family (technically similar to
+            Product Groups).
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#recoveryGroupName"
+          $ref: "#/components/schemas/Text"
+        billedCurrency:
+          description: Billing currency according to ISO 4217 (latest version)
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#billedCurrency"
+          $ref: "#/components/schemas/Text"
+        billedAmount:
+          description: Billing amount for the specific repair.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#billedAmount"
+          $ref: "#/components/schemas/CurrencyCharacteristic"
+        billedTF:
+          description: Technical Factor which is charged
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#billedTF"
+          $ref: "#/components/schemas/CurrencyCharacteristic"
+        repairCostsTF100:
+          description: Cost for the repair - overall
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#repairCostsTF100"
+          $ref: "#/components/schemas/CurrencyCharacteristic"
+        materialCosts:
+          description: Cost for the repair - parts
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#materialCosts"
+          $ref: "#/components/schemas/CurrencyCharacteristic"
+        laborCosts:
+          description: Labor costs for the repair
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#laborCosts"
+          $ref: "#/components/schemas/CurrencyCharacteristic"
+        otherCosts:
+          description: "Cost for the repair - others (consumables, handling fees,\
+            \ etc.)"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#otherCosts"
+          $ref: "#/components/schemas/CurrencyCharacteristic"
+        hourlyRate:
+          description: Individual hourly rate per OEM / per country
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#hourlyRate"
+          $ref: "#/components/schemas/CurrencyCharacteristic"
+        globalLaborCode:
+          description: Code for OEM specific definition of the repair performed /
+            billed
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#globalLaborCode"
+          $ref: "#/components/schemas/Text"
+        globalLaborCodeDesc:
+          description: Description for OEM specific definition of the repair performed
+            / billed
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#globalLaborCodeDesc"
+          $ref: "#/components/schemas/Text"
+        baseLaborTime:
+          description: Labor time (minutes) - base labor
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#baseLaborTime"
+          $ref: "#/components/schemas/BillableMinutesCharacteristic"
+        otherLaborTime:
+          description: Labor time (minutes) - other
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#otherLaborTime"
+          $ref: "#/components/schemas/BillableMinutesCharacteristic"
+        supplementalLaborTime:
+          description: Labor time (minutes) - supplemental
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#supplementalLaborTime"
+          $ref: "#/components/schemas/BillableMinutesCharacteristic"
+        diagnosticLaborTime:
+          description: Labor time (minutes) - diagnostic
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#diagnosticLaborTime"
+          $ref: "#/components/schemas/BillableMinutesCharacteristic"
+        totalTime:
+          description: Labor time (minutes) - total
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.warranty_claim_request:1.0.0#totalTime"
+          $ref: "#/components/schemas/BillableMinutesCharacteristic"
+        qualityTaskId:
+          description: A unique quality task identifier within this data-space.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#qualityTaskId"
+          $ref: "#/components/schemas/UuidV4Trait"
+        vehicleId:
+          description: A unique identifier for this vehicle in data-space. This property
+            is optional as of now not all vehicles have this identifier assigned.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#vehicleId"
+          $ref: "#/components/schemas/UuidV4Trait"
+        anonymizedVIN:
+          description: "Vehicle manufacturer-specific anonymized VIN, which is still\
+            \ a unique identifier within this data provider."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.quality_core:1.0.0#anonymizedVIN"
+          $ref: "#/components/schemas/UniqueID"
+        bpnsProperty:
+          description: Property based on a BPNS.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:2.0.0#bpnsProperty"
+          $ref: "#/components/schemas/BpnsTrait"
+      required:
+      - claimId
+      - billingId
+      - billingDate
+      - repairIndicator
+      - billedCurrency
+      - billedAmount
+      - billedTF
+      - qualityTaskId
+      - anonymizedVIN
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    WarrantyClaimRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/WarrantyClaimRequest"
+      description: The request was successful.
+  requestBodies:
+    WarrantyClaimRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/WarrantyClaimRequest"
