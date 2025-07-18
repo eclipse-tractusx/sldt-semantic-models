@@ -3,6 +3,22 @@ All notable changes to this model will be documented in this file.
 
 ## [Unreleased]
 
+## [8.0.0] 2025-07-18
+
+### Added
+
+- PCF Verification & Certification v2 sections for verification shares and documentation of attestations
+- Prospective PCF
+- Mass balancing
+- New attributes added (where the Catena-X Rulebook v4 applies) Compliance requirements added
+- Emission categories for land management
+
+### Changed
+
+- Improved attribute descriptions (based on user feedback)
+- Technical field names and value lists aligned with PACT and TFS where applicable
+- CCS, CCU, Land Management excluded (not in Rulebook v4)
+
 ## [7.0.0] 2024-05-27
 ### Changed
 - adapted as aligned with and specified by the Catena-X use case team
