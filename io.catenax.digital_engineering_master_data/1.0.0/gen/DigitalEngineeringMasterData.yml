@@ -1,0 +1,850 @@
+---
+openapi: 3.0.3
+info:
+  title: Digital Engineering Master Data
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#DigitalEngineeringMasterData"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/digital-engineering-master-data:
+    get:
+      tags:
+      - DigitalEngineeringMasterData
+      operationId: getDigitalEngineeringMasterData
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: "#/components/responses/DigitalEngineeringMasterData"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    Text:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    ReqIFTypeEnum:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#ReqIFTypeEnum"
+      description: Enumeration of requirement types.
+      enum:
+      - Functional
+      - Non-Functional
+      - User Story
+      - Use Case
+    VersionNumberTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#VersionNumberTrait"
+      description: Version number in semantic versioning
+      pattern: "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\\
+        d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\\
+        +([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    UuidV4Trait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait"
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    VersionCharacteristic:
+      description: Characteristic for the version
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#VersionCharacteristic"
+      type: object
+      properties:
+        versionNumber:
+          description: Semantic version of the requirement
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#versionNumber"
+          $ref: "#/components/schemas/VersionNumberTrait"
+        versionId:
+          description: "The identifier of this exact version of the requirement represented\
+            \ by a UUID, valid for the Catena-X dataspace."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#versionId"
+          $ref: "#/components/schemas/UuidV4Trait"
+      required:
+      - versionNumber
+      - versionId
+    Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    KeyTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#KeyTrait"
+      description: "Ensure that the key only contains letters, digits, underscores,\
+        \ and hyphens"
+      pattern: "^[\\w-]+$"
+    MetadataEntity:
+      description: Entity for key and value of requirement metadata.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#MetadataEntity"
+      type: object
+      properties:
+        key:
+          description: "The key may contain only letters, digits, underscores, and\
+            \ hyphens."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#key"
+          $ref: "#/components/schemas/KeyTrait"
+        value:
+          description: Value string for the associated metadata
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#value"
+          $ref: "#/components/schemas/Text"
+        metadataDescription:
+          description: Description of the associated metadata
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#metadataDescription"
+          $ref: "#/components/schemas/Text"
+      required:
+      - key
+      - value
+    MetadataList:
+      description: List of additional metadata that is associated with the requirement
+        and not standardized in the aspect model.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#MetadataList"
+      type: array
+      items:
+        $ref: "#/components/schemas/MetadataEntity"
+    SpecificationList:
+      description: A list of all related specifications (e.g. norms)
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#SpecificationList"
+      type: array
+      items:
+        type: string
+    VersionPredecessorCharacteristic:
+      description: Describes the version of the predecessor of the requirement.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#VersionPredecessorCharacteristic"
+      type: object
+      properties:
+        versionPredecessorNumber:
+          description: https://semver.org/
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#versionPredecessorNumber"
+          $ref: "#/components/schemas/VersionNumberTrait"
+        versionPredecessorId:
+          description: "The identifier of the predecessor version of the requirement\
+            \ represented by a UUID, valid for the Catena-X dataspace."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#versionPredecessorId"
+          $ref: "#/components/schemas/UuidV4Trait"
+      required:
+      - versionPredecessorNumber
+      - versionPredecessorId
+    RequirementInformationCharacteristic:
+      description: Mainnode for all the Requirement related information
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#RequirementInformationCharacteristic"
+      type: object
+      properties:
+        reqIfName:
+          description: Name of the requirement (from ReqIF).
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#reqIfName"
+          $ref: "#/components/schemas/Text"
+        reqIfType:
+          description: "Type of the requirement (e.g., 'Functional', 'Non-Functional')."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#reqIfType"
+          $ref: "#/components/schemas/ReqIFTypeEnum"
+        version:
+          description: Version of the requirement with it's predecessor
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#version"
+          $ref: "#/components/schemas/VersionCharacteristic"
+        description:
+          description: Textual description of the requirement.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#description"
+          $ref: "#/components/schemas/Text"
+        creationDate:
+          description: Date of requirement/version creation.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#creationDate"
+          $ref: "#/components/schemas/Timestamp"
+        author:
+          description: 'Company that created the requirement. '
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#author"
+          $ref: "#/components/schemas/Text"
+        foreignId:
+          description: Identifier from an external system (e.g. the chapter in a set
+            of requirements)
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#foreignId"
+          $ref: "#/components/schemas/Text"
+        longname:
+          description: Descriptive name for the requirement.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#longname"
+          $ref: "#/components/schemas/Text"
+        metadata:
+          description: Additional metadata that is associated with the requirement
+            and not standardized in the aspect model.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#metadata"
+          $ref: "#/components/schemas/MetadataList"
+        specification:
+          description: Link to the specification document.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#specification"
+          $ref: "#/components/schemas/SpecificationList"
+        versionPredecessor:
+          description: "Includes the informaiton to identifiy predecessor requirement\
+            \ (e.g., ID and Version)."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#versionPredecessor"
+          $ref: "#/components/schemas/VersionPredecessorCharacteristic"
+      required:
+      - reqIfName
+      - reqIfType
+      - version
+      - description
+      - creationDate
+    SoftwareDataCharacteristic:
+      description: Characteristic representing/collecting all the Software Data of
+        the Digital Master Data Model
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#SoftwareDataCharacteristic"
+      type: object
+      properties:
+        securityAndEncryptionStandards:
+          description: Defines cybersecurity measures implemented in the software
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#securityAndEncryptionStandards"
+          $ref: "#/components/schemas/Text"
+        signatureSign:
+          description: Flashware must be signed according to securtiy class CCC
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#signatureSign"
+          $ref: "#/components/schemas/Text"
+        softwareVersion:
+          description: Defines the version number of the embedded software or firmware
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#softwareVersion"
+          $ref: "#/components/schemas/Text"
+      required:
+      - securityAndEncryptionStandards
+      - signatureSign
+      - softwareVersion
+    DensityCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#DensityCharacteristic"
+      description: Density of the material for CAD model usage 7850 kg/m³
+    MaterialIDCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#MaterialIDCharacteristic"
+      description: Identification of the material from defined material database or
+        standard
+    ThermalExpansionCoefficientCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#ThermalExpansionCoefficientCharacteristic"
+      description: Rate of material expansion per degree of temperature change; 2.3
+        × 10⁻⁶ 1/K
+    MaterialDataCharacteristic:
+      description: Characteristic representing/collecting all the Material Data of
+        the Digital Master Data Model
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#MaterialDataCharacteristic"
+      type: object
+      properties:
+        density:
+          description: Density of the material for CAD model usage 7850 kg/m³
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#density"
+          $ref: "#/components/schemas/DensityCharacteristic"
+        materialDescription:
+          description: Specifies the primary material composition of the part
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#materialDescription"
+          $ref: "#/components/schemas/Text"
+        materialID:
+          description: Identification of the material from defined material database
+            or standard
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#materialID"
+          $ref: "#/components/schemas/MaterialIDCharacteristic"
+        thermalExpansionCoefficient:
+          description: Rate of material expansion per degree of temperature change;
+            2.3 × 10⁻⁶ 1/K
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#thermalExpansionCoefficient"
+          $ref: "#/components/schemas/ThermalExpansionCoefficientCharacteristic"
+      required:
+      - density
+      - materialDescription
+      - materialID
+      - thermalExpansionCoefficient
+    Reference2DCADDrawingCharacteristic:
+      type: string
+      format: uri
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#Reference2DCADDrawingCharacteristic"
+      description: "Link to the digital 2D model used for design and manufacturing\
+        \ (external and Catena-X-internal ressources, URN's). Based on IDTA SMT 020026\
+        \ - Provision of 3D Models"
+    Reference3DCADDrawingCharacteristic:
+      type: string
+      format: uri
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#Reference3DCADDrawingCharacteristic"
+      description: "Link  the digital CAD model used for design and manufacturing\
+        \ (external and Catena-X-internal ressources, URN's). Based on IDTA SMT 020026\
+        \  - Provision of 3D Models"
+    BoundingBoxLenght:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#BoundingBoxLenght"
+      description: "The minimal 3D box that fully encloses the part geometry (length\
+        \ x width x height),  units in millimetre."
+    BoundingBoxWidth:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#BoundingBoxWidth"
+      description: "The minimal 3D box that fully encloses the part geometry (length\
+        \ x width x height),  units in millimetre."
+    BoundingBoxHeight:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#BoundingBoxHeight"
+      description: "The minimal 3D box that fully encloses the part geometry (length\
+        \ x width x height),  units in millimetre."
+    BoundingBoxCharacteristic:
+      description: "The minimal 3D box that fully encloses the part geometry (length\
+        \ x width x height), units in millimetre."
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#BoundingBoxCharacteristic"
+      type: object
+      properties:
+        boundingBoxPropertyLenght:
+          description: "The minimal 3D box that fully encloses the part geometry (length\
+            \ x width x height),  units in millimetre."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#boundingBoxPropertyLenght"
+          $ref: "#/components/schemas/BoundingBoxLenght"
+        boundingBoxPropertyWidth:
+          description: "The minimal 3D box that fully encloses the part geometry (length\
+            \ x width x height),,  units in millimetre."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#boundingBoxPropertyWidth"
+          $ref: "#/components/schemas/BoundingBoxWidth"
+        boundingBoxPropertyHeight:
+          description: "The minimal 3D box that fully encloses the part geometry (length\
+            \ x width x height),  units in millimetre."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#boundingBoxPropertyHeight"
+          $ref: "#/components/schemas/BoundingBoxHeight"
+      required:
+      - boundingBoxPropertyLenght
+      - boundingBoxPropertyWidth
+      - boundingBoxPropertyHeight
+    BoundingSphereCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#BoundingSphereCharacteristic"
+      description: "Diameter of the smallest possible sphere that fully encloses the\
+        \ part geometry. { \"value\": 315.0, \"unit\": \"mm\" }"
+    CalculatedWeightCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#CalculatedWeightCharacteristic"
+      description: "Mass of the part, typically in kilograms. Calculated out of all\
+        \ belonging 3D-models"
+    WeightToleranceTrait:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#WeightToleranceTrait"
+      description: Tolerance range of the weight of a part or assembly. ±0.5 kg or
+        ±2%
+      maximum: 2.14748365E+9
+      exclusiveMaximum: true
+      minimum: -2.14748365E+9
+      exclusiveMinimum: true
+    CenterOfGravityCharacteristic:
+      description: The calculated center of mass in a coordinate system for proper
+        weight distribution
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#CenterOfGravityCharacteristic"
+      type: array
+      items:
+        type: string
+    EstimatedWeightCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#EstimatedWeightCharacteristic"
+      description: "Estimated mass of the part, typically in kilograms. Based on early\
+        \ design assumptions or incomplete data."
+    MomentOfInertiaCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#MomentOfInertiaCharacteristic"
+      description: |-
+        Resistance of the part to rotational acceleration around an axis
+         kg·m²
+    SurfaceAreaCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#SurfaceAreaCharacteristic"
+      description: surface area in mm2
+    VolumeCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#VolumeCharacteristic"
+      description: volume of the part in mm3
+    WeightedWeightCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#WeightedWeightCharacteristic"
+      description: "Mass of the part, typically in kilograms. Calculated out of all\
+        \ belonging 3D-models (== Actual weight)"
+    GeometryDataCharacteristic:
+      description: Property representing/collecting all the Geometry Data of the Digital
+        Master Data Model
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#GeometryDataCharacteristic"
+      type: object
+      properties:
+        reference2DCADDrawing:
+          description: "Link to the digital 2D model used for design and manufacturing\
+            \ (external and Catena-X-internal ressources, URN's). Based on IDTA SMT\
+            \ 020026 - Provision of 3D Models"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#reference2DCADDrawing"
+          $ref: "#/components/schemas/Reference2DCADDrawingCharacteristic"
+        reference3DCADDrawing:
+          description: "Link the digital CAD model used for design and manufacturing\
+            \ (external and Catena-X-internal ressources, URN's). Based on IDTA SMT\
+            \ 020026 - Provision of 3D Models"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#reference3DCADDrawing"
+          $ref: "#/components/schemas/Reference3DCADDrawingCharacteristic"
+        boundingBox:
+          description: "The minimal 3D box that fully encloses the part geometry (length\
+            \ x width x height), units in millimetre."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#boundingBox"
+          $ref: "#/components/schemas/BoundingBoxCharacteristic"
+        boundingSphere:
+          description: "Diameter of the smallest possible sphere that fully encloses\
+            \ the part geometry. { \"value\": 315.0, \"unit\": \"mm\" }"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#boundingSphere"
+          $ref: "#/components/schemas/BoundingSphereCharacteristic"
+        calculatedWeight:
+          description: "Mass of the part, typically in kilograms. Calculated out of\
+            \ all belonging 3D-models"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#calculatedWeight"
+          $ref: "#/components/schemas/CalculatedWeightCharacteristic"
+        calculatedWeightTolerance:
+          description: Tolerance range of the calculated (theoretical) weight of a
+            part or assembly.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#calculatedWeightTolerance"
+          $ref: "#/components/schemas/WeightToleranceTrait"
+        centerOfGravity:
+          description: The calculated center of mass in a coordinate system for proper
+            weight distribution
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#centerOfGravity"
+          $ref: "#/components/schemas/CenterOfGravityCharacteristic"
+        estimatedWeight:
+          description: "Estimated mass of the part, typically in kilograms. Based\
+            \ on early design assumptions or incomplete data."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#estimatedWeight"
+          $ref: "#/components/schemas/EstimatedWeightCharacteristic"
+        estimatedWeightTolerance:
+          description: Tolerance range of the estimated weight of a part or assembly.
+            ±0.5 kg or ±2%
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#estimatedWeightTolerance"
+          $ref: "#/components/schemas/WeightToleranceTrait"
+        momentOfInertia:
+          description: |-
+            Resistance of the part to rotational acceleration around an axis
+             kg·m²
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#momentOfInertia"
+          $ref: "#/components/schemas/MomentOfInertiaCharacteristic"
+        surfaceArea:
+          description: surface area in mm2
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#surfaceArea"
+          $ref: "#/components/schemas/SurfaceAreaCharacteristic"
+        volume:
+          description: volume of the part in mm3
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#volume"
+          $ref: "#/components/schemas/VolumeCharacteristic"
+        weightedWeight:
+          description: "Mass of the part, typically in kilograms. Calculated out of\
+            \ all belonging 3D-models (== Actual weight)"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#weightedWeight"
+          $ref: "#/components/schemas/WeightedWeightCharacteristic"
+        weightedWeightTolerance:
+          description: Tolerance range of the measured or actual weighted weight of
+            a part or assembly. ±0.5 kg or ±2%
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#weightedWeightTolerance"
+          $ref: "#/components/schemas/WeightToleranceTrait"
+      required:
+      - reference2DCADDrawing
+      - reference3DCADDrawing
+      - boundingBox
+      - boundingSphere
+      - calculatedWeight
+      - calculatedWeightTolerance
+      - centerOfGravity
+      - estimatedWeight
+      - estimatedWeightTolerance
+      - momentOfInertia
+      - surfaceArea
+      - volume
+      - weightedWeight
+      - weightedWeightTolerance
+    MechanicsDataCharacteristic:
+      description: Entity for all the Mechanics Data of the Digital Master Data Model
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#MechanicsDataCharacteristic"
+      type: object
+      properties:
+        materialData:
+          description: Property representing/collecting all the Material Data of the
+            Digital Master Data Model
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#materialData"
+          $ref: "#/components/schemas/MaterialDataCharacteristic"
+        geometryData:
+          description: Property representing/collecting all the Geometry Data of the
+            Digital Master Data Model
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#geometryData"
+          $ref: "#/components/schemas/GeometryDataCharacteristic"
+      required:
+      - materialData
+      - geometryData
+    ElectronicsDataCharacteristic:
+      description: Characteristic representing/collecting all the Electronics Data
+        of the Digital Master Data Model
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#ElectronicsDataCharacteristic"
+      type: object
+      properties:
+        diagnosticsAndErrorCodes:
+          description: List of standardized trouble codes used for diagnostics
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#diagnosticsAndErrorCodes"
+          $ref: "#/components/schemas/Text"
+        flashingMethod:
+          description: "Flash type: the used method to update for example control\
+            \ units. For example UDS (Unified Diagnostic Services) Flash via DoIP\
+            \ (Diagnostics over Internet Protocol)"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#flashingMethod"
+          $ref: "#/components/schemas/Text"
+      required:
+      - diagnosticsAndErrorCodes
+      - flashingMethod
+    EngineeringCharacteristic:
+      description: Entity for all the Engineering Data of/in the Digital Master Data
+        Model
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#EngineeringCharacteristic"
+      type: object
+      properties:
+        requirementInformation:
+          description: Mainnode for all the Requirement related information
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.requirement:1.0.0#requirementInformation"
+          $ref: "#/components/schemas/RequirementInformationCharacteristic"
+        softwareData:
+          description: Property representing/collecting all the Software Data of the
+            Digital Master Data Model
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#softwareData"
+          $ref: "#/components/schemas/SoftwareDataCharacteristic"
+        mechanicsData:
+          description: Entity representing/collecting all the Mechanics Data of the
+            Digital Master Data Model
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#mechanicsData"
+          $ref: "#/components/schemas/MechanicsDataCharacteristic"
+        electronicsData:
+          description: Property representing/collecting all the Electronics Data of
+            the Digital Master Data Model
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#electronicsData"
+          $ref: "#/components/schemas/ElectronicsDataCharacteristic"
+      required:
+      - requirementInformation
+      - softwareData
+      - mechanicsData
+      - electronicsData
+    BpnlTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnlTrait"
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two alphanumeric letters."
+      pattern: "^BPNL[a-zA-Z0-9]{12}$"
+    SupersededVersionCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#SupersededVersionCharacteristic"
+      description: Characteristic for the Link to digital twin of the part superseding
+        this one.
+    SuccessorPartCharacteristic:
+      type: string
+      format: uri
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#SuccessorPartCharacteristic"
+      description: Characteristic that describes the Link to digital twin of the part
+        superseding this one.
+    PartNumberCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#PartNumberCharacteristic"
+      description: Characteristic for the Unique identifier assigned to the part by
+        the OEM or supplier (Sachnummer)
+    NotesList:
+      description: List of notes that can be attached as additional information in
+        engineering process.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#NotesList"
+      type: array
+      items:
+        type: string
+    NotesCharacteristic:
+      description: List of notes that can be attached as additional information in
+        engineering process plus a Time Stamp
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#NotesCharacteristic"
+      type: object
+      properties:
+        noteProperty:
+          description: List of notes that can be attached as additional information
+            in engineering process.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#noteProperty"
+          $ref: "#/components/schemas/NotesList"
+        timestamp:
+          description: Describes a Property which contains the date and time with
+            an optional timezone.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#timestamp"
+          $ref: "#/components/schemas/Timestamp"
+      required:
+      - noteProperty
+      - timestamp
+    CategoryCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#CategoryCharacteristic"
+      description: "Category, the part belongs to. Based on VDA 4993."
+      enum:
+      - Body & Structure
+      - Interior
+      - Exterior
+      - Electrical & Electronics
+      - Powertrain & Drivetrain
+      - Chassis & Brake Systems
+      - Thermal Management & HVAC
+      - Fasteners & Connectors
+      - Software & Embedded Systems
+      - Testing & Auxiliary Equipment
+    StatusCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#StatusCharacteristic"
+      description: Status of the part exchanged.
+      enum:
+      - In Progress
+      - Engineered
+      - In Approval
+      - Rejected
+      - Approved
+      - Superseded
+    VersionNumberCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#VersionNumberCharacteristic"
+      description: Characteristic for the Digital Master Data version
+    VersionCharacteristic0:
+      description: Characteristic for the version
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#VersionCharacteristic"
+      type: object
+      properties:
+        versionNumber:
+          description: The versioning follows the guidelines for semantic versioning
+            of the SemVer Org
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#versionNumber"
+          $ref: "#/components/schemas/VersionNumberCharacteristic"
+        versionID:
+          description: "The identifier of this exact version of the Digital Master\
+            \ Data represented by a Catena-X ID or Part ID, valid for the Catena-X\
+            \ dataspace."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#versionID"
+          $ref: "#/components/schemas/UuidV4Trait"
+      required:
+      - versionNumber
+      - versionID
+    BasicDataCharacteristic:
+      description: Characteristic for all the Basic Data of the Digital Master Data
+        Model
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#BasicDataCharacteristic"
+      type: object
+      properties:
+        validTo:
+          description: The date on which this part was superseded.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#validTo"
+          $ref: "#/components/schemas/Timestamp"
+        validFrom:
+          description: The date from which this part is approved.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#validFrom"
+          $ref: "#/components/schemas/Timestamp"
+        supplier:
+          description: "The Business Partner Number Legal Entity (BPNL) of the Supplier,\
+            \ producing the part primarily"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#supplier"
+          $ref: "#/components/schemas/BpnlTrait"
+        supersededVersion:
+          description: Link to digital twin of the part superseding this one.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#supersededVersion"
+          $ref: "#/components/schemas/SupersededVersionCharacteristic"
+        successorPart:
+          description: Link to digital twin of the part superseding this one.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#successorPart"
+          $ref: "#/components/schemas/SuccessorPartCharacteristic"
+        releaseDate:
+          description: The official date when the part was approved.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#releaseDate"
+          $ref: "#/components/schemas/Timestamp"
+        partNumber:
+          description: Unique identifier assigned to the part by the OEM or supplier
+            (Sachnummer)
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#partNumber"
+          $ref: "#/components/schemas/PartNumberCharacteristic"
+        notes:
+          description: List of notes that can be attached as additional information
+            in engineering process.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#notes"
+          $ref: "#/components/schemas/NotesCharacteristic"
+        nomenclature:
+          description: Standardized name of the part based on its function or application
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#nomenclature"
+          $ref: "#/components/schemas/Text"
+        description:
+          description: |
+            Detailed textual description of the part, including key Detailed textual description of the part, including key characteristics
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#description"
+          $ref: "#/components/schemas/Text"
+        category:
+          description: "Category, the part belongs to. Based on VDA 4993."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#category"
+          $ref: "#/components/schemas/CategoryCharacteristic"
+        status:
+          description: Status of the part exchanged.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#status"
+          $ref: "#/components/schemas/StatusCharacteristic"
+        version:
+          description: Versioning identifier for design updates and modifications.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#version"
+          $ref: "#/components/schemas/VersionCharacteristic0"
+      required:
+      - validTo
+      - validFrom
+      - supplier
+      - supersededVersion
+      - successorPart
+      - releaseDate
+      - partNumber
+      - notes
+      - nomenclature
+      - description
+      - category
+      - status
+      - version
+    HomologationApprovalNumberCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#HomologationApprovalNumberCharacteristic"
+      description: Characteristic for the Official certification number confirming
+        compliance with regulatory requirements
+    Boolean:
+      type: boolean
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Boolean"
+      description: Represents a boolean value (i.e. a "flag").
+    SafetyRelevantFeaturesList:
+      description: List of all the safety relevant properties according to partner
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#SafetyRelevantFeaturesList"
+      type: array
+      items:
+        type: string
+    StatutoryFeaturesList:
+      description: List of all  the legal and industry standards the part complies
+        with
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#StatutoryFeaturesList"
+      type: array
+      items:
+        type: string
+    ComplianceDataCharacteristic:
+      description: Characteristic for all the Compliance Data of the Digital Master
+        Data Model
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#ComplianceDataCharacteristic"
+      type: object
+      properties:
+        homologationApprovalNumber:
+          description: Official certification number confirming compliance with regulatory
+            requirements
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#homologationApprovalNumber"
+          $ref: "#/components/schemas/HomologationApprovalNumberCharacteristic"
+        safetyRelevant:
+          description: "Describes, if safety relevance is required"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#safetyRelevant"
+          $ref: "#/components/schemas/Boolean"
+        safetyRelevantFeatures:
+          description: |-
+            Number of safety relevant properties according to partner
+
+            Daimler: DS und DZ Merkmale (Dokumentationspflichtig Sicherheitsrelevant und Dokumentationspflichtig Zertifizierungsrelevant)
+            VW: D und S Merkmale (Dokumentationspflichtig und Sicherheitsrelevant)
+            BMW: L und S und F Merkmale (Legal: Zulassungs- oder homologationsrelevant, Sicherheitsrelevant, Funktions- oder fertigungsrelevant)
+            GM / Opel: S/C und F/F Merkmale (Safety and Compliance / Fit and Function)
+            Ford: CC und SC Merkmale (Critical Characteristic / Significant Characteristic)
+            Fiat / Alfa Romeo / Renault / PSA: R und S Merkmale (Réglementation und Security)
+            Conti: D und W Merkmale (Dokumentationspflichtige und Wichtige Merkmale)
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#safetyRelevantFeatures"
+          $ref: "#/components/schemas/SafetyRelevantFeaturesList"
+        statutoryFeatures:
+          description: Specifies the legal and industry standards the part complies
+            with
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#statutoryFeatures"
+          $ref: "#/components/schemas/StatutoryFeaturesList"
+      required:
+      - homologationApprovalNumber
+      - safetyRelevant
+      - safetyRelevantFeatures
+      - statutoryFeatures
+    DigitalEngineeringMasterData:
+      description: "Aspect Model to transport structured master data – including product,\
+        \ material and 3D related data "
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#DigitalEngineeringMasterData"
+      properties:
+        engineering:
+          description: Top node of the Engineering cluster
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#engineering"
+          $ref: "#/components/schemas/EngineeringCharacteristic"
+        basicdata:
+          description: Property representing/collecting all the Basic Data of the
+            Digital Master Data Mdoel
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#basicdata"
+          $ref: "#/components/schemas/BasicDataCharacteristic"
+        digitalMasterDataID:
+          description: "The identifier of a requirement represented by a UUID, valid\
+            \ for the Catena-X dataspace."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#digitalMasterDataID"
+          $ref: "#/components/schemas/UuidV4Trait"
+        complianceData:
+          description: Property representing/collecting all the Compliance Data of
+            the Digital Master Data Model
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.digital_engineering_master_data:1.0.0#complianceData"
+          $ref: "#/components/schemas/ComplianceDataCharacteristic"
+      required:
+      - engineering
+      - basicdata
+      - digitalMasterDataID
+      - complianceData
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    DigitalEngineeringMasterData:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/DigitalEngineeringMasterData"
+      description: The request was successful.
+  requestBodies:
+    DigitalEngineeringMasterData:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/DigitalEngineeringMasterData"
