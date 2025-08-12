@@ -1,0 +1,615 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#DiagnosticData",
+  "description" : "Part of the business case Quality Management. Supported technical features: delta update feature, meta information feature and additionalInformationList key-value pairs. FleetDiagnostic data model is used to exchange Digital Trouble Codes (DTC) which are read out from Electronic Control Units (ECU). This model supports diagnostic sessions from workshops as well as over-the-air (OTA) diagnostic sessions. FleetDiagnostic data model can also be used to exchange whole interactive workshop diagnostic sessions in which procedures/commands are send to the car and an answer is coming back. As diagnostic data is coming from a vehicle manufacturer only vehicle manufacturer's set of part properties are integrated in this semantic model.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "UniqueID" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#UniqueID",
+        "description" : "This Characteristic is linked to a property that is unique. Please see description of the linked property to get more details about uniqueness."
+      },
+      "UuidV4Trait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "CountryCodeTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#CountryCodeTrait",
+        "description" : "Regular Expression that ensures a three-letter code ",
+        "pattern" : "^[A-Z][A-Z][A-Z]$|^null$|^NULL$"
+      },
+      "MileageTrait" : {
+        "type" : "number",
+        "minimum" : -1,
+        "maximum" : 2000000,
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#MileageTrait",
+        "description" : "Range for a valid mileage counter. -1 marks not available.",
+        "exclusiveMaximum" : true,
+        "exclusiveMinimum" : false
+      },
+      "MileageUnit" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#MileageUnit",
+        "description" : "Either km or mi.",
+        "enum" : [ "km", "mi" ]
+      },
+      "Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "HexValueTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#HexValueTrait",
+        "description" : "This regular expression enforces a hex string. It ensures 0-9, a-f, A-F with an optional prefix 0x. Valid examples: 0x0123456789abcdefABCDEF, 0123456789abcdefABCDEF",
+        "pattern" : "^(0x)?[0-9a-fA-F]*$|^null$|^NULL$"
+      },
+      "Boolean" : {
+        "type" : "boolean",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "Long" : {
+        "type" : "number",
+        "minimum" : -9223372036854775808,
+        "maximum" : 9223372036854775807,
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#Long",
+        "description" : "Characteristic for a long value."
+      },
+      "TypeEnumumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#TypeEnumumeration",
+        "description" : "Enumeration for a DTC.",
+        "enum" : [ "Error", "Info" ]
+      },
+      "Double" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#Double",
+        "description" : "A double value"
+      },
+      "EnvironmentCondition" : {
+        "description" : "One environment condition like temperature, rpm,... If the environment condition was measured on vehicle level -> ecuSerialPartNumber is empty",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#EnvironmentCondition",
+        "type" : "object",
+        "properties" : {
+          "conditionId" : {
+            "description" : "OEM-specific: Primary key for this condition consists of unique identifier of env. condition and DTC",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#conditionId",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "conditionCreationTimeStamp" : {
+            "description" : "Date and time when this condition/information was created.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#conditionCreationTimeStamp",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "conditionDescription" : {
+            "description" : "The description of the environment condition/information",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#conditionDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "conditionHexValue" : {
+            "description" : "Hex value of the condition.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#conditionHexValue",
+            "$ref" : "#/components/schemas/HexValueTrait"
+          },
+          "conditionNumericValue" : {
+            "description" : "The numeric value of the condition as double.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#conditionNumericValue",
+            "$ref" : "#/components/schemas/Double"
+          },
+          "conditionTextValue" : {
+            "description" : "Text value of the condition.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#conditionTextValue",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "measurementUnit" : {
+            "description" : "The unit of measurement for the environment condition value.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#measurementUnit",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "conditionId" ]
+      },
+      "EnvironmentalConditionsList" : {
+        "description" : "A list of environmental conditions, like surrounding temperature, rpm, ...",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#EnvironmentalConditionsList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/EnvironmentCondition"
+        }
+      },
+      "DiagnosticTroubleCode" : {
+        "description" : "Diagnostic trouble codes or short DTCs are used inside ECUs to monitor failures. They were introduced for measuring vehicle emissions. Major DTCs for emissions are standardized by ISO standard ISO 15031-6:2015 - so called OBD2 standard. Over time DTCs were also introduced in other ECUs also besides engine and emission control. Many DTCs are vehicle manufacturer specific. ",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#DiagnosticTroubleCode",
+        "type" : "object",
+        "properties" : {
+          "dtcHexValue" : {
+            "description" : "Hex value of this DTC",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#dtcHexValue",
+            "$ref" : "#/components/schemas/HexValueTrait"
+          },
+          "fullName" : {
+            "description" : "A human-readable name that is the result of the translation of DTC hex code. There is a 1:1 relationship between DTC hex code and DTC full name. DTC full name must include the fault byte added after the minus. DTC full name is unique: That means that at one occurrence timestamp and the same vehicle and the same ECU only one DTC full name can be set.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#fullName",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "fullDescription" : {
+            "description" : "Description of this DTC. If description name consists of main DTC  and failure byte, than both description strings are concatenated using a \"-\" as separator.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#fullDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "faultPath" : {
+            "description" : "OEM-specific: Fault path for this DTC. Allows further analysis",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#faultPath",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "faultPathDescription" : {
+            "description" : "OEM-specific description of DTC fault path",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#faultPathDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "freezeFrame" : {
+            "description" : "freeze frame from ecu. The freeze frame records many parameters of the DTC and surrounding parameters like outside temperature when the DTC was set. It is a very long HEX string with many OEM-specific and ECU-specific content in",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#freezeFrame",
+            "$ref" : "#/components/schemas/HexValueTrait"
+          },
+          "isMilOn" : {
+            "description" : "Describes whether this DTC sets the MIL (malfunction indicator light) in the dashboard.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#isMilOn",
+            "$ref" : "#/components/schemas/Boolean"
+          },
+          "occurenceCounterTotal" : {
+            "description" : "Counter how often this DTC was set in total",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#occurenceCounterTotal",
+            "$ref" : "#/components/schemas/Long"
+          },
+          "occurenceMileage" : {
+            "description" : "mileage in km when the DTC occurred the first time ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#occurenceMileage",
+            "$ref" : "#/components/schemas/MileageTrait"
+          },
+          "occurenceMileageUnit" : {
+            "description" : "Unit of occurrence mileage - either km or mi.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#occurenceMileageUnit",
+            "$ref" : "#/components/schemas/MileageUnit"
+          },
+          "occurenceTimeStamp" : {
+            "description" : "date and time when the DTC occurred the first time/was recorded the first time in the ECU",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#occurenceTimeStamp",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "state" : {
+            "description" : "OEM-specific state of DTC: 0;1 (permanent/temporary/intermediate), could also be a string with permanent, temporary, intermediate, ....",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#state",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "type" : {
+            "description" : "Indicator whether this DTC was stored as Error or Info",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#type",
+            "$ref" : "#/components/schemas/TypeEnumumeration"
+          },
+          "envConditions" : {
+            "description" : "A list of environment conditions: E.g. outside temperature measured by the vehicle, a specific value measured by on ECU, ....",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#envConditions",
+            "$ref" : "#/components/schemas/EnvironmentalConditionsList"
+          }
+        },
+        "required" : [ "dtcHexValue" ]
+      },
+      "DTCList" : {
+        "description" : "A list of DTCs that are present in this diagnostic session.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#DTCList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/DiagnosticTroubleCode"
+        }
+      },
+      "Part" : {
+        "description" : "A collection of part/component properties. A Catena-X data provider should provide the  properties that are useful for a Catena-X data consumer to clearly identify the part/component. For example, this can be done by using a serial number, data matrix code or delivery note",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#Part",
+        "type" : "object",
+        "properties" : {
+          "partName" : {
+            "description" : "The name of a part. A part name is not unique - same kinds of parts can have the same part name.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partName",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "partDescription" : {
+            "description" : "A textual description of the part.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "assemblyPartNumberVersion" : {
+            "description" : "Often vehicle manufacturer specific: An assembly part number version. Assembly parts are often produced by a supplier that combines his own parts with other parts from other suppliers and ships as one assembly to a vehicle manufacturer.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#assemblyPartNumberVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "batchNumber" : {
+            "description" : "A batch number describes all parts that were manufactured in the same run.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#batchNumber",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "calibrationInformation" : {
+            "description" : "Calibration for this ECU. This could be the result of a calibration process.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#calibrationInformation",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "partId" : {
+            "description" : "A unique part identifier in this data-space. Property is optional as of now not all parts have this identifier.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partId",
+            "$ref" : "#/components/schemas/UuidV4Trait"
+          },
+          "dataMatrixCode" : {
+            "description" : "String that is encoded in a data matrix code. Data matrix codes or short DMC are labelled/printed on parts. Example: A data matrix code can combine supplier name, part type, manufacturing and many more information. A DMC string is often unique within this data provider.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#dataMatrixCode",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "deliveryNote" : {
+            "description" : "The delivery note of a package. A delivery note is unique within one logistics company.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#deliveryNote",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "hwVersion" : {
+            "description" : "The hardware version of this part.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#hwVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "orderNumber" : {
+            "description" : "The order number of this order. This is a unique identifier defined by the supplier of the order. If you combine order number and BPNL of the supplier you get a unique identifier in this data-space.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#orderNumber",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "partNumber" : {
+            "description" : "The number of a physical part. A part number is not unique - same kinds of parts can have same part numbers. Part numbers and part description normally relate to each other.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partNumber",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "partVersion" : {
+            "description" : "The version of this hardware part.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "serialNumber" : {
+            "description" : "Serial number of one specific part. A serial number is unique within one company. If you combine serial number with BPNL of that company than you get a unique identifier for this part in this data-space.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#serialNumber",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "swPartNumber" : {
+            "description" : "Software number installed in this electronic control unit.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#swPartNumber",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "swVersion" : {
+            "description" : "Software version installed in this electronic control unit.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#swVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "variantInfomation" : {
+            "description" : "An electronic control unit has many parameters that have to be set to work correctly: Examples are target market (which functions need to be activated for the target market) or the equipment of the vehicle (e.g. navigation system is installed).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#variantInfomation",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "partName" ]
+      },
+      "ECU" : {
+        "description" : "A single ECU that is present/has a DTC set in the diagnostic session",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#ECU",
+        "type" : "object",
+        "properties" : {
+          "readOutTimestamp" : {
+            "description" : "Date when this ECU information was read out from the diagnostic session",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#readOutTimestamp",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "dtcs" : {
+            "description" : "A list of diagnostic trouble codes.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#dtcs",
+            "$ref" : "#/components/schemas/DTCList"
+          }
+        },
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/Part"
+        } ]
+      },
+      "EcuList" : {
+        "description" : "A list of electronic control units in this diagnostic session.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#EcuList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ECU"
+        }
+      },
+      "ProcedureResultCharacterisitc" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#ProcedureResultCharacterisitc",
+        "description" : "Characteristic for procedure results.",
+        "enum" : [ "ok", "nok", "failed", "null" ]
+      },
+      "ProcedureCall" : {
+        "description" : "One procedure call in the diagnostic software.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#ProcedureCall",
+        "type" : "object",
+        "properties" : {
+          "procedureId" : {
+            "description" : "A unique identifier for this procedure/sub-procedure call",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#procedureId",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "procedureDescription" : {
+            "description" : "An optional description for this procedure",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#procedureDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "procedureEnd" : {
+            "description" : "End date and time for this procedure call.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#procedureEnd",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "procedureStart" : {
+            "description" : "Start date and time for this procedure call.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#procedureStart",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "procedureResult" : {
+            "description" : "Result of the procedure",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#procedureResult",
+            "$ref" : "#/components/schemas/ProcedureResultCharacterisitc"
+          },
+          "ecus" : {
+            "description" : "ECUs that had an entry in its internal failure memory during the diagnostic session",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#ecus",
+            "$ref" : "#/components/schemas/EcuList"
+          },
+          "subProcedures" : {
+            "description" : "A list of sub-procedures",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#subProcedures",
+            "$ref" : "#/components/schemas/SubProcedures"
+          }
+        },
+        "required" : [ "procedureId" ]
+      },
+      "SubProcedures" : {
+        "description" : "A list of sub-procedures.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#SubProcedures",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ProcedureCall"
+        }
+      },
+      "ProceduresList" : {
+        "description" : "A list of procedure calls from the diagnostic software to the vehicle.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#ProceduresList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ProcedureCall"
+        }
+      },
+      "RecordStatusEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#RecordStatusEnumeration",
+        "description" : "Defining the enumeration for the record status",
+        "enum" : [ "new", "updated", "deleted", "same" ]
+      },
+      "LatitudeTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#LatitudeTrait",
+        "description" : "Trait to define the latitude.",
+        "maximum" : 90.0,
+        "exclusiveMaximum" : false,
+        "minimum" : -90.0,
+        "exclusiveMinimum" : false
+      },
+      "LongitudeTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#LongitudeTrait",
+        "description" : "Trait to define the longitude.",
+        "maximum" : 180.0,
+        "exclusiveMaximum" : false,
+        "minimum" : -180.0,
+        "exclusiveMinimum" : false
+      },
+      "WorkshopCharacteristic" : {
+        "description" : "Groups all workshop properties.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#WorkshopCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "workShopId" : {
+            "description" : "A unique identifier for a workshop. This identifier is unique within data provider's company. If you combine this identifier with BPNL from data provider than you get a unique identifier for this workshop in this data space.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#workShopId",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "latitude" : {
+            "description" : "Latitude property for GPS coordinates.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#latitude",
+            "$ref" : "#/components/schemas/LatitudeTrait"
+          },
+          "longitude" : {
+            "description" : "Longitude property for GPS coordinates.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#longitude",
+            "$ref" : "#/components/schemas/LongitudeTrait"
+          }
+        },
+        "required" : [ "workShopId" ]
+      },
+      "AdditionalInformation" : {
+        "description" : "One key:value information pair",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#AdditionalInformation",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "description" : "Key identifier for this additional information",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#key",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "value" : {
+            "description" : "Value for this additional information",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#value",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "key", "value" ]
+      },
+      "AdditionalInformationList" : {
+        "description" : "A list of additional information.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#AdditionalInformationList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/AdditionalInformation"
+        }
+      },
+      "DiagnosticSession" : {
+        "description" : "One diagnostic session of one vehicle: Either this is a diagnostic session done in a workshop or via over-the-air diagnostic.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#DiagnosticSession",
+        "type" : "object",
+        "properties" : {
+          "anonymizedVIN" : {
+            "description" : "Vehicle manufacturer-specific anonymized VIN, which is still a unique identifier within this data provider.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#anonymizedVIN",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "qualityTaskId" : {
+            "description" : "A unique quality task identifier within this data-space.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#qualityTaskId",
+            "$ref" : "#/components/schemas/UuidV4Trait"
+          },
+          "countryCode" : {
+            "description" : "Country code in  ISO 3166-1 alpha-3 codes where this session took place",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#countryCode",
+            "$ref" : "#/components/schemas/CountryCodeTrait"
+          },
+          "sessionId" : {
+            "description" : "A unique identifier for a session. If you combine the session property with BPNL of data provider than you get a unique identifier for this session in this data-space.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#sessionId",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "sessionMileage" : {
+            "description" : "The mileage counter of the vehicle during diagnostic session.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#sessionMileage",
+            "$ref" : "#/components/schemas/MileageTrait"
+          },
+          "sessionMileageUnit" : {
+            "description" : "Unit of session mileage - either km or mi.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#sessionMileageUnit",
+            "$ref" : "#/components/schemas/MileageUnit"
+          },
+          "sessionStart" : {
+            "description" : "Describes the starting point for this diagnostic session.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#sessionStart",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "vehicleId" : {
+            "description" : "A unique identifier for this vehicle in data-space. This property is optional as of now not all vehicles have this identifier assigned.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#vehicleId",
+            "$ref" : "#/components/schemas/UuidV4Trait"
+          },
+          "diagnosticSoftwareName" : {
+            "description" : "The name of the diagnostic software that was used.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#diagnosticSoftwareName",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "diagnosticSoftwareVersion" : {
+            "description" : "The version of the used diagnostic software",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#diagnosticSoftwareVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "ecus" : {
+            "description" : "ECUs that had an entry in its internal failure memory during the diagnostic session",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#ecus",
+            "$ref" : "#/components/schemas/EcuList"
+          },
+          "procedures" : {
+            "description" : "List of procedures / sub-procedures.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#procedures",
+            "$ref" : "#/components/schemas/ProceduresList"
+          },
+          "recordStatus" : {
+            "description" : "The record operation enumeration can be used to realize delta update concept. An example using scenario that data delivery runs weekly: Week0: All data is transferred -> all rows have recordStatus=new. Week1: Only the changed data is transferred: That means new rows, or updated or deleted rows: New rows get recordStatus=new, changed rows get recordStatus=changed and deleted/removed rows get recordStatus=deleted.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#recordStatus",
+            "$ref" : "#/components/schemas/RecordStatusEnumeration"
+          },
+          "sessionEnd" : {
+            "description" : "Describes the end point for this diagnostic session.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#sessionEnd",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "vehicleSoftwareCategory" : {
+            "description" : "Software category of this car during the session - only available for OEMs that have a software category on vehicle level.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#vehicleSoftwareCategory",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "vehicleSoftwareVersion" : {
+            "description" : "Software version of this car during the session - only available for OEMs that have a software category on vehicle level.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#vehicleSoftwareVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "workshop" : {
+            "description" : "Groups workshop-related properties",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#workshop",
+            "$ref" : "#/components/schemas/WorkshopCharacteristic"
+          },
+          "additionalInformationList" : {
+            "description" : "You can use this key:value list for additional properties that were not defined in this aspect model.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList",
+            "$ref" : "#/components/schemas/AdditionalInformationList"
+          }
+        },
+        "required" : [ "anonymizedVIN", "qualityTaskId", "sessionId", "sessionStart" ]
+      },
+      "SessionList" : {
+        "description" : "A list of diagnostic sessions coming from multiple vehicles.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#SessionList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/DiagnosticSession"
+        }
+      },
+      "MetaCharacteristic" : {
+        "description" : "Characteristic for the meta information.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#MetaCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "selectionCriteria" : {
+            "description" : "Describes the selection criteria a Catena-X data provider has applied to create this data set.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#selectionCriteria",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "selectionStart" : {
+            "description" : "Describes the starting point for providing records in this data set.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#selectionStart",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "selectionEnd" : {
+            "description" : "Describes the end point for providing records in this data set.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#selectionEnd",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "selectionCriteria" ]
+      }
+    }
+  },
+  "properties" : {
+    "diagnosticSessions" : {
+      "description" : "A list of diagnostic sessions.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#diagnosticSessions",
+      "$ref" : "#/components/schemas/SessionList"
+    },
+    "metaInformation" : {
+      "description" : "This meta information is valid for all entries in this data set. The meta information is used to tell the data consumer which selection criteria were applied by the data provider. ",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#metaInformation",
+      "$ref" : "#/components/schemas/MetaCharacteristic"
+    }
+  },
+  "required" : [ "diagnosticSessions" ]
+}

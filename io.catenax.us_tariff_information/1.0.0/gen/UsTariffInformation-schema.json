@@ -1,0 +1,307 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#UsTariffInformation",
+  "description" : "Information required for US tariff declaration",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "CountryTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#CountryTrait",
+        "description" : "Regular expression to restrict a country code or federal state based on the ISO 3166.",
+        "pattern" : "^[A-Z]{2}$"
+      },
+      "ProcessingIdCharacteristic" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#ProcessingIdCharacteristic",
+        "description" : "Characteristic of a processing Id"
+      },
+      "SuccessorListEntity" : {
+        "description" : "Entity of the successor entity",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#SuccessorListEntity",
+        "type" : "object",
+        "properties" : {
+          "successorId" : {
+            "description" : "Identifier of the successor",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#successorId",
+            "$ref" : "#/components/schemas/ProcessingIdCharacteristic"
+          }
+        },
+        "required" : [ "successorId" ]
+      },
+      "SuccessorListCollection" : {
+        "description" : "Characteristic of the successor property defined as a Collection.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#SuccessorListCollection",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/SuccessorListEntity"
+        }
+      },
+      "ProcessingTypeCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#ProcessingTypeCharacteristic",
+        "description" : "Enumeration of processingTypes",
+        "enum" : [ "Pourring", "Smelting", "Melting" ]
+      },
+      "CertificateIdCharacteristic" : {
+        "type" : "string",
+        "format" : "uri",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#CertificateIdCharacteristic",
+        "description" : "Characteristic of the Certificate Id"
+      },
+      "ProcessingListEntity" : {
+        "description" : "Entity of the processing property",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#ProcessingListEntity",
+        "type" : "object",
+        "properties" : {
+          "processingCountry" : {
+            "description" : "Processing Country (two letter country code that must conform to data type ISO 3166CC)",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#processingCountry",
+            "$ref" : "#/components/schemas/CountryTrait"
+          },
+          "successor" : {
+            "description" : "Sucessor(s) of the processing step",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#successor",
+            "$ref" : "#/components/schemas/SuccessorListCollection"
+          },
+          "processingType" : {
+            "description" : "Description of the processing type",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#processingType",
+            "$ref" : "#/components/schemas/ProcessingTypeCharacteristic"
+          },
+          "processingId" : {
+            "description" : "Identifier of the processing step",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#processingId",
+            "$ref" : "#/components/schemas/ProcessingIdCharacteristic"
+          },
+          "certificateId" : {
+            "description" : "Certificate of the processing site",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#certificateId",
+            "$ref" : "#/components/schemas/CertificateIdCharacteristic"
+          }
+        },
+        "required" : [ "processingCountry", "processingType", "processingId" ]
+      },
+      "ProcessingListCollection" : {
+        "description" : "Characteristic of the processing information property  defined as a Collection.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#ProcessingListCollection",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ProcessingListEntity"
+        }
+      },
+      "QuantityValueCharacteristic" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quantity:2.0.0#QuantityValueCharacteristic",
+        "description" : "The quantity value associated with the unit expressed as float."
+      },
+      "MassUnitEnumeration" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quantity:2.0.0#MassUnitEnumeration",
+        "description" : "Enumeration for mass units.",
+        "enum" : [ "unit:gram", "unit:kilogram", "unit:tonneMetricTon", "unit:tonUsOrShortTonUkorus", "unit:ounceAvoirdupois", "unit:pound" ]
+      },
+      "MassCharacteristic" : {
+        "description" : "Characteristic for mass measurements of an item.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quantity:2.0.0#MassCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "description" : "The quantity value associated with the unit.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quantity:2.0.0#quantityValue",
+            "$ref" : "#/components/schemas/QuantityValueCharacteristic"
+          },
+          "unit" : {
+            "description" : "The unit of a mass related attribute.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quantity:2.0.0#massUnit",
+            "$ref" : "#/components/schemas/MassUnitEnumeration"
+          }
+        },
+        "required" : [ "value", "unit" ]
+      },
+      "ValuePercentageCharacteristic" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#ValuePercentageCharacteristic",
+        "description" : "Characteristic of the valuePercentage property"
+      },
+      "OriginListEntity" : {
+        "description" : "Entity of the origin property",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#OriginListEntity",
+        "type" : "object",
+        "properties" : {
+          "originWeight" : {
+            "description" : "Total weight of the material for one originCountry",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#originWeight",
+            "$ref" : "#/components/schemas/MassCharacteristic"
+          },
+          "valuePercentage" : {
+            "description" : "Percentage of the total value is attributed to origin property",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#valuePercentage",
+            "$ref" : "#/components/schemas/ValuePercentageCharacteristic"
+          },
+          "originCountry" : {
+            "description" : "Country of origin for the material (two letter country code that must conform to data type ISO 3166CC)",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#originCountry",
+            "$ref" : "#/components/schemas/CountryTrait"
+          }
+        },
+        "required" : [ "originWeight", "valuePercentage", "originCountry" ]
+      },
+      "OriginListCollection" : {
+        "description" : "Characteristic of the origin property defined as a Collection.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#OriginListCollection",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/OriginListEntity"
+        }
+      },
+      "CurrencyTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#CurrencyTrait",
+        "description" : "Regular expression to restrict the currency based on the ISO 4217.",
+        "pattern" : "^[A-Z]{3}$"
+      },
+      "ValueCharacteristic" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#ValueCharacteristic",
+        "description" : "Characteristic of the value property"
+      },
+      "ClassificationTypeEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#ClassificationTypeEnumeration",
+        "description" : "Enumeration of the classification Type property",
+        "enum" : [ "IMDS", "IHS", "ISO" ]
+      },
+      "ClassificationIdCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#ClassificationIdCharacteristic",
+        "description" : "Characteristic of the classification Id property"
+      },
+      "MaterialNameCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#MaterialNameCharacteristic",
+        "description" : "Characteristic of materialName property"
+      },
+      "MaterialCharacteristic" : {
+        "description" : "Characteristic of the material property",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#MaterialCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "classificationType" : {
+            "description" : "Standard according to which the material is classified",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#classificationType",
+            "$ref" : "#/components/schemas/ClassificationTypeEnumeration"
+          },
+          "classificationId" : {
+            "description" : "Classification code of the material according to the classificationType property",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#classificationId",
+            "$ref" : "#/components/schemas/ClassificationIdCharacteristic"
+          },
+          "materialName" : {
+            "description" : "Name of the material",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#materialName",
+            "$ref" : "#/components/schemas/MaterialNameCharacteristic"
+          }
+        },
+        "required" : [ "classificationType", "classificationId", "materialName" ]
+      },
+      "HtsTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#HtsTrait",
+        "description" : "HTS Regular Expression",
+        "pattern" : "^\\d{4}[-.\\s]?\\d{2}[-.\\s]?\\d{4}$"
+      },
+      "ReferenceNumberCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#ReferenceNumberCharacteristic",
+        "description" : "Characteristic of the Reference Number"
+      },
+      "HtsCodingsSytemCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#HtsCodingsSytemCharacteristic",
+        "description" : "Characteristic of the Harmonized Tariff Schedule (HTS) Codings System."
+      },
+      "MaterialListEntity" : {
+        "description" : "Entity of the materialList Entity",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#MaterialListEntity",
+        "type" : "object",
+        "properties" : {
+          "processing" : {
+            "description" : "processing details all operations performed during the production of the part.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#processing",
+            "$ref" : "#/components/schemas/ProcessingListCollection"
+          },
+          "origin" : {
+            "description" : "List the countries of origin from which the material originates",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#origin",
+            "$ref" : "#/components/schemas/OriginListCollection"
+          },
+          "currency" : {
+            "description" : "Currency in which the value is specified.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#currency",
+            "$ref" : "#/components/schemas/CurrencyTrait"
+          },
+          "value" : {
+            "description" : "Total value of material",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#value",
+            "$ref" : "#/components/schemas/ValueCharacteristic"
+          },
+          "material" : {
+            "description" : "Material the part is made of",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#material",
+            "$ref" : "#/components/schemas/MaterialCharacteristic"
+          },
+          "htsCode" : {
+            "description" : "Harmonized Tariff Schedule (HTS) code",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#htsCode",
+            "$ref" : "#/components/schemas/HtsTrait"
+          },
+          "referenceNumber" : {
+            "description" : "Latest PO Number  (or ASN)",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#referenceNumber",
+            "$ref" : "#/components/schemas/ReferenceNumberCharacteristic"
+          },
+          "htsCodingSystem" : {
+            "description" : "Coding system according to which the Harmonized Tariff Schedule (HTS) code was created",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#htsCodingSystem",
+            "$ref" : "#/components/schemas/HtsCodingsSytemCharacteristic"
+          }
+        },
+        "required" : [ "processing", "origin", "currency", "value", "material", "htsCode", "referenceNumber", "htsCodingSystem" ]
+      },
+      "MaterialListCollection" : {
+        "description" : "Characteristic of the materialList property defined as a Collection.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#MaterialListCollection",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/MaterialListEntity"
+        }
+      },
+      "UuidV4Trait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      }
+    }
+  },
+  "properties" : {
+    "materialList" : {
+      "description" : "Includes all materials required by the data consumer to submit a U.S. tariff declaration for their component.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#materialList",
+      "$ref" : "#/components/schemas/MaterialListCollection"
+    },
+    "partId" : {
+      "description" : "The fully anonymous partId (catenaxId) of the serialized part, valid for the Catena-X dataspace.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#partId",
+      "$ref" : "#/components/schemas/UuidV4Trait"
+    },
+    "partWeight" : {
+      "description" : "Total weight of the part",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.us_tariff_information:1.0.0#partWeight",
+      "$ref" : "#/components/schemas/MassCharacteristic"
+    }
+  },
+  "required" : [ "materialList", "partId", "partWeight" ]
+}
