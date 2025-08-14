@@ -1,0 +1,167 @@
+---
+openapi: 3.0.3
+info:
+  title: binary exchange
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#BinaryExchange"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/binary-exchange:
+    get:
+      tags:
+      - BinaryExchange
+      operationId: getBinaryExchange
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: "#/components/responses/BinaryExchange"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    Text:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text"
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    ResourcePath:
+      type: string
+      format: uri
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#ResourcePath"
+      description: The path of a resource.
+    MimeType:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#MimeType"
+      description: "A MIME type as defined in RFC 2046, for example \"application/pdf\"\
+        ."
+    FileWithContentType:
+      description: Characteristic for handling binary file.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#FileWithContentType"
+      type: object
+      properties:
+        value:
+          description: Path and name of the file (with file extension).\n\nThe path
+            can be absolute or relative.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#resourceValue"
+          $ref: "#/components/schemas/ResourcePath"
+        contentType:
+          description: Content type of that file.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#contentType"
+          $ref: "#/components/schemas/MimeType"
+      required:
+      - value
+      - contentType
+    DspInformationCharacteristic:
+      description: DSP Information Characteristic
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#DspInformationCharacteristic"
+      type: object
+      properties:
+        controlPlaneUrl:
+          description: Control plane URL for accessing the binary file.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#controlPlaneUrl"
+          $ref: "#/components/schemas/Text"
+        dspAssetId:
+          description: DSP asset ID of the binary file.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#dspAssetId"
+          $ref: "#/components/schemas/Text"
+      required:
+      - controlPlaneUrl
+      - dspAssetId
+    BinaryExchange:
+      description: Metadata for exchanging a binary file. Access of the binary file
+        via the dataspace protocol (DSP) is supported.
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#BinaryExchange"
+      properties:
+        mappingRuleId:
+          description: Unique identifier of the document specifying the mapping rules
+            used for creating and reading the binary file.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#mappingRuleId"
+          $ref: "#/components/schemas/Text"
+        fileContentDescriptionId:
+          description: Unique identifier of the semantic model describing the content
+            of the binary file.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#fileContentDescriptionId"
+          $ref: "#/components/schemas/Text"
+        binaryFile:
+          description: Binary File to be exchanged.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#binaryFile"
+          $ref: "#/components/schemas/FileWithContentType"
+        dspInformation:
+          description: DSP information.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.binary_exchange:1.0.0#dspInformation"
+          $ref: "#/components/schemas/DspInformationCharacteristic"
+      required:
+      - mappingRuleId
+      - fileContentDescriptionId
+      - binaryFile
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    BinaryExchange:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BinaryExchange"
+      description: The request was successful.
+  requestBodies:
+    BinaryExchange:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BinaryExchange"
