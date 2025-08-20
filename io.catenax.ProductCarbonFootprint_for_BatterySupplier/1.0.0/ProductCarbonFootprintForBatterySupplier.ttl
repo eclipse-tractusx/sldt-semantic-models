@@ -13,7 +13,7 @@
 @prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 
 :ProductCarbonFootprintForBatterySupplier a samm:Aspect ;
-   samm:properties ( :cxPCFValues [ samm:property ext-pcf:dqi; samm:optional true; samm:payloadName "dataQualityRating" ] ext-pcf:secondaryEmissionFactorSources [ samm:property ext-pcf:primaryDataShare; samm:optional true ] [ samm:property :customerpartID; samm:optional true ] ) ;
+   samm:properties ( :cxPCFValues ext-pcf:secondaryEmissionFactorSources [ samm:property ext-pcf:primaryDataShare; samm:optional true ] [ samm:property :customerPartID; samm:optional true ] :technologicalRepresentativeness :geographicalRepresentativeness :timerelatedRepresentativeness ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -22,16 +22,41 @@
    samm:description "This attribute contains the values to calculated the PCF values "@en ;
    samm:characteristic :CharacteristicPCFValues .
 
-:customerpartID a samm:Property ;
+:customerPartID a samm:Property ;
    samm:preferredName "Manufacturer Part Id"@en ;
    samm:description "This is PartNumber assigend by the consumer"@en ;
    samm:characteristic ext-serial-part:PartIdCharacteristic .
 
+:technologicalRepresentativeness a samm:Property ;
+   samm:preferredName "TeR"@en ;
+   samm:characteristic :GeographicalRepresentativenessTrait .
+
+:geographicalRepresentativeness a samm:Property ;
+   samm:preferredName "GeR"@en ;
+   samm:characteristic :GeographicalRepresentativenessTrait .
+
+:timerelatedRepresentativeness a samm:Property ;
+   samm:preferredName "TiR"@en ;
+   samm:characteristic :GeographicalRepresentativenessTrait .
+
 :CharacteristicPCFValues a samm:Characteristic ;
    samm:dataType :EntityPCF .
 
+:GeographicalRepresentativenessTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :DqrCharactistics ;
+   samm-c:constraint :Constraint1 .
+
 :EntityPCF a samm:Entity ;
    samm:properties ( :sharesPerStage [ samm:property :rawData; samm:optional true ] [ samm:property :pcfPerformanceClass; samm:optional true ] [ samm:property :webLinkToCarbonFootPrintStudy; samm:optional true ] ) .
+
+:DqrCharactistics a samm:Characteristic ;
+   samm:dataType xsd:integer .
+
+:Constraint1 a samm-c:RangeConstraint ;
+   samm-c:minValue 1 ;
+   samm-c:maxValue 5 ;
+   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
+   samm-c:upperBoundDefinition samm-c:AT_MOST .
 
 :sharesPerStage a samm:Property ;
    samm:characteristic :CharacteristicStagePercentages .
