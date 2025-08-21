@@ -13,7 +13,7 @@
 @prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 
 :ProductCarbonFootprintForBatterySupplier a samm:Aspect ;
-   samm:properties ( :cxPCFValues ext-pcf:secondaryEmissionFactorSources [ samm:property ext-pcf:primaryDataShare; samm:optional true ] [ samm:property :customerPartID; samm:optional true ] :technologicalRepresentativeness :geographicalRepresentativeness :timerelatedRepresentativeness :dataQualityRating ) ;
+   samm:properties ( :cxPCFValues ext-pcf:secondaryEmissionFactorSources [ samm:property ext-pcf:primaryDataShare; samm:optional true ] :customerPartID :technologicalRepresentativeness :geographicalRepresentativeness :timerelatedRepresentativeness :dataQualityRating :manufacturerPartId :validityPeriod ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -43,12 +43,22 @@
    samm:preferredName "DQR"@en ;
    samm:characteristic :DataQualityTrait .
 
+:manufacturerPartId a samm:Property ;
+   samm:preferredName "manufacturerPartId"@en ;
+   samm:characteristic ext-serial-part:PartIdCharacteristic .
+
+:validityPeriod a samm:Property ;
+   samm:characteristic :CharacteristicValidityPeriod .
+
 :CharacteristicPCFValues a samm:Characteristic ;
    samm:dataType :EntityPCF .
 
 :DataQualityTrait a samm-c:Trait ;
    samm-c:baseCharacteristic :DqrCharactistics ;
    samm-c:constraint :Constraint1 .
+
+:CharacteristicValidityPeriod a samm:Characteristic ;
+   samm:dataType :EntityValidityPeriod .
 
 :EntityPCF a samm:Entity ;
    samm:properties ( :sharesPerStage [ samm:property :rawData; samm:optional true ] [ samm:property :pcfPerformanceClass; samm:optional true ] [ samm:property :webLinkToCarbonFootPrintStudy; samm:optional true ] ) .
@@ -61,6 +71,9 @@
    samm-c:maxValue 5 ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:AT_MOST .
+
+:EntityValidityPeriod a samm:Entity ;
+   samm:properties ( :validityPeriodStart :validityPeriodEnd ) .
 
 :sharesPerStage a samm:Property ;
    samm:characteristic :CharacteristicStagePercentages .
@@ -78,6 +91,14 @@
    samm:preferredName "Link to CarbonFootPrintStudy"@en ;
    samm:characteristic samm-c:ResourcePath ;
    samm:exampleValue "https://www.example.com/study.pdf"^^xsd:anyURI .
+
+:validityPeriodStart a samm:Property ;
+   samm:description "Start of the Validity Period of the provided PCF Values ISO-8601 / RFC3339 Timestamp"@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:validityPeriodEnd a samm:Property ;
+   samm:description "End of the validity Period of the provided pcf Values . ISO-8601/RFC-3339 timestamp"@en ;
+   samm:characteristic samm-c:Timestamp .
 
 :CharacteristicStagePercentages a samm:Characteristic ;
    samm:dataType :EntityStagePcfValue .
