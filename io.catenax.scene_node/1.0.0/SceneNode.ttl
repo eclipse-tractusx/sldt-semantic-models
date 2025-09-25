@@ -1,0 +1,163 @@
+# ------------------------------------------------------------------
+# Transform
+# ------------------------------------------------------------------
+# --------------------- Matrix Transform --------------------------
+# --------------------- Component Transform ---------------------
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.single_level_bom_as_built:2.0.0#> .
+
+:SceneNode a samm:Aspect ;
+   samm:preferredName "Single Level Scene Node"@en ;
+   samm:description "The single-level Scene Node for 3D Data "@en ;
+   samm:properties ( :catenaXId :childItems :localTransform :boundingVolume :modelData ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:catenaXId a samm:Property ;
+   samm:preferredName "Catena-X ID"@en ;
+   samm:description "The Catena-X ID of the given part valid for the Catena-X dataspace."@en ;
+   samm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d" .
+
+:childItems a samm:Property ;
+   samm:preferredName "Child Items"@en ;
+   samm:description "Set of child items, of which the given parent item is assembled by (one structural level down)."@en ;
+   samm:characteristic :SetOfChildItemsCharacteristic .
+
+:localTransform a samm:Property ;
+   samm:characteristic :LocalTransformCharacteristic .
+
+:boundingVolume a samm:Property ;
+   samm:characteristic :BoundingVolumeCharacteristic .
+
+:modelData a samm:Property ;
+   samm:characteristic :SetofModelDataCharacteristic .
+
+:SetOfChildItemsCharacteristic a samm-c:Set ;
+   samm:preferredName "Set of Child Items"@en ;
+   samm:description "Set of child items the parent item is assembled by (one structural level down)."@en ;
+   samm:dataType :ChildData .
+
+:LocalTransformCharacteristic a samm:Characteristic ;
+   samm:dataType :Transform .
+
+:BoundingVolumeCharacteristic a samm:Characteristic ;
+   samm:dataType :BoundingVolume .
+
+:SetofModelDataCharacteristic a samm-c:Set ;
+   samm:dataType :ModelData .
+
+:ChildData a samm:Entity ;
+   samm:preferredName "Child Data"@en ;
+   samm:description "Catena-X ID and meta data of the assembled child item."@en ;
+   samm:properties ( :catenaXId [ samm:property :semanticTag; samm:optional true ] :localTransform [ samm:property :customTag; samm:optional true ] ) .
+
+:Transform a samm:Entity ;
+   samm:properties ( ) .
+
+:BoundingVolume a samm:Entity ;
+   samm:description "Abstract superclass for bounding volume types (sphere, box, etc.)."@en ;
+   samm:properties ( ) .
+
+:ModelData a samm:Entity ;
+   samm:properties ( [ samm:property :customTag; samm:optional true ] [ samm:property :semanticTag; samm:optional true ] ) .
+
+:semanticTag a samm:Property ;
+   samm:preferredName "Semantic Tag"@en ;
+   samm:description "Used to identify the type of the linked 3d data"@en ;
+   samm:characteristic :SemanticTagCharacteristic ;
+   samm:exampleValue "DetailLevel_0" .
+
+:customTag a samm:Property ;
+   samm:preferredName "CustomT ag"@en ;
+   samm:description "is used to use custom identifier of the 3d data"@en ;
+   samm:characteristic :CustomTagCharacteristic ;
+   samm:exampleValue "Bauraum" .
+
+:SemanticTagCharacteristic a samm:Characteristic ;
+   samm:preferredName "Semantic Tag Characteristic"@en .
+
+:CustomTagCharacteristic a samm:Characteristic ;
+   samm:preferredName "CustomTagCharacteristic"@en ;
+   samm:dataType xsd:string .
+
+:Vector3ListCharacteristic a samm-c:List ;
+   samm:description "Vector3 (list of 3 floats)"@en ;
+   samm-c:elementCharacteristic :FloatCharacteristic .
+
+:QuaternionListCharacteristic a samm-c:List ;
+   samm:description "Quaternion (list of 4 floats)"@en ;
+   samm-c:elementCharacteristic :FloatCharacteristic .
+
+:rotation a samm:Property ;
+   samm:description "defines the rotation"@en ;
+   samm:characteristic :QuaternionListCharacteristic ;
+   samm:exampleValue "[0.0, 0.0, 0.0, 1.0]" .
+
+:ExternalBinaryModelData a samm:Entity ;
+   samm:description "links to io.catenax.binary_exchange"@en ;
+   samm:properties ( :catenaXiD ) .
+
+:InlinedModelData a samm:Entity ;
+   samm:extends :ModelData ;
+   samm:properties ( :encoding :encodingType ) .
+
+:ComponentTransform a samm:Entity ;
+   samm:extends :Transform ;
+   samm:description "describes a component transformation"@en ;
+   samm:properties ( :translation :rotation :scale ) .
+
+:FloatCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:float .
+
+:encoding a samm:Property ;
+   samm:characteristic :InlinedModelCharacteristic .
+
+:MatrixTransform a samm:Entity ;
+   samm:extends :Transform ;
+   samm:description "describes a transformation matrix"@en ;
+   samm:properties ( :matrix4x4 ) .
+
+:translation a samm:Property ;
+   samm:description "defines the translation"@en ;
+   samm:characteristic :Vector3ListCharacteristic ;
+   samm:exampleValue "[0.0 0.0 0.0]" .
+
+:matrix4x4 a samm:Property ;
+   samm:description "defines a 4x4 matrix"@en ;
+   samm:characteristic :MatrixCharacteristic ;
+   samm:exampleValue "[[1.0 0.0 0.0 0.0][0.0 1.0 0.0 0.0][0.0 0.0 1.0 0.0][0.0 0.0 0.0 1.0]]" .
+
+:scale a samm:Property ;
+   samm:description "defines the scale"@en ;
+   samm:characteristic :Vector3ListCharacteristic ;
+   samm:exampleValue "[1.0 1.0 1.0]" .
+
+:MatrixCharacteristic a samm-c:List ;
+   samm:description "Matrix4x4 (list of 16 floats)"@en ;
+   samm-c:elementCharacteristic :FloatCharacteristic .
+
+:BoundingSphere a samm:Entity ;
+   samm:extends :BoundingVolume ;
+   samm:description "A minimal sphere enclosing a 3D object or node."@en ;
+   samm:properties ( ) .
+
+:InlinedModelCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:base64Binary .
+
+:BoundingBox a samm:Entity ;
+   samm:extends :BoundingVolume ;
+   samm:description "Axis-aligned bounding box enclosing a 3D object or node."@en ;
+   samm:properties ( ) .
+
+:encodingType a samm:Property ;
+   samm:characteristic samm-c:MimeType .
+
