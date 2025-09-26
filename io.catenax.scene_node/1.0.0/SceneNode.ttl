@@ -13,12 +13,12 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <urn:samm:io.catenax.single_level_bom_as_built:2.0.0#> .
+@prefix : <urn:samm:io.catenax.scene_node:1.0.0#> .
 
 :SceneNode a samm:Aspect ;
    samm:preferredName "Single Level Scene Node"@en ;
    samm:description "The single-level Scene Node for 3D Data "@en ;
-   samm:properties ( :catenaXId :childItems :localTransform :boundingVolume :modelData ) ;
+   samm:properties ( :catenaXId [ samm:property :childItems; samm:optional true ] [ samm:property :localTransform; samm:optional true ] [ samm:property :boundingVolume; samm:optional true ] [ samm:property :modelData; samm:optional true ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -58,7 +58,7 @@
 :ChildData a samm:Entity ;
    samm:preferredName "Child Data"@en ;
    samm:description "Catena-X ID and meta data of the assembled child item."@en ;
-   samm:properties ( :catenaXId [ samm:property :semanticTag; samm:optional true ] :localTransform [ samm:property :customTag; samm:optional true ] ) .
+   samm:properties ( :catenaXId [ samm:property :semanticTag; samm:optional true ] [ samm:property :localTransform; samm:optional true ] [ samm:property :customTag; samm:optional true ] ) .
 
 :Transform a samm:Entity ;
    samm:properties ( ) .
@@ -83,72 +83,19 @@
    samm:exampleValue "Bauraum" .
 
 :SemanticTagCharacteristic a samm:Characteristic ;
-   samm:preferredName "Semantic Tag Characteristic"@en .
+   samm:preferredName "Semantic Tag Characteristic"@en ;
+   samm:dataType xsd:string .
 
 :CustomTagCharacteristic a samm:Characteristic ;
    samm:preferredName "CustomTagCharacteristic"@en ;
    samm:dataType xsd:string .
 
-:Vector3ListCharacteristic a samm-c:List ;
-   samm:description "Vector3 (list of 3 floats)"@en ;
-   samm-c:elementCharacteristic :FloatCharacteristic .
-
-:QuaternionListCharacteristic a samm-c:List ;
-   samm:description "Quaternion (list of 4 floats)"@en ;
-   samm-c:elementCharacteristic :FloatCharacteristic .
-
-:rotation a samm:Property ;
-   samm:description "defines the rotation"@en ;
-   samm:characteristic :QuaternionListCharacteristic ;
-   samm:exampleValue "[0.0, 0.0, 0.0, 1.0]" .
-
-:ExternalBinaryModelData a samm:Entity ;
-   samm:description "links to io.catenax.binary_exchange"@en ;
-   samm:properties ( :catenaXiD ) .
-
-:InlinedModelData a samm:Entity ;
-   samm:extends :ModelData ;
-   samm:properties ( :encoding :encodingType ) .
-
-:ComponentTransform a samm:Entity ;
-   samm:extends :Transform ;
-   samm:description "describes a component transformation"@en ;
-   samm:properties ( :translation :rotation :scale ) .
-
-:FloatCharacteristic a samm:Characteristic ;
-   samm:dataType xsd:float .
-
-:encoding a samm:Property ;
-   samm:characteristic :InlinedModelCharacteristic .
-
-:MatrixTransform a samm:Entity ;
-   samm:extends :Transform ;
-   samm:description "describes a transformation matrix"@en ;
-   samm:properties ( :matrix4x4 ) .
-
-:translation a samm:Property ;
-   samm:description "defines the translation"@en ;
-   samm:characteristic :Vector3ListCharacteristic ;
-   samm:exampleValue "[0.0 0.0 0.0]" .
-
-:matrix4x4 a samm:Property ;
-   samm:description "defines a 4x4 matrix"@en ;
-   samm:characteristic :MatrixCharacteristic ;
-   samm:exampleValue "[[1.0 0.0 0.0 0.0][0.0 1.0 0.0 0.0][0.0 0.0 1.0 0.0][0.0 0.0 0.0 1.0]]" .
-
-:scale a samm:Property ;
-   samm:description "defines the scale"@en ;
-   samm:characteristic :Vector3ListCharacteristic ;
-   samm:exampleValue "[1.0 1.0 1.0]" .
-
 :MatrixCharacteristic a samm-c:List ;
    samm:description "Matrix4x4 (list of 16 floats)"@en ;
    samm-c:elementCharacteristic :FloatCharacteristic .
 
-:BoundingSphere a samm:Entity ;
-   samm:extends :BoundingVolume ;
-   samm:description "A minimal sphere enclosing a 3D object or node."@en ;
-   samm:properties ( ) .
+:encoding a samm:Property ;
+   samm:characteristic :InlinedModelCharacteristic .
 
 :InlinedModelCharacteristic a samm:Characteristic ;
    samm:dataType xsd:base64Binary .
@@ -156,6 +103,64 @@
 :BoundingBox a samm:Entity ;
    samm:extends :BoundingVolume ;
    samm:description "Axis-aligned bounding box enclosing a 3D object or node."@en ;
+   samm:properties ( ) .
+
+:scale a samm:Property ;
+   samm:description "defines the scale"@en ;
+   samm:characteristic :Vector3ListCharacteristic ;
+   samm:exampleValue "[1.0 1.0 1.0]" .
+
+:ComponentTransform a samm:Entity ;
+   samm:extends :Transform ;
+   samm:description "describes a component transformation"@en ;
+   samm:properties ( :translation :rotation :scale ) .
+
+:translation a samm:Property ;
+   samm:description "defines the translation"@en ;
+   samm:characteristic :Vector3ListCharacteristic ;
+   samm:exampleValue "[0.0 0.0 0.0]" .
+
+:MatrixTransform a samm:Entity ;
+   samm:extends :Transform ;
+   samm:description "describes a transformation matrix"@en ;
+   samm:properties ( :matrix4x4 ) .
+
+:rotation a samm:Property ;
+   samm:description "defines the rotation"@en ;
+   samm:characteristic :QuaternionListCharacteristic ;
+   samm:exampleValue "[0.0, 0.0, 0.0, 1.0]" .
+
+:QuaternionListCharacteristic a samm-c:List ;
+   samm:description "Quaternion (list of 4 floats)"@en ;
+   samm-c:elementCharacteristic :FloatCharacteristic .
+
+:ModelDataCharacteristic a samm:Characteristic ;
+   samm:dataType :ModelData .
+
+:InlinedModelData a samm:Entity ;
+   samm:extends :ModelData ;
+   samm:properties ( :encoding :encodingType ) .
+
+:FloatCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:float .
+
+:matrix4x4 a samm:Property ;
+   samm:description "defines a 4x4 matrix"@en ;
+   samm:characteristic :MatrixCharacteristic ;
+   samm:exampleValue "[[1.0 0.0 0.0 0.0][0.0 1.0 0.0 0.0][0.0 0.0 1.0 0.0][0.0 0.0 0.0 1.0]]" .
+
+:Vector3ListCharacteristic a samm-c:List ;
+   samm:description "Vector3 (list of 3 floats)"@en ;
+   samm-c:elementCharacteristic :FloatCharacteristic .
+
+:BoundingSphere a samm:Entity ;
+   samm:extends :BoundingVolume ;
+   samm:description "A minimal sphere enclosing a 3D object or node."@en ;
+   samm:properties ( ) .
+
+:ExternalBinaryModelData a samm:Entity ;
+   samm:extends :ModelData ;
+   samm:description "links to io.catenax.binary_exchange"@en ;
    samm:properties ( ) .
 
 :encodingType a samm:Property ;
