@@ -13,7 +13,7 @@ For convenience you can also look into the `gen` folder of each model, which alr
 Each model has its life cycle and can thus have a different status. This information always corresponds to a specific version of the model. To indicate the state of the model version in Git, one creates a file with the name `metadata.json` and places it in the same directory as the corresponding model file. It is also possible to load the models into the [Semantic Hub](https://github.com/eclipse-tractusx/sldt-semantic-hub) which has a corresponding state management. An example `metadata.json` looks like this:
 
 ```
-{ "status" : "deprecate"} 
+{ "status" : "deprecated"} 
 ```
 
 The following table lists the possible values for `status` and what they mean:
