@@ -2,7 +2,11 @@
 
 All notable changes to this model will be documented in this file.
 
-## [Unreleased]
+## [2.0.1] - 2025-10-09
+
+### Changed
+
+- fixed modelling error which prevented the successfull validation of the payload
 
 ## [2.0.0] - 2023-08-28
 
