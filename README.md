@@ -26,6 +26,8 @@ status | status in Semantic Hub | description
 draft | DRAFT | This version of the model is under development and can change at any time.
 release | RELEASED | The version of the model is considered as stable and any modifications to the model trigger a new release and subsequentially a new version.
 deprecated | DEPRECATED | The version of the model has reached its end-of-life and should not be used anymore because it will be deleted later.
+re-evaluation | / | The version of the model has reached its end-of-life and should not be used anymore because it will be deleted later.
+outdated | / | This state usually will not be set as this includes the deletion of a deprecated model.
 
 The `metadata.json` is only relevant for model files on the branch `main`. All other branches are development branches, and the models from these branches or forks are therefore implicitly in status "DRAFT".
 
