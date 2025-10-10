@@ -18,6 +18,8 @@
 # SPDX-License-Identifier: CC-BY-4.0
 #######################################################################
 
+
+
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -32,7 +34,7 @@
    samm:preferredName "Product (Carbon) Footprint"@en ;
    samm:description "A Product (Carbon) Footprint represents the carbon footprint of a product with values as specified in the Catena-X PCF Rulebook in accordance with the WBCSD (World Business Council for Sustainable Development) Pathfinder framework and the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD/ PACT initiative."@en ;
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
-   samm:properties ( [ samm:property :attestationOfConformance; samm:optional true ] [ samm:property :scopeOfPcfForm; samm:optional true ] [ samm:property :companyAndProductInformation; samm:optional true ] [ samm:property :pcfAssessmentAndMethodology; samm:optional true ] [ samm:property :general; samm:optional true ] [ samm:property :carbonContent; samm:optional true ] [ samm:property :productLifeCycleStagesAndEmissions; samm:optional true ] ) ;
+   samm:properties ( :attestationOfConformance :scopeOfPcfForm :companyAndProductInformation :pcfAssessmentAndMethodology :general :carbonContent :productLifeCycleStagesAndEmissions ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -139,7 +141,7 @@
 :ProductLifeCycleStagesAndEmissionsEntity a samm:Entity ;
    samm:preferredName "Product Life Cycle Stages And Emissions Entity"@en ;
    samm:description "Entity to group all product life cycle stages and emissions properties."@en ;
-   samm:properties ( [ samm:property :productionStage; samm:optional true ] [ samm:property :distributionStage; samm:optional true ] [ samm:property :packagingStage; samm:optional true ] ) .
+   samm:properties ( :productionStage :distributionStage :packagingStage ) .
 
 :attestationType a samm:Property ;
    samm:preferredName "Attestation type"@en ;
@@ -369,7 +371,7 @@
 :PCFAssessmentInformationEntity a samm:Entity ;
    samm:preferredName "PCF Assessment Information Entity"@en ;
    samm:description "Entity to group all pcf assessment information properties."@en ;
-   samm:properties ( [ samm:property :technology; samm:optional true ] [ samm:property :idAndVersion; samm:optional true ] [ samm:property :boundarySpecifications; samm:optional true ] [ samm:property :geography; samm:optional true ] [ samm:property :time; samm:optional true ] ) .
+   samm:properties ( :technology :idAndVersion :boundarySpecifications :geography :time ) .
 
 :DataSourcesAndQualityEntity a samm:Entity ;
    samm:preferredName "Data Sources And Quality Entity"@en ;
@@ -384,7 +386,7 @@
 :PCFMethodologyEntity a samm:Entity ;
    samm:preferredName "PCF Methodology Entity"@en ;
    samm:description "Entity to group all pcf methodology properties."@en ;
-   samm:properties ( [ samm:property :massBalancingInformation; samm:optional true ] [ samm:property :standards; samm:optional true ] [ samm:property :gwpCharacterizationFactorDetails; samm:optional true ] [ samm:property :allocationInForeground; samm:optional true ] ) .
+   samm:properties ( :massBalancingInformation :standards :gwpCharacterizationFactorDetails :allocationInForeground ) .
 
 :PositiveEmission a samm-c:Quantifiable ;
    samm:preferredName "Positive Emission"@en ;
@@ -1295,15 +1297,11 @@
    samm:see <https://wbcsd.github.io/tr/2023/data-exchange-protocol-20230221/> ;
    samm:value "([A-Z]{2})" .
 
-:SpecVersionConstraint a samm-c:RegularExpressionConstraint ;
-   samm:preferredName "Spec Version Constraint"@en ;
-   samm:description "Constraint for specVersion"@en ;
-   samm:value "urn:io\\.catenax\\.pcf:datamodel:version:\\d+\\.\\d+\\.\\d+" .
-
-:text a samm:Property ;
-   samm:preferredName "Text"@en ;
-   samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
-   samm:characteristic samm-c:Text .
+:landManagementBiogenicCO2Emissions a samm:Property ;
+   samm:preferredName "GWP land Management CO2 Emissions"@en ;
+   samm:description "Position F: Carbon stock losses occurring within the same land use category or subcategory due to agricultural practices such as tillage, field preparations, pruning and harvest. Land Management CO2 emissions measures biogenic CO2 emissions from a net loss in carbon stock within one land use category or subcategory. This includes impact on the land-carbon pools,including above- and below-ground biomass, dead organic matter, and soil carbon pools. If the carbon stock increases within the same land use category and the conditions to report removals are met, this may be calculated as a Land management CO2 removal (position G). Refer to PACT v3.0 for details."@en ;
+   samm:characteristic :PositiveEmissionsTrait ;
+   samm:exampleValue "1.40"^^xsd:decimal .
 
 :SpecVersionTrait a samm-c:Trait ;
    samm:preferredName "Spec Version Trait"@en ;
@@ -1311,9 +1309,13 @@
    samm-c:baseCharacteristic :SpecVersionCharacteristic ;
    samm-c:constraint :SpecVersionConstraint .
 
-:landManagementBiogenicCO2Emissions a samm:Property ;
-   samm:preferredName "GWP land Management CO2 Emissions"@en ;
-   samm:description "Position F: Carbon stock losses occurring within the same land use category or subcategory due to agricultural practices such as tillage, field preparations, pruning and harvest. Land Management CO2 emissions measures biogenic CO2 emissions from a net loss in carbon stock within one land use category or subcategory. This includes impact on the land-carbon pools,including above- and below-ground biomass, dead organic matter, and soil carbon pools. If the carbon stock increases within the same land use category and the conditions to report removals are met, this may be calculated as a Land management CO2 removal (position G). Refer to PACT v3.0 for details."@en ;
-   samm:characteristic :PositiveEmissionsTrait ;
-   samm:exampleValue "1.40"^^xsd:decimal .
+:text a samm:Property ;
+   samm:preferredName "Text"@en ;
+   samm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+   samm:characteristic samm-c:Text .
+
+:SpecVersionConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Spec Version Constraint"@en ;
+   samm:description "Constraint for specVersion"@en ;
+   samm:value "urn:io\\.catenax\\.pcf:datamodel:version:\\d+\\.\\d+\\.\\d+" .
 
