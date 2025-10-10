@@ -1,0 +1,186 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#SingleLevelSceneNode",
+  "description" : "The Single Level Scene Node for geometry Data ",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "UuidV4Trait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "SetOfSemanticTagsCharacteristic" : {
+        "description" : "Set of Standardised Semantic Tags",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#SetOfSemanticTagsCharacteristic",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        },
+        "uniqueItems" : true
+      },
+      "SetOfCustomTagsCharacteristic" : {
+        "description" : "Set of Custom Tags to define custom identifiers of geometry model type",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#SetOfCustomTagsCharacteristic",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        },
+        "uniqueItems" : true
+      },
+      "MatrixTrait" : {
+        "description" : "Requires the matrix list to have exactly 16 elements.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#MatrixTrait",
+        "type" : "array",
+        "items" : {
+          "type" : "number",
+          "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#FloatCharacteristic",
+          "description" : "Characteristic for a float value."
+        },
+        "maxItems" : 16,
+        "minItems" : 16
+      },
+      "LocalTransformCharacteristic" : {
+        "description" : "Characteristic describing the local transformation of a node.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#LocalTransformCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "matrix4x4" : {
+            "description" : "Defines a 4x4 transformation matrix for the geometry object or node.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#matrix4x4",
+            "$ref" : "#/components/schemas/MatrixTrait"
+          }
+        },
+        "required" : [ "matrix4x4" ]
+      },
+      "ChildData" : {
+        "description" : "Catena-X ID and meta data of the assembled child item.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#ChildData",
+        "type" : "object",
+        "properties" : {
+          "catenaXId" : {
+            "description" : "The Catena-X ID of the given part valid for the Catena-X dataspace.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#catenaXId",
+            "$ref" : "#/components/schemas/UuidV4Trait"
+          },
+          "semanticTags" : {
+            "description" : "Used to identify the type of the linked geometry data",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#semanticTags",
+            "$ref" : "#/components/schemas/SetOfSemanticTagsCharacteristic"
+          },
+          "customTags" : {
+            "description" : "Is used to use custom identifier of the geometry data",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#customTags",
+            "$ref" : "#/components/schemas/SetOfCustomTagsCharacteristic"
+          },
+          "localTransform" : {
+            "description" : "The local transformation (position, rotation, scale) of the node relative to its parent.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#localTransform",
+            "$ref" : "#/components/schemas/LocalTransformCharacteristic"
+          }
+        },
+        "required" : [ "catenaXId" ]
+      },
+      "SetOfChildItemsCharacteristic" : {
+        "description" : "Set of child items the parent item is assembled by (one structural level down).",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#SetOfChildItemsCharacteristic",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ChildData"
+        },
+        "uniqueItems" : true
+      },
+      "Vector3Trait" : {
+        "description" : "Requires the vector to have exactly 3 elements.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#Vector3Trait",
+        "type" : "array",
+        "items" : {
+          "type" : "number",
+          "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#FloatCharacteristic",
+          "description" : "Characteristic for a float value."
+        },
+        "maxItems" : 3,
+        "minItems" : 3
+      },
+      "BoundingVolumeCharacteristic" : {
+        "description" : "Characteristic describing the bounding volume of a node.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#BoundingVolumeCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "minPoint" : {
+            "description" : "The minimum corner point of the bounding box.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#minPoint",
+            "$ref" : "#/components/schemas/Vector3Trait"
+          },
+          "maxPoint" : {
+            "description" : "The maximum corner point of the bounding box.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#maxPoint",
+            "$ref" : "#/components/schemas/Vector3Trait"
+          }
+        },
+        "required" : [ "minPoint", "maxPoint" ]
+      },
+      "ExternalBinaryModelData" : {
+        "description" : "Links to io.catenax.binary_exchange",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#ExternalBinaryModelData",
+        "type" : "object",
+        "properties" : {
+          "semanticTags" : {
+            "description" : "Used to identify the type of the linked geometry data",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#semanticTags",
+            "$ref" : "#/components/schemas/SetOfSemanticTagsCharacteristic"
+          },
+          "customTags" : {
+            "description" : "Is used to use custom identifier of the geometry data",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#customTags",
+            "$ref" : "#/components/schemas/SetOfCustomTagsCharacteristic"
+          },
+          "catenaXId" : {
+            "description" : "The Catena-X ID of the given part valid for the Catena-X dataspace.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#catenaXId",
+            "$ref" : "#/components/schemas/UuidV4Trait"
+          }
+        },
+        "required" : [ "catenaXId" ]
+      },
+      "SetOfModelItemsCharacteristic" : {
+        "description" : "Set of geometry model items associated with a node.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#SetOfModelItemsCharacteristic",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ExternalBinaryModelData"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "catenaXId" : {
+      "description" : "The Catena-X ID of the given part valid for the Catena-X dataspace.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#catenaXId",
+      "$ref" : "#/components/schemas/UuidV4Trait"
+    },
+    "childItems" : {
+      "description" : "Set of child items, of which the given parent item is assembled by (one structural level down).",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#childItems",
+      "$ref" : "#/components/schemas/SetOfChildItemsCharacteristic"
+    },
+    "localTransform" : {
+      "description" : "The local transformation (position, rotation, scale) of the node relative to its parent.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#localTransform",
+      "$ref" : "#/components/schemas/LocalTransformCharacteristic"
+    },
+    "boundingVolume" : {
+      "description" : "The bounding volume that encloses the geometry object or node.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#boundingVolume",
+      "$ref" : "#/components/schemas/BoundingVolumeCharacteristic"
+    },
+    "modelItems" : {
+      "description" : "The set of geometry model items associated with this node.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_scene_node:1.0.0#modelItems",
+      "$ref" : "#/components/schemas/SetOfModelItemsCharacteristic"
+    }
+  },
+  "required" : [ "catenaXId" ]
+}
