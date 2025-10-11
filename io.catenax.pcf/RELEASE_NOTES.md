@@ -5,7 +5,7 @@ All notable changes to this model will be documented in this file.
 
 ### Changed
 
-- Hierarchy of the data structure has been depend and given more meaning (otherwise no change in content)
+- Hierarchy of the data structure has been deepened and given more meaning (otherwise no change in content)
 
 ## [8.0.0] 2025-07-18
 
