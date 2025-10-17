@@ -22,7 +22,6 @@
 
 
 
-
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -31,7 +30,6 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.certificate_of_analysis:1.0.0#> .
-
 @prefix ext-batch: <urn:samm:io.catenax.batch:3.0.0#> .
 @prefix ext-information: <urn:samm:io.catenax.delivery_information:2.0.0#> .
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
@@ -76,6 +74,7 @@
 
 :CertificateMetaDataCharacteristic a samm:Characteristic ;
    samm:preferredName "Certificate Meta Data Characteristic"@en ;
+   samm:description "Characteristic for describing meta or header data of a Certificate of Analysis."@en ;
    samm:dataType :CertificateMetaData .
 
 :MaterialPropertiesSet a samm-c:Set ;
@@ -85,10 +84,12 @@
 
 :ProductTypeInformationCharacteristic a samm:Characteristic ;
    samm:preferredName "Product type information characteristic"@en ;
+   samm:description "Characteristic for some product type related information."@en ;
    samm:dataType :ProductTypeInformation .
 
 :ProductInstanceInformationCharacteristic a samm:Characteristic ;
    samm:preferredName "Product instance information characteristic"@en ;
+   samm:description "Characteristic for product instance related information."@en ;
    samm:dataType :ProductInstanceInformation .
 
 :CertificateMetaData a samm:Entity ;
@@ -98,7 +99,7 @@
 :MaterialProperty a samm:Entity ;
    samm:preferredName "Material property"@en ;
    samm:description "A material property with its name, definition measured value and specification (limits).\nIf available, lower limit and upper limit must be given, they are only optional in the case that the limits don't exist or don't apply."@en ;
-   samm:properties ( :name :description :value [ samm:property :unit; samm:optional true ] [ samm:property :lowerLimit; samm:optional true ] [ samm:property :upperLimit; samm:optional true ] :dataType ) .
+   samm:properties ( :name :description :value [ samm:property :unit; samm:optional true ] [ samm:property :lowerLimit; samm:optional true ] [ samm:property :upperLimit; samm:optional true ] :dataType [ samm:property :method; samm:optional true ] ) .
 
 :ProductTypeInformation a samm:Entity ;
    samm:preferredName "Product type information"@en ;
@@ -128,10 +129,10 @@
    samm:exampleValue "density" .
 
 :description a samm:Property ;
-   samm:preferredName "property description"@en ;
-   samm:description "This field should be used to describe the property.\n\nIf available a reference to a public or internal norm should be provided. The norm should specify the meaning of the property as well as the specification of the analysis method used."@en ;
+   samm:preferredName "Property description"@en ;
+   samm:description "This field should be used to describe the property."@en ;
    samm:characteristic samm-c:Text ;
-   samm:exampleValue "according DIN ISO 4711" .
+   samm:exampleValue "Density of the glue at room temperature" .
 
 :value a samm:Property ;
    samm:preferredName "Property value"@en ;
@@ -140,7 +141,7 @@
    samm:exampleValue "2310.0" .
 
 :unit a samm:Property ;
-   samm:preferredName "property unit"@en ;
+   samm:preferredName "Property unit"@en ;
    samm:description "The unit of measure used for the property value and specification limits. This can be omitted for non-numerical properties, e.g. Boolean."@en ;
    samm:characteristic samm-c:UnitReference ;
    samm:exampleValue "unit:kilogramPerCubicMetre"^^samm:curie .
@@ -162,6 +163,11 @@
    samm:description "The data type of the properties value and limits. The data type should specify how the string value should be type casted or interpreted."@en ;
    samm:characteristic :DataTypeEnumerationCharacteristic ;
    samm:exampleValue "xsd:float"^^samm:curie .
+
+:method a samm:Property ;
+   samm:preferredName "Method"@en ;
+   samm:description "A set of methods that describe how the part was tested"@en ;
+   samm:characteristic :MethodSet .
 
 :customerPartId a samm:Property ;
    samm:preferredName "Customer Part ID"@en ;
@@ -186,8 +192,30 @@
    samm:dataType samm:curie ;
    samm-c:values ( "xsd:string"^^samm:curie "xsd:boolean"^^samm:curie "xsd:decimal"^^samm:curie "xsd:integer"^^samm:curie "xsd:double"^^samm:curie "xsd:date"^^samm:curie "xsd:time"^^samm:curie "xsd:dateTime"^^samm:curie "xsd:dateTimeStamp"^^samm:curie "xsd:gYear"^^samm:curie "xsd:gMonth"^^samm:curie "xsd:gDay"^^samm:curie "xsd:gYearMonth"^^samm:curie "xsd:gMonthDay"^^samm:curie "xsd:duration"^^samm:curie "xsd:yearMonthDuration"^^samm:curie "xsd:dayTimeDuration"^^samm:curie "xsd:hexBinary"^^samm:curie "xsd:base64Binary"^^samm:curie "xsd:anyURI"^^samm:curie "samm:curie"^^samm:curie "rdf:langString"^^samm:curie "xsd:float"^^samm:curie ) .
 
+:MethodSet a samm:Characteristic ;
+   samm:preferredName "Method set"@en ;
+   samm:description "Characteristic for a set of methods on how the material property was tested."@en ;
+   samm:dataType :MethodEntity .
+
 :DateCharacteristic a samm:Characteristic ;
    samm:preferredName "Date Characteristic"@en ;
    samm:description "A calendar date"@en ;
    samm:dataType xsd:date .
+
+:MethodEntity a samm:Entity ;
+   samm:preferredName "Method entity"@en ;
+   samm:description "A method with its authority, ID and description"@en ;
+   samm:properties ( [ samm:property :methodStandard; samm:optional true ] :methodDescription ) .
+
+:methodStandard a samm:Property ;
+   samm:preferredName "Referenced Standard"@en ;
+   samm:description "Reference to the standard that described the method."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "DIN ISO 4711" .
+
+:methodDescription a samm:Property ;
+   samm:preferredName "Method description"@en ;
+   samm:description "This field should be used to describe the method or provide additional information to the referenced norm."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ISO norm to describe testing methods for adhesive density." .
 
