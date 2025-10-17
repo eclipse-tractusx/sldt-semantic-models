@@ -4,6 +4,24 @@ All notable changes to this model will be documented in this file.
 ## [Unreleased]
 - Version 1.0.0 is now set to deprecated: Some important attributes were missing. Use version 2.0.0 instead
 
+## [4.0.0] - 2025-07-07
+A conversion table from previous version 3.0.0 to 4.0.0 of this model is provided with the updated KIT Quality Management for CX release Saturn.
+
+### Added
+
+### Changed
+- to reduce redundancies in modelling some properties are now used form share quality core model
+- listOfPartAnalyses from version 3.0.0 has changed to partsAnalyses only
+- using parts definition from shared quality core model (via samm:extends) to unify properties of analyzed parts
+- at least one primary identifier per entity is now mandatory
+- partsAnalyses_partName and partsAnalyses_supplierAnalysisID are now mandatory properties
+- listOfPartAnalyses_parentAnalysisID changed to partsAnalyses_vehicleManufacturerAnalysisID
+
+
+### Removed
+- listOfPartAnalyses_parentPartNumber,listOfPartAnalyses_parentSerialNumber are removed: The properties for part coming from shared core model cover that information 
+
+
 ## [3.0.0] - 2024-01-22
 ### Added
 - metaInformation property added to root entity

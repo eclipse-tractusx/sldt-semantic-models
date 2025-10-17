@@ -21,3 +21,15 @@ n/a
 - updated SAMM Version from 2.0.0 to 2.1.0
 
 ### Removed
+
+## [3.0.0] - 2025-07-01
+### Added
+- added qualityTaskAttachmentId to identify attachments
+
+### Changed
+- changed referenced model description from enumeration to definition via namespace, ttl file name and version
+- moved model reference to file level instead of top level
+- usage of quality core model (e.g., for the qualityTaskId)
+
+
+### Removed

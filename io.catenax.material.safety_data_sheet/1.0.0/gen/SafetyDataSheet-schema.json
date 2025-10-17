@@ -1,0 +1,214 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#SafetyDataSheet",
+  "description" : "Model that represents the Safety Data Sheet document which is structured in 16 internationally agreed sections usually supplied via paper or digitally as PDF.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "ResourcePath" : {
+        "type" : "string",
+        "format" : "uri",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#ResourcePath",
+        "description" : "The path of a resource."
+      },
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "Language" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Language",
+        "description" : "Describes a Property containing a language according to ISO 639-1, for example \"de\"."
+      },
+      "Alpha3CodeTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#Alpha3CodeTrait",
+        "description" : "Constrainst the value to only three capital letters to represent the country code according to ISO 3166.",
+        "pattern" : "^[A-Z][A-Z][A-Z]"
+      },
+      "SDSCountryEntity" : {
+        "description" : "A country is a distinct territorial body or political entity.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#SDSCountryEntity",
+        "type" : "object",
+        "properties" : {
+          "alpha3Code" : {
+            "description" : "Country code consisting of three capital letters according to ISO 3166.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#hasAlpha3Code",
+            "$ref" : "#/components/schemas/Alpha3CodeTrait"
+          },
+          "name" : {
+            "description" : "Country name.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#label",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "alpha3Code", "name" ]
+      },
+      "CountryTrait" : {
+        "description" : "Limits the set of countries to at least to one element.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#CountryTrait",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/SDSCountryEntity"
+        },
+        "uniqueItems" : true,
+        "minItems" : 1
+      },
+      "IssueDateCharacteristic" : {
+        "type" : "string",
+        "format" : "date",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#IssueDateCharacteristic",
+        "description" : "Describes the date of the Property."
+      },
+      "PreFormattedPayloadCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#PreFormattedPayloadCharacteristic",
+        "description" : "Describes a Property which contains the Base64-encoded pre formatted payload representation of the Safety Data Sheet."
+      },
+      "SafetyDataSheetPreFormattedEntity" : {
+        "description" : "Represents the information from a SDS based on already defined or standardized data formats (\"pre-formatted\"). Those data formats define the structure of the data and the corresponding data is referenced as \"payload\" information. For the SDS, the idea is to utilize the sdscom-xml format, while the payload data itself is included in a base64-encoded string. Nevertheless, other formats could be specified and utilized, too.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#SafetyDataSheetPreFormattedEntity",
+        "type" : "object",
+        "properties" : {
+          "format" : {
+            "description" : "Identifier of the format of the payload.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#format",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "formatVersion" : {
+            "description" : "Corresponding version identifier of the given format",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#formatVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "preFormattedPayload" : {
+            "description" : "Base64-encoded string of data according to format",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#preFormattedPayload",
+            "$ref" : "#/components/schemas/PreFormattedPayloadCharacteristic"
+          },
+          "formatLink" : {
+            "description" : "URL to the format definition file",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#formatLink",
+            "$ref" : "#/components/schemas/ResourcePath"
+          }
+        },
+        "required" : [ "format", "formatVersion", "preFormattedPayload", "formatLink" ],
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/SafetyDataSheetAbstractEntity"
+        } ]
+      },
+      "SafetyDataSheetLinkEntity" : {
+        "description" : "Allows referencing a SDS via a (publically available) URL.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#SafetyDataSheetLinkEntity",
+        "type" : "object",
+        "properties" : {
+          "link" : {
+            "description" : "HTTP(S) address according to RFC 3986",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#link",
+            "$ref" : "#/components/schemas/ResourcePath"
+          }
+        },
+        "required" : [ "link" ],
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/SafetyDataSheetAbstractEntity"
+        } ]
+      },
+      "PayloadCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#PayloadCharacteristic",
+        "description" : "Describes a Property which contains the Base64-encoded payload representation of the Safety Data Sheet."
+      },
+      "SafetyDataSheetBinaryEntity" : {
+        "description" : "Represents a base64 encoded SDS. The binary PDF file will be encoded by the binary-to-text encoding \"Base64\" which is common to be transported safely throughout systems that may only support text characters.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#SafetyDataSheetBinaryEntity",
+        "type" : "object",
+        "properties" : {
+          "payload" : {
+            "description" : "Base64-encoded string of PDF file",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#payload",
+            "$ref" : "#/components/schemas/PayloadCharacteristic"
+          }
+        },
+        "required" : [ "payload" ],
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/SafetyDataSheetAbstractEntity"
+        } ]
+      },
+      "SafetyDataSheetAbstractEntity" : {
+        "description" : "Chemical products are supplied with a \"Safety Data Sheet\" (SDS) which is a document structured in 16 internationally agreed sections usually supplied via paper or digitally as PDF. A SDS lists information relating to occupational safety and health for the use of various substances and products.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#SafetyDataSheetAbstractEntity",
+        "type" : "object",
+        "properties" : {
+          "issueVersion" : {
+            "description" : "Versioning information of the Safety Data Sheet",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#issueVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "previousVersion" : {
+            "description" : "Versioning information of the previous SDS",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#previousVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "language" : {
+            "description" : "ISO-639-1 code of language",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#language",
+            "$ref" : "#/components/schemas/Language"
+          },
+          "applicableToCountry" : {
+            "description" : "Relationship between the Safety Data Sheet and the country to which it applies for.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#applicableToCountry",
+            "$ref" : "#/components/schemas/CountryTrait"
+          },
+          "issueDate" : {
+            "description" : "Issue date of Safety Data Sheet",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#issueDate",
+            "$ref" : "#/components/schemas/IssueDateCharacteristic"
+          }
+        },
+        "required" : [ "language", "applicableToCountry" ]
+      },
+      "SafetyDataSheetLinkList" : {
+        "description" : "Characteristic to describe the properties of the link representation of the Safety Data Sheet.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#SafetyDataSheetLinkList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/SafetyDataSheetLinkEntity"
+        }
+      },
+      "SafetyDataSheetBinaryList" : {
+        "description" : "Characteristic to describe the properties of the binary representation of the Safety Data Sheet.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#SafetyDataSheetBinaryList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/SafetyDataSheetBinaryEntity"
+        }
+      },
+      "SafetyDataSheetPreFormattedList" : {
+        "description" : "Characteristic to describe the properties of the pre formatted representation of the Safety Data Sheet.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#SafetyDataSheetPreFormattedList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/SafetyDataSheetPreFormattedEntity"
+        }
+      }
+    }
+  },
+  "properties" : {
+    "safetyDataSheetLink" : {
+      "description" : "Property that references the link representation of the Safety Data Sheet.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#hasSafetyDataSheetLink",
+      "$ref" : "#/components/schemas/SafetyDataSheetLinkList"
+    },
+    "safetyDataSheetBinary" : {
+      "description" : "Property that references the binary representation of the Safety Data Sheet.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#hasSafetyDataSheetBinary",
+      "$ref" : "#/components/schemas/SafetyDataSheetBinaryList"
+    },
+    "safetyDataSheetPreFormatted" : {
+      "description" : "Property that references the pre formatted representation of the Safety Data Sheet.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material.safety_data_sheet:1.0.0#hasSafetyDataSheetPreFormatted",
+      "$ref" : "#/components/schemas/SafetyDataSheetPreFormattedList"
+    }
+  },
+  "required" : [ "safetyDataSheetLink", "safetyDataSheetBinary", "safetyDataSheetPreFormatted" ]
+}

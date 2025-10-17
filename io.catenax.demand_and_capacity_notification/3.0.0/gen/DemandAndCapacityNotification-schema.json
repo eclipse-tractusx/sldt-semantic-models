@@ -1,0 +1,179 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#DemandAndCapacityNotification",
+  "description" : "This aspect model defines the standard for demand and capacity notification exchange between business partners. Demand and Capacity Notifications refer to specific events within the supply chain which affect production or demand.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "AffectedSitesCharacteristic" : {
+        "description" : "A set of Business Partner Number Sites (BPNS) that are affected.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#AffectedSitesCharacteristic",
+        "type" : "array",
+        "items" : {
+          "type" : "string",
+          "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnsTrait",
+          "description" : "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two alphanumeric letters.",
+          "pattern" : "^BPNS[a-zA-Z0-9]{12}$"
+        },
+        "uniqueItems" : true
+      },
+      "LeadingRootCauseEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#LeadingRootCauseEnumeration",
+        "description" : "Enumeration of the available leading root causes.",
+        "enum" : [ "strike", "natural-disaster", "production-incident", "pandemic-or-epidemic", "logistics-disruption", "war", "insolvency", "other" ]
+      },
+      "EffectEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#EffectEnumeration",
+        "description" : "Enumeration of the available effects due to the mentioned leadingRootCause.",
+        "enum" : [ "demand-reduction", "demand-increase", "capacity-reduction", "capacity-increase" ]
+      },
+      "UserInputTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#UserInputTrait",
+        "description" : "Constraint for a string to be max. 4000 characters long.",
+        "maxLength" : 4000
+      },
+      "Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Timestamp",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "StatusEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#StatusEnumeration",
+        "description" : "Status can be either \"open\" or \"resolved\".",
+        "enum" : [ "resolved", "open" ]
+      },
+      "UuidV4Trait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "NotificationIdSet" : {
+        "description" : "A set of unique Notification IDs.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#NotificationIdSet",
+        "type" : "array",
+        "items" : {
+          "type" : "string",
+          "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+          "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+          "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+        },
+        "uniqueItems" : true
+      },
+      "PartIdCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:1.0.0#PartIdCharacteristic",
+        "description" : "The part ID is a multi-character string, usually assigned by an ERP system."
+      },
+      "Material" : {
+        "description" : "Specifies the material. A material MUST be identified by at least one of the material numbers:\n- Material Number Customer MUST be set if the customer is the sender.\n- Material Number Supplier MUST be set if the sender is the supplier. It is RECOMMENDED to be set in all cases.\n- Material Global Asset ID MUST be set if a digital twin exists.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#Material",
+        "type" : "object",
+        "properties" : {
+          "materialGlobalAssetId" : {
+            "description" : "Identifier used uniquely to identify the part type twin.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#materialGlobalAssetId",
+            "$ref" : "#/components/schemas/UuidV4Trait"
+          },
+          "materialNumberCustomer" : {
+            "description" : "Material identifier as assigned by the customer. This property identifies the material in the customer's database. For standard materials (e.g. screws) for which a customer does not have an own ID, the manufacturer material ID should be set in this field, too. If the customer is the data provider, sending this property is RECOMMENDED.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#materialNumberCustomer",
+            "$ref" : "#/components/schemas/PartIdCharacteristic"
+          },
+          "materialNumberSupplier" : {
+            "description" : "Material identifiers as assigned by the supplier or manufacturer. This property identifies the material in the supplier's database. If the supplier is the data provider, sending this property is RECOMMENDED.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#materialNumberSupplier",
+            "$ref" : "#/components/schemas/PartIdCharacteristic"
+          }
+        }
+      },
+      "MaterialsSet" : {
+        "description" : "Set providing identification information for materials.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#MaterialsSet",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/Material"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "affectedSitesSender" : {
+      "description" : "The affected Business Partner Site Numbers of the sender of the notification. It is RECOMMENDED to set this property.\nWhen resolving the notification (setting status = \"resolved\"), this field MUST be empty.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#affectedSitesSender",
+      "$ref" : "#/components/schemas/AffectedSitesCharacteristic"
+    },
+    "affectedSitesRecipient" : {
+      "description" : "The affected Business Partner Site Numbers of the recipient of the notification. It is RECOMMENDED to set this property. It MUST contain only BPNS that belong to the receiver.\nWhen resolving the notification (setting status = \"resolved\"), this field MUST be empty.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#affectedSitesRecipient",
+      "$ref" : "#/components/schemas/AffectedSitesCharacteristic"
+    },
+    "leadingRootCause" : {
+      "description" : "The main cause that has or may have an impact on the supply of goods.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#leadingRootCause",
+      "$ref" : "#/components/schemas/LeadingRootCauseEnumeration"
+    },
+    "effect" : {
+      "description" : "Effect or impact on the supply of goods as a consequence mentioned in the leadingRootCause. From business perspective demand/capacity reduction are most relevant values in connection with mentioned root causes. For technical completeness demand/capacity increase are also added to the enumeration.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#effect",
+      "$ref" : "#/components/schemas/EffectEnumeration"
+    },
+    "text" : {
+      "description" : "Free text to describe the disruption and its handling in the notification (max. 4000 characters). Ensure to not reveal third-party information. Provide information about the disruption, the context within your customer-supplier-relationship, already aligned and taken measures and updates on the progress and changes. MUST be set when creating, updating or forwarding notifications. CAN be set when resolving (set status to “resolved”) a notification.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#text",
+      "$ref" : "#/components/schemas/UserInputTrait"
+    },
+    "startDateOfEffect" : {
+      "description" : "This property defines the start date and time of the effect regardless of the time the notification was sent.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#startDateOfEffect",
+      "$ref" : "#/components/schemas/Timestamp"
+    },
+    "expectedEndDateOfEffect" : {
+      "description" : "Expected end date of the impact MAY be defined by the sender of the notification.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#expectedEndDateOfEffect",
+      "$ref" : "#/components/schemas/Timestamp"
+    },
+    "status" : {
+      "description" : "Status \"open\" should be used in the context of an effect which remains active. Status \"resolved\" should be used to inform the partner that the effect of the initial notification stopped or has been resolved.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#status",
+      "$ref" : "#/components/schemas/StatusEnumeration"
+    },
+    "contentChangedAt" : {
+      "description" : "The timestamp of the latest change of this notification. Date and time are set according to a timezone.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#contentChangedAt",
+      "$ref" : "#/components/schemas/Timestamp"
+    },
+    "sourceDisruptionId" : {
+      "description" : "Unique ID identifying a source of the disruption to which the notification may relate. The sender of the first disruption notification generates the Source Disruption ID. Multiple notifications may relate to the same disruption ID.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#sourceDisruptionId",
+      "$ref" : "#/components/schemas/UuidV4Trait"
+    },
+    "notificationId" : {
+      "description" : "Unique ID identifying the notification.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#notificationId",
+      "$ref" : "#/components/schemas/UuidV4Trait"
+    },
+    "relatedNotificationIds" : {
+      "description" : "Unique IDs identifying a previously received notification triggering the exchange of the current notification.\n\nA notification MUST be considered a Related Notification ID, if the following fields are equally filled:\n- Source Disruption ID\n- Leading Root Cause\n- Effect",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#relatedNotificationIds",
+      "$ref" : "#/components/schemas/NotificationIdSet"
+    },
+    "materialsAffected" : {
+      "description" : "Materials affected by the disruption within the customer-supplier-relationship.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#materialsAffected",
+      "$ref" : "#/components/schemas/MaterialsSet"
+    },
+    "resolvingMeasureDescription" : {
+      "description" : "Measure taken to resolve the disruption. MUST be set when resolving the notification (set status = \"resolved\").",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.demand_and_capacity_notification:3.0.0#resolvingMeasureDescription",
+      "$ref" : "#/components/schemas/UserInputTrait"
+    }
+  },
+  "required" : [ "leadingRootCause", "effect", "startDateOfEffect", "status", "contentChangedAt", "sourceDisruptionId", "notificationId" ]
+}

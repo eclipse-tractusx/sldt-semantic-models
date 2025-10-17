@@ -1,0 +1,82 @@
+#######################################################################
+# Copyright (c) 2023 Robert Bosch GmbH
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 Siemens AG
+# Copyright (c) 2025 DENSO AUTOMOTIVE Deutschland GmbH
+# Copyright (c) 2025 WITTE Automotive GmbH
+# Copyright (c) 2025 Schaeffler Technologies AG & Co. KG
+# Copyright (c) 2025 Ford Werke GmbH
+#
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.manufactured_parts_quality_information:3.0.0#> .
+@prefix ext-core: <urn:samm:io.catenax.shared.quality_core:1.0.0#> .
+
+:ManufacturedPartsQualityInformation a samm:Aspect ;
+   samm:preferredName "Manufactured Parts Quality Information Aspect Model"@en ;
+   samm:description "For Catena-X(CX) business case Quality Management. Supported technical features: delta update feature, meta information feature and additionalInformationList key-value pairs. The supported model features are described in detail in the Catena-X Quality KIT. Manufactured parts quality information data model is used to exchange information how a list of parts was manufactured with focus on information that might help to better understand the root cause for the quality task."@en ;
+   samm:properties ( :manufacturedParts [ samm:property ext-core:metaInformation; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:manufacturedParts a samm:Property ;
+   samm:preferredName "Manufactured Parts"@en ;
+   samm:description "A list of manufactured parts and their properties"@en ;
+   samm:characteristic :ManufacturedPartsList .
+
+:ManufacturedPartsList a samm-c:List ;
+   samm:preferredName "Manufactured Parts List"@en ;
+   samm:description "A list of manufactured parts."@en ;
+   samm:dataType :ManufacturedPart .
+
+:ManufacturedPart a samm:Entity ;
+   samm:extends ext-core:Part ;
+   samm:preferredName "Manufactured Part"@en ;
+   samm:description "Manufacturing information of one part. Important properties to identify the manufactured part are coming from central shared quality core model. Besides that there is a key:value list to exchange additional, non-standardized properties for this part."@en ;
+   samm:properties ( ext-core:qualityTaskId [ samm:property :productionDate; samm:optional true ] ext-core:plant [ samm:property :hasBeenReworked; samm:optional true ] [ samm:property :numberOfConductedEndOfLineTests; samm:optional true ] [ samm:property ext-core:recordStatus; samm:optional true ] [ samm:property ext-core:additionalInformationList; samm:optional true ] ) .
+
+:productionDate a samm:Property ;
+   samm:preferredName "Production Date"@en ;
+   samm:description "Date of production for this specific part."@en ;
+   samm:characteristic ext-core:ISO8601LocalDate ;
+   samm:exampleValue "2022-02-04" .
+
+:hasBeenReworked a samm:Property ;
+   samm:preferredName "Has Been Reworked"@en ;
+   samm:description "Indicator whether this part was reworked during manufacturing."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
+:numberOfConductedEndOfLineTests a samm:Property ;
+   samm:preferredName "Number Of Conducted End-Of-Line Tests"@en ;
+   samm:description "Number of conducted end-of-production-line tests. For some production lines there are several tests to be conducted (electrical tests, mechanical tests, functional tests, ...)."@en ;
+   samm:characteristic :PositiveNumber ;
+   samm:exampleValue "1"^^xsd:positiveInteger .
+
+:PositiveNumber a samm:Characteristic ;
+   samm:preferredName "Positive Number Characteristic"@en ;
+   samm:description "This Characteristic describes a positive number. 0 is not included."@en ;
+   samm:dataType xsd:positiveInteger .

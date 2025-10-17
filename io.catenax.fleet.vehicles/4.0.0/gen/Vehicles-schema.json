@@ -1,0 +1,565 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#Vehicles",
+  "description" : "For Catena-X(CX) business case Quality Management. Supported technical features: delta update feature, meta information feature and additionalInformationList key-value pairs. The supported model features are described in detail in the Catena-X Quality KIT. FleetVehicles data model is used to exchange basic vehicle information - mainly how the vehicle was built - with all installed equipments and engines in the car. In addition, there is built and sold date + country were the vehicle was sold to better restrict the area of the problem or to exclude regional areas from the problem.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "UniqueID" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#UniqueID",
+        "description" : "This Characteristic is linked to a property that is unique. Please see description of the linked property to get more details about uniqueness."
+      },
+      "ISO8601LocalDate" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#ISO8601LocalDate",
+        "description" : "This regular expressions enforces a given date according ISO 8601 local date. General format is YYYY-MM-DD. YYYY can be 0000..9999. MM-DD is checked together: months 01,03,05,07,08,10,12 must have DD in the range of  01..31 days, months 04,06,09,11 must have DD in the range of  01..30 days, month 02 must have DD in the range of  01..29 days.",
+        "pattern" : "^([0-9]{4})-(((0[1,3,5,7,8]|1[0,2])-((0[1-9])|([1,2][0-9])|(3[0,1])))|((0[4,6,9]|11)-((0[1-9])|([1,2][0-9])|(30)))|((02)-((0[1-9])|([1,2][0-9]))))$|^null$|^NULL$"
+      },
+      "UuidV4Trait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "Part" : {
+        "description" : "A collection of part/component properties. A Catena-X data provider should provide the  properties that are useful for a Catena-X data consumer to clearly identify the part/component. For example, this can be done by using a serial number, data matrix code or delivery note",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#Part",
+        "type" : "object",
+        "properties" : {
+          "partName" : {
+            "description" : "The name of a part. A part name is not unique - same kinds of parts can have the same part name.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partName",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "partDescription" : {
+            "description" : "A textual description of the part.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "assemblyPartNumberVersion" : {
+            "description" : "Often vehicle manufacturer specific: An assembly part number version. Assembly parts are often produced by a supplier that combines his own parts with other parts from other suppliers and ships as one assembly to a vehicle manufacturer.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#assemblyPartNumberVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "batchNumber" : {
+            "description" : "A batch number describes all parts that were manufactured in the same run.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#batchNumber",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "calibrationInformation" : {
+            "description" : "Calibration for this ECU. This could be the result of a calibration process.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#calibrationInformation",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "partId" : {
+            "description" : "A unique part identifier in this data-space. Property is optional as of now not all parts have this identifier.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partId",
+            "$ref" : "#/components/schemas/UuidV4Trait"
+          },
+          "dataMatrixCode" : {
+            "description" : "String that is encoded in a data matrix code. Data matrix codes or short DMC are labelled/printed on parts. Example: A data matrix code can combine supplier name, part type, manufacturing and many more information. A DMC string is often unique within this data provider.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#dataMatrixCode",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "deliveryNote" : {
+            "description" : "The delivery note of a package. A delivery note is unique within one logistics company.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#deliveryNote",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "hwVersion" : {
+            "description" : "The hardware version of this part.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#hwVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "orderNumber" : {
+            "description" : "The order number of this order. This is a unique identifier defined by the supplier of the order. If you combine order number and BPNL of the supplier you get a unique identifier in this data-space.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#orderNumber",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "partNumber" : {
+            "description" : "The number of a physical part. A part number is not unique - same kinds of parts can have same part numbers. Part numbers and part description normally relate to each other.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partNumber",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "partVersion" : {
+            "description" : "The version of this hardware part.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#partVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "serialNumber" : {
+            "description" : "Serial number of one specific part. A serial number is unique within one company. If you combine serial number with BPNL of that company than you get a unique identifier for this part in this data-space.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#serialNumber",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "swPartNumber" : {
+            "description" : "Software number installed in this electronic control unit.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#swPartNumber",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "swVersion" : {
+            "description" : "Software version installed in this electronic control unit.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#swVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "variantInfomation" : {
+            "description" : "An electronic control unit has many parameters that have to be set to work correctly: Examples are target market (which functions need to be activated for the target market) or the equipment of the vehicle (e.g. navigation system is installed).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#variantInfomation",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "partName" ]
+      },
+      "SinglePart" : {
+        "description" : "A single part installed in the vehicle.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#SinglePart",
+        "type" : "object",
+        "properties" : { },
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/Part"
+        } ]
+      },
+      "Parts" : {
+        "description" : "A list of parts installed in this vehicle.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#Parts",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/SinglePart"
+        }
+      },
+      "EnginePower" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#EnginePower",
+        "description" : "Engine power expressed in kilowatt."
+      },
+      "DriveTypeNHTSA" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#DriveTypeNHTSA",
+        "description" : "Enumeration of drive type according NHTSA, table [vPICList_lite].[dbo].[DriveType]",
+        "enum" : [ "All-Wheel Drive", "Front-Wheel Drive", "Rear-Wheel Drive" ]
+      },
+      "CubicCapacity" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#CubicCapacity",
+        "description" : "Cubic capacity of the engine."
+      },
+      "FuelTypesNHTSA" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#FuelTypesNHTSA",
+        "description" : "Enumeration from NHTSA vpic database, table [vPICList_lite].[dbo].[FuelType]",
+        "enum" : [ "Compressed Hydrogen/Hydrogen", "Compressed Natural Gas(CNG)", "Diesel", "Electric", "Ethanol(E85)", "Flexible Fuel Vehicle(FFV)", "Fuel Cell", "Gasoline", "Liquefied Natural Gas(LNG)", "Liquefied Petroleum Gas(propane or LPG)", "Methanol(M85)", "Natural Gas", "Neat Ethanol(E100)", "Neat Methanol(M100)", "Unknown" ]
+      },
+      "Engine" : {
+        "description" : "Describing one installed engine",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#Engine",
+        "type" : "object",
+        "properties" : {
+          "engineId" : {
+            "description" : "Vehicle manufacturer-specific identifier/type of the installed engine",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#engineId",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "engineDescription" : {
+            "description" : "Description of the engine",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#engineDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "engineSeries" : {
+            "description" : "Engine series as defined by Vehicle manufacturer",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#engineSeries",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "engineSize" : {
+            "description" : "Cubic capacity in a combustion engine  - not available in battery-electric vehicles",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#engineSize",
+            "$ref" : "#/components/schemas/CubicCapacity"
+          },
+          "power" : {
+            "description" : "Engine power is the power that an engine can put out",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#power",
+            "$ref" : "#/components/schemas/EnginePower"
+          },
+          "productionDate" : {
+            "description" : "Date when this part was produced.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#productionDate",
+            "$ref" : "#/components/schemas/ISO8601LocalDate"
+          },
+          "installDate" : {
+            "description" : "Date when a part was installed in the vehicle.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#installDate",
+            "$ref" : "#/components/schemas/ISO8601LocalDate"
+          },
+          "nhtsaFuelType" : {
+            "description" : "Description of the fuel according US NHTSA",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#nhtsaFuelType",
+            "$ref" : "#/components/schemas/FuelTypesNHTSA"
+          }
+        },
+        "required" : [ "engineId" ]
+      },
+      "Engines" : {
+        "description" : "A list of all installed engines in the vehicle",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#Engines",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/Engine"
+        }
+      },
+      "Equipment" : {
+        "description" : "One equipment of the vehicle.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#Equipment",
+        "type" : "object",
+        "properties" : {
+          "equipmentIdentifier" : {
+            "description" : "The identifier of a specific equipment.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#equipmentIdentifier",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "equipmentDescription" : {
+            "description" : "The equipment variants description.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#equipmentDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "group" : {
+            "description" : "Bundles all equipment-oriented information into categories like Interior",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#group",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "equipmentIdentifier" ]
+      },
+      "EquipmentsList" : {
+        "description" : "List of equipments installed in the vehicle.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#EquipmentsList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/Equipment"
+        }
+      },
+      "BpnsTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnsTrait",
+        "description" : "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two alphanumeric letters.",
+        "pattern" : "^BPNS[a-zA-Z0-9]{12}$"
+      },
+      "CountryCodeTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#CountryCodeTrait",
+        "description" : "Regular Expression that ensures a three-letter code ",
+        "pattern" : "^[A-Z][A-Z][A-Z]$|^null$|^NULL$"
+      },
+      "PlantCharacteristic" : {
+        "description" : "Plant characteristic",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#PlantCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "plantIdentifier" : {
+            "description" : "Identifier of a plant within the company owning the plant. If you combing plant identifier with BPNL of the company owning the plant than you get a unique identifier fo this plant in this data-space.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#plantIdentifier",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "plantDescription" : {
+            "description" : "Long name of the production plant.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#plantDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "plantBPNS" : {
+            "description" : "A unique plant identifier according BPNS definition. This property is optional as of now not all plants have assigned BPNS identifiers.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#plantBPNS",
+            "$ref" : "#/components/schemas/BpnsTrait"
+          },
+          "plantCountryCode" : {
+            "description" : "Country code of the plant, where the vehicle was produced.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#plantCountryCode",
+            "$ref" : "#/components/schemas/CountryCodeTrait"
+          }
+        },
+        "required" : [ "plantIdentifier" ]
+      },
+      "PowerTrainTypes" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#PowerTrainTypes",
+        "description" : "This enumeration comes from NHTSA (US authority) database. Table [vPICList_lite].[dbo].[ElectrificationLevel] extended by Gasoline and Diesel as entry.",
+        "enum" : [ "BEV (Battery Electric Vehicle)", "Diesel", "FCEV (Fuel Cell Electric Vehicle)", "Gasoline", "HEV (Hybrid Electric Vehicle)", "Mild HEV (Hybrid Electric Vehicle)", "PHEV (Plug-in Hybrid Electric Vehicle)", "Other" ]
+      },
+      "RecordStatusEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#RecordStatusEnumeration",
+        "description" : "Defining the enumeration for the record status",
+        "enum" : [ "new", "updated", "deleted", "same" ]
+      },
+      "VehicleSteeringPos" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#VehicleSteeringPos",
+        "description" : "Vehicle steering position enumeration from NHTSA, see table [vPICList_lite].[dbo].[Steering]",
+        "enum" : [ "Left-Hand Drive", "Right-Hand Drive" ]
+      },
+      "OemShortNameTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#OemShortNameTrait",
+        "description" : "Restricts the length of wmiCode to exactly 3 chars.",
+        "maxLength" : 3,
+        "minLength" : 3
+      },
+      "AdditionalInformation" : {
+        "description" : "One key:value information pair",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#AdditionalInformation",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "description" : "Key identifier for this additional information",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#key",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "value" : {
+            "description" : "Value for this additional information",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#value",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "key", "value" ]
+      },
+      "AdditionalInformationList" : {
+        "description" : "A list of additional information.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#AdditionalInformationList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/AdditionalInformation"
+        }
+      },
+      "TorqueMeasurement" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#TorqueMeasurement",
+        "description" : "Measurement of the torque."
+      },
+      "Transmission" : {
+        "description" : "One transmission in this vehicle.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#Transmission",
+        "type" : "object",
+        "properties" : {
+          "transmissionId" : {
+            "description" : "Vehicle manufacturer-specific identifier/type of the installed transmission",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#transmissionId",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "transmissionDescription" : {
+            "description" : "Description of the transmission.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#transmissionDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "transmissionSeries" : {
+            "description" : "Transmission series as defined by vehicle manufacturer.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#transmissionSeries",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "transmissionSize" : {
+            "description" : "Torque capacity of the transmission.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#transmissionSize",
+            "$ref" : "#/components/schemas/TorqueMeasurement"
+          },
+          "productionDate" : {
+            "description" : "Date when this part was produced.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#productionDate",
+            "$ref" : "#/components/schemas/ISO8601LocalDate"
+          },
+          "installDate" : {
+            "description" : "Date when a part was installed in the vehicle.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#installDate",
+            "$ref" : "#/components/schemas/ISO8601LocalDate"
+          }
+        },
+        "required" : [ "transmissionId" ]
+      },
+      "TransmissionList" : {
+        "description" : "A list of transmissions installed in the vehicle.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#TransmissionList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/Transmission"
+        }
+      },
+      "Vehicle" : {
+        "description" : "Vehicle data that does not fit into one of the other entities.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#Vehicle",
+        "type" : "object",
+        "properties" : {
+          "anonymizedVIN" : {
+            "description" : "Vehicle manufacturer-specific anonymized VIN, which is still a unique identifier within this data provider.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#anonymizedVIN",
+            "$ref" : "#/components/schemas/UniqueID"
+          },
+          "productionDate" : {
+            "description" : "Date when this part was produced.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#productionDate",
+            "$ref" : "#/components/schemas/ISO8601LocalDate"
+          },
+          "soldDate" : {
+            "description" : "Sold date of the vehicle = warranty start date for this vehicle",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#soldDate",
+            "$ref" : "#/components/schemas/ISO8601LocalDate"
+          },
+          "vehicleId" : {
+            "description" : "A unique identifier for this vehicle in data-space. This property is optional as of now not all vehicles have this identifier assigned.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#vehicleId",
+            "$ref" : "#/components/schemas/UuidV4Trait"
+          },
+          "class" : {
+            "description" : "Class of the vehicle.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#class",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "parts" : {
+            "description" : "A list of parts installed in this vehicle.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#parts",
+            "$ref" : "#/components/schemas/Parts"
+          },
+          "driveSystemPower" : {
+            "description" : "Complete power of this vehicle in KW. This sums up the power of each individual engine installed in this vehicle.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#driveSystemPower",
+            "$ref" : "#/components/schemas/EnginePower"
+          },
+          "driveType" : {
+            "description" : "Drive type of a vehicle according enumeration.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#driveType",
+            "$ref" : "#/components/schemas/DriveTypeNHTSA"
+          },
+          "engines" : {
+            "description" : "List of installed engines in the vehicle.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#engines",
+            "$ref" : "#/components/schemas/Engines"
+          },
+          "equipments" : {
+            "description" : "Equipments.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#equipments",
+            "$ref" : "#/components/schemas/EquipmentsList"
+          },
+          "modelDescription" : {
+            "description" : "Detail vehicle model like \"Golf VIII\"",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#modelDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "modelIdentifier" : {
+            "description" : "Vehicle manufacturer-specific model identifier or Vehicle manufacturer-specific project name.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#modelIdentifier",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "plant" : {
+            "description" : "Bundling plant/production properties.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#plant",
+            "$ref" : "#/components/schemas/PlantCharacteristic"
+          },
+          "powerTrainType" : {
+            "description" : "Describes the installed powertrain in the vehicle.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#powerTrainType",
+            "$ref" : "#/components/schemas/PowerTrainTypes"
+          },
+          "recordStatus" : {
+            "description" : "The record operation enumeration can be used to realize delta update concept. An example using scenario that data delivery runs weekly: Week0: All data is transferred -> all rows have recordStatus=new. Week1: Only the changed data is transferred: That means new rows, or updated or deleted rows: New rows get recordStatus=new, changed rows get recordStatus=changed and deleted/removed rows get recordStatus=deleted.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#recordStatus",
+            "$ref" : "#/components/schemas/RecordStatusEnumeration"
+          },
+          "softwareCategory" : {
+            "description" : "Some Vehicle manufacturers bring in the software as complete package for all systems:To identify this software: software category and software version is needed.Software category when this car was built.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#softwareCategory",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "softwareVersion" : {
+            "description" : "Some Vehicle manufacturers brings in the software as complete package for all systems:To identify this software: software category and software version is needed.Software version when this car was built.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#softwareVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "soldCountryCode" : {
+            "description" : "The country code in 3 letter format where this vehicle was sold.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#soldCountryCode",
+            "$ref" : "#/components/schemas/CountryCodeTrait"
+          },
+          "soldCountryGroup" : {
+            "description" : "The region where this car was sold.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#soldCountryGroup",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "steeringPos" : {
+            "description" : "Position of vehicle steering wheel, Left or right.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#steeringPos",
+            "$ref" : "#/components/schemas/VehicleSteeringPos"
+          },
+          "vehicleSeries" : {
+            "description" : "vehicle series, normally one level above model. E.g. vehicle series =\"Golf\", vehicle model=\"Golf VIII\"",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#vehicleSeries",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "wmiCode" : {
+            "description" : "The World Manufacturer Index (WMI) are the first 3 letters of the VIN. IT describes a code for the vehicle manufacturer. Also see the description from NTHSA.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#wmiCode",
+            "$ref" : "#/components/schemas/OemShortNameTrait"
+          },
+          "wmiNameNHTSA" : {
+            "description" : "Name of the vehicle manufacturer according NHTSA: use https://vpic.nhtsa.dot.gov/api/vehicles/decodewmi/WVW?format=json - entry to be used is CommonName.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#wmiNameNHTSA",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "additionalInformationList" : {
+            "description" : "You can use this key:value list for additional properties that were not defined in this aspect model.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#additionalInformationList",
+            "$ref" : "#/components/schemas/AdditionalInformationList"
+          },
+          "transmissions" : {
+            "description" : "A list of transmissions installed in this vehicle.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#transmissions",
+            "$ref" : "#/components/schemas/TransmissionList"
+          }
+        },
+        "required" : [ "anonymizedVIN", "productionDate", "soldDate" ]
+      },
+      "VehiclesList" : {
+        "description" : "A list of vehicles as they were produced.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#VehiclesList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/Vehicle"
+        }
+      },
+      "MetaCharacteristic" : {
+        "description" : "Characteristic for the meta information.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#MetaCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "selectionCriteria" : {
+            "description" : "Describes the selection criteria a Catena-X data provider has applied to create this data set.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#selectionCriteria",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "selectionStart" : {
+            "description" : "Describes the starting point for providing records in this data set.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#selectionStart",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "selectionEnd" : {
+            "description" : "Describes the end point for providing records in this data set.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#selectionEnd",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "selectionCriteria" ]
+      }
+    }
+  },
+  "properties" : {
+    "vehicles" : {
+      "description" : "A list of vehicles.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.fleet.vehicles:4.0.0#vehicles",
+      "$ref" : "#/components/schemas/VehiclesList"
+    },
+    "metaInformation" : {
+      "description" : "This meta information is valid for all entries in this data set. The meta information is used to tell the data consumer which selection criteria were applied by the data provider. ",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.quality_core:1.0.0#metaInformation",
+      "$ref" : "#/components/schemas/MetaCharacteristic"
+    }
+  },
+  "required" : [ "vehicles" ]
+}
