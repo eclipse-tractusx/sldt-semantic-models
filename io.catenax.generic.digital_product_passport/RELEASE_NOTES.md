@@ -1,6 +1,111 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
+## [7.0.0] 2025-10-21
+### Added
+- new attribiut "specVesrion"
+- adding applicability field before the attribiut "predecessor"
+- new attribiut "economicOperatorNames"
+- new attribiut "economicOperatorContact"
+- new attribiut "economicOperatorAddress"
+- new attribiute "codeDescription" 
+- new attribiute "productImages" 
+- new attribiute "facilityAddress"
+- new attribiute "manufacturerNames"
+- new attribiute "manufacturerContact"
+- new attribiute "manufacturerAddress"
+- new attribiute "importerNames"
+- new attribiute "importerContact"
+- new attribiute "importerAddress"
+- new subsection with applicability field extendedProducerResponsibilityScheme"
+- new attribiute "collectionPointIdentification"
+- new attribiute "collectionPointAddress"
+- new attribiute "teritoriesOfApllication"
+- new attribiute "symbolsOfExtendedProducerResponsibilityScheme"
+- new attribiute "otherOperatorNames"
+- new attribiute "otherOperatorContact"
+- new attribiute "otherOperatorAddress"
+- new attribiute "sparePartProviderAddress"
+- new attribiute "sparePartProviderContact"
+- new attribiute "lifeDescription"
+- new subsection: itemQuantityInPackage
+- new attribiute "itemQuantityInPackageUnit"
+- new attribiute "itemQuantityInPackageValue"
+- new subsection: otherCharacteristics
+- new attribiute "otherCharacteristicName"
+- new attribiute "otherCharacteristicOutcome"
+- new attribiute "facilityAddress"
+- new subsection: reusability with applicability field
+- new attribiute "reuseInfo"
+- new subsection:reusSystem with applicability field
+- new attribiute "calculationKey" for rotation
+- new attribiute "calculationValue" for rotation
+- new attribiute "calculationKey" for trip
+- new attribiute "calculationValue" for trip
+- new attribiute "facilityIdentification"
+- new attribiute "collectionPointIdentification"
+- new attribiute "collectionPointAddress"
+- new attribiute "symbolOfDepositAndReturnSystem"
+- new attribiute with aplicability field:"recycleabilityPerformanceGrade"
+- new subsection for components with applicability fields
+- new attribiute "componentName"
+- new attribiute "componentCode"
+- new attribiute "componentDescription"
+- new attribiute "componentSortingInformation"
+- new attribiute "componentLocations"
+- new attribiute "componentPassportIdentifier"
+- new attribiute "materialType"
+- new attribiute "materialOrigin"
+- new attribiute "materialPassportIdentifier"
+- new attribiute "materialLocations"
+- new subsection concentrationRanges with minConcentration and maxConcentration  
+- new subsection "declarabeIngredientLists" with applicability field
+- new attribiute "declarabeIngredientListDocumentId"
+- new attribiute "declarabeIngredientListName"
+- new attribiute "declarabeIngredientDocuments"
+- new section: compliances
+- new attribiute "requirementName"
+- new attribiute "complianceCountries"
+- new attribiute "complianceStatement"
+- new attribiute "reasonsForExemption"
+- new attribiute "remarks"
+- new attribiute "complianceDocuments"
+
+### Changed
+- changing name of attribiut from "status" into "passportStatus"
+- changing name of attribiut from "economicOperatorId" into "economicOperatorIdentification"
+- changing name of attribiut from "carrier" into "carrierPositions"
+- changing name of attribiut from "facility" into "facilityIdentification"
+- changing name of attribiut from "manufacturerId" into "manufacturerIdentification"
+- changing name of attribiut from "Id" into "importerIdentification"
+- changing name of attribiut from "Id" into "otherOperatorIdentification"
+- changing name of attribiut from "role" into otherOperatorRole"
+- changing name of attribiut from "Id" into "sparePartProviderIdentification"
+- changing name of attribiut from "unit" into "lifeUnit"
+- changing name of attribiut from "value" into "lifeValue"
+- changing name of attribiut from "type" into "lifeType"
+- changing name of attribiut from "status" into "productStatus"
+- changing name of attribiut from "value" into "footprintValue"
+- changing name of attribiut from "lifecycle" into "footprintLifecycle"
+- changing name of attribiut from "unit" into "footprintUnit"
+- changing name of attribiut from "type" into "footprintType"
+- changing name of attribiut from "facility" into "facilityIdentification"
+- changing name of attribiut from "Id" into "materialId"
+- changing name of attribiut from "name" into "materialName"
+- changing name of attribiut from "type" into "materialListTypeId"
+- changing name of attribiut from "Id" into "materialId"
+- changing name of attribiut from "concentration" into "concentrationValue"
+- changing name of attribiut from "statement" into hazardStatement"
+- changing name of attribiut from "documents" into "materialDocuments"
+- changing name of attribiut from "class" into "hazardClass"
+- changing name of attribiut from "category" into "hazardCategory"
+- changing name of attribiut from "locations" into "substanceOfConcernLocations"
+- changing name of attribiut from "concentrationRange" into "substanceOfConcerConcentrationRange"
+
+### Delete
+- delete sparePart subcategory
+- delete materialComposition eith applicability field
+
 ## [6.1.0] - 2025-10-06
 
 ### Added
