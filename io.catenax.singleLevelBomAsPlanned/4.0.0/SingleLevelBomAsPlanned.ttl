@@ -1,0 +1,40 @@
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.singleLevelBomAsPlanned:4.0.0#> .
+@prefix ext-industryCoreMasterData: <urn:samm:io.catenax.shared.industryCoreMasterData:1.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+
+:SingleLevelBomAsPlanned a samm:Aspect ;
+   samm:preferredName "Single Level Bill of Material as Planned"@en ;
+   samm:description "The single-level bill of material (BoM)represents one sub-level of an assembly and does not include any lower-level subassemblies. In the As-Planned lifecycle state all variants are covered (\"120% BoM\").\nIf multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM.\nIf there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM."@en ;
+   samm:properties ( :childItems ext-industryCoreMasterData:globalAssetId ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:childItems a samm:Property ;
+   samm:preferredName "Child Items"@en ;
+   samm:description "Set of child items in As-Planned lifecycle phase, of which the given parent object is assembled by (one structural level down)."@en ;
+   samm:characteristic :SetOfChildItemsCharacteristic .
+
+:SetOfChildItemsCharacteristic a samm-c:Set ;
+   samm:preferredName "Set of Child Items"@en ;
+   samm:description "Set of child items the parent object will be assembled by (one structural level down)."@en ;
+   samm:dataType :ChildData .
+
+:ChildData a samm:Entity ;
+   samm:preferredName "Child Data"@en ;
+   samm:description "Catena-X ID and meta data of the assembled child item."@en ;
+   samm:properties ( :quantity ext-industryCoreMasterData:globalAssetId [ samm:property ext-industryCoreMasterData:lastModifiedOn; samm:optional true ] ext-industryCoreMasterData:createdOn [ samm:property ext-industryCoreMasterData:validityPeriod; samm:optional true ] ext-industryCoreMasterData:businessPartner ) .
+
+:quantity a samm:Property ;
+   samm:preferredName "Quantity"@en ;
+   samm:description "Quantity of which the child part will be assembled into the parent part."@en ;
+   samm:characteristic ext-quantity:ItemQuantityCharacteristic .
+

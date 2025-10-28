@@ -1,0 +1,224 @@
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.shared.industryCoreMasterData:1.0.0#> .
+@prefix ext-built: <urn:samm:io.catenax.shared.part_site_information_as_built:2.0.0#> .
+@prefix ext-data: <urn:samm:io.catenax.common_data:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+
+:manufacturingInformation a samm:Property ;
+   samm:preferredName "Manufacturing Information"@en ;
+   samm:description "Information from manufacturing process, such as manufacturing date and manufacturing country"@en ;
+   samm:characteristic :ManufacturingCharacteristic .
+
+:ManufacturingCharacteristic a samm:Characteristic ;
+   samm:preferredName "Manufacturing Characteristic"@en ;
+   samm:description "Characteristic to describe manufacturing related data"@en ;
+   samm:dataType :ManufacturingEntity .
+
+:ManufacturingEntity a samm:Entity ;
+   samm:preferredName "Manufacturing Entity"@en ;
+   samm:description "Encapsulates the manufacturing relevant attributes"@en ;
+   samm:properties ( :date [ samm:property ext-built:sites; samm:optional true ] ) .
+
+:date a samm:Property ;
+   samm:preferredName "Production Date"@en ;
+   samm:description "Timestamp of the manufacturing date as the final step in production process(e.g. final quality check, ready-for-shipment event)"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2022-02-04T14:48:54"^^xsd:dateTime .
+
+:value a samm:Property ;
+   samm:preferredName "Identifier Value"@en ;
+   samm:description "The value of an identifier."@en ;
+   samm:characteristic :IdCharacteristic ;
+   samm:exampleValue "BID12345678" .
+
+:LocalIdentifierCharacteristic a samm-c:Set ;
+   samm:preferredName "Local Identifier Characteristic"@en ;
+   samm:description "A part may have multiple attributes, which uniquely identify that part in a specific dataspace(e.g. the manufacturer`s dataspace)"@en ;
+   samm:dataType :KeyValueList .
+
+:PartClassificationCharacteristic a samm-c:SortedSet ;
+   samm:preferredName "Part Classification Characteristic"@en ;
+   samm:description "Classification characteristic enabling a set of further properties."@en ;
+   samm:dataType :ClassificationEntity .
+
+:KeyCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Key Characteristic"@en ;
+   samm:description "The key characteristic of a local identifier. A specific subset of keys is predefined. Custom keys are not allowed. Predefined keys:\n- \"manufacturerId\" - The Business Partner Number(BPN)of the manufacturer. Value: BPN-Nummer\n- \"batchId\" - The identifier of the batch, to which the serialzed part belongs"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "manufacturerId" "batchId" "customKey" "jisNumber" "jisCallDate" "parentOrderNumber" "partInstanceId" "van" ) .
+
+:Uuidv4RegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "UUID v4 Regular Expression"@en ;
+   samm:description "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI."@en ;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   samm:value "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)" .
+
+:partClassification a samm:Property ;
+   samm:preferredName "Part Classification"@en ;
+   samm:description "Property describing the classification of a part."@en ;
+   samm:characteristic :PartClassificationCharacteristic .
+
+:createdOn a samm:Property ;
+   samm:preferredName "Created On"@en ;
+   samm:description "Timestamp when the relation between the parent part and the child part was created"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime .
+
+:lastModifiedOn a samm:Property ;
+   samm:preferredName "Last Modification Date"@en ;
+   samm:description "Timestamp when the assembly or usage relationship between parent part and child part was last modified."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime .
+
+:businessPartner a samm:Property ;
+   samm:preferredName "Business Partner"@en ;
+   samm:description "The supplier of the given child item."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL50096894aNXY" .
+
+:UuidV4Trait a samm-c:Trait ;
+   samm:preferredName "Trait for UUIDs v4"@en ;
+   samm:description "Trait to ensure UUID v4 data format."@en ;
+   samm-c:baseCharacteristic :Uuidv4Characteristic ;
+   samm-c:constraint :Uuidv4RegularExpression .
+
+:Uuidv4Characteristic a samm:Characteristic ;
+   samm:preferredName "UUID v4"@en ;
+   samm:description "A version 4 UUID is a universally unique identifier that is generated using random 32 hexadecimal characters."@en ;
+   samm:see <https://datatracker.ietf.org/doc/html/rfc4122> ;
+   samm:dataType xsd:string .
+
+:manufacturerPartId a samm:Property ;
+   samm:preferredName "Manufacturer Part ID"@en ;
+   samm:description "Part ID as assigned by the manufacturer of the part. The Part ID identifies the part(as designed)in the manufacturer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number or batch number."@en ;
+   samm:characteristic :IdCharacteristic ;
+   samm:exampleValue "123-0.740-3434-A" .
+
+:localIdentifiers a samm:Property ;
+   samm:preferredName "Local Identifiers"@en ;
+   samm:description "A local identifier enables identification of a part in a specific dataspace, but is not unique in Catena-X dataspace. Multiple local identifiers may exist."@en ;
+   samm:characteristic :LocalIdentifierCharacteristic .
+
+:ClassificationStandardCharacteristic a samm:Characteristic ;
+   samm:preferredName "Classification Standard Characteristic"@en ;
+   samm:description "Identified classification standards"@en ;
+   samm:dataType xsd:string .
+
+:IdCharacteristic a samm:Characteristic ;
+   samm:preferredName "ID Characteristic"@en ;
+   samm:description "The ID is a multi-character string, usually assigned by an ERP system"@en ;
+   samm:dataType xsd:string .
+
+:PartNameCharacteristic a samm:Characteristic ;
+   samm:preferredName "Part Name Characteristic"@en ;
+   samm:description "Part Name in string format from the respective system in the value chain"@en ;
+   samm:dataType xsd:string .
+
+:nameAtCustomer a samm:Property ;
+   samm:preferredName "Name at Customer"@en ;
+   samm:description "Name of the part as assigned by the customer"@en ;
+   samm:characteristic :PartNameCharacteristic ;
+   samm:exampleValue "side element A" .
+
+:classificationID a samm:Property ;
+   samm:preferredName "Classification ID"@en ;
+   samm:description "The classification ID of the part type according to the corresponding standard definition mentioned in the key value pair."@en ;
+   samm:characteristic :ClassificationIDCharacteristic ;
+   samm:exampleValue "1004712" .
+
+:ListOfCustomersCharacteristic a samm-c:List ;
+   samm:preferredName "List of Customers Characteristic"@en ;
+   samm:description "A list of customers and their related parent items."@en ;
+   samm-c:elementCharacteristic ext-number:BpnlTrait .
+
+:ValidityPeriodCharacteristic a samm:Characteristic ;
+   samm:preferredName "Validity Period Characteristic"@en ;
+   samm:description "Characteristic  for a validity period defined by an (optional)start and an (optional)end timestamp."@en ;
+   samm:dataType :ValidityPeriodEntity .
+
+:key a samm:Property ;
+   samm:preferredName "Identifier Key"@en ;
+   samm:description "The key of a local identifier."@en ;
+   samm:characteristic :KeyCharacteristic ;
+   samm:exampleValue "batchId" .
+
+:globalAssetId a samm:Property ;
+   samm:preferredName "Data Space Identifier"@en ;
+   samm:description "The fully anonymous ID in the dataspace of the part."@en ;
+   samm:characteristic :UuidV4Trait .
+
+:customerPartId a samm:Property ;
+   samm:preferredName "Customer Part ID"@en ;
+   samm:description "Part ID as assigned by the customer of the part. The customer Part ID identifies the part (as designed)in the customer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number or any other instance IDs. \nIf no specific part ID exists a part family ID may be substituted for it."@en ;
+   samm:characteristic :IdCharacteristic ;
+   samm:exampleValue "PRT-12345" .
+
+:customers a samm:Property ;
+   samm:preferredName "Customers"@en ;
+   samm:description "A list of all customers of this item. If the parent items in which this item is assembled into are known, they should be listed as well.\n\nFor serialized items the list should contain only one customer with one parent item.\nAs different subsets of a batch might be sold to different customers this is a list."@en ;
+   samm:characteristic :ListOfCustomersCharacteristic ;
+   samm:exampleValue "BPNL50096894aNXY" .
+
+:ValidityPeriodEntity a samm:Entity ;
+   samm:preferredName "Validity Period Entity"@en ;
+   samm:description "If a validity period only has a start that means that the period is valid from the start date without a (yet)defined enddate and vice versa."@en ;
+   samm:properties ( [ samm:property :validTo; samm:optional true ] [ samm:property :validFrom; samm:optional true ] ) .
+
+:validityPeriod a samm:Property ;
+   samm:preferredName "Validity Period"@en ;
+   samm:description "The period of time during which the parent-child relation is valid. This relates to whether a child part can be built into or used in the production of the parent part at a given time.\nIf no validity period is given the relation is considered valid at any point in time."@en ;
+   samm:characteristic :ValidityPeriodCharacteristic .
+
+:ClassificationEntity a samm:Entity ;
+   samm:preferredName "Classification Entity"@en ;
+   samm:description "Encapsulates data related to the classification"@en ;
+   samm:properties ( :classificationStandard :classificationID :classificationDescription ) .
+
+:ClassificationIDCharacteristic a samm:Characteristic ;
+   samm:preferredName "Classification ID characteristic"@en ;
+   samm:description "It can be numeric or a string, depending on the chosen classification standard."@en ;
+   samm:dataType xsd:string .
+
+:validFrom a samm:Property ;
+   samm:preferredName "Valid from"@en ;
+   samm:description "Start date of validity period."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-03-21T08:17:29.187+01:00"^^xsd:dateTime .
+
+:KeyValueList a samm:Entity ;
+   samm:preferredName "Key Value List"@en ;
+   samm:description "A list of key value pairs for local identifiers, which are composed of a key and a corresponding value."@en ;
+   samm:properties ( :key :value ) .
+
+:classificationStandard a samm:Property ;
+   samm:preferredName "Classification Standard"@en ;
+   samm:description "Identified classification standards"@en ;
+   samm:characteristic :ClassificationStandardCharacteristic ;
+   samm:exampleValue "GIN 20510-21513" .
+
+:nameAtManufacturer a samm:Property ;
+   samm:preferredName "Name at Manufacturer"@en ;
+   samm:description "Name of the part as assigned by the manufacturer"@en ;
+   samm:characteristic :PartNameCharacteristic ;
+   samm:exampleValue "Mirror left" .
+
+:classificationDescription a samm:Property ;
+   samm:preferredName "Classification Description"@en ;
+   samm:description "Optional property describing the classification standard."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Generic standard for classification of parts in the automotive industry." .
+
+:validTo a samm:Property ;
+   samm:preferredName "Valid to"@en ;
+   samm:description "End date of validity period."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2024-07-01T16:10:00.000+01:00"^^xsd:dateTime .
+
