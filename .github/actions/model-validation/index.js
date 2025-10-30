@@ -1,3 +1,19 @@
+/*
+#######################################################################
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+*/
+
 const core = require('@actions/core');
 const github = require('@actions/github');
 const https = require('https');
