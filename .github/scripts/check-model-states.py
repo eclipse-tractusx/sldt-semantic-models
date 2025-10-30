@@ -66,7 +66,7 @@ def main():
                 print(f"Checking model {p['folder']}:{p['version']} : "+meta.get('status'))
             
             if not meta or meta.get('status') != 'release':
-                warnings.append(f"WARNING: {ttl} imports deprecated or non-existing model {p['folder']}:{p['version']}")
+                warnings.append(f"WARNING: {ttl} imports deprecated or non-existing model ({p['folder']}:{p['version']})")
     if warnings:
         for w in warnings:
             print(w)
