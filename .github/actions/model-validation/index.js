@@ -8,8 +8,8 @@ const { TIMEOUT } = require('dns');
 
 
 var bulk = JSON.parse(core.getInput('bulk'))
-var bammVersion = core.getInput('bamm_version')
-var bammSdkPath = `${__dirname}/samm-cli-${bammVersion}.jar`;
+var sammVersion = core.getInput('samm_version')
+var sammSdkPath = `${__dirname}/samm-cli-${sammVersion}.jar`;
 
 var added = JSON.parse(core.getInput('added'))
 var modified = JSON.parse(core.getInput('modified'))
@@ -19,7 +19,7 @@ main()
 
 async function main() {
     try {
-        await asyncBammSdkDownload(`https://github.com/eclipse-esmf/esmf-sdk/releases/download/v${bammVersion}/samm-cli-${bammVersion}.jar`)
+        await asyncSammSdkDownload(`https://github.com/eclipse-esmf/esmf-sdk/releases/download/v${sammVersion}/samm-cli-${sammVersion}.jar`)
 
         if(bulk === false){
             validateChanges(added, modified, prNumber)
@@ -131,7 +131,7 @@ async function validateModel(file) {
     return new Promise((resolve, reject) => {
         console.log(`Validating TTL file ${file}`)
 
-        exec(`java -Dpolyglot.engine.WarnInterpreterOnly=false -jar ${bammSdkPath} aspect ${file} validate`, (error, stdout, stderr) => {
+        exec(`java -Dpolyglot.engine.WarnInterpreterOnly=false -jar ${sammSdkPath} aspect ${file} validate`, (error, stdout, stderr) => {
             if (stderr) {
                 reject(stderr)
             }
@@ -145,30 +145,30 @@ async function validateModel(file) {
 
 }
 
-async function asyncBammSdkDownload(url) {
+async function asyncSammSdkDownload(url) {
     return new Promise((resolve, reject) => {
-        downloadBammSdk(url, resolve, reject)
+        downloadSammSdk(url, resolve, reject)
     })
 }
 
-async function downloadBammSdk(url, resolve, reject) {
+async function downloadSammSdk(url, resolve, reject) {
     https.get(url, (response) => {
         if (response.statusCode >= 400) {
-            reject("Could not download SAMM SDK v${bammVersion}")
+            reject("Could not download SAMM SDK v${sammVersion}")
         }
 
         if (response.statusCode > 300 && response.statusCode < 400 && !!response.headers.location) {
-            downloadBammSdk(response.headers.location, resolve, reject)
+            downloadSammSdk(response.headers.location, resolve, reject)
         } else {
-            console.log(`Starting download of SAMM SDK v${bammVersion}`)
+            console.log(`Starting download of SAMM SDK v${sammVersion}`)
 
-            const filePath = fs.createWriteStream(bammSdkPath);
+            const filePath = fs.createWriteStream(sammSdkPath);
 
             response.pipe(filePath)
             filePath.on('finish', () => {
                 filePath.close()
-                console.log(`Downloaded SAMM SDK v${bammVersion}`)
-                resolve(`Downloaded SAMM SDK v${bammVersion}`)
+                console.log(`Downloaded SAMM SDK v${sammVersion}`)
+                resolve(`Downloaded SAMM SDK v${sammVersion}`)
             })
         }
     })
