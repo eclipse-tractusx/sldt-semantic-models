@@ -6,7 +6,7 @@ All notable changes to this model will be documented in this file.
 
 ### Changed
 
-- Updated to io.catenax.generic.digital_product_passport:6.1.0 as the new basis
+- new attribute added: specVersion (Optional)
 
 ## [6.0.0] - 2024-05-21
 
