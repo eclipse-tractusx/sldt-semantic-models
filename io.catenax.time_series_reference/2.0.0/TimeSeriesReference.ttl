@@ -37,6 +37,12 @@
    samm:operations ( ) ;
    samm:events ( ) .
 
+:decimalSeparator a samm:Property ;
+   samm:preferredName "Decimal Separator"@en ;
+   samm:description "Indicates whether a dot or comma is used to separate the decimal place in the source file."@en ;
+   samm:characteristic :DecimalSeparator ;
+   samm:exampleValue "dot" .
+
 :sourceFile a samm:Property ;
    samm:preferredName "Source File"@en ;
    samm:description "Contains the URI to the referenced time series file."@en ;
@@ -58,6 +64,12 @@
    samm:preferredName "Payload"@en ;
    samm:description "Contains the information about variable names and their units as well as the name of the time column. Optionally information on the cycle column may be provided."@en ;
    samm:characteristic :PayloadCharacteristic .
+
+:DecimalSeparator a samm-c:Enumeration ;
+   samm:preferredName "Decimal Separator"@en ;
+   samm:description "Indicates whether a dot or comma is used to separate the decimal place in the source file."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "dot" "comma" ) .
 
 :ResourcePath a samm:Characteristic ;
    samm:preferredName "Resource Path"@en ;
@@ -99,9 +111,14 @@
       :units
       :variableNames
       :timeColumnName
-      :value
       [ samm:property :cycleColumn ; samm:optional true ]
+      :value
    ) .
+
+:units a samm:Property ;
+   samm:preferredName "Units"@en ;
+   samm:description "Lists the unit for each datapoint."@en ;
+   samm:characteristic :UnitsListCharacteristic .
 
 :UnitsListCharacteristic a samm-c:List ;
    samm:preferredName "Units List Characteristic"@en ;
@@ -144,10 +161,10 @@
       "t"
    ) .
 
-:units a samm:Property ;
-   samm:preferredName "Units"@en ;
-   samm:description "Lists the unit for each datapoint."@en ;
-   samm:characteristic :UnitsListCharacteristic .
+:cycleColumn a samm:Property ;
+   samm:preferredName "Cycle Column"@en ;
+   samm:description "The variable name that specifies the operational cycle ID in the source file."@en ;
+   samm:characteristic :CycleColumnChoice .
 
 :CycleColumnChoice a samm-c:Enumeration ;
    samm:preferredName "Cycle Column Name"@en ;
@@ -161,30 +178,13 @@
       "Cycle"
    ) .
 
-:DecimalSeparator a samm-c:Enumeration ;
-   samm:preferredName "Decimal Separator"@en ;
-   samm:description "Indicates whether a dot or comma is used to separate the decimal place in the source file."@en ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "dot" "comma" ) .
-
-:decimalSeparator a samm:Property ;
-   samm:preferredName "Decimal Separator"@en ;
-   samm:description "Indicates whether a dot or comma is used to separate the decimal place in the source file."@en ;
-   samm:characteristic :DecimalSeparator ;
-   samm:exampleValue "dot" .
-
-:ValueCharacteristic a samm:Characteristic ;
-   samm:preferredName "Value Characteristic"@en ;
-   samm:description "The value recorded at a given point in time"@en ;
-   samm:dataType xsd:string .
-
 :value a samm:Property ;
    samm:preferredName "value"@en ;
    samm:description "Recorded value aligned with the time"@en ;
    samm:extends samm-e:value ;
    samm:characteristic :ValueCharacteristic . 
 
-:cycleColumn a samm:Property ;
-   samm:preferredName "Cycle Column"@en ;
-   samm:description "The variable name that carries the operational cycle ID in the source file."@en ;
-   samm:characteristic :CycleColumnChoice .
+:ValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "Value Characteristic"@en ;
+   samm:description "The value recorded at a given point in time"@en ;
+   samm:dataType xsd:string .
