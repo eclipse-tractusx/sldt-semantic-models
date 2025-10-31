@@ -1,10 +1,10 @@
 # ######################################################################
-# Copyright (c) 2022 Allgemeine Deutsche Automobil-Club (ADAC) e.V
-# Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft
-# Copyright (c) 2022 Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
-# Copyright (c) 2022 Siemens AG
-# Copyright (c) 2022 ZF Friedrichshafen AG
-# Copyright (c) 2022 Contributors to the Eclipse Foundation
+# Copyright (c) 2025 Allgemeine Deutsche Automobil-Club (ADAC) e.V
+# Copyright (c) 2025 Bayerische Motoren Werke Aktiengesellschaft
+# Copyright (c) 2025 Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)
+# Copyright (c) 2025 Siemens AG
+# Copyright (c) 2025 ZF Friedrichshafen AG
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
 # 
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -17,6 +17,7 @@
 # SPDX-License-Identifier: CC-BY-4.0
 # ######################################################################
 
+
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.2.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.2.0#> .
@@ -27,7 +28,7 @@
 
 :TimeSeriesReference a samm:Aspect ;
    samm:properties (
-      :decimalSeperator
+      :decimalSeparator
       :sourceFile
       :fileExtension
       :delimiter
@@ -36,12 +37,6 @@
    samm:operations ( ) ;
    samm:events ( ) .
 
-:decimalSeperator a samm:Property ;
-   samm:preferredName "Decimal Seperator"@en ;
-   samm:description "Indicates whether a dot, comma or semicolon is used to separate the decimal place in the source file."@en ;
-   samm:characteristic :DecimalSeperator ;
-   samm:exampleValue "dot" .
-
 :sourceFile a samm:Property ;
    samm:preferredName "Source File"@en ;
    samm:description "Contains the URI to the referenced time series file."@en ;
@@ -49,7 +44,7 @@
 
 :fileExtension a samm:Property ;
    samm:preferredName "File Extension"@en ;
-   samm:description "Indicates whether csv, none or txt is used as file extension."@en ;
+   samm:description "Indicates which of csv, xlsx, none, txt, dat, data, parquet, mdf or mf4 is used as file extension."@en ;
    samm:characteristic :FileExtension ;
    samm:exampleValue "csv" .
 
@@ -61,12 +56,8 @@
 
 :payload a samm:Property ;
    samm:preferredName "Payload"@en ;
-   samm:description "Contains the information about variable names and their units as well as the name of the time column."@en ;
+   samm:description "Contains the information about variable names and their units as well as the name of the time column. Optionally information on the cycle column may be provided."@en ;
    samm:characteristic :PayloadCharacteristic .
-
-:DecimalSeperator a samm-c:Enumeration ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "comma" "dot" ) .
 
 :ResourcePath a samm:Characteristic ;
    samm:preferredName "Resource Path"@en ;
@@ -74,6 +65,8 @@
    samm:dataType xsd:anyURI .
 
 :FileExtension a samm-c:Enumeration ;
+   samm:preferredName "File Extension"@en ;
+   samm:description "Indicates which of csv, xlsx, none, txt, dat, data, parquet, mdf or mf4 is used as file extension."@en ;
    samm:dataType xsd:string ;
    samm-c:values (
       "csv"
@@ -88,18 +81,35 @@
    ) .
 
 :Delimiter a samm-c:Enumeration ;
+   samm:preferredName "Delimiter"@en ;
+   samm:description "Indicates whether a semicolon, comma or tab is used as a delimiter between datapoints for csv or txt file extensions."@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "semicolon" "comma" "tab" ) .
 
 :PayloadCharacteristic a samm-c:TimeSeries ;
-   samm:preferredName "payload characteristic"@en ;
+   samm:preferredName "Payload Characteristic"@en ;
+   samm:description "Contains the information about variable names and their units as well as the name of the time column. Optionally information on the cycle column may be provided."@en ;
    samm:dataType :PayloadEntity .
 
+:PayloadEntity a samm:Entity ;
+   samm:extends samm-e:TimeSeriesEntity ;
+   samm:preferredName "Payload Entity"@en ;
+   samm:description "Contains the information about variable names and their units as well as the name of the time column."@en ;
+   samm:properties (
+      :units
+      :variableNames
+      :timeColumnName
+      :value
+      [ samm:property :cycleColumn ; samm:optional true ]
+   ) .
+
 :UnitsListCharacteristic a samm-c:List ;
+   samm:preferredName "Units List Characteristic"@en ;
    samm:description "Lists the unit for each datapoint."@en ;
    samm:dataType :Unit .
 
 :Unit a samm:Entity ;
+   samm:preferredName "Unit"@en ;
    samm:description "The unit of a column."@en ;
    samm:properties ( :unit ) .
 
@@ -114,6 +124,7 @@
    samm:characteristic :VariableListCharacteristic .
 
 :VariableListCharacteristic a samm-c:List ;
+   samm:preferredName "Variable List Characteristic"@en ;
    samm:description "Lists the name for each datapoint."@en ;
    samm:dataType xsd:string .
 
@@ -133,34 +144,47 @@
       "t"
    ) .
 
-:PayloadEntity a samm:Entity ;
-   samm:extends samm-e:TimeSeriesEntity ;
-   samm:preferredName "payload entity"@en ;
-   samm:description "Contains the information about variable names and their units as well as the name of the time column."@en ;
-   samm:properties (
-      :units
-      :variableNames
-      :timeColumnName
-      [ samm:extends samm-e:value; samm:characteristic :Characteristic1 ]
-      [ samm:property :cycleColumnName; samm:optional true ]
-   ) .
-
 :units a samm:Property ;
    samm:preferredName "Units"@en ;
    samm:description "Lists the unit for each datapoint."@en ;
    samm:characteristic :UnitsListCharacteristic .
 
-:Characteristic1 a samm:Characteristic ;
-   samm:dataType xsd:string .
-
-:cycleColumnName a samm:Property ;
-   samm:preferredName "Cycle Column Name"@en ;
-   samm:description "Specifies the name of the Variable Names entry which contains the operational cycle ID."@en ;
-   samm:characteristic :CycleColumnChoice .
-
 :CycleColumnChoice a samm-c:Enumeration ;
    samm:preferredName "Cycle Column Name"@en ;
    samm:description "Specifies the name of the cycle column variable."@en ;
    samm:dataType xsd:string ;
-   samm-c:values ( "Cycle" "cycle" "cycle_id" ) .
+   samm-c:values (
+      "Cycle_ID"
+      "cycle_id"
+      "CycleID"
+      "cycle"
+      "Cycle"
+   ) .
 
+:DecimalSeparator a samm-c:Enumeration ;
+   samm:preferredName "Decimal Separator"@en ;
+   samm:description "Indicates whether a dot or comma is used to separate the decimal place in the source file."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "dot" "comma" ) .
+
+:decimalSeparator a samm:Property ;
+   samm:preferredName "Decimal Separator"@en ;
+   samm:description "Indicates whether a dot or comma is used to separate the decimal place in the source file."@en ;
+   samm:characteristic :DecimalSeparator ;
+   samm:exampleValue "dot" .
+
+:ValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "Value Characteristic"@en ;
+   samm:description "The value recorded at a given point in time"@en ;
+   samm:dataType xsd:string .
+
+:value a samm:Property ;
+   samm:preferredName "value"@en ;
+   samm:description "Recorded value aligned with the time"@en ;
+   samm:extends samm-e:value ;
+   samm:characteristic :ValueCharacteristic . 
+
+:cycleColumn a samm:Property ;
+   samm:preferredName "Cycle Column"@en ;
+   samm:description "The variable name that carries the operational cycle ID in the source file."@en ;
+   samm:characteristic :CycleColumnChoice .
