@@ -27,10 +27,6 @@
 HEADLINES=("Added" "Deprecated")
 STATUS=("release" "deprecated")
 
-for str in ${myArray[@]}; do
-  echo $str
-done
-
 for i in ${!HEADLINES[@]}; do
   printf "\n## ${HEADLINES[$i]}\n"
   git checkout `git rev-list -n 1  --before="$2" main` >/dev/null 2>&1
