@@ -24,8 +24,8 @@
 # Usage:
 # ./release.sh '10/01/2022' '12/15/2022'
 
-HEADLINES=("Added" "Deprecated" "Standardized")
-STATUS=("release" "deprecate" "standardize")
+HEADLINES=("Added" "Deprecated")
+STATUS=("release" "deprecated")
 
 for str in ${myArray[@]}; do
   echo $str
