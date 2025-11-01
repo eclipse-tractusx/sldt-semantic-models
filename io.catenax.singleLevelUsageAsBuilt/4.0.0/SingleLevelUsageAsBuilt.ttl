@@ -1,0 +1,46 @@
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.singleLevelUsageAsBuilt:4.0.0#> .
+@prefix ext-industryCoreMasterData: <urn:samm:io.catenax.shared.industryCoreMasterData:1.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+
+:SingleLevelUsageAsBuilt a samm:Aspect ;
+   samm:preferredName "SingleLevelUsageAsBuilt"@en ;
+   samm:description "The aspect provides the information in which parent part(s)/product(s)the given item is assembled in. Could be a 1:1 relationship in terms of an e.g. a brake component or 1:n for e.g. coatings. The parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part."@en ;
+   samm:properties ( :parentItems ext-industryCoreMasterData:customers ext-industryCoreMasterData:globalAssetId ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:parentItems a samm:Property ;
+   samm:preferredName "Parent Items"@en ;
+   samm:description "Set of parent items, in which the given child object is assembled in (one structural level up).\n\nFor serialized items the list should contain only one parent item.\nAs different subsets of a batch might be used by a customer in different items this is a list."@en ;
+   samm:characteristic :SetOfParentItemsCharacteristic .
+
+:SetOfParentItemsCharacteristic a samm-c:Set ;
+   samm:preferredName "Set of Parent Items"@en ;
+   samm:description "Set of parent items the given child object is assembled in (one structural level up)."@en ;
+   samm:dataType :ParentData .
+
+:ParentData a samm:Entity ;
+   samm:preferredName "Parent Data"@en ;
+   samm:description "Catena-X ID and meta data of the parent item."@en ;
+   samm:properties ( [ samm:property :quantity; samm:optional true ] :isOnlyPotentialParent ext-industryCoreMasterData:businessPartner ext-industryCoreMasterData:createdOn [ samm:property ext-industryCoreMasterData:lastModifiedOn; samm:optional true ] ext-industryCoreMasterData:globalAssetId ) .
+
+:quantity a samm:Property ;
+   samm:preferredName "Quantity"@en ;
+   samm:description "Quantity of which the child part is assembled into the parent part. In general it is '1' for serialized parts."@en ;
+   samm:characteristic ext-quantity:ItemQuantityCharacteristic .
+
+:isOnlyPotentialParent a samm:Property ;
+   samm:preferredName "Is Only Potential Parent"@en ;
+   samm:description "Expresses the certainty whether the part has been used as component or input material in the produced item. If the value is false, it can be assumed that the part has been used. If the value is true, there are alternatives for that part, and it is unknown if this part item or an alternative part item has been used.\nThis is the case when, e.g. the same item is supplied by two suppliers, and the item is only tracked by a customer part ID during assembly. Thus, these items cannot be differentiated from each other.\n"@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue false .
+
