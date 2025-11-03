@@ -1,0 +1,33 @@
+#######################################################################
+# Copyright (c) 2025 Catena-X Automotive Network e.V.
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+name: Model State Check
+on:
+  pull_request:
+    paths:
+      - '**/*.ttl'
+jobs:
+  check-models:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # vollständige Historie holen
+      - name: Fetch main branch
+        run: git fetch origin main
+
+      - name: Run PR file check
+        run: python .github/scripts/check-model-states.py

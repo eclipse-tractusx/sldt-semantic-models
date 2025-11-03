@@ -13,17 +13,20 @@
 # SPDX-License-Identifier: CC-BY-4.0
 #######################################################################
 -->
+
 # Note on updating ESMF SDK 
-The action uses the [ESMF SDK](https://github.com/eclipse-esmf/esmf-sdk). In case of an update you need to change the variable ``bamm_version`` to the required version of the ESMF SDK in the file [action.yml](action.yml).
+
+The action uses the [ESMF SDK](https://github.com/eclipse-esmf/esmf-sdk). In case of an update you need to change the variable ``samm_version`` to the required version of the ESMF SDK in the file [action.yml](action.yml).
 
 # Detect Changes Action
+
 This action validates whether and which changes in the repository need to be applied to an instance of the Semantic Hub being associated with the repository.
 The action expects multiple arrays which either contain added, modified, renamed and deleted files from the last commit. 
 
 The actual deployment to an Semantic Hub instance is done through the Upload-action which expects a JSON-file with the changes to apply. Because of that, the result of the validation action is an archived JSON-file communicating these detected changes. 
 
-
 ## Test Cases
+
 For future developments, we propose the following test cases to be evaluated:
 
 ### main branch
@@ -41,6 +44,7 @@ delete model with status RELEASED | not relevant | model is still and Semantic H
 modify model | no addition or modification | log warning and no update of model in Semantic Hub
 
 ### other branch
+
 On any other branch besides the main-branch the metadata.json should be ignored. This results in the following test cases: 
 
 | Model | metadata.json | expected deployed model status |
@@ -49,6 +53,3 @@ add model | none | DRAFT
 add model | add metadata.json with status DEPRECATED | DRAFT
 existing model | add metadata.json with status RELEASED | DRAFT
 delete model | not relevant | delete model from Semantic Hub
-
-
-

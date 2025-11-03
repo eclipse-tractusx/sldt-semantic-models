@@ -14,7 +14,7 @@
 #######################################################################
 -->
 # Note on updating ESMF SDK 
-The action uses the [ESMF SDK](https://github.com/eclipse-esmf/esmf-sdk). In case of an update you need to change the variable ``bamm_version`` to the required version of the ESMF SDK in the file [action.yml](action.yml).
+The action uses the [ESMF SDK](https://github.com/eclipse-esmf/esmf-sdk). In case of an update you need to change the variable ``samm_version`` to the required version of the ESMF SDK in the file [action.yml](action.yml).
 
 # Detect Changes Action
 This action validates whether and which changes in the repository need to be applied to an instance of the Semantic Hub being associated with the repository.
