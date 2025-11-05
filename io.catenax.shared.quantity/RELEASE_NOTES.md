@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
+
+## [3.0.0] - 2025-11-05
+### Added
+- added unit:mile to LinearUnitEnumeration
+
+### Changed
+
+### Removed
+- removed Aspect to make the model a shared model and not an aspect model anymore
+
 ## [2.0.0] - 2024-01-30
 ### Added
 n/a
