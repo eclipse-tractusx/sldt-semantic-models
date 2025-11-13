@@ -42,9 +42,10 @@ jobs:
             metadata_file="$(dirname "$file")/metadata.json"
             if [ -f "$metadata_file" ]; then 
               # Check if "release" is present in metadata.json, if not, skip this model
-              grep "release" ${metadata_file} 2>&1 > /dev/null || continue
+              grep -q "release" "$metadata_file" 2>&1 > /dev/null || continue
             else
-              echo "No metadata.json found for $file, skipping..."
+              # Check just in case, if metadata.json is missing
+              echo "WARNING: metadata.json not found for $file, skipping..."
               continue
             fi
             # Create "gen"-folder per model
