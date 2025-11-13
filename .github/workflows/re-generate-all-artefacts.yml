@@ -38,6 +38,15 @@ jobs:
       - name: Generate artifacts for new models
         run: |
           find "." -type f -name "*.ttl" | while read -r file; do
+            # read metadata.json from the same directory
+            metadata_file="$(dirname "$file")/metadata.json"
+            if [ -f "$metadata_file" ]; then 
+              # Check if "release" is present in metadata.json, if not, skip this model
+              grep "release" ${metadata_file} 2>&1 > /dev/null || continue
+            else
+              echo "No metadata.json found for $file, skipping..."
+              continue
+            fi
             # Create "gen"-folder per model
             mkdir -p "$(dirname "$file")/gen"
 
