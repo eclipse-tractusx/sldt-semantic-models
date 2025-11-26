@@ -1,36 +1,37 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
-## [9.0.0] - 25.12
+## [9.0.0] 2025-10-10
 
 ### Changed
 
-- Hierarchy of the data structure has been deepened and given more meaning by adding nodes (otherwise no change in content):
-  - scopeOfPcfForm
-    - companyAndProductInformation
-      - companyInformation
-      - productInformation
-    - pcfAssessmentAndMethodology
-      - pcfAssessmentInformation
-        - idAndVersion
-        - boundarySpecifications
-        - technology
-        - geography
-        - time
-      - pcfMethodology
-        - standards
-        - gwpCharacterizationFactorDetails
-        - allocationInForegroundOwnProcesses
-        - massBalancingInformation
-      - dataSourcesAndQuality
-      - verificationAndCeritificationShares
-    - general
-    - productLifeCycleStagesAndEmissions
-      - productionStage
-      - packaging
-      - distributionStage
-    - carbonContent
-    - attestationOfConformance
+Hierarchy of the data structure has been deepened and given more meaning by adding nodes (otherwise no change in content):
+
+- scopeOfPcfForm
+  - companyAndProductInformation
+    - companyInformation
+    - productInformation
+  - pcfAssessmentAndMethodology
+    - pcfAssessmentInformation
+      - idAndVersion
+      - boundarySpecifications
+      - technology
+      - geography
+      - time
+    - pcfMethodology
+      - standards
+      - gwpCharacterizationFactorDetails
+      - allocationInForegroundOwnProcesses
+      - massBalancingInformation
+    - dataSourcesAndQuality
+    - verificationAndCeritificationShares
+  - general
+  - productLifeCycleStagesAndEmissions
+    - productionStage
+    - packaging
+    - distributionStage
+  - carbonContent
+  - attestationOfConformance
 
 ## [8.0.0] 2025-07-18
 
