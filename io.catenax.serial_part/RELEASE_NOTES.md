@@ -2,6 +2,15 @@
 
 All notable changes to this model will be documented in this file.
 
+## [4.0.0] r25.12
+
+### Changed
+
+- introduced `io.catenax.industry_core:1.0.0` as a shared model
+- renamed `catenaXId` to `globalAssetId`
+- renamed `catenaXsiteId` to `siteId`
+- renamed `classificationID` to `classificationId`
+
 ## [3.0.1] 2025-09-26
 
 - Fixed example value of "date" to match the regular expression
