@@ -14,38 +14,40 @@
 @prefix ext-time: <urn:samm:io.catenax.return_request:2.0.0#> .
 @prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 
-:ProductCarbonFootprintForBatteryComponentSupplier a samm:Aspect ;
+:PcfForBatteryComponentSupplier a samm:Aspect ;
+   samm:preferredName "PcfForBatteryComponentSupplier"@en ;
+   samm:description "Intermediate Datamodel to enable Supplier to provide PCF information for their products according to the preliminary Delegated Act. This model is to be replaced as soon as the Delegated Act is finalized"@en ;
    samm:properties ( :pcfValues ext-pcf:secondaryEmissionFactorSources [ samm:property ext-pcf:primaryDataShare; samm:optional true ] ext-serial-part:customerPartId :technologicalRepresentativeness :geographicalRepresentativeness :timerelatedRepresentativeness :dataQualityRating :manufacturerPartId :validityPeriod :siteIdentifier :legalidentifier :productQualityParameter :contentC02Metals ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
 :pcfValues a samm:Property ;
-   samm:preferredName "PCF Values"@en ;
+   samm:preferredName "product carbon footprint values"@en ;
    samm:description "This attribute contains the values to calculated the PCF values."@en ;
    samm:characteristic :CharacteristicPCFValues .
 
 :technologicalRepresentativeness a samm:Property ;
-   samm:preferredName "TeR"@en ;
+   samm:preferredName "technological representativeness"@en ;
    samm:description "Data Quality Rating for technological context. Value between 1-5."@en ;
-   samm:characteristic :DataQualityTrait .
+   samm:characteristic ext-pcf:DqiNumberTrait .
 
 :geographicalRepresentativeness a samm:Property ;
-   samm:preferredName "GeR"@en ;
+   samm:preferredName "geographical representativeness"@en ;
    samm:description "Quality Rating for Data in context of georaphical product information."@en ;
-   samm:characteristic :DataQualityTrait .
+   samm:characteristic ext-pcf:DqiNumberTrait .
 
 :timerelatedRepresentativeness a samm:Property ;
-   samm:preferredName "TiR"@en ;
+   samm:preferredName "timerelated representativeness"@en ;
    samm:description "Data quality rating for data in context of time."@en ;
-   samm:characteristic :DataQualityTrait .
+   samm:characteristic ext-pcf:DqiNumberTrait .
 
 :dataQualityRating a samm:Property ;
    samm:preferredName "DQR"@en ;
    samm:description "Data quality Rating measurement. Value between 1-5. Depending on TimeRepresentatives[TIR], GeoraphicalRepresentatives[GER] and TimeRepresenatives[TIR]."@en ;
-   samm:characteristic :DataQualityTrait .
+   samm:characteristic ext-pcf:DqiNumberTrait .
 
 :manufacturerPartId a samm:Property ;
-   samm:preferredName "manufacturerPartId"@en ;
+   samm:preferredName "manufacturer part identifier"@en ;
    samm:description "part identifier of the manufacturer."@en ;
    samm:characteristic ext-serial-part:PartIdCharacteristic .
 
@@ -81,10 +83,6 @@
    samm:description "characteristic for the entity which contains the pcf information."@en ;
    samm:dataType :EntityPCF .
 
-:DataQualityTrait a samm-c:Trait ;
-   samm-c:baseCharacteristic :DqrCharactistics ;
-   samm-c:constraint :Constraint1 .
-
 :StringArray a samm-c:List ;
    samm:preferredName "string_array"@en ;
    samm:description "this is a list of strings."@en ;
@@ -94,17 +92,6 @@
    samm:preferredName "entity_pcf"@en ;
    samm:description "entity which contains the the pcf information."@en ;
    samm:properties ( :sharesPerStage [ samm:property :pcfPerformanceClass; samm:optional true ] [ samm:property :webLinkToCarbonFootPrintStudy; samm:optional true ] ) .
-
-:DqrCharactistics a samm:Characteristic ;
-   samm:preferredName "dqr_characteristics"@en ;
-   samm:description "This describes a dqr-value."@en ;
-   samm:dataType xsd:integer .
-
-:Constraint1 a samm-c:RangeConstraint ;
-   samm-c:minValue 1 ;
-   samm-c:maxValue 5 ;
-   samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
-   samm-c:upperBoundDefinition samm-c:AT_MOST .
 
 :sharesPerStage a samm:Property ;
    samm:preferredName "shares_per_stage"@en ;
@@ -189,36 +176,18 @@
    samm-c:constraint :ConstraintGEQ .
 
 :CharacteristicStageValue a samm:Characteristic ;
+   samm:preferredName "characteristic stage value"@en ;
+   samm:description "Characteristic for each stage value"@en ;
    samm:dataType xsd:float .
 
 :ConstraintGEQ a samm-c:RangeConstraint ;
-   samm:description "Greater or Equal Constraint"@en ;
+   samm:description "greater or equal constraint"@en ;
    samm-c:minValue "0"^^xsd:float ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:LESS_THAN .
 
-:validityPeriodStart a samm:Property ;
-   samm:preferredName "validity_period_start"@en ;
-   samm:description "Start of the Validity Period of the provided PCF Values ISO-8601 / RFC3339 Timestamp."@en ;
-   samm:characteristic samm-c:Timestamp .
-
 :customerPartId a samm:Property ;
-   samm:preferredName "Manufacturer Part Id"@en ;
+   samm:preferredName "customer part identifier"@en ;
    samm:description "This is PartNumber assigend by the consumer."@en ;
    samm:characteristic ext-serial-part:PartIdCharacteristic .
-
-:CharacteristicValidityPeriod a samm:Characteristic ;
-   samm:preferredName "characteristic_validity_period"@en ;
-   samm:description "characteristic that describes the validity period."@en ;
-   samm:dataType :EntityValidityPeriod .
-
-:EntityValidityPeriod a samm:Entity ;
-   samm:preferredName "entity_validity_period"@en ;
-   samm:description " entity which contains the start and end timestamp of the validity period."@en ;
-   samm:properties ( :validityPeriodStart :validityPeriodEnd ) .
-
-:validityPeriodEnd a samm:Property ;
-   samm:preferredName "validity_period_end"@en ;
-   samm:description "End of the validity Period of the provided pcf Values . ISO-8601/RFC-3339 timestamp."@en ;
-   samm:characteristic samm-c:Timestamp .
 
