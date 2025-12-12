@@ -1,0 +1,121 @@
+@Prefix samm: urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0# .
+@Prefix samm-c: urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0# .
+@Prefix samm-e: urn:samm:org.eclipse.esmf.samm:entity:2.1.0# .
+@Prefix unit: urn:samm:org.eclipse.esmf.samm:unit:2.1.0# .
+@Prefix rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# .
+@Prefix rdfs: http://www.w3.org/2000/01/rdf-schema# .
+@Prefix xsd: http://www.w3.org/2001/XMLSchema# .
+@Prefix : urn:samm:org.eclipse.esmf:1.0.0# .
+@Prefix samm-u: urn:samm:org.eclipse.esmf.samm:unit:2.1.0# .
+
+:Softwaremodule a samm:Aspect ;
+samm:preferredName "Softwaremodule version in SBOM descriptions"@en ;
+samm:description "Softwaremodule and its version in context of SBOM description"@en ;
+samm:see https://admin-shell.io/idta/SoftwareBom/SbomDescription/SoftwareVersion ;
+samm:properties ( :status :supplier :sbom ) ;
+samm:operations ( ) ;
+samm:events ( ) .
+
+:status a samm:Property ;
+samm:preferredName "Status"@en ;
+samm:description "Current state or situation of an object or a system"@en ;
+samm:see https://admin-shell.io/SBOM/1/0/Status ;
+samm:characteristic :StatusCharacteristic .
+
+:supplier a samm:Property ;
+samm:preferredName "Supplier"@en ;
+samm:description "Name of supplier which provides the customer with a product or a service"@en ;
+samm:characteristic samm-c:Text .
+
+:sbom a samm:Property ;
+samm:preferredName "Software bill of materials (SBOM)"@en ;
+samm:description "The software bill of materials for the software module in the specified form"@en ;
+samm:see https://admin-shell.io/idta/SoftwareBom/SBOM_Descriptions ;
+samm:characteristic :SbomFile .
+
+:StatusCharacteristic a samm-c:State ;
+samm:preferredName "Status characteristic"@en ;
+samm:description "The value range for the status"@en ;
+samm:dataType xsd:string ;
+samm-c:defaultValue "active" ;
+samm-c:values ( "active" "inactive" ) .
+
+:SbomFile a samm:Characteristic ;
+samm:preferredName "SBOM file"@en ;
+samm:description "The file of the software bill of materials"@en ;
+samm:dataType :File .
+
+:File a samm:Entity ;
+samm:preferredName "File"@en ;
+samm:description "A named collection of information stored on a computer or other electronic storage medium"@en ;
+samm:see https://admin-shell.io/SBOM/1/0/File ;
+samm:properties ( :formatVersion :format :descriptionFile :spdxData ) .
+
+:formatVersion a samm:Property ;
+samm:preferredName "Format version"@en ;
+samm:description "Version of the format with which a file or data structure was created or encoded"@en ;
+samm:characteristic :FormatVersionTrait ;
+samm:exampleValue "3.0" .
+
+:format a samm:Property ;
+samm:preferredName "Format"@en ;
+samm:description "The way data is organized, structured, or coded to make it readable or interpretable"@en ;
+samm:characteristic :FormatTrait .
+
+:descriptionFile a samm:Property ;
+samm:preferredName "Description File"@en ;
+samm:description "MIME-Type, file name and file contents given by the file SubmodelElement"@en ;
+samm:characteristic :DescriptionFileTrait .
+
+:spdxData a samm:Property ;
+samm:preferredName "SPDX data"@en ;
+samm:description "The actual spdx data (as json string)"@en ;
+samm:characteristic :SpdxDataTrait .
+
+:FormatVersionTrait a samm-c:Trait ;
+samm:preferredName "Format version trait"@en ;
+samm:description "Restriction of the value range of format version base characteristic"@en ;
+samm-c:baseCharacteristic :FormatVersionBaseCharacteristic ;
+samm-c:constraint :FormatVersionConstraint .
+
+:FormatTrait a samm-c:Trait ;
+samm:preferredName "Format trait"@en ;
+samm:description "Restriction of the value range of format version base characteristic"@en ;
+samm-c:baseCharacteristic samm-c:MimeType ;
+samm-c:constraint :FormatConstraint .
+
+:DescriptionFileTrait a samm-c:Trait ;
+samm:preferredName "Description file trait"@en ;
+samm:description "Restriction of the mime type of the descrition file"@en ;
+samm-c:baseCharacteristic samm-c:MimeType ;
+samm-c:constraint :DescriptionFileConstraint .
+
+:SpdxDataTrait a samm-c:Trait ;
+samm:preferredName "SPDX data trait"@en ;
+samm:description "Restricts the spdx data string"@en ;
+samm-c:baseCharacteristic samm-c:Text ;
+samm-c:constraint :SpdxDataConstraint .
+
+:FormatVersionBaseCharacteristic a samm:Characteristic ;
+samm:preferredName "Format version characteristic"@en ;
+samm:description "The value range for the format version (here, vers. 3 or higher)"@en ;
+samm:dataType xsd:string .
+
+:FormatVersionConstraint a samm-c:RegularExpressionConstraint ;
+samm:preferredName "Format version constraint"@en ;
+samm:description "The constraints to restrict format version strings"@en ;
+samm:value "^[3-9][\.\d*]$|^\d\d+[\.\d]*$" .
+
+:FormatConstraint a samm-c:RegularExpressionConstraint ;
+samm:preferredName "Format constraint"@en ;
+samm:description "The constraints to restrict the mime type for the format"@en ;
+samm:value "^text\/spdx$" .
+
+:DescriptionFileConstraint a samm-c:RegularExpressionConstraint ;
+samm:preferredName "Description file constraint"@en ;
+samm:description "The constraints to restrict the mime type of the description file"@en ;
+samm:value "^application\/ld+json$" .
+
+:SpdxDataConstraint a samm:Constraint ;
+samm:preferredName "SPDX data constraint"@en ;
+samm:description "The data must be a valid SPDX json string."@en .
