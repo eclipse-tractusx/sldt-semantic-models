@@ -1,0 +1,123 @@
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:catenax.io.material:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:3.0.0#> .
+@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+
+:RecyclingInformation a samm:Aspect ;
+   samm:preferredName "recycling information"@en ;
+   samm:properties ( :recyclingInformation ext-uuid:uuidV4Property ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:recyclingInformation a samm:Property ;
+   samm:preferredName "recycling information"@en ;
+   samm:characteristic :RecyclingInformationCharacteristic .
+
+:RecyclingInformationCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "recycling information characteristic"@en ;
+   samm:dataType :RecyclingInformationEntity .
+
+:RecyclingInformationEntity a samm:Entity ;
+   samm:preferredName "recycling information entity"@en ;
+   samm:properties ( :reutilizationMaterialShare :origin :preConsumerShares :postConsumerShares :materialSourceShares ) .
+
+:reutilizationMaterialShare a samm:Property ;
+   samm:preferredName "reutilization material share"@en ;
+   samm:description "Material share from reutilization of materials such as rework, regrind, or scrap materials generated within the process and capable of being reused within the same process that generated it.\n"@en ;
+   samm:characteristic :MaterialShareTrait ;
+   samm:exampleValue "10.0"^^xsd:float .
+
+:origin a samm:Property ;
+   samm:preferredName "origin"@en ;
+   samm:description "Information on material origin\n"@en ;
+   samm:characteristic :Characteristic3 .
+
+:preConsumerShares a samm:Property ;
+   samm:preferredName "pre consumer shares"@en ;
+   samm:description "Set of pre consumer material shares."@en ;
+   samm:characteristic :ConsumerShareCharacteristic .
+
+:postConsumerShares a samm:Property ;
+   samm:preferredName "post consumer shares"@en ;
+   samm:description "Set of post consumer material shares."@en ;
+   samm:characteristic :ConsumerShareCharacteristic .
+
+:materialSourceShares a samm:Property ;
+   samm:preferredName "materialSourceShares"@en ;
+   samm:characteristic :MaterialSourceCharacteristic .
+
+:MaterialShareTrait a samm-c:Trait ;
+   samm:preferredName "material share trait"@en ;
+   samm:description "material share trait"@en ;
+   samm-c:baseCharacteristic :MaterialPercentageCharacteristic ;
+   samm-c:constraint :MaterialShareConstraint .
+
+:Characteristic3 a samm-c:Enumeration ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "EU" "Non-EU" ) .
+
+:ConsumerShareCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Consumer Share Characteristic"@en ;
+   samm:description "Set of shares from automotive and non automitive material shares."@en ;
+   samm:dataType :ConsumerShareEntity .
+
+:MaterialSourceCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Material Source Characteristic"@en ;
+   samm:dataType :MaterialSourceEntity .
+
+:MaterialPercentageCharacteristic a samm-c:Quantifiable ;
+   samm:preferredName "material percentage characteristic"@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit samm-u:percent .
+
+:MaterialShareConstraint a samm-c:RangeConstraint ;
+   samm:preferredName "material share constraint"@en ;
+   samm:description "limits the values for material shares to 0-100"@en ;
+   samm-c:minValue "0"^^xsd:float ;
+   samm-c:maxValue "100"^^xsd:float ;
+   samm-c:lowerBoundDefinition samm-c:GREATER_THAN ;
+   samm-c:upperBoundDefinition samm-c:LESS_THAN .
+
+:ConsumerShareEntity a samm:Entity ;
+   samm:preferredName "Consumer Share Entity"@en ;
+   samm:description "Set of shares from automotive and non automitive material shares."@en ;
+   samm:properties ( :automotive :nonAutomotive ) .
+
+:MaterialSourceEntity a samm:Entity ;
+   samm:preferredName "Material Source Entity"@en ;
+   samm:description "Material Source Entity"@en ;
+   samm:properties ( :secondaryMaterial :primaryMaterial ) .
+
+:automotive a samm:Property ;
+   samm:preferredName "automotive"@en ;
+   samm:characteristic :MaterialShareTrait ;
+   samm:exampleValue "10.0"^^xsd:float .
+
+:nonAutomotive a samm:Property ;
+   samm:preferredName "non automotive"@en ;
+   samm:characteristic :MaterialShareTrait ;
+   samm:exampleValue "20.0"^^xsd:float .
+
+:secondaryMaterial a samm:Property ;
+   samm:preferredName "secondary material"@en ;
+   samm:description "Material share from all materials obtained from waste, by-products and production residues sources. In the material cycle diagrams, this corresponds to the material flows PrC, PoC and ReU-M.  This includes substances and mixtures of substances that are intended for the manufacture of products. This can include both secondary raw materials and more highly processed substances and mixtures of substances. Secondary material can be used as a substitute for primary material in processes."@en ;
+   samm:characteristic :MaterialShareTrait ;
+   samm:exampleValue "40.0"^^xsd:float .
+
+:primaryMaterial a samm:Property ;
+   samm:preferredName "primary material"@en ;
+   samm:description "Material share from Substances and mixtures of substances intended for the manufacture of products and used for the first time in a production process. "@en ;
+   samm:characteristic :MaterialShareTrait ;
+   samm:exampleValue "60.0"^^xsd:float .
+
+:Characteristic1 a samm:Characteristic ;
+   samm:dataType :ConsumerShareEntity .
+
