@@ -1,0 +1,117 @@
+#######################################################################
+# Copyright(c) 2025 Robert Bosch Manufacturing Solutions GmbH
+# Copyright(c) 2025 Robert Bosch GmbH
+# Copyright(c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.zero_km_failure:1.0.0#> .
+@prefix ext-core: <urn:samm:io.catenax.shared.quality_core:1.0.0#> .
+@prefix ext-data: <urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-part: <urn:samm:io.catenax.serial_part:3.0.1#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#> .
+@prefix ext-vehicles: <urn:samm:io.catenax.fleet.vehicles:4.0.0#> .
+
+:ZeroKmFailure a samm:Aspect ;
+   samm:preferredName "Zero Kilometre Failure"@en ;
+   samm:description "This model describes the properties that are necessary to communicate zero kilometer failures of products from the customer to the supplier. Zero km failures are issues with a vehicle component that occur during vehicle assembly."@en ;
+   samm:properties ( :partInformation :vehicle :plantInformation :defect ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:partInformation a samm:Property ;
+   samm:preferredName "Part information"@en ;
+   samm:description "Describes and identifies the given part which is suspected to cause the zero kilometre failure."@en ;
+   samm:characteristic :PartInformationCharacteristic .
+
+:vehicle a samm:Property ;
+   samm:preferredName "Vehicle"@en ;
+   samm:description "Describes and identifies the vehicle or subassambly  in which the part has been assemblied into. "@en ;
+   samm:characteristic :VehicleCharacteristic .
+
+:plantInformation a samm:Property ;
+   samm:preferredName "Plant information"@en ;
+   samm:description "Information on the plant at which the failure has been discovered (during assembly) for a given part."@en ;
+   samm:characteristic :PlantCharacteristic .
+
+:defect a samm:Property ;
+   samm:preferredName "Defect"@en ;
+   samm:description "Defect related data"@en ;
+   samm:characteristic :DefectCharacteristic .
+
+:PartInformationCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Part Information Characteristic"@en ;
+   samm:dataType :PartInformationEntity .
+
+:VehicleCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Vehicle Characteristic"@en ;
+   samm:dataType :VehicelEntity .
+
+:PlantCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Plant Characteristic"@en ;
+   samm:dataType :PlantEntity .
+
+:DefectCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "Defect Characteristic"@en ;
+   samm:dataType :DefectEntity .
+
+:PartInformationEntity a samm:Entity ;
+   samm:preferredName "Part information entity"@en ;
+   samm:properties ( ext-core:dataMatrixCode ext-part:nameAtManufacturer ext-part:localIdentifiers ext-part:customerPartId ) .
+
+:VehicelEntity a samm:Entity ;
+   samm:preferredName "Vehicle Entity"@en ;
+   samm:properties ( ext-core:anonymizedVIN ext-vehicles:modelIdentifier ext-vehicles:engineId ) .
+
+:PlantEntity a samm:Entity ;
+   samm:preferredName "Plant Entity"@en ;
+   samm:properties ( :assemblyTimestamp :assemblyLineName :defectPartsPerShift :siteIdentifier ) .
+
+:DefectEntity a samm:Entity ;
+   samm:preferredName "Defect Entity"@en ;
+   samm:properties ( :description ext-data:dtcs ext-core:qualityTaskId ) .
+
+:assemblyTimestamp a samm:Property ;
+   samm:preferredName "Assembly Timestamp"@en ;
+   samm:description "Timestamp of the assembly of the given part."@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:assemblyLineName a samm:Property ;
+   samm:preferredName "Name of plant assembly line"@en ;
+   samm:description "The name of the assembly line in the plant, where the given part has been assemblied into the vehicle."@en ;
+   samm:characteristic samm-c:Text .
+
+:defectPartsPerShift a samm:Property ;
+   samm:preferredName "Amount of defect parts per shift"@en ;
+   samm:characteristic ext-quantity:CountQuantityCharacteristic .
+
+:siteIdentifier a samm:Property ;
+   samm:preferredName "Plant site identifier"@en ;
+   samm:description "Identifier of the plant site that uniqly identifies the plant within this dataspace."@en ;
+   samm:characteristic ext-number:BpnsTrait .
+
+:description a samm:Property ;
+   samm:preferredName "Defect description"@en ;
+   samm:description "Description of the defect as human readable text."@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "Stuck in bootstrap mode."@en .
+
