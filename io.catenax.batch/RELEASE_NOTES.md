@@ -10,6 +10,7 @@ All notable changes to this model will be documented in this file.
 - renamed `catenaXId` to `globalAssetId`
 - renamed `catenaXsiteId` to `siteId`
 - renamed `classificationID` to `classificationId`
+- renamed `date` to `productionDate`
 
 ## [3.0.1] 2025-09-26
 
