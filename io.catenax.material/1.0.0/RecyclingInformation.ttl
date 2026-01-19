@@ -7,27 +7,15 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <urn:samm:catenax.io.material:1.0.0#> .
-@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:3.0.0#> .
+@prefix : <urn:samm:io.catenax.material:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 @prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 
 :RecyclingInformation a samm:Aspect ;
    samm:preferredName "recycling information"@en ;
-   samm:properties ( :recyclingInformation ext-uuid:uuidV4Property ) ;
+   samm:properties ( ext-uuid:uuidV4Property :reutilizationMaterialShare :origin :preConsumerShares :postConsumerShares :materialSourceShares :otherInformation ) ;
    samm:operations ( ) ;
    samm:events ( ) .
-
-:recyclingInformation a samm:Property ;
-   samm:preferredName "recycling information"@en ;
-   samm:characteristic :RecyclingInformationCharacteristic .
-
-:RecyclingInformationCharacteristic a samm-c:SingleEntity ;
-   samm:preferredName "recycling information characteristic"@en ;
-   samm:dataType :RecyclingInformationEntity .
-
-:RecyclingInformationEntity a samm:Entity ;
-   samm:preferredName "recycling information entity"@en ;
-   samm:properties ( :reutilizationMaterialShare :origin :preConsumerShares :postConsumerShares :materialSourceShares ) .
 
 :reutilizationMaterialShare a samm:Property ;
    samm:preferredName "reutilization material share"@en ;
@@ -38,7 +26,7 @@
 :origin a samm:Property ;
    samm:preferredName "origin"@en ;
    samm:description "Information on material origin\n"@en ;
-   samm:characteristic :Characteristic3 .
+   samm:characteristic :OriginEnumeration .
 
 :preConsumerShares a samm:Property ;
    samm:preferredName "pre consumer shares"@en ;
@@ -52,7 +40,14 @@
 
 :materialSourceShares a samm:Property ;
    samm:preferredName "materialSourceShares"@en ;
-   samm:characteristic :MaterialSourceCharacteristic .
+   samm:description "Shares of primary and secondary materials"@en ;
+   samm:characteristic :MaterialSourceSingleEntity .
+
+:otherInformation a samm:Property ;
+   samm:preferredName "Other Information"@en ;
+   samm:description "Document or evidence verifying the origin, quality, or compliance of a material"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "urn:uuid:d4b8d2ef-1d56-4dcd-a89b-9c887c52d3aa" .
 
 :MaterialShareTrait a samm-c:Trait ;
    samm:preferredName "material share trait"@en ;
@@ -60,7 +55,9 @@
    samm-c:baseCharacteristic :MaterialPercentageCharacteristic ;
    samm-c:constraint :MaterialShareConstraint .
 
-:Characteristic3 a samm-c:Enumeration ;
+:OriginEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Enum of origins"@en ;
+   samm:description "Enum of origins"@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "EU" "Non-EU" ) .
 
@@ -69,8 +66,9 @@
    samm:description "Set of shares from automotive and non automitive material shares."@en ;
    samm:dataType :ConsumerShareEntity .
 
-:MaterialSourceCharacteristic a samm-c:SingleEntity ;
-   samm:preferredName "Material Source Characteristic"@en ;
+:MaterialSourceSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "Material Source SingleEntity"@en ;
+   samm:description "Material Source SingleEntity"@en ;
    samm:dataType :MaterialSourceEntity .
 
 :MaterialPercentageCharacteristic a samm-c:Quantifiable ;
@@ -98,11 +96,13 @@
 
 :automotive a samm:Property ;
    samm:preferredName "automotive"@en ;
+   samm:description "Share of automotive material"@en ;
    samm:characteristic :MaterialShareTrait ;
    samm:exampleValue "10.0"^^xsd:float .
 
 :nonAutomotive a samm:Property ;
    samm:preferredName "non automotive"@en ;
+   samm:description "Share of non-automotive material"@en ;
    samm:characteristic :MaterialShareTrait ;
    samm:exampleValue "20.0"^^xsd:float .
 
@@ -117,7 +117,4 @@
    samm:description "Material share from Substances and mixtures of substances intended for the manufacture of products and used for the first time in a production process. "@en ;
    samm:characteristic :MaterialShareTrait ;
    samm:exampleValue "60.0"^^xsd:float .
-
-:Characteristic1 a samm:Characteristic ;
-   samm:dataType :ConsumerShareEntity .
 
