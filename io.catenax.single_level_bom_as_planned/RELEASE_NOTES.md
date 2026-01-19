@@ -2,14 +2,14 @@
 
 All notable changes to this model will be documented in this file.
 
-## [4.0.0] r25.12
+## [4.0.0] 25.12
 
 ### Changed
 
 - introduced `io.catenax.industry_core:1.0.0` as a shared model
 - renamed `catenaXId` to `globalAssetId`
 
-## [3.0.0] - 2024-02-26
+## [3.0.0] 2024-02-26
 
 ### Changed
 
@@ -19,7 +19,7 @@ All notable changes to this model will be documented in this file.
 - replaced the existing `Timestamp` characteristics of `validFrom` and `validTo` with a new `DateTimeTrait`, to permit date information excluding time
 - description of some objects were adjusted
 
-## [2.0.0] - 2023-09-01
+## [2.0.0] 2023-09-01
 
 ### Added
 
@@ -51,7 +51,7 @@ n/a
 
 ### Removed
 
-## [1.0.1] - 2022-08-11
+## [1.0.1] 2022-08-11
 
 ### Added
 

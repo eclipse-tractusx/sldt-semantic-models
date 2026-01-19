@@ -2,14 +2,14 @@
 
 All notable changes to this model will be documented in this file.
 
-## [4.0.0] r25.12
+## [4.0.0] 25.12
 
 ### Changed
 
 - introduced `io.catenax.industry_core:1.0.0` as a shared model
 - renamed `catenaXId` to `globalAssetId`
 
-## [3.0.0] - 2024-02-26
+## [3.0.0] 2024-02-26
 
 ### Changed
 
@@ -18,7 +18,7 @@ All notable changes to this model will be documented in this file.
 - replaced the whole `BpnTrait` and its childs with the `BpnlTrait` of the shared business_partner_number 2.0.0 aspect model
 - description of some objects were adjusted
 
-## [2.0.0] - 25.09.2023
+## [2.0.0] 25.09.2023
 
 ### Added
 
