@@ -21,6 +21,7 @@
 #######################################################################
 
 
+
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -29,110 +30,209 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.certificate_of_analysis:2.0.0#> .
-@prefix ext-core: <urn:samm:io.catenax.shared.quality_core:1.0.0#> .
-@prefix ext-data: <urn:samm:io.catenax.fleet.diagnostic_data:3.0.0#> .
+@prefix ext-batch: <urn:samm:io.catenax.batch:3.0.1#> .
+@prefix ext-information: <urn:samm:io.catenax.delivery_information:2.0.0#> .
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
-@prefix ext-part: <urn:samm:io.catenax.serial_part:3.0.1#> .
-@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:1.0.0#> .
-@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
-@prefix ext-vehicles: <urn:samm:io.catenax.fleet.vehicles:4.0.0#> .
+@prefix ext-planned: <urn:samm:io.catenax.part_as_planned:2.0.0#> .
 
-
-
-:ZeroKmFailure a samm:Aspect ;
-   samm:preferredName "Zero Kilometre Failure"@en ;
-   samm:description "This model describes the properties that are necessary to communicate zero kilometer failures of products from the customer to the supplier. Zero km failures are issues with a vehicle component that occur during vehicle assembly."@en ;
-   samm:properties ( :partInformation :vehicle :plantInformation :defect ) ;
+:CertificateOfAnalysis a samm:Aspect ;
+   samm:preferredName "Certificate of Analysis"@en ;
+   samm:description "The Certificate of Analysis documents the material (e.g. chemical compound) properties describing a material's quality or performance factors specific to manufacturing batch.\nThe exact material properties depend on the material type and the following manufacturing processes. They are defined bilaterally between a supplier (manufacturer) and customer."@en ;
+   samm:properties ( :customer :supplier :certificateMetaData :materialProperties :productTypeInformation :productInstanceInformation [ samm:property :disclaimer; samm:optional true ] [ samm:property :documentType; samm:optional true ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
-:partInformation a samm:Property ;
-   samm:preferredName "Part information"@en ;
-   samm:description "Describes and identifies the given part which is suspected to cause the zero kilometre failure."@en ;
-   samm:characteristic :PartInformationCharacteristic .
+:customer a samm:Property ;
+   samm:preferredName "Customer"@en ;
+   samm:description "The customer as a BPNL reference."@en ;
+   samm:characteristic ext-number:BpnlTrait .
 
-:vehicle a samm:Property ;
-   samm:preferredName "Vehicle"@en ;
-   samm:description "Describes and identifies the vehicle or subassambly  in which the part has been assemblied into. "@en ;
-   samm:characteristic :VehicleCharacteristic .
+:supplier a samm:Property ;
+   samm:preferredName "Supplier"@en ;
+   samm:description "The supplier (manufacturer) as a BPNL reference."@en ;
+   samm:characteristic ext-number:BpnlTrait .
 
-:plantInformation a samm:Property ;
-   samm:preferredName "Plant information"@en ;
-   samm:description "Information on the plant at which the failure has been discovered (during assembly) for a given part."@en ;
-   samm:characteristic :PlantCharacteristic .
+:certificateMetaData a samm:Property ;
+   samm:preferredName "Certificate meta data"@en ;
+   samm:description "Meta data about this certificate"@en ;
+   samm:characteristic :CertificateMetaDataCharacteristic .
 
-:defect a samm:Property ;
-   samm:preferredName "Defect"@en ;
-   samm:description "Defect related data"@en ;
-   samm:characteristic :DefectCharacteristic .
+:materialProperties a samm:Property ;
+   samm:preferredName "Material properties"@en ;
+   samm:description "A set of material properties containing the specification and the actual material analysis measurement results.\n\nThe properties may vary based on the material type as well as the agreed specification of the material and the analysis between the customer and manufacturer (supplier)."@en ;
+   samm:characteristic :MaterialPropertiesSet .
 
-:PartInformationCharacteristic a samm-c:SingleEntity ;
-   samm:preferredName "Part Information Characteristic"@en ;
-   samm:dataType :PartInformationEntity .
+:productTypeInformation a samm:Property ;
+   samm:preferredName "Product type information"@en ;
+   samm:description "Product type related information"@en ;
+   samm:characteristic :ProductTypeInformationCharacteristic .
 
-:VehicleCharacteristic a samm-c:SingleEntity ;
-   samm:preferredName "Vehicle Characteristic"@en ;
-   samm:dataType :VehicelEntity .
+:productInstanceInformation a samm:Property ;
+   samm:preferredName "Product instance information"@en ;
+   samm:description "Product instance related information, in the case of Certificate of Analysis a product instance refers to a batch."@en ;
+   samm:characteristic :ProductInstanceInformationCharacteristic .
 
-:PlantCharacteristic a samm-c:SingleEntity ;
-   samm:preferredName "Plant Characteristic"@en ;
-   samm:dataType :PlantEntity .
+:disclaimer a samm:Property ;
+   samm:preferredName "Disclaimer"@en ;
+   samm:description "A legal or technical statement that limits the liability of the issuer of the document and clarifies the scope of the information provided.\nIt usually specifies that the data is for reference only or that the user is responsible for verifying the suitability of the product."@en ;
+   samm:characteristic :DisclaimerCharacteristic .
 
-:DefectCharacteristic a samm-c:SingleEntity ;
-   samm:preferredName "Defect Characteristic"@en ;
-   samm:dataType :DefectEntity .
-
-:PartInformationEntity a samm:Entity ;
-   samm:preferredName "Part information entity"@en ;
-   samm:properties ( [ samm:property ext-core:dataMatrixCode; samm:optional true ] ext-part:nameAtManufacturer [ samm:property ext-part:localIdentifiers; samm:optional true ] ext-part:customerPartId ext-part:catenaXId ) .
-
-:VehicelEntity a samm:Entity ;
-   samm:preferredName "Vehicle Entity"@en ;
-   samm:properties ( ext-core:anonymizedVIN ext-vehicles:modelIdentifier ext-vehicles:engineId ) .
-
-:PlantEntity a samm:Entity ;
-   samm:preferredName "Plant Entity"@en ;
-   samm:properties ( :assemblyTimestamp :assemblyLineName :defectPartsPerShift :siteIdentifier ) .
-
-:DefectEntity a samm:Entity ;
-   samm:preferredName "Defect Entity"@en ;
-   samm:properties ( :description [ samm:property ext-data:dtcs; samm:optional true ] [ samm:property :parentItems; samm:optional true ] ) .
-
-:assemblyTimestamp a samm:Property ;
-   samm:preferredName "Assembly Timestamp"@en ;
-   samm:description "Timestamp of the assembly of the given part."@en ;
-   samm:characteristic samm-c:Timestamp ;
-   samm:exampleValue "2025-12-19T09:58:28.047+01:00"^^xsd:dateTime .
-
-:assemblyLineName a samm:Property ;
-   samm:preferredName "Name of plant assembly line"@en ;
-   samm:description "The name of the assembly line in the plant, where the given part has been assemblied into the vehicle."@en ;
+:documentType a samm:Property ;
+   samm:preferredName "Document type"@en ;
+   samm:description "Classification that identifies the nature and purpose of a document within a system.\nIt defines how it should be managed, what information it contains and what processes it is involved in."@en ;
    samm:characteristic samm-c:Text ;
-   samm:exampleValue "Line 6" .
+   samm:exampleValue "Created digitally, valid without signature" .
 
-:defectPartsPerShift a samm:Property ;
-   samm:preferredName "Amount of defect parts per shift"@en ;
-   samm:characteristic ext-quantity:CountQuantityCharacteristic .
+:CertificateMetaDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Certificate Meta Data Characteristic"@en ;
+   samm:description "Defines the administrative and traceability information of the Certificate of Analysis, linking issue dates with conformity assessments and bilateral order identifiers."@en ;
+   samm:dataType :CertificateMetaData .
 
-:siteIdentifier a samm:Property ;
-   samm:preferredName "Plant site identifier"@en ;
-   samm:description "Identifier of the plant site that uniqly identifies the plant within this dataspace."@en ;
-   samm:characteristic ext-number:BpnsTrait ;
-   samm:exampleValue "BPNS0123456789ZZ" .
+:MaterialPropertiesSet a samm-c:Set ;
+   samm:preferredName "Material Properties Set Characteristic"@en ;
+   samm:description "Set of measured material properties."@en ;
+   samm:dataType :MaterialProperty .
+
+:ProductTypeInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Product type information characteristic"@en ;
+   samm:description "Specifies the material or chemical compound identification schema used across the supply chain, reconciling manufacturer and customer part naming conventions."@en ;
+   samm:dataType :ProductTypeInformation .
+
+:ProductInstanceInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Product instance information characteristic"@en ;
+   samm:description "Captures batch-specific traceability data for the analyzed material, connecting manufacturing origin to quality assessment and shelf-life parameters."@en ;
+   samm:dataType :ProductInstanceInformation .
+
+:DisclaimerCharacteristic a samm:Characteristic ;
+   samm:preferredName "Disclaimer characteristic"@en ;
+   samm:description "Structures the legal framework surrounding the Certificate of Analysis, balancing analytical accuracy documentation with contractual responsibility boundaries."@en ;
+   samm:dataType :DisclaimerEntity .
+
+
+:CertificateMetaData a samm:Entity ;
+   samm:preferredName "Certificate Meta Data"@en ;
+   samm:description "Temporal and business context of the quality analysis, establishing when measurements were certified and whether results comply with bilaterally agreed specifications."@en ;
+   samm:properties ( :issueDate [ samm:property :isConformWithSpecification; samm:optional true ] [ samm:property ext-information:supplierOrderId; samm:optional true ] [ samm:property ext-information:customerOrderId; samm:optional true ] ) .
+
+:MaterialProperty a samm:Entity ;
+   samm:preferredName "Material property"@en ;
+   samm:description "A material property with its name, definition measured value and specification (limits).\nIf available, lower limit and upper limit must be given, they are only optional in the case that the limits don't exist or don't apply."@en ;
+   samm:properties ( :name :description :value [ samm:property :lowerLimit; samm:optional true ] [ samm:property :upperLimit; samm:optional true ] :dataType :unit ) .
+
+:ProductTypeInformation a samm:Entity ;
+   samm:preferredName "Product type information"@en ;
+   samm:description "Product type related information"@en ;
+   samm:properties ( ext-planned:nameAtManufacturer ext-planned:manufacturerPartId [ samm:property :customerPartId; samm:optional true ] ) .
+
+:ProductInstanceInformation a samm:Entity ;
+   samm:preferredName "Product instance information"@en ;
+   samm:description "Product instance related information"@en ;
+   samm:properties ( ext-batch:localIdentifiers ext-batch:manufacturingInformation [ samm:property ext-batch:catenaXId; samm:optional true ] [ samm:property :expiryDate; samm:optional true ] ) .
+
+:DisclaimerEntity a samm:Entity ;
+   samm:preferredName "Disclaimer entity"@en ;
+   samm:description "Legal protective framework that clarifies the certificate's informational scope versus contractual obligations, defining where analytical data ends and product suitability responsibility begins."@en ;
+   samm:properties ( [ samm:property :disclaimerMetadata; samm:optional true ] [ samm:property :disclaimerRequirement; samm:optional true ] ) .
+
+:issueDate a samm:Property ;
+   samm:preferredName "Issue date"@en ;
+   samm:description "the date and timestamp of issuing this certificate"@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:isConformWithSpecification a samm:Property ;
+   samm:preferredName "Conformity with Specification"@en ;
+   samm:description "In the case that any of the properties that are part of the Certificate of Analysis violates the defined upper or lower limit this property should be set to false."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:name a samm:Property ;
+   samm:preferredName "Property name"@en ;
+   samm:description "The name of the property"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "density" .
 
 :description a samm:Property ;
-   samm:preferredName "Defect description"@en ;
-   samm:description "Description of the defect as human readable text."@en ;
-   samm:characteristic samm-c:MultiLanguageText ;
-   samm:exampleValue "Stuck in bootstrap mode."@en .
+   samm:preferredName "property description"@en ;
+   samm:description "This field should be used to describe the property.\n\nIf available a reference to a public or internal norm should be provided. The norm should specify the meaning of the property as well as the specification of the analysis method used."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "according DIN ISO 4711" .
 
-:parentItems a samm:Property ;
-   samm:preferredName "Parent Items"@en ;
-   samm:description "List of references to related items, e.g.  global asset IDs of realted quality tasks or vehicles. The references are unique within this data space."@en ;
-   samm:characteristic :ParentItemsCharacteristic ;
-   samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df" .
+:value a samm:Property ;
+   samm:preferredName "Property value"@en ;
+   samm:description "The result of the analysis for this specific property."@en ;
+   samm:characteristic :ValueCharacteristic ;
+   samm:exampleValue "2310.0" .
 
-:ParentItemsCharacteristic a samm-c:List ;
-   samm:preferredName "Parent Items List Characteristic"@en ;
-   samm-c:elementCharacteristic ext-uuid:UuidV4Trait .
+:lowerLimit a samm:Property ;
+   samm:preferredName "Lower limit"@en ;
+   samm:description "The lower limit of the specification with a boundary condition of \"At least\".\nValues below that limit are considered out of specification. Values exactly at the limit are considered in specification."@en ;
+   samm:characteristic :ValueCharacteristic ;
+   samm:exampleValue "2200.0" .
 
+:upperLimit a samm:Property ;
+   samm:preferredName "Upper limit"@en ;
+   samm:description "The upper limit of the specification with a boundary condition of \"At most\".\nValues above that limit are considered out of specification. Values exactly at the limit are considered in specification."@en ;
+   samm:characteristic :ValueCharacteristic ;
+   samm:exampleValue "2400.0" .
+
+:dataType a samm:Property ;
+   samm:preferredName "Data type"@en ;
+   samm:description "The data type of the properties value and limits. The data type should specify how the string value should be type casted or interpreted."@en ;
+   samm:characteristic :DataTypeEnumerationCharacteristic ;
+   samm:exampleValue "xsd:float"^^samm:curie .
+
+:unit a samm:Property ;
+   samm:preferredName "property unit"@en ;
+   samm:description "The unit of measure used for the property value and specification limits. This can be omitted for non-numerical properties, e.g. Boolean."@en ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "unit:kilogramPerCubicMetre"^^samm:curie .
+
+:customerPartId a samm:Property ;
+   samm:preferredName "Customer Part ID"@en ;
+   samm:description "Part ID as assigned by the customer."@en ;
+   samm:characteristic ext-planned:PartIdCharacteristic ;
+   samm:exampleValue "B19764234512" .
+
+:expiryDate a samm:Property ;
+   samm:preferredName "Expiry date"@en ;
+   samm:description "The expiry date of the material."@en ;
+   samm:characteristic :DateCharacteristic .
+
+:disclaimerMetadata a samm:Property ;
+   samm:preferredName "Disclaimer metadata"@en ;
+   samm:description "A set of data describing the characteristics and context of the disclaimer within a document.\nIt includes information about its origin, purpose, language, version, scope of validity and relationship with the main document.\nThis metadata allows the disclaimer to be identified and managed as a traceable and reusable element within the document system."@en ;
+   samm:characteristic :DisclaimerMetadataCharacteristic ;
+   samm:exampleValue "This is a computer-generated document. A signature is not required." .
+
+:disclaimerRequirement a samm:Property ;
+   samm:preferredName "Disclaimer requirement"@en ;
+   samm:description "Criteria or specifications that define the expected quality of a product or service.\nThey serve as a basis for assessing conformity and ensuring that the product complies with agreed standards or technical specifications."@en ;
+   samm:characteristic :DisclaimerRequirementCharacteristic ;
+   samm:exampleValue "The above information describes the relevant parameters of the product at the time of issuance of this certificate of analysis. The data are regularly checked as part of our quality assurance and are provided for reference purposes only. The contractual quality of the product at the time of transfer of risk is determined solely by our product specification. Unless the parties have expressly agreed otherwise in writing and signed by authorized representatives, no suitability of the product for any particular purpose is assumed or implied. The customer is solely responsible for verifying the suitability of the product for any specific use." .
+
+:ValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "Value Characteristic"@en ;
+   samm:description "The string should be formatted in a way sp that it is easily interpretable or convertible to the xsd datatype given in the field \"data type\"."@en ;
+   samm:dataType xsd:string .
+
+:DataTypeEnumerationCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Data type enumeration"@en ;
+   samm:description "Allows specification of any xsd data type allowed in SAMM 2.1.0 without the subtypes of xsd:integer."@en ;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/datatypes.html> ;
+   samm:dataType samm:curie ;
+   samm-c:values ( "xsd:string"^^samm:curie "xsd:boolean"^^samm:curie "xsd:decimal"^^samm:curie "xsd:integer"^^samm:curie "xsd:double"^^samm:curie "xsd:date"^^samm:curie "xsd:time"^^samm:curie "xsd:dateTime"^^samm:curie "xsd:dateTimeStamp"^^samm:curie "xsd:gYear"^^samm:curie "xsd:gMonth"^^samm:curie "xsd:gDay"^^samm:curie "xsd:gYearMonth"^^samm:curie "xsd:gMonthDay"^^samm:curie "xsd:duration"^^samm:curie "xsd:yearMonthDuration"^^samm:curie "xsd:dayTimeDuration"^^samm:curie "xsd:hexBinary"^^samm:curie "xsd:base64Binary"^^samm:curie "xsd:anyURI"^^samm:curie "samm:curie"^^samm:curie "rdf:langString"^^samm:curie "xsd:float"^^samm:curie ) .
+
+:DateCharacteristic a samm:Characteristic ;
+   samm:preferredName "Date"@en ;
+   samm:description "A calendar date"@en ;
+   samm:dataType xsd:date .
+
+:DisclaimerMetadataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Disclaimer metadata characteristic"@en ;
+   samm:description "Contextual information about disclaimer applicability, such as automated generation notices or signature waiver statements for digital certificates."@en ;
+   samm:dataType xsd:string .
+
+:DisclaimerRequirementCharacteristic a samm:Characteristic ;
+   samm:preferredName "Disclaimer requirement characteristic"@en ;
+   samm:description "Formal statement delineating quality assurance boundaries and customer verification responsibilities regarding material fitness-for-purpose beyond analytical specifications."@en ;
+   samm:dataType xsd:string .
