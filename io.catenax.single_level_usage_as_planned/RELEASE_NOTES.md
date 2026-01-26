@@ -6,7 +6,7 @@ All notable changes to this model will be documented in this file.
 
 ### Changed
 
-- introduced `io.catenax.industry_core:1.0.0` as a shared model
+- introduced `io.catenax.shared.industry_core.common:1.0.0` as a shared model
 - renamed `catenaXId` to `globalAssetId`
 
 ## [2.0.0] - 2024-02-26
