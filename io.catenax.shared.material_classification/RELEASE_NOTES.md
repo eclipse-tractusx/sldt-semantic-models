@@ -6,4 +6,4 @@ All notable changes to this model will be documented in this file.
 
 ### Added
 
-- initial version of the aspect model for material demand
+- initial version of the aspect model for material classification
