@@ -1,0 +1,157 @@
+######################################################################
+# Copyright(c) 2026 Anchore, Inc.
+# Copyright(c) 2026 AVL List
+# Copyright(c) 2026 BMW Group
+# Copyright(c) 2026 Capgemini
+# Copyright(c) 2026 Class.Ing
+# Copyright(c) 2026 IAV GmbH
+# Copyright(c) 2026 Industrial Digital Twin Association e. V.
+# Copyright(c) 2026 msg systems ag
+# Copyright(c) 2026 Mercedes-Benz AG
+# Copyright(c) 2026 Robert Bosch GmbH
+# Copyright(c) 2026 Schaeffler AG
+# Copyright(c) 2026 Siemens AG
+# Copyright(c) 2026 SSC-Services GmbH
+# Copyright(c) 2026 Contributors to the Eclipse Foundation
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.sbom:1.0.0#> .
+
+:Softwaremodule a samm:Aspect ;
+   samm:preferredName "softwaremodule version in SBOM descriptions"@en ;
+   samm:description "Softwaremodule and its version in context of SBOM description"@en ;
+   samm:see <https://admin-shell.io/idta/SoftwareBom/SbomDescription/SoftwareVersion> ;
+   samm:properties ( :status :supplier :sbom ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:status a samm:Property ;
+   samm:preferredName "status"@en ;
+   samm:description "Current state or situation of an object or a system"@en ;
+   samm:see <https://admin-shell.io/SBOM/1/0/Status> ;
+   samm:characteristic :StatusCharacteristic ;
+   samm:exampleValue "active" .
+
+:supplier a samm:Property ;
+   samm:preferredName "supplier"@en ;
+   samm:description "Name of supplier which provides the customer with a product or a service"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Software-Entwicklungsgesellschaft mbH " .
+
+:sbom a samm:Property ;
+   samm:preferredName "software bill of materials (SBOM)"@en ;
+   samm:description "The software bill of materials for the software module in the specified form"@en ;
+   samm:see <https://admin-shell.io/idta/SoftwareBom/SBOM_Descriptions> ;
+   samm:characteristic :SbomFile .
+
+:StatusCharacteristic a samm-c:State ;
+   samm:preferredName "status characteristic"@en ;
+   samm:description "The value range for the status"@en ;
+   samm:dataType xsd:string ;
+   samm-c:defaultValue "active" ;
+   samm-c:values ( "active" "inactive" ) .
+
+:SbomFile a samm:Characteristic ;
+   samm:preferredName "SBOM file"@en ;
+   samm:description "The file of the software bill of materials"@en ;
+   samm:dataType :File .
+
+:File a samm:Entity ;
+   samm:preferredName "file"@en ;
+   samm:description "A named collection of information stored on a computer or other electronic storage medium"@en ;
+   samm:see <https://admin-shell.io/SBOM/1/0/File> ;
+   samm:properties ( :formatVersion :format :descriptionFile :spdxData ) .
+
+:formatVersion a samm:Property ;
+   samm:preferredName "format version"@en ;
+   samm:description "Version of the format with which a file or data structure was created or encoded"@en ;
+   samm:characteristic :FormatVersionTrait ;
+   samm:exampleValue "3.0" .
+
+:format a samm:Property ;
+   samm:preferredName "format"@en ;
+   samm:description "The way data is organized, structured, or coded to make it readable or interpretable"@en ;
+   samm:characteristic :FormatTrait ;
+   samm:exampleValue "text/spdx" .
+
+:descriptionFile a samm:Property ;
+   samm:preferredName "description File"@en ;
+   samm:description "MIME-Type, file name and file contents given by the file SubmodelElement"@en ;
+   samm:characteristic :DescriptionFileTrait ;
+   samm:exampleValue "application/ld+json" .
+
+:spdxData a samm:Property ;
+   samm:preferredName "SPDX data"@en ;
+   samm:description "The actual spdx data (as JSON-LD string)"@en ;
+   samm:see <https://github.com/spdx/spdx-examples/blob/master/software/example1/spdx3.0/example1.json> ;
+   samm:characteristic :SpdxDataTrait ;
+   samm:exampleValue "{   \"@context\" : \"https://spdx.org/rdf/3.0.1/spdx-context.jsonld\",   \"@graph\" : [ {     \"@id\" : \"_:creationInfo_0\",     \"type\" : \"CreationInfo\",     \"specVersion\" : \"3.0.1\",     \"createdBy\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd0\" ],     \"createdUsing\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/additionalToolSPDXRef-gnrtd2\", \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/additionalToolSPDXRef-gnrtd1\" ],     \"created\" : \"2021-08-26T01:46:00Z\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd3\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"describes\",     \"completeness\" : \"noAssertion\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd4\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/document0\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd5\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"contains\",     \"completeness\" : \"noAssertion\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd6\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd4\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd7\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"hasConcludedLicense\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd8\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd6\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd9\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"hasDeclaredLicense\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd8\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd6\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd10\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"contains\",     \"completeness\" : \"noAssertion\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd11\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd4\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd12\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"generates\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd11\" ],     \"completeness\" : \"noAssertion\",     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd13\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd15\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"hasConcludedLicense\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd8\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd13\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd16\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"hasDeclaredLicense\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd8\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd13\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd17\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"generates\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd11\" ],     \"completeness\" : \"noAssertion\",     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd6\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd18\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"hasConcludedLicense\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd8\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd11\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd19\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"hasDeclaredLicense\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd20\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd11\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd21\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"contains\",     \"completeness\" : \"noAssertion\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd13\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd4\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd22\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"hasConcludedLicense\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd8\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd4\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd23\",     \"type\" : \"Relationship\",     \"relationshipType\" : \"hasDeclaredLicense\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd8\" ],     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd4\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/document0\",     \"type\" : \"SpdxDocument\",     \"dataLicense\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd24\",     \"rootElement\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd4\" ],     \"name\" : \"hello\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/additionalToolSPDXRef-gnrtd1\",     \"type\" : \"Tool\",     \"name\" : \"github.com/spdx/tools-golang/builder\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/additionalToolSPDXRef-gnrtd2\",     \"type\" : \"Tool\",     \"name\" : \"github.com/spdx/tools-golang/idsearcher\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd8\",     \"type\" : \"simplelicensing_LicenseExpression\",     \"simplelicensing_licenseExpression\" : \"GPL-3.0-or-later\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd20\",     \"type\" : \"simplelicensing_LicenseExpression\",     \"simplelicensing_licenseExpression\" : \"NOASSERTION\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd24\",     \"type\" : \"simplelicensing_LicenseExpression\",     \"simplelicensing_licenseExpression\" : \"CC0-1.0\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd14\",     \"type\" : \"LifecycleScopedRelationship\",     \"relationshipType\" : \"usesTool\",     \"scope\" : \"build\",     \"to\" : [ \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd13\" ],     \"completeness\" : \"noAssertion\",     \"from\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd4\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd0\",     \"type\" : \"Person\",     \"externalIdentifier\" : [ {       \"type\" : \"ExternalIdentifier\",       \"identifier\" : \"steve@swinslow.net\",       \"externalIdentifierType\" : \"email\"     } ],     \"name\" : \"Steve Winslow\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd6\",     \"type\" : \"software_File\",     \"software_copyrightText\" : \"Copyright Contributors to the spdx-examples project.\",     \"verifiedUsing\" : [ {       \"type\" : \"Hash\",       \"algorithm\" : \"md5\",       \"hashValue\" : \"935054fe899ca782e11003bbae5e166c\"     }, {       \"type\" : \"Hash\",       \"algorithm\" : \"sha1\",       \"hashValue\" : \"20862a6d08391d07d09344029533ec644fac6b21\"     }, {       \"type\" : \"Hash\",       \"algorithm\" : \"sha256\",       \"hashValue\" : \"b4e5ca56d1f9110ca94ed0bf4e6d9ac11c2186eb7cd95159c6fdb50e8db5a823\"     } ],     \"name\" : \"./src/hello.c\",     \"software_primaryPurpose\" : \"source\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd11\",     \"type\" : \"software_File\",     \"software_copyrightText\" : \"NOASSERTION\",     \"verifiedUsing\" : [ {       \"type\" : \"Hash\",       \"algorithm\" : \"sha1\",       \"hashValue\" : \"20291a81ef065ff891b537b64d4fdccaf6f5ac02\"     }, {       \"type\" : \"Hash\",       \"algorithm\" : \"sha256\",       \"hashValue\" : \"83a33ff09648bb5fc5272baca88cf2b59fd81ac4cc6817b86998136af368708e\"     }, {       \"type\" : \"Hash\",       \"algorithm\" : \"md5\",       \"hashValue\" : \"08a12c966d776864cc1eb41fd03c3c3d\"     } ],     \"name\" : \"./build/hello\",     \"contentType\" : \"application/octet-stream\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd13\",     \"type\" : \"software_File\",     \"software_copyrightText\" : \"NOASSERTION\",     \"verifiedUsing\" : [ {       \"type\" : \"Hash\",       \"algorithm\" : \"sha1\",       \"hashValue\" : \"69a2e85696fff1865c3f0686d6c3824b59915c80\"     }, {       \"type\" : \"Hash\",       \"algorithm\" : \"sha256\",       \"hashValue\" : \"5da19033ba058e322e21c90e6d6d859c90b1b544e7840859c12cae5da005e79c\"     }, {       \"type\" : \"Hash\",       \"algorithm\" : \"md5\",       \"hashValue\" : \"559424589a4f3f75fd542810473d8bc1\"     } ],     \"name\" : \"./src/Makefile\",     \"software_primaryPurpose\" : \"source\",     \"creationInfo\" : \"_:creationInfo_0\"   }, {     \"spdxId\" : \"https://swinslow.net/spdx-examples/example1/hello-v3-specv3/SPDXRef-gnrtd4\",     \"type\" : \"software_Package\",     \"software_copyrightText\" : \"NOASSERTION\",     \"software_downloadLocation\" : \"git+https://github.com/swinslow/spdx-examples.git#example1/content\",     \"verifiedUsing\" : [ {       \"type\" : \"PackageVerificationCode\",       \"algorithm\" : \"sha1\",       \"hashValue\" : \"9d20237bb72087e87069f96afb41c6ca2fa2a342\"     } ],     \"name\" : \"hello\",     \"creationInfo\" : \"_:creationInfo_0\"   } ] }" .
+
+:FormatVersionTrait a samm-c:Trait ;
+   samm:preferredName "format version trait"@en ;
+   samm:description "Restriction of the value range of format version base characteristic"@en ;
+   samm-c:baseCharacteristic :FormatVersionBaseCharacteristic ;
+   samm-c:constraint :FormatVersionConstraint .
+
+:FormatTrait a samm-c:Trait ;
+   samm:preferredName "format trait"@en ;
+   samm:description "Restriction of the value range of format version base characteristic"@en ;
+   samm-c:baseCharacteristic samm-c:MimeType ;
+   samm-c:constraint :FormatConstraint .
+
+:DescriptionFileTrait a samm-c:Trait ;
+   samm:preferredName "description file trait"@en ;
+   samm:description "Restriction of the mime type of the descrition file"@en ;
+   samm-c:baseCharacteristic samm-c:MimeType ;
+   samm-c:constraint :DescriptionFileConstraint .
+
+:SpdxDataTrait a samm-c:Trait ;
+   samm:preferredName "SPDX data trait"@en ;
+   samm:description "Restricts the spdx data string"@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :SpdxDataConstraint .
+
+:FormatVersionBaseCharacteristic a samm:Characteristic ;
+   samm:preferredName "format version characteristic"@en ;
+   samm:description "The value range for the format version (here, vers. 3 or higher)"@en ;
+   samm:dataType xsd:string .
+
+:FormatVersionConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "format version constraint"@en ;
+   samm:description "The constraints to restrict format version strings"@en ;
+   samm:value "^[3-9][\\.\\d*]*$|^\\d\\d+[\\.\\d*]*$" .
+
+:FormatConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "format constraint"@en ;
+   samm:description "The constraints to restrict the mime type for the format"@en ;
+   samm:value "^text\\/spdx$" .
+
+:DescriptionFileConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "description file constraint"@en ;
+   samm:description "The constraints to restrict the mime type of the description file"@en ;
+   samm:value "^application\\/ld\\+json$" .
+
+:SpdxDataConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "SPDX data constraint"@en ;
+   samm:description "The data must be a valid SPDX JSON-LD string. Note that the regular expression does not replace validation againts SPDX JSON-LD schemas. (The regex here simply matches for each string between two curly brackets.)"@en ;
+   samm:see <https://www.w3.org/TR/json-ld/> ;
+   samm:value "^\\{.*\\}$" .
+
