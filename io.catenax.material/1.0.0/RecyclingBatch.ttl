@@ -1,0 +1,280 @@
+#######################################################################
+# Copyright (c) 2026 BMW AG
+# Copyright (c) 2026 Catena-X Automotive Network e.V.
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.material:1.0.0#> .
+@prefix ext-common: <urn:samm:io.catenax.shared.industry_core.common:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+
+:RecyclingBatch a samm:Aspect ;
+   samm:preferredName "recycling batch"@en ;
+   samm:description "The RecyclingBatch aspect model defines a standardized and interoperable representation containing information about involved actors, process steps, and batch-specific details such as identifiers and container-related properties, in a consistent and machine-readable manner."@en ;
+   samm:properties ( :recyclingBatchId :container :childProcessSteps :processInformation :receiver :sender :operator ext-common:globalAssetId ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:recyclingBatchId a samm:Property ;
+   samm:preferredName "recycling batch identifier"@en ;
+   samm:description "Identifier of the recycling batch."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BATCH-0001-9999-abcd" .
+
+:container a samm:Property ;
+   samm:preferredName "container"@en ;
+   samm:description "Properties of a container."@en ;
+   samm:characteristic :ContainerCharacteristic .
+
+:childProcessSteps a samm:Property ;
+   samm:preferredName "child process steps"@en ;
+   samm:description "List of child process steps performed on the recycling batch."@en ;
+   samm:characteristic :ChildProcessStepsList .
+
+:processInformation a samm:Property ;
+   samm:preferredName "process information"@en ;
+   samm:description "Single Entity of process information."@en ;
+   samm:characteristic :ProcessInformationSingleEntity .
+
+:receiver a samm:Property ;
+   samm:preferredName "receiver"@en ;
+   samm:description "Receiver of the RecyclingBatch."@en ;
+   samm:characteristic :ActorSingleEntity .
+
+:sender a samm:Property ;
+   samm:preferredName "sender"@en ;
+   samm:description "Sender of the RecyclingBatch."@en ;
+   samm:characteristic :ActorSingleEntity .
+
+:operator a samm:Property ;
+   samm:preferredName "operator"@en ;
+   samm:description "Operator of the transport process."@en ;
+   samm:characteristic :OperatorSingleEntity .
+
+:ContainerCharacteristic a samm:Characteristic ;
+   samm:preferredName "container Characteristic"@en ;
+   samm:description "This characteristic binds the ContainerEntity to the container property."@en ;
+   samm:dataType :ContainerEntity .
+
+:ChildProcessStepsList a samm-c:List ;
+   samm:preferredName "child process steps list"@en ;
+   samm:description "List of child process steps."@en ;
+   samm:dataType :ProcessStep .
+
+:ProcessInformationSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "process information single entity"@en ;
+   samm:description "Process Information SingleEntity."@en ;
+   samm:dataType :ProcessInformationEntity .
+
+:ActorSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "actor single entity"@en ;
+   samm:description "Single entity describing an actor involved in the recycling batch."@en ;
+   samm:dataType :ActorEntity .
+
+:OperatorSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "operator single entity"@en ;
+   samm:description "Operator Single Entity"@en ;
+   samm:dataType :OperatorEntity .
+
+:ContainerEntity a samm:Entity ;
+   samm:preferredName "container entity"@en ;
+   samm:description "Description of the properties of a container."@en ;
+   samm:properties ( :containerWeight :containerVolume :containerDescription :containerTypeId ) .
+
+:ProcessStep a samm:Entity ;
+   samm:preferredName "process step"@en ;
+   samm:description "Single entity of a process step."@en ;
+   samm:properties ( :startTimestamp :endTimestamp :inputNetMass :outputNetMass :measurementType :measurementTimestamp :processLoss :weighingSlip :lossType :childProcessType ) .
+
+:ProcessInformationEntity a samm:Entity ;
+   samm:preferredName "process information entity"@en ;
+   samm:description "Entity of process information"@en ;
+   samm:properties ( :treatmentProcedure :mechanicalRecycling :chemicalRecycling :processType ) .
+
+:ActorEntity a samm:Entity ;
+   samm:preferredName "actor entity"@en ;
+   samm:description "Single Entity of an Actor"@en ;
+   samm:properties ( :actorNumber :actorRole ext-number:bpnsProperty ) .
+
+:OperatorEntity a samm:Entity ;
+   samm:preferredName "operator entity"@en ;
+   samm:description "Entity of operator"@en ;
+   samm:properties ( :transferId ext-number:bpnsProperty ) .
+
+:containerWeight a samm:Property ;
+   samm:preferredName "container weight"@en ;
+   samm:description "Empty weight of the container based on the scale display"@en ;
+   samm:characteristic :MassCharacteristic ;
+   samm:exampleValue "3000.0"^^xsd:float .
+
+:containerVolume a samm:Property ;
+   samm:preferredName "container volume"@en ;
+   samm:description "Volume of the container type according to AVAL"@en ;
+   samm:characteristic :VolumeCharacteristic ;
+   samm:exampleValue "20000"^^xsd:positiveInteger .
+
+:containerDescription a samm:Property ;
+   samm:preferredName "container description"@en ;
+   samm:description "Standardized description of the container type according to AVAL."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Abrollcontainer (ARC)" .
+
+:containerTypeId a samm:Property ;
+   samm:preferredName "container type identifier"@en ;
+   samm:description "Standardized number for the container type which contains compositions / components / materials according to AVAL"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "AB.1.16.20000.A6B3C4D0E0F0F0H1I0J0K0L1.AR20-234" .
+
+:startTimestamp a samm:Property ;
+   samm:preferredName "start timestamp"@en ;
+   samm:description "Start of the specific process step."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2024-01-01T14:23:00+01:00"^^xsd:dateTime .
+
+:endTimestamp a samm:Property ;
+   samm:preferredName "end timestamp"@en ;
+   samm:description "End of the specific process step."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2024-01-01T14:23:00+01:00"^^xsd:dateTime .
+
+:inputNetMass a samm:Property ;
+   samm:preferredName "input net mass"@en ;
+   samm:description "Incoming net weight in the specific process step."@en ;
+   samm:characteristic :MassCharacteristic ;
+   samm:exampleValue "10.0"^^xsd:float .
+
+:outputNetMass a samm:Property ;
+   samm:preferredName "output net mass"@en ;
+   samm:description "Outgoing net weight of the specific process step."@en ;
+   samm:characteristic :MassCharacteristic ;
+   samm:exampleValue "9.5"^^xsd:float .
+
+:measurementType a samm:Property ;
+   samm:preferredName "measurement type"@en ;
+   samm:description "Measuring instrument for material share/weight determination."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "material scale" .
+
+:measurementTimestamp a samm:Property ;
+   samm:preferredName "measurement timestamp"@en ;
+   samm:description "timestamp of the specific time of measurement."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2024-01-01T14:23:00+01:00"^^xsd:dateTime .
+
+:processLoss a samm:Property ;
+   samm:preferredName "process loss"@en ;
+   samm:description "Weight of loss within the specific childProcessStep."@en ;
+   samm:characteristic :MassCharacteristic ;
+   samm:exampleValue "0.5"^^xsd:float .
+
+:weighingSlip a samm:Property ;
+   samm:preferredName "weighing slip"@en ;
+   samm:description "Official document that records the result of weighing (of composition / components / materials) on a scale."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "document122345" .
+
+:lossType a samm:Property ;
+   samm:preferredName "loss type"@en ;
+   samm:description "Specification of loss within the specific process step."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Abrasion" .
+
+:childProcessType a samm:Property ;
+   samm:preferredName "child process type"@en ;
+   samm:description "Type of child process."@en ;
+   samm:characteristic :ChildProcessEnum ;
+   samm:exampleValue "Shredding" .
+
+:treatmentProcedure a samm:Property ;
+   samm:preferredName "treatment procedure"@en ;
+   samm:description "Process that is used to handle waste according to the choosen strategy."@en ;
+   samm:characteristic :DisposalCodeEnum ;
+   samm:exampleValue "R4" .
+
+:mechanicalRecycling a samm:Property ;
+   samm:preferredName "mechanical recycling"@en ;
+   samm:description "Materials that have undergone mechanical recycling (true or false)."@en ;
+   samm:characteristic samm-c:Boolean .
+
+:chemicalRecycling a samm:Property ;
+   samm:preferredName "chemical recycling"@en ;
+   samm:description "Materials that have undergone chemical recycling (true or false)."@en ;
+   samm:characteristic samm-c:Boolean .
+
+:processType a samm:Property ;
+   samm:preferredName "process type"@en ;
+   samm:description "The process reflects the current processing phase in the reverse chain of a vehicle, its composition, components, and materials."@en ;
+   samm:characteristic :ProcessTypeEnum ;
+   samm:exampleValue "Pre-Recycling" .
+
+:actorNumber a samm:Property ;
+   samm:preferredName "actor number"@en ;
+   samm:description "Operating number of the actor."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ENR-ERZ-3456" .
+
+:actorRole a samm:Property ;
+   samm:preferredName "actor role"@en ;
+   samm:description "Type of the actor in the recycling process."@en ;
+   samm:characteristic :ActorRoleEnumeration ;
+   samm:exampleValue "Dismantling Facility" .
+
+:transferId a samm:Property ;
+   samm:preferredName "transfer identifier"@en ;
+   samm:description "Identifier for the transport of compositions / components / materials between two actors."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "TRF-2025-1001" .
+
+:MassCharacteristic a samm-c:Measurement ;
+   samm:preferredName "mass characteristic"@en ;
+   samm:description "Characteric for mass data (in kg)."@en ; 
+   samm:dataType xsd:float ;
+   samm-c:unit samm-u:kilogram .
+
+:VolumeCharacteristic a samm-c:Measurement ;
+   samm:preferredName "volume characteristic"@en ;
+   samm:description "Characteristic describing the volume."@en ;
+   samm:dataType xsd:positiveInteger ;
+   samm-c:unit samm-u:litre .
+
+:ChildProcessEnum a samm-c:Enumeration ;
+   samm:preferredName "child process enum"@en ;
+   samm:description "Enumeration of valid child process types."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Removal of components" "Compression" "Packaging / Labeling" "Drain fluids" "Remove refrigerant" "Remove battery" "Remove hazardous components" "Transport" "Shredding" "Separation" "Sorting" "Washing" "Stripping" "Heating" "Melting" "Filtering" "Smelting" "Compounding" "Granulation" "Casting" "Extruding" "Devulcanisation" "Hydrometallurgy" "Pyrolysis" "Quality Testing" "Rolling" "Molding" "Storage" "Preforming" "Cutting" "Stamping" "Pressing" "Trimming" "Finishing" "Energy recovery" "Landfill disposal" ) .
+
+:DisposalCodeEnum a samm-c:Enumeration ;
+   samm:preferredName "disposal code enum"@en ;
+   samm:description "Enumreation valid disposal codes."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "R1" "R2" "R3" "R4" "R5" "R6" "R7" "R8" "R9" "R10" "R11" "R12" "R13" "D1" "D2" "D3" "D4" "D5" "D6" "D7" "D8" "D9" "D10" "D11" "D12" "D13" "D14" "D15" ) .
+
+:ProcessTypeEnum a samm-c:Enumeration ;
+   samm:preferredName "process type enum"@en ;
+   samm:description "Enumeration of valid process type values."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Dismantling" "Depollution" "Transport" "Pre-recycling" "Core-recycling" "Follow-up Recycling" "Material Manufacturing" "Component Manufacturing" "Residue Treatment" ) .
+
+:ActorRoleEnumeration a samm-c:Enumeration ;
+   samm:preferredName "actor role enumeration"@en ;
+   samm:description "Enums of the actor role."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Dismantling Facility" "Authorized Treatment Facility (ATF)" "Logistic Operator" "Shredding Facility" "Sorting Facility" "Material Recycling Facilities" "Quality Inspection" "Material Manufacturer" "Component Manufacturer" "End-of-Life Waste Processors" ) .

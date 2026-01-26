@@ -2,6 +2,8 @@
 
 All notable changes to this model will be documented in this file.
 
+**Note**: Deprecated by `io.catenax.shared.industry_core.site_information`.
+
 ## [2.0.0] 2024-02-01
 
 - Reference to BPNS Trait updated
