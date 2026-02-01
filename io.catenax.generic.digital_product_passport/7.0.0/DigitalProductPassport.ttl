@@ -8,14 +8,16 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.generic.digital_product_passport:7.0.0#> .
-@prefix ext-batch: <urn:samm:io.catenax.batch:3.0.1#> .
+@prefix ext-batch: <urn:samm:io.catenax.batch:4.0.0#> .
 @prefix ext-characteristic: <urn:samm:io.catenax.shared.address_characteristic:4.0.0#> .
-@prefix ext-classification: <urn:samm:io.catenax.shared.part_classification:1.0.0#> .
-@prefix ext-information: <urn:samm:io.catenax.part_type_information:1.0.0#> .
+@prefix ext-classification: <urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#> .
+@prefix ext-information: <urn:samm:io.catenax.part_type_information:2.0.0#> .
 @prefix ext-information2: <urn:samm:io.catenax.shared.contact_information:4.0.0#> .
-@prefix ext-part: <urn:samm:io.catenax.serial_part:3.0.1#> .
-@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:2.0.0#> .
+@prefix ext-part: <urn:samm:io.catenax.serial_part:4.0.0#> .
+@prefix ext-quantity: <urn:samm:io.catenax.shared.quantity:3.0.0#> .
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+@prefix ext-common: <urn:samm:io.catenax.shared.industry_core.common:1.0.0#> .
+
 
 :DigitalProductPassport a samm:Aspect ;
    samm:preferredName "Digital Product Passport"@en ;
@@ -145,7 +147,7 @@
 :IdentificationEntity a samm:Entity ;
    samm:preferredName "Identification Entity"@en ;
    samm:description "Component with identification information of the product with part type information, local identifiers, other codes and the data carrier."@en ;
-   samm:properties ( [ samm:property :serialInformation; samm:optional true; samm:payloadName "serial" ] [ samm:property :batchInformation; samm:optional true; samm:payloadName "batch" ] [ samm:property :partTypeInformation; samm:payloadName "type" ] :codes [ samm:property :dataCarriers; samm:optional true ] [ samm:property :productImages; samm:optional true ] ext-classification:partClassification ) .
+   samm:properties ( [ samm:property :serialInformation; samm:optional true ] [ samm:property :batchInformation; samm:optional true ] :partTypeInformation ext-classification:partClassification :productImages :codes :dataCarriers ) .
 
 :OperationEntity a samm:Entity ;
    samm:preferredName "Operation Entity"@en ;
@@ -265,12 +267,12 @@
 :serialInformation a samm:Property ;
    samm:preferredName "Serial Information"@en ;
    samm:description "Identifier for a serial part if available. This is mentioned in the Regulation (EU) 2024/1781 of the European Parliament and of the Council of 13 June 2024 establishing a framework for the setting of ecodesign requirements for sustainable products Recital (33):the term item usually refers to a single unit of a model."@en ;
-   samm:characteristic ext-part:LocalIdentifierCharacteristic .
+   samm:characteristic ext-common:LocalIdentifierCharacteristic .
 
 :batchInformation a samm:Property ;
    samm:preferredName "Batch Information"@en ;
    samm:description "Identifier for a batch part if available. This is mentioned in Regulation (EU) 2024/1781 of the European Parliament and of the Council of 13 June 2024 establishing a framework for the setting of ecodesign requirements for sustainable products, Recital (33):the term batch usually refers to a subset of a specific model composed of all products produced in a specific manufacturing plant at a specific moment in time."@en ;
-   samm:characteristic ext-batch:LocalIdentifierCharacteristic .
+   samm:characteristic ext-common:LocalIdentifierCharacteristic .
 
 :partTypeInformation a samm:Property ;
    samm:preferredName "Part Type Information"@en ;
@@ -676,7 +678,7 @@
 :PartTypeEntity a samm:Entity ;
    samm:preferredName "Part Type Entity"@en ;
    samm:description "Entity for the part type with manufacturer id and name."@en ;
-   samm:properties ( ext-information:manufacturerPartId ext-information:nameAtManufacturer ) .
+   samm:properties ( ext-common:manufacturerPartId ext-common:nameAtManufacturer ) .
 
 :CodeEntity a samm:Entity ;
    samm:preferredName "Code Entity"@en ;
@@ -716,7 +718,7 @@
 :SparePartEntity a samm:Entity ;
    samm:preferredName "Spare Part Entity"@en ;
    samm:description "Entity for spare part information."@en ;
-   samm:properties ( :sparePartProvider ext-information:nameAtManufacturer ext-information:manufacturerPartId ) .
+   samm:properties ( :sparePartProvider ext-common:nameAtManufacturer ext-common:manufacturerPartId ) .
 
 :LifespanEntity a samm:Entity ;
    samm:preferredName "Lifespan Entity"@en ;
