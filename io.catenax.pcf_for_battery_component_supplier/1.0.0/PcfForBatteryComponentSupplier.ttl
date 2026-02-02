@@ -23,7 +23,6 @@
 
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
-@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
 @prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -31,14 +30,13 @@
 @prefix : <urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#> .
 @prefix ext-bpn: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
 @prefix ext-pcf: <urn:samm:io.catenax.pcf:9.0.0#> .
-@prefix ext-serial-part: <urn:samm:io.catenax.serial_part:4.0.0#> .
 @prefix ext-time: <urn:samm:io.catenax.return_request:2.0.0#> .
-@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix ext-ic: <urn:samm:io.catenax.shared.industry_core.common:1.0.0#> .
 
 :PcfForBatteryComponentSupplier a samm:Aspect ;
    samm:preferredName "PCF for battery component supplier"@en ;
    samm:description "Intermediate Datamodel to enable Supplier to provide PCF information for their products according to the preliminary Delegated Act. This model is to be replaced as soon as the Delegated Act is finalized"@en ;
-   samm:properties ( :pcfValues ext-pcf:secondaryEmissionFactorSources [ samm:property ext-pcf:primaryDataShare; samm:optional true ] ext-serial-part:customerPartId :technologicalRepresentativeness :geographicalRepresentativeness :timerelatedRepresentativeness :dataQualityRating :manufacturerPartId :validityPeriod :siteIdentifier :legalidentifier :productQualityParameter :contentC02Metals ) ;
+   samm:properties ( :pcfValues ext-pcf:secondaryEmissionFactorSources [ samm:property ext-pcf:primaryDataShare; samm:optional true ] ext-ic:customerPartId :technologicalRepresentativeness :geographicalRepresentativeness :timerelatedRepresentativeness :dataQualityRating ext-ic:manufacturerPartId :validityPeriod :siteIdentifier :legalidentifier :productQualityParameter :contentC02Metals ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -63,18 +61,13 @@
    samm:characteristic ext-pcf:DqiNumberTrait .
 
 :dataQualityRating a samm:Property ;
-   samm:preferredName "data quality rating"@en ;
+   samm:preferredName "DQR"@en ;
    samm:description "Data quality Rating measurement. Value between 1-5. Depending on TimeRepresentatives[TIR], GeoraphicalRepresentatives[GER] and TimeRepresenatives[TIR]."@en ;
    samm:characteristic ext-pcf:DqiNumberTrait .
 
-:manufacturerPartId a samm:Property ;
-   samm:preferredName "manufacturer part identifier"@en ;
-   samm:characteristic ext-serial-part:PartIdCharacteristic .
-   samm:description "part identifier of the manufacturer."@en .
-
 :validityPeriod a samm:Property ;
    samm:preferredName "validity period"@en ;
-   samm:description "container for the validity period start and end timestamp."@en ;
+   samm:description "Container for the validity period start and end timestamp."@en ;
    samm:characteristic ext-time:TimePeriod .
 
 :siteIdentifier a samm:Property ;
@@ -89,18 +82,18 @@
 
 :productQualityParameter a samm:Property ;
    samm:preferredName "product quality parameter"@en ;
-   samm:description "quality parameters of the product."@en ;
+   samm:description "Quality parameters of the product."@en ;
    samm:characteristic :StringArray ;
    samm:exampleValue "purity of active material: 99.8%; specific capacity of NMC811: 200 mAh/g; energy density of cells: 250 Wh/kg" .
 
 :contentC02Metals a samm:Property ;
    samm:preferredName "content co2 metals"@en ;
-   samm:description "c02 relevant metaly contained in the product."@en ;
+   samm:description "C02 relevant metaly contained in the product."@en ;
    samm:characteristic :StringArray ;
    samm:exampleValue "Material: Nickel, Specific Content: 50.5%, EV_Mat: 4.9 kg CO₂e/kg ,Erecycled_Mat: 2.3 kg CO₂e/kg; Material: Cobalt, Specific Content: 6.0%, EV_Mat: 13.0 kg CO₂e/kg ,Erecycled_Mat: 4.2 kg CO₂e/kg" .
 
 :CharacteristicPCFValues a samm:Characteristic ;
-   samm:preferredName "characteristic pcf values"@en ;
+   samm:preferredName "characteristic PCF valies"@en ;
    samm:description "characteristic for the entity which contains the pcf information."@en ;
    samm:dataType :EntityPCF .
 
@@ -120,39 +113,39 @@
    samm:characteristic :CharacteristicStagePercentages .
 
 :pcfPerformanceClass a samm:Property ;
-   samm:preferredName "PCF Performance Class"@en ;
+   samm:preferredName "PCF performance class"@en ;
    samm:description "pcf performance class."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "B+" .
 
 :webLinkToCarbonFootPrintStudy a samm:Property ;
-   samm:preferredName "Link to CarbonFootPrintStudy"@en ;
-   samm:description "link to used Carbon Foot Print Study."@en ;
+   samm:preferredName "link to carbon footprint study"@en ;
+   samm:description "Link to used Carbon Foot Print Study."@en ;
    samm:characteristic samm-c:ResourcePath ;
    samm:exampleValue "https://www.example.com/study.pdf"^^xsd:anyURI .
 
 :CharacteristicStagePercentages a samm:Characteristic ;
    samm:preferredName "characteristic stage percentages"@en ;
-   samm:description "characteristic to describe a pcf stage."@en ;
+   samm:description "Characteristic to describe a pcf stage."@en ;
    samm:dataType :EntityStagePcfValue .
 
 :EntityStagePcfValue a samm:Entity ;
-   samm:preferredName "entity stage pcf value"@en ;
+   samm:preferredName "entity stage PCF value"@en ;
    samm:description "Entity which contains the absolute pcf value, value per stage and declared Unit."@en ;
    samm:properties ( :stage1RawMaterialAquisitionPreProcessing :stage2MainProductProduction :stage3Distribution :stage4EndOfLifeRecycling :declaredUnit :absPcfValue ) .
 
 :stage1RawMaterialAquisitionPreProcessing a samm:Property ;
-   samm:preferredName "Raw material acquisition and pre-processing"@en ;
+   samm:preferredName "raw material acquisition and pre-processing"@en ;
    samm:description "This attribute describes the percentage of the absolute PCF value of this component that is attributable to the 'Raw material and preprocessing' stage."@en ;
    samm:characteristic :CharacteristicStage .
 
 :stage2MainProductProduction a samm:Property ;
-   samm:preferredName "Main product production"@en ;
+   samm:preferredName "main product production"@en ;
    samm:description "This attribute describes the percentage of the absolute PCF value of this component that is attributable to the 'Raw material and preprocessing' stage."@en ;
    samm:characteristic :CharacteristicStage .
 
 :stage3Distribution a samm:Property ;
-   samm:preferredName "Stage Distribution"@en ;
+   samm:preferredName "stage distribution"@en ;
    samm:description "This attribute describes the percentage of the absolute PCF value of this component that is attributable to the 'Raw material and preprocessing' stage."@en ;
    samm:characteristic :CharacteristicStage .
 
@@ -162,21 +155,22 @@
    samm:characteristic :CharacteristicStage .
 
 :declaredUnit a samm:Property ;
-   samm:preferredName "Declared Unit"@en ;
+   samm:preferredName "declared unit"@en ;
    samm:description "This attribute defines the unit of the attribute absPCFValue. It is one of C02KG/kg OR C02KG/piece\"."@en ;
    samm:characteristic :CharacteristicDeclaredUnit .
 
 :absPcfValue a samm:Property ;
-   samm:preferredName "absPCF"@en ;
-   samm:description "absolute Product Carbon Value."@en ;
+   samm:preferredName "abs PCF"@en ;
+   samm:description "Absolute Product Carbon Value."@en ;
    samm:characteristic :CharacteristicStage .
 
 :CharacteristicStage a samm:Characteristic ;
    samm:preferredName "characteristic stage"@en ;
-   samm:description "describes an entry for a pcf-life-cycle stage."@en ;
+   samm:description "Describes an entry for a pcf-life-cycle stage."@en ;
    samm:dataType :EntityStageValue .
 
 :CharacteristicDeclaredUnit a samm-c:Enumeration ;
+   samm:preferredName "characteristic declared unit"@en ;
    samm:description "characteristic for declared Unit property."@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "C02KG/KG" "C02KG/piece" ) .
@@ -198,12 +192,12 @@
 
 :CharacteristicStageValue a samm:Characteristic ;
    samm:preferredName "characteristic stage value"@en ;
-   samm:description "Characteristic for each stage value"@en ;
+   samm:description "Characteristic for each stage value."@en ;
    samm:dataType xsd:float .
 
 :ConstraintGEQ a samm-c:RangeConstraint ;
-   samm:description "greater or equal constraint"@en ;
+   samm:preferredName "constraint greater or equal"@en ;
+   samm:description "greater or equal constraint."@en ;
    samm-c:minValue "0"^^xsd:float ;
    samm-c:lowerBoundDefinition samm-c:AT_LEAST ;
    samm-c:upperBoundDefinition samm-c:LESS_THAN .
-
