@@ -1,0 +1,353 @@
+---
+openapi: 3.0.3
+info:
+  title: just in sequence part
+  version: v4
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.just_in_sequence_part:4.0.0#JustInSequencePart"
+servers:
+- url: catenax.io/api/v4
+  variables:
+    api-version:
+      default: v4
+paths:
+  /{tenant-id}/just-in-sequence-part:
+    get:
+      tags:
+      - JustInSequencePart
+      operationId: getJustInSequencePart
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: "#/components/responses/JustInSequencePart"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          $ref: "#/components/schemas/JustInSequencePart"
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    Text:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text"
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    ClassificationEntity:
+      description: Encapsulates data related to the classification of the part.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#ClassificationEntity"
+      type: object
+      properties:
+        standard:
+          description: Identified classification standards
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#standard"
+          $ref: "#/components/schemas/Text"
+        id:
+          description: The classification ID of the part type according to the corresponding
+            standard definition mentioned in the key value pair.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#id"
+          $ref: "#/components/schemas/Text"
+        description:
+          description: Optional property describing the classification standard.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#description"
+          $ref: "#/components/schemas/Text"
+      required:
+      - standard
+      - id
+    PartClassificationCharacteristic:
+      description: Classification characteristic enabling a set of further properties.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#PartClassificationCharacteristic"
+      type: array
+      items:
+        $ref: "#/components/schemas/ClassificationEntity"
+      uniqueItems: true
+    PartTypeInformationCharacteristic:
+      description: The characteristics of the part type.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.just_in_sequence_part:4.0.0#PartTypeInformationCharacteristic"
+      type: object
+      properties:
+        nameAtManufacturer:
+          description: Name of the part as assigned by the manufacturer
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#nameAtManufacturer"
+          $ref: "#/components/schemas/Text"
+        manufacturerPartId:
+          description: Part ID as assigned by the manufacturer of the part. The Part
+            ID identifies the part (as designed) in the manufacturer`s dataspace.
+            The Part ID does not reference a specific instance of a part and thus
+            should not be confused with the serial number or batch number.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#manufacturerPartId"
+          $ref: "#/components/schemas/Text"
+        customerPartId:
+          description: "Part ID as assigned by the customer of the part. The customer\
+            \ Part ID identifies the part (as designed)in the customer`s dataspace.\
+            \ The Part ID does not reference a specific instance of a part and thus\
+            \ should not be confused with the serial number or any other instance\
+            \ IDs. \nIf no specific part ID exists a part family ID may be substituted\
+            \ for it."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#customerPartId"
+          $ref: "#/components/schemas/Text"
+        nameAtCustomer:
+          description: Name of the part as assigned by the customer
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#nameAtCustomer"
+          $ref: "#/components/schemas/Text"
+        partClassification:
+          description: Property describing the classification of a part.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#partClassification"
+          $ref: "#/components/schemas/PartClassificationCharacteristic"
+      required:
+      - nameAtManufacturer
+    AllowedKeys:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#AllowedKeys"
+      description: |-
+        The key characteristic of a local identifier. A specific subset of keys is predefined. Custom keys are not allowed. Predefined keys:
+        - "manufacturerId" - The Business Partner Number (BPN) of the manufacturer. Value: BPN-Nummer
+        - "batchId" - The identifier of the batch, to which the serialized part belongs
+      enum:
+      - manufacturerId
+      - batchId
+      - customKey
+      - jisNumber
+      - jisCallDate
+      - parentOrderNumber
+      - partInstanceId
+      - van
+    KeyValueList:
+      description: "A list of key value pairs for local identifiers, which are composed\
+        \ of a key and a corresponding value."
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#KeyValueList"
+      type: object
+      properties:
+        key:
+          description: The key of a local identifier.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#key"
+          $ref: "#/components/schemas/AllowedKeys"
+        value:
+          description: The value of an identifier.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#value"
+          $ref: "#/components/schemas/Text"
+      required:
+      - key
+      - value
+    LocalIdentifierCharacteristic:
+      description: "A part may have multiple attributes, which uniquely identify that\
+        \ part in a specific dataspace (e.g., the manufacturer's dataspace)"
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#LocalIdentifierCharacteristic"
+      type: array
+      items:
+        $ref: "#/components/schemas/KeyValueList"
+      uniqueItems: true
+    DateCharacteristic:
+      type: string
+      format: date
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.manufacturing_information:1.0.0#DateCharacteristic"
+      description: Date Characteristic
+    CountryAlpha3Trait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.standard_codes:1.0.0#CountryAlpha3Trait"
+      description: trait for 3 letter country code
+      pattern: "^[A-Z]{3}$"
+    BpnsTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnsTrait"
+      description: "The provided regular expression ensures that the BPNS is composed\
+        \ of prefix 'BPNS', 10 digits and two alphanumeric letters."
+      pattern: "^BPNS[a-zA-Z0-9]{12}$"
+    FunctionCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.site_information:1.0.0#FunctionCharacteristic"
+      description: Describes the characteristics of the function for a site related
+        to the respective part.
+      enum:
+      - production
+      - warehouse
+      - spare part warehouse
+    SitesEntity:
+      description: "Describes the ID and function of a site for the associated part\
+        \ in the AsBuilt context(e.g. SerialPart, Batch, jIS)."
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.site_information:1.0.0#SitesEntity"
+      type: object
+      properties:
+        siteId:
+          description: "The identifier of the site according to BPDM. The siteId must\
+            \ be a valid BPN. The BPN is a unique, unchangeable identifier for Business\
+            \ Partners / company locations from foundation to closure, regardless\
+            \ of the different business relationships / structures between or within\
+            \ the Business Partners or company locations."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.site_information:1.0.0#siteId"
+          $ref: "#/components/schemas/BpnsTrait"
+        function:
+          description: The function of the site in relation to the part(i.e. the activity
+            within the value chain of the part that is performed at the site)
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.site_information:1.0.0#function"
+          $ref: "#/components/schemas/FunctionCharacteristic"
+      required:
+      - siteId
+      - function
+    SitesCharacteristic:
+      description: Sites Characteristic
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.site_information:1.0.0#SitesCharacteristic"
+      type: array
+      items:
+        $ref: "#/components/schemas/SitesEntity"
+      uniqueItems: true
+    ManufacturingCharacteristic:
+      description: Characteristic to describe manufacturing related data
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.manufacturing_information:1.0.0#ManufacturingCharacteristic"
+      type: object
+      properties:
+        productionDate:
+          description: "Timestamp of the manufacturing date as the final step in production\
+            \ process (e.g. final quality check, ready-for-shipment event)"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.manufacturing_information:1.0.0#productionDate"
+          $ref: "#/components/schemas/DateCharacteristic"
+        country:
+          description: Alphabetic three-character (alpha-3) code representing a country
+            name.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.standard_codes:1.0.0#country"
+          $ref: "#/components/schemas/CountryAlpha3Trait"
+        sites:
+          description: "A site is a delimited geographical area where a legal entity\
+            \ does business(geographical address with geo coordinates).A site always\
+            \ has a primary physical address. It is possible that further physical\
+            \ addresses are specified for the site. P.O. box details are only possible\
+            \ in addition to the physical address. A site has a 1:n relation to addresses,\
+            \ means at least 1 address is necessary and multiple addresses are possible."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.site_information:1.0.0#sites"
+          $ref: "#/components/schemas/SitesCharacteristic"
+      required:
+      - productionDate
+    UuidV4Trait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait"
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    JustInSequencePart:
+      description: "A just-in-sequence part is an instantiation of a (design-)part,\
+        \ where the particular instantiation can be uniquely identified by means of\
+        \ a combination of several IDs related to a just-in-sequence process."
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.just_in_sequence_part:4.0.0#JustInSequencePart"
+      properties:
+        partTypeInformation:
+          description: The part type or part family from which the just-in-sequence
+            part has been instantiated.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.just_in_sequence_part:4.0.0#partTypeInformation"
+          $ref: "#/components/schemas/PartTypeInformationCharacteristic"
+        localIdentifiers:
+          description: "A local identifier enables identification of a part in a specific\
+            \ dataspace, but is not unique in the Catena-X dataspace. Multiple local\
+            \ identifiers may exist."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#localIdentifiers"
+          $ref: "#/components/schemas/LocalIdentifierCharacteristic"
+        manufacturingInformation:
+          description: "Information from manufacturing process, such as manufacturing\
+            \ date and manufacturing country"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.manufacturing_information:1.0.0#manufacturingInformation"
+          $ref: "#/components/schemas/ManufacturingCharacteristic"
+        globalAssetId:
+          description: The fully anonymous ID in the dataspace of the part.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#globalAssetId"
+          $ref: "#/components/schemas/UuidV4Trait"
+      required:
+      - partTypeInformation
+      - localIdentifiers
+      - manufacturingInformation
+      - globalAssetId
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    JustInSequencePart:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PagingSchema"
+      description: The request was successful.
+  requestBodies:
+    JustInSequencePart:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/JustInSequencePart"
+      required: true

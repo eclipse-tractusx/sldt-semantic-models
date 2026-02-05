@@ -1,0 +1,303 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#RecyclingBatch",
+  "description" : "The RecyclingBatch aspect model defines a standardized and interoperable representation containing information about involved actors, process steps, and batch-specific details such as identifiers and container-related properties, in a consistent and machine-readable manner.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "MassCharacteristic" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#MassCharacteristic",
+        "description" : "Characteric for mass data (in kg)."
+      },
+      "VolumeCharacteristic" : {
+        "type" : "number",
+        "minimum" : 1,
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#VolumeCharacteristic",
+        "description" : "Characteristic describing the volume."
+      },
+      "ContainerCharacteristic" : {
+        "description" : "This characteristic binds the ContainerEntity to the container property.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#ContainerCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "containerWeight" : {
+            "description" : "Empty weight of the container based on the scale display",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#containerWeight",
+            "$ref" : "#/components/schemas/MassCharacteristic"
+          },
+          "containerVolume" : {
+            "description" : "Volume of the container type according to AVAL",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#containerVolume",
+            "$ref" : "#/components/schemas/VolumeCharacteristic"
+          },
+          "containerDescription" : {
+            "description" : "Standardized description of the container type according to AVAL.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#containerDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "containerTypeId" : {
+            "description" : "Standardized number for the container type which contains compositions / components / materials according to AVAL",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#containerTypeId",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "containerWeight", "containerVolume", "containerDescription", "containerTypeId" ]
+      },
+      "Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Timestamp",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "ChildProcessEnum" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#ChildProcessEnum",
+        "description" : "Enumeration of valid child process types.",
+        "enum" : [ "Removal of components", "Compression", "Packaging / Labeling", "Drain fluids", "Remove refrigerant", "Remove battery", "Remove hazardous components", "Transport", "Shredding", "Separation", "Sorting", "Washing", "Stripping", "Heating", "Melting", "Filtering", "Smelting", "Compounding", "Granulation", "Casting", "Extruding", "Devulcanisation", "Hydrometallurgy", "Pyrolysis", "Quality Testing", "Rolling", "Molding", "Storage", "Preforming", "Cutting", "Stamping", "Pressing", "Trimming", "Finishing", "Energy recovery", "Landfill disposal" ]
+      },
+      "ProcessStep" : {
+        "description" : "Single entity of a process step.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#ProcessStep",
+        "type" : "object",
+        "properties" : {
+          "startTimestamp" : {
+            "description" : "Start of the specific process step.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#startTimestamp",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "endTimestamp" : {
+            "description" : "End of the specific process step.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#endTimestamp",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "inputNetMass" : {
+            "description" : "Incoming net weight in the specific process step.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#inputNetMass",
+            "$ref" : "#/components/schemas/MassCharacteristic"
+          },
+          "outputNetMass" : {
+            "description" : "Outgoing net weight of the specific process step.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#outputNetMass",
+            "$ref" : "#/components/schemas/MassCharacteristic"
+          },
+          "measurementType" : {
+            "description" : "Measuring instrument for material share/weight determination.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#measurementType",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "measurementTimestamp" : {
+            "description" : "timestamp of the specific time of measurement.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#measurementTimestamp",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "processLoss" : {
+            "description" : "Weight of loss within the specific childProcessStep.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#processLoss",
+            "$ref" : "#/components/schemas/MassCharacteristic"
+          },
+          "weighingSlip" : {
+            "description" : "Official document that records the result of weighing (of composition / components / materials) on a scale.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#weighingSlip",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "lossType" : {
+            "description" : "Specification of loss within the specific process step.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#lossType",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "childProcessType" : {
+            "description" : "Type of child process.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#childProcessType",
+            "$ref" : "#/components/schemas/ChildProcessEnum"
+          }
+        },
+        "required" : [ "startTimestamp", "endTimestamp", "inputNetMass", "outputNetMass", "measurementType", "measurementTimestamp", "processLoss", "weighingSlip", "lossType", "childProcessType" ]
+      },
+      "ChildProcessStepsList" : {
+        "description" : "List of child process steps.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#ChildProcessStepsList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ProcessStep"
+        }
+      },
+      "DisposalCodeEnum" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#DisposalCodeEnum",
+        "description" : "Enumreation valid disposal codes.",
+        "enum" : [ "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "R11", "R12", "R13", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "D14", "D15" ]
+      },
+      "Boolean" : {
+        "type" : "boolean",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "ProcessTypeEnum" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#ProcessTypeEnum",
+        "description" : "Enumeration of valid process type values.",
+        "enum" : [ "Dismantling", "Depollution", "Transport", "Pre-recycling", "Core-recycling", "Follow-up Recycling", "Material Manufacturing", "Component Manufacturing", "Residue Treatment" ]
+      },
+      "ProcessInformationEntity" : {
+        "description" : "Entity of process information",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#ProcessInformationEntity",
+        "type" : "object",
+        "properties" : {
+          "treatmentProcedure" : {
+            "description" : "Process that is used to handle waste according to the choosen strategy.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#treatmentProcedure",
+            "$ref" : "#/components/schemas/DisposalCodeEnum"
+          },
+          "mechanicalRecycling" : {
+            "description" : "Materials that have undergone mechanical recycling (true or false).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#mechanicalRecycling",
+            "$ref" : "#/components/schemas/Boolean"
+          },
+          "chemicalRecycling" : {
+            "description" : "Materials that have undergone chemical recycling (true or false).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#chemicalRecycling",
+            "$ref" : "#/components/schemas/Boolean"
+          },
+          "processType" : {
+            "description" : "The process reflects the current processing phase in the reverse chain of a vehicle, its composition, components, and materials.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#processType",
+            "$ref" : "#/components/schemas/ProcessTypeEnum"
+          }
+        },
+        "required" : [ "treatmentProcedure", "mechanicalRecycling", "chemicalRecycling", "processType" ]
+      },
+      "ProcessInformationSingleEntity" : {
+        "description" : "Process Information SingleEntity.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#ProcessInformationSingleEntity",
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ProcessInformationEntity"
+        } ]
+      },
+      "ActorRoleEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#ActorRoleEnumeration",
+        "description" : "Enums of the actor role.",
+        "enum" : [ "Dismantling Facility", "Authorized Treatment Facility (ATF)", "Logistic Operator", "Shredding Facility", "Sorting Facility", "Material Recycling Facilities", "Quality Inspection", "Material Manufacturer", "Component Manufacturer", "End-of-Life Waste Processors" ]
+      },
+      "BpnsTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnsTrait",
+        "description" : "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two alphanumeric letters.",
+        "pattern" : "^BPNS[a-zA-Z0-9]{12}$"
+      },
+      "ActorEntity" : {
+        "description" : "Single Entity of an Actor",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#ActorEntity",
+        "type" : "object",
+        "properties" : {
+          "actorNumber" : {
+            "description" : "Operating number of the actor.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#actorNumber",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "actorRole" : {
+            "description" : "Type of the actor in the recycling process.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#actorRole",
+            "$ref" : "#/components/schemas/ActorRoleEnumeration"
+          },
+          "bpnsProperty" : {
+            "description" : "Property based on a BPNS.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.business_partner_number:2.0.0#bpnsProperty",
+            "$ref" : "#/components/schemas/BpnsTrait"
+          }
+        },
+        "required" : [ "actorNumber", "actorRole", "bpnsProperty" ]
+      },
+      "ActorSingleEntity" : {
+        "description" : "Single entity describing an actor involved in the recycling batch.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#ActorSingleEntity",
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/ActorEntity"
+        } ]
+      },
+      "OperatorEntity" : {
+        "description" : "Entity of operator",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#OperatorEntity",
+        "type" : "object",
+        "properties" : {
+          "transferId" : {
+            "description" : "Identifier for the transport of compositions / components / materials between two actors.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#transferId",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "bpnsProperty" : {
+            "description" : "Property based on a BPNS.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.business_partner_number:2.0.0#bpnsProperty",
+            "$ref" : "#/components/schemas/BpnsTrait"
+          }
+        },
+        "required" : [ "transferId", "bpnsProperty" ]
+      },
+      "OperatorSingleEntity" : {
+        "description" : "Operator Single Entity",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#OperatorSingleEntity",
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/OperatorEntity"
+        } ]
+      },
+      "UuidV4Trait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      }
+    }
+  },
+  "properties" : {
+    "recyclingBatchId" : {
+      "description" : "Identifier of the recycling batch.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#recyclingBatchId",
+      "$ref" : "#/components/schemas/Text"
+    },
+    "container" : {
+      "description" : "Properties of a container.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#container",
+      "$ref" : "#/components/schemas/ContainerCharacteristic"
+    },
+    "childProcessSteps" : {
+      "description" : "List of child process steps performed on the recycling batch.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#childProcessSteps",
+      "$ref" : "#/components/schemas/ChildProcessStepsList"
+    },
+    "processInformation" : {
+      "description" : "Single Entity of process information.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#processInformation",
+      "$ref" : "#/components/schemas/ProcessInformationSingleEntity"
+    },
+    "receiver" : {
+      "description" : "Receiver of the RecyclingBatch.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#receiver",
+      "$ref" : "#/components/schemas/ActorSingleEntity"
+    },
+    "sender" : {
+      "description" : "Sender of the RecyclingBatch.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#sender",
+      "$ref" : "#/components/schemas/ActorSingleEntity"
+    },
+    "operator" : {
+      "description" : "Operator of the transport process.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.material:1.0.0#operator",
+      "$ref" : "#/components/schemas/OperatorSingleEntity"
+    },
+    "globalAssetId" : {
+      "description" : "The fully anonymous ID in the dataspace of the part.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.common:1.0.0#globalAssetId",
+      "$ref" : "#/components/schemas/UuidV4Trait"
+    }
+  },
+  "required" : [ "recyclingBatchId", "container", "childProcessSteps", "processInformation", "receiver", "sender", "operator", "globalAssetId" ]
+}
