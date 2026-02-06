@@ -7,4 +7,4 @@ All notable changes to this model will be documented in this file.
 
 ### Added
 
-- add data model to enable a battery components supplier to provide the calculated PCF value to a certain Component according to the pre-release version to of the Delegated Act. 
+- add data model to enable a battery components supplier to provide the calculated PCF value to a certain Component according to the pre-release version of the Delegated Act. 
