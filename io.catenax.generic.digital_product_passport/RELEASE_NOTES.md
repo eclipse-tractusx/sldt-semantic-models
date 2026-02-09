@@ -23,7 +23,7 @@ All notable changes to this model will be documented in this file.
 - new subsection with applicability field extendedProducerResponsibilityScheme"
 - new attribute "collectionPointIdentification"
 - new attribute "collectionPointAddress"
-- new attribute "teritoriesOfApllication"
+- new attribute "territoriesOfApplication"
 - new attribute "symbolsOfExtendedProducerResponsibilityScheme"
 - new attribute "otherOperatorNames"
 - new attribute "otherOperatorContact"
@@ -49,7 +49,7 @@ All notable changes to this model will be documented in this file.
 - new attribute "collectionPointIdentification"
 - new attribute "collectionPointAddress"
 - new attribute "symbolOfDepositAndReturnSystem"
-- new attribute with aplicability field:"recycleabilityPerformanceGrade"
+- new attribute with applicability field:"recycleabilityPerformanceGrade"
 - new subsection for components with applicability fields
 - new attribute "componentName"
 - new attribute "componentCode"
@@ -62,10 +62,10 @@ All notable changes to this model will be documented in this file.
 - new attribute "materialPassportIdentifier"
 - new attribute "materialLocations"
 - new subsection concentrationRanges with minConcentration and maxConcentration  
-- new subsection "declarabeIngredientLists" with applicability field
-- new attribute "declarabeIngredientListDocumentId"
-- new attribute "declarabeIngredientListName"
-- new attribute "declarabeIngredientDocuments"
+- new subsection "declarableIngredient" with applicability field
+- new attribute "declarableIngredientListDocumentId"
+- new attribute "declarableIngredientListName"
+- new attribute "declarableIngredientDocuments"
 - new section: compliances
 - new attribute "requirementName"
 - new attribute "complianceCountries"
@@ -99,17 +99,17 @@ All notable changes to this model will be documented in this file.
 - changing name of attribute from "type" into "materialListTypeId"
 - changing name of attribute from "Id" into "materialId"
 - changing name of attribute from "concentration" into "concentrationValue"
-- changing name of attribute from "statement" into hazardStatement"
+- changing name of attribute from "statement" into "hazardStatement"
 - changing name of attribute from "documents" into "materialDocuments"
 - changing name of attribute from "class" into "hazardClass"
 - changing name of attribute from "category" into "hazardCategory"
 - changing name of attribute from "locations" into "substanceOfConcernLocations"
-- changing name of attribute from "concentrationRange" into "substanceOfConcerConcentrationRange"
+- changing name of attribute from "concentrationRange" into "substanceOfConcernConcentrationRange"
 
 ### Deleted
 
 - delete sparePart subcategory
-- delete materialComposition eith applicability field
+- delete materialComposition with applicability field
 
 ## [6.1.0] - 2025-10-06
 
