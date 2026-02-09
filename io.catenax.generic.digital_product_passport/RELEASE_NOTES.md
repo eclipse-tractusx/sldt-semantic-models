@@ -1,5 +1,115 @@
 # Changelog
+
 All notable changes to this model will be documented in this file.
+
+## [7.0.0] R26.03
+
+### Added
+
+- new attribute "specVersion"
+- adding applicability field before the attribute "predecessor"
+- new attribute "economicOperatorNames"
+- new attribute "economicOperatorContact"
+- new attribute "economicOperatorAddress"
+- new attribute "codeDescription" 
+- new attribute "productImages" 
+- new attribute "facilityAddress"
+- new attribute "manufacturerNames"
+- new attribute "manufacturerContact"
+- new attribute "manufacturerAddress"
+- new attribute "importerNames"
+- new attribute "importerContact"
+- new attribute "importerAddress"
+- new subsection with applicability field extendedProducerResponsibilityScheme"
+- new attribute "collectionPointIdentification"
+- new attribute "collectionPointAddress"
+- new attribute "territoriesOfApplication"
+- new attribute "symbolsOfExtendedProducerResponsibilityScheme"
+- new attribute "otherOperatorNames"
+- new attribute "otherOperatorContact"
+- new attribute "otherOperatorAddress"
+- new attribute "sparePartProviderAddress"
+- new attribute "sparePartProviderContact"
+- new attribute "lifeDescription"
+- new subsection: itemQuantityInPackage
+- new attribute "itemQuantityInPackageUnit"
+- new attribute "itemQuantityInPackageValue"
+- new subsection: otherCharacteristics
+- new attribute "otherCharacteristicName"
+- new attribute "otherCharacteristicOutcome"
+- new attribute "facilityAddress"
+- new subsection: reusability with applicability field
+- new attribute "reuseInfo"
+- new subsection:reusSystem with applicability field
+- new attribute "calculationKey" for rotation
+- new attribute "calculationValue" for rotation
+- new attribute "calculationKey" for trip
+- new attribute "calculationValue" for trip
+- new attribute "facilityIdentification"
+- new attribute "collectionPointIdentification"
+- new attribute "collectionPointAddress"
+- new attribute "symbolOfDepositAndReturnSystem"
+- new attribute with applicability field:"recycleabilityPerformanceGrade"
+- new subsection for components with applicability fields
+- new attribute "componentName"
+- new attribute "componentCode"
+- new attribute "componentDescription"
+- new attribute "componentSortingInformation"
+- new attribute "componentLocations"
+- new attribute "componentPassportIdentifier"
+- new attribute "materialType"
+- new attribute "materialOrigin"
+- new attribute "materialPassportIdentifier"
+- new attribute "materialLocations"
+- new subsection concentrationRanges with minConcentration and maxConcentration  
+- new subsection "declarableIngredient" with applicability field
+- new attribute "declarableIngredientListDocumentId"
+- new attribute "declarableIngredientListName"
+- new attribute "declarableIngredientDocuments"
+- new section: compliances
+- new attribute "requirementName"
+- new attribute "complianceCountries"
+- new attribute "complianceStatement"
+- new attribute "reasonsForExemption"
+- new attribute "remarks"
+- new attribute "complianceDocuments"
+
+### Changed
+
+- changing name of attribute from "status" into "passportStatus"
+- changing name of attribute from "economicOperatorId" into "economicOperatorIdentification"
+- changing name of attribute from "carrier" into "carrierPositions"
+- changing name of attribute from "facility" into "facilityIdentification"
+- changing name of attribute from "manufacturerId" into "manufacturerIdentification"
+- changing name of attribute from "Id" into "importerIdentification"
+- changing name of attribute from "Id" into "otherOperatorIdentification"
+- changing name of attribute from "role" into otherOperatorRole"
+- changing name of attribute from "Id" into "sparePartProviderIdentification"
+- changing name of attribute from "unit" into "lifeUnit"
+- changing name of attribute from "value" into "lifeValue"
+- changing name of attribute from "type" into "lifeType"
+- changing name of attribute from "status" into "productStatus"
+- changing name of attribute from "value" into "footprintValue"
+- changing name of attribute from "lifecycle" into "footprintLifecycle"
+- changing name of attribute from "unit" into "footprintUnit"
+- changing name of attribute from "type" into "footprintType"
+- changing name of attribute from "facility" into "facilityIdentification"
+- changing name of attribute from "Id" into "materialId"
+- changing name of attribute from "name" into "materialName"
+- changing name of attribute from "type" into "materialListTypeId"
+- changing name of attribute from "Id" into "materialId"
+- changing name of attribute from "concentration" into "concentrationValue"
+- changing name of attribute from "statement" into "hazardStatement"
+- changing name of attribute from "documents" into "materialDocuments"
+- changing name of attribute from "class" into "hazardClass"
+- changing name of attribute from "category" into "hazardCategory"
+- changing name of attribute from "locations" into "substanceOfConcernLocations"
+- changing name of attribute from "concentrationRange" into "substanceOfConcernConcentrationRange"
+
+### Deleted
+
+- delete sparePart subcategory
+- delete materialComposition with applicability field
 
 ## [6.1.0] - 2025-10-06
 
