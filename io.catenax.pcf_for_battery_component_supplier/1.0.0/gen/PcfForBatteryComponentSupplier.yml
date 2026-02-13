@@ -1,0 +1,382 @@
+---
+openapi: 3.0.3
+info:
+  title: PCF for battery component supplier
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#PcfForBatteryComponentSupplier"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/pcf-for-battery-component-supplier:
+    get:
+      tags:
+      - PcfForBatteryComponentSupplier
+      operationId: getPcfForBatteryComponentSupplier
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: "#/components/responses/PcfForBatteryComponentSupplier"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          $ref: "#/components/schemas/PcfForBatteryComponentSupplier"
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    StageValueTrait:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#StageValueTrait"
+      description: greater or equal constraint.
+      minimum: 0.0
+      exclusiveMinimum: false
+    CharacteristicStage:
+      description: Describes an entry for a pcf-life-cycle stage.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#CharacteristicStage"
+      type: object
+      properties:
+        stageValue:
+          description: Enter the PCF value of the parent stage measured in the declared
+            unit.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#stageValue"
+          $ref: "#/components/schemas/StageValueTrait"
+      required:
+      - stageValue
+    CharacteristicDeclaredUnit:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#CharacteristicDeclaredUnit"
+      description: characteristic for declared Unit property.
+      enum:
+      - CO2KG/KG
+      - CO2KG/piece
+    CharacteristicStagePercentages:
+      description: Characteristic to describe a pcf stage.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#CharacteristicStagePercentages"
+      type: object
+      properties:
+        stage1RawMaterialAquisitionPreProcessing:
+          description: This attribute describes the percentage of the absolute PCF
+            value of this component that is attributable to the 'Raw material and
+            preprocessing' stage.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#stage1RawMaterialAquisitionPreProcessing"
+          $ref: "#/components/schemas/CharacteristicStage"
+        stage2MainProductProduction:
+          description: This attribute describes the percentage of the absolute PCF
+            value of this component that is attributable to the 'Main product production'
+            stage.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#stage2MainProductProduction"
+          $ref: "#/components/schemas/CharacteristicStage"
+        stage3Distribution:
+          description: This attribute describes the percentage of the absolute PCF
+            value of this component that is attributable to the 'Distribution' stage.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#stage3Distribution"
+          $ref: "#/components/schemas/CharacteristicStage"
+        stage4EndOfLifeRecycling:
+          description: This attribute describes the percentage of the absolute PCF
+            value of this component that is attributable to the 'End-Of-Life and recycling'
+            stage.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#stage4EndOfLifeRecycling"
+          $ref: "#/components/schemas/CharacteristicStage"
+        declaredUnit:
+          description: This attribute defines the unit of the attribute absPCFValue.
+            It is one of CO2KG/kg OR CO2KG/piece.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#declaredUnit"
+          $ref: "#/components/schemas/CharacteristicDeclaredUnit"
+        absPcfValue:
+          description: Absolute Product Carbon Value.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#absPcfValue"
+          $ref: "#/components/schemas/CharacteristicStage"
+      required:
+      - stage1RawMaterialAquisitionPreProcessing
+      - stage2MainProductProduction
+      - stage3Distribution
+      - stage4EndOfLifeRecycling
+      - declaredUnit
+      - absPcfValue
+    Text:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text"
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    ResourcePath:
+      type: string
+      format: uri
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#ResourcePath"
+      description: The path of a resource.
+    CharacteristicPCFValues:
+      description: characteristic for the entity which contains the pcf information.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#CharacteristicPCFValues"
+      type: object
+      properties:
+        sharesPerStage:
+          description: encapsulation for pcf values per stage.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#sharesPerStage"
+          $ref: "#/components/schemas/CharacteristicStagePercentages"
+        pcfPerformanceClass:
+          description: pcf performance class.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#pcfPerformanceClass"
+          $ref: "#/components/schemas/Text"
+        webLinkToCarbonFootPrintStudy:
+          description: Link to used Carbon Foot Print Study.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#webLinkToCarbonFootPrintStudy"
+          $ref: "#/components/schemas/ResourcePath"
+      required:
+      - sharesPerStage
+    EmissionFactorDSSet:
+      description: Characteristic for defining a set of emission factor sources used
+        for calculating a product carbon footprint as specified in the Catena-X PCF
+        Rulebook in accordance with the technical specifications for PCF Data Exchange
+        (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/
+        PACT initiative.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:9.0.0#EmissionFactorDSSet"
+      type: array
+      items:
+        type: string
+      uniqueItems: true
+    PercentTrait:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:9.0.0#PercentTrait"
+      description: Constraint for a decimal number in the range of and including 0
+        and 100.
+      maximum: 100.0
+      exclusiveMaximum: false
+      minimum: 0.0
+      exclusiveMinimum: false
+    DqiNumberTrait:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:9.0.0#DqiNumberTrait"
+      description: Constraint for defining a decimal between 1 and 5 including.
+      maximum: 5
+      exclusiveMaximum: false
+      minimum: 1
+      exclusiveMinimum: false
+    Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Timestamp"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    ValidityPeriodCharacteristic:
+      description: Characteristic  for a validity period defined by an (optional)start
+        and an (optional)end timestamp.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#ValidityPeriodCharacteristic"
+      type: object
+      properties:
+        validTo:
+          description: End date of validity period.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#validTo"
+          $ref: "#/components/schemas/Timestamp"
+        validFrom:
+          description: Start date and time of validity period.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#validFrom"
+          $ref: "#/components/schemas/Timestamp"
+    BpnsTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnsTrait"
+      description: "The provided regular expression ensures that the BPNS is composed\
+        \ of prefix 'BPNS', 10 digits and two alphanumeric letters."
+      pattern: "^BPNS[a-zA-Z0-9]{12}$"
+    BpnlTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnlTrait"
+      description: "The provided regular expression ensures that the BPNL is composed\
+        \ of prefix 'BPNL', 10 digits and two alphanumeric letters."
+      pattern: "^BPNL[a-zA-Z0-9]{12}$"
+    StringArray:
+      description: this is a list of strings.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#StringArray"
+      type: array
+      items:
+        type: string
+    PcfForBatteryComponentSupplier:
+      description: Intermediate Datamodel to enable Supplier to provide PCF information
+        for their products according to the preliminary Delegated Act. This model
+        is to be replaced as soon as the Delegated Act is finalized
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#PcfForBatteryComponentSupplier"
+      properties:
+        pcfValues:
+          description: This attribute contains the values to calculate the PCF values.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#pcfValues"
+          $ref: "#/components/schemas/CharacteristicPCFValues"
+        secondaryEmissionFactorSources:
+          description: Which secondary data sources and versions have been used by
+            you or by suppliers (e.g. data bases such as ecoinvent)?
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:9.0.0#secondaryEmissionFactorSources"
+          $ref: "#/components/schemas/EmissionFactorDSSet"
+        primaryDataShare:
+          description: Share of primary data in the final PCF. For prospective PCF
+            this shall not be communicated or set "0"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:9.0.0#primaryDataShare"
+          $ref: "#/components/schemas/PercentTrait"
+        customerPartId:
+          description: "Part ID as assigned by the customer of the part. The customer\
+            \ Part ID identifies the part (as designed)in the customer`s dataspace.\
+            \ The Part ID does not reference a specific instance of a part and thus\
+            \ should not be confused with the serial number or any other instance\
+            \ IDs. \nIf no specific part ID exists a part family ID may be substituted\
+            \ for it."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#customerPartId"
+          $ref: "#/components/schemas/Text"
+        technologicalRepresentativeness:
+          description: Data Quality Rating for technological context. Value between
+            1-5.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#technologicalRepresentativeness"
+          $ref: "#/components/schemas/DqiNumberTrait"
+        geographicalRepresentativeness:
+          description: Quality Rating for Data in context of geographical product
+            information.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#geographicalRepresentativeness"
+          $ref: "#/components/schemas/DqiNumberTrait"
+        timerelatedRepresentativeness:
+          description: Data quality rating for data in context of time.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#timerelatedRepresentativeness"
+          $ref: "#/components/schemas/DqiNumberTrait"
+        dataQualityRating:
+          description: "Data quality Rating measurement. Value between 1-5. Depending\
+            \ on TechnologicalRepresentativeness[TER], GeographicalRepresentativeness[GER]\
+            \ and TimeRepresentativeness[TIR]."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#dataQualityRating"
+          $ref: "#/components/schemas/DqiNumberTrait"
+        manufacturerPartId:
+          description: Part ID as assigned by the manufacturer of the part. The Part
+            ID identifies the part (as designed) in the manufacturer`s dataspace.
+            The Part ID does not reference a specific instance of a part and thus
+            should not be confused with the serial number or batch number.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#manufacturerPartId"
+          $ref: "#/components/schemas/Text"
+        validityPeriod:
+          description: |-
+            The period of time during which the parent-child relation is valid. This relates to whether a child part can be built into or used in the production of the parent part at a given time.
+            If no validity period is given the relation is considered valid at any point in time.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#validityPeriod"
+          $ref: "#/components/schemas/ValidityPeriodCharacteristic"
+        siteIdentifier:
+          description: Site identifier of the providing Catena-X participant
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#siteIdentifier"
+          $ref: "#/components/schemas/BpnsTrait"
+        legalidentifier:
+          description: Legal identifier of the providing Catena-X participant.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#legalidentifier"
+          $ref: "#/components/schemas/BpnlTrait"
+        productQualityParameter:
+          description: Quality parameters of the product.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#productQualityParameter"
+          $ref: "#/components/schemas/StringArray"
+        contentC02Metals:
+          description: CO2 relevant metals contained in the product.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf_for_battery_component_supplier:1.0.0#contentC02Metals"
+          $ref: "#/components/schemas/StringArray"
+      required:
+      - pcfValues
+      - secondaryEmissionFactorSources
+      - customerPartId
+      - technologicalRepresentativeness
+      - geographicalRepresentativeness
+      - timerelatedRepresentativeness
+      - dataQualityRating
+      - manufacturerPartId
+      - validityPeriod
+      - siteIdentifier
+      - legalidentifier
+      - productQualityParameter
+      - contentC02Metals
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    PcfForBatteryComponentSupplier:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PagingSchema"
+      description: The request was successful.
+  requestBodies:
+    PcfForBatteryComponentSupplier:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PcfForBatteryComponentSupplier"
+      required: true
