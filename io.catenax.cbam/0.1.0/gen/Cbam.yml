@@ -1,0 +1,623 @@
+---
+openapi: 3.0.3
+info:
+  title: Cbam
+  version: v0
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#Cbam"
+servers:
+- url: catenax.io/api/v0
+  variables:
+    api-version:
+      default: v0
+paths:
+  /{tenant-id}/cbam:
+    get:
+      tags:
+      - Cbam
+      operationId: getCbam
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: "#/components/responses/Cbam"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          $ref: "#/components/schemas/Cbam"
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    FreeStringCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#FreeStringCharacteristic"
+      description: Characteristic for text properties without any constraints.
+    KeyValueEntity:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#KeyValueEntity"
+      type: object
+      properties:
+        key:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#key"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        value:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#value"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+      required:
+      - key
+      - value
+    KeyValueCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#KeyValueCharacteristic"
+      type: array
+      items:
+        $ref: "#/components/schemas/KeyValueEntity"
+    TransactionReferenceDocumentLinkCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#TransactionReferenceDocumentLinkCharacteristic"
+      type: object
+      properties:
+        refDocElement:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#refDocElement"
+          $ref: "#/components/schemas/KeyValueCharacteristic"
+        refDocId:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#refDocId"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        refDocType:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#refDocType"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+      required:
+      - refDocElement
+      - refDocId
+      - refDocType
+    BooleanCharacteristic:
+      type: boolean
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#BooleanCharacteristic"
+    OperatorIdsCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#OperatorIdsCharacteristic"
+      type: object
+      properties:
+        operatorBpnl:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#operatorBpnl"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        operatorCbamId:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#operatorCbamId"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        otherIds:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#otherIds"
+          $ref: "#/components/schemas/KeyValueCharacteristic"
+      required:
+      - operatorBpnl
+      - operatorCbamId
+      - otherIds
+    CountryAlpha3Trait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.standard_codes:1.0.0#CountryAlpha3Trait"
+      description: trait for 3 letter country code
+      pattern: "^[A-Z]{3}$"
+    AddressCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#AddressCharacteristic"
+      type: object
+      properties:
+        city:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#city"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        street:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#street"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        country:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#countryCode"
+          $ref: "#/components/schemas/CountryAlpha3Trait"
+      required:
+      - city
+      - street
+      - country
+    OperatorIdentificationCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#OperatorIdentificationCharacteristic"
+      type: object
+      properties:
+        operatorIsSupplier:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#operatorIsSupplier"
+          $ref: "#/components/schemas/BooleanCharacteristic"
+        operatorIds:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#operatorIds"
+          $ref: "#/components/schemas/OperatorIdsCharacteristic"
+        operatorName:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#operatorName"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        operatorContactEmailAddress:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#operatorContactEmailAddress"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        address:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#address"
+          $ref: "#/components/schemas/AddressCharacteristic"
+      required:
+      - operatorIsSupplier
+      - operatorIds
+      - operatorName
+      - operatorContactEmailAddress
+      - address
+    InstallationAddressCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#InstallationAddressCharacteristic"
+      type: object
+      properties:
+        countryCode:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#countryCode"
+          $ref: "#/components/schemas/CountryAlpha3Trait"
+        city:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#city"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        longitude:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#longitude"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        latitude:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#latitude"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        typeOfCoordinates:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#typeOfCoordinates"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        pilotOrParcelNumber:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#pilotOrParcelNumber"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        unloCode:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#unloCode"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+      required:
+      - countryCode
+      - city
+      - longitude
+      - latitude
+      - typeOfCoordinates
+      - pilotOrParcelNumber
+      - unloCode
+    InstallationIdsCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#InstallationIdsCharacteristic"
+      type: object
+      properties:
+        installationCbamId:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#installationCbamId"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        otherIds:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#otherIds"
+          $ref: "#/components/schemas/KeyValueCharacteristic"
+        installationName:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#installationName"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        installationAddress:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#installationAddress"
+          $ref: "#/components/schemas/InstallationAddressCharacteristic"
+      required:
+      - installationCbamId
+      - otherIds
+      - installationName
+      - installationAddress
+    InstallationIdentificationCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#InstallationIdentificationCharacteristic"
+      type: object
+      properties:
+        installationIds:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#installationIds"
+          $ref: "#/components/schemas/InstallationIdsCharacteristic"
+      required:
+      - installationIds
+    DateCharacteristic:
+      type: string
+      format: date
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#DateCharacteristic"
+    ProductionMethodActivityDataCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#ProductionMethodActivityDataCharacteristic"
+      type: object
+      properties:
+        referencePeriodStart:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#referencePeriodStart"
+          $ref: "#/components/schemas/DateCharacteristic"
+        referencePeriodEnd:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#referencePeriodEnd"
+          $ref: "#/components/schemas/DateCharacteristic"
+      required:
+      - referencePeriodStart
+      - referencePeriodEnd
+    ProductionMethodCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#ProductionMethodCharacteristic"
+      type: object
+      properties:
+        methodId:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#methodId"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        specificSteelMillId:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#specificSteelMillId"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        additionalInformation:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#additionalInformation"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        productionMethodActivityData:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#productionMethodActivityData"
+          $ref: "#/components/schemas/ProductionMethodActivityDataCharacteristic"
+      required:
+      - methodId
+      - specificSteelMillId
+      - additionalInformation
+      - productionMethodActivityData
+    FreeNumberCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#FreeNumberCharacteristic"
+    DirectEmissionsCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#DirectEmissionsCharacteristic"
+      type: object
+      properties:
+        additionalInformation:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#additionalInformationDirectEmissions"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        specificEmbeddedEmissionsDirect:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#specificEmbeddedEmissionsDirect"
+          $ref: "#/components/schemas/FreeNumberCharacteristic"
+        countryCode:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#countryCode"
+          $ref: "#/components/schemas/CountryAlpha3Trait"
+      required:
+      - additionalInformation
+      - specificEmbeddedEmissionsDirect
+      - countryCode
+    IndirectEmissionsCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#IndirectEmissionsCharacteristic"
+      type: object
+      properties:
+        sourceOfEmissionFactor:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#sourceOfEmissionFactor"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        emissionFactorTonnesCo2PerMwh:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#emissionFactorTonnesCo2PerMwh"
+          $ref: "#/components/schemas/FreeNumberCharacteristic"
+        sourceOfEmissionFactorValue:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#sourceOfEmissionFactorValue"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        specificEmbeddedEmissionIndirect:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#specificEmbeddedEmissionIndirect"
+          $ref: "#/components/schemas/FreeNumberCharacteristic"
+        electricityConsumedMwhPerTonnesGood:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#electricityConsumedMwhPerTonnesGood"
+          $ref: "#/components/schemas/FreeNumberCharacteristic"
+        sourceOfElectricity:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#sourceOfElectricity"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+      required:
+      - sourceOfEmissionFactor
+      - emissionFactorTonnesCo2PerMwh
+      - sourceOfEmissionFactorValue
+      - specificEmbeddedEmissionIndirect
+      - electricityConsumedMwhPerTonnesGood
+      - sourceOfElectricity
+    CurrencyTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.standard_codes:1.0.0#CurrencyTrait"
+      description: ISO 4217 regex
+      pattern: "^[A-Z]{3}$"
+    CarbonPricePaidEntity:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#CarbonPricePaidEntity"
+      type: object
+      properties:
+        typeOfInstrument:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#typeOfInstrument"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        independendPersonId:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#independendPersonId"
+          $ref: "#/components/schemas/KeyValueCharacteristic"
+        descriptionAndIndicationOfLegalAct:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#descriptionAndIndicationOfLegalAct"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        amountOfCarbonPricePaid:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#amountOfCarbonPricePaid"
+          $ref: "#/components/schemas/FreeNumberCharacteristic"
+        currency:
+          description: currency code according to ISO 4217.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.standard_codes:1.0.0#currency"
+          $ref: "#/components/schemas/CurrencyTrait"
+      required:
+      - typeOfInstrument
+      - independendPersonId
+      - descriptionAndIndicationOfLegalAct
+      - amountOfCarbonPricePaid
+      - currency
+    CarbonPricePaidCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#CarbonPricePaidCharacteristic"
+      type: array
+      items:
+        $ref: "#/components/schemas/CarbonPricePaidEntity"
+    EmissionsRecordsEntity:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#EmissionsRecordsEntity"
+      type: object
+      properties:
+        productionMethod:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#productionMethod"
+          $ref: "#/components/schemas/ProductionMethodCharacteristic"
+        directEmissions:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#directEmissions"
+          $ref: "#/components/schemas/DirectEmissionsCharacteristic"
+        indirectEmissions:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#indirectEmissions"
+          $ref: "#/components/schemas/IndirectEmissionsCharacteristic"
+        freeAllocationFactor:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#freeAllocationFactor"
+          $ref: "#/components/schemas/FreeNumberCharacteristic"
+        carbonPricePaid:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#carbonPricePaid"
+          $ref: "#/components/schemas/CarbonPricePaidCharacteristic"
+      required:
+      - productionMethod
+      - directEmissions
+      - indirectEmissions
+      - freeAllocationFactor
+      - carbonPricePaid
+    EmissionsRecordCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#EmissionsRecordCharacteristic"
+      type: array
+      items:
+        $ref: "#/components/schemas/EmissionsRecordsEntity"
+    FreeDateCharacteristic:
+      type: string
+      format: date
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#FreeDateCharacteristic"
+    FreeTextCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#FreeTextCharacteristic"
+    AttestationOfConformanceCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#AttestationOfConformanceCharacteristic"
+      type: object
+      properties:
+        completedAt:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#completedAt"
+          $ref: "#/components/schemas/FreeDateCharacteristic"
+        attestationOfConformanceLink:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#attestationOfConformanceLink"
+          $ref: "#/components/schemas/FreeTextCharacteristic"
+        attestationOfConformanceId:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#attestationOfConformanceId"
+          $ref: "#/components/schemas/FreeTextCharacteristic"
+        accreditationBodyName:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#accreditationBodyName"
+          $ref: "#/components/schemas/FreeTextCharacteristic"
+        providerId:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#providerId"
+          $ref: "#/components/schemas/FreeTextCharacteristic"
+        providerName:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#providerName"
+          $ref: "#/components/schemas/FreeTextCharacteristic"
+        standardName:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#standardName"
+          $ref: "#/components/schemas/FreeTextCharacteristic"
+        attestationStandard:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#attestationStandard"
+          $ref: "#/components/schemas/FreeTextCharacteristic"
+        attestationType:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#attestationType"
+          $ref: "#/components/schemas/FreeTextCharacteristic"
+      required:
+      - completedAt
+      - attestationOfConformanceLink
+      - attestationOfConformanceId
+      - accreditationBodyName
+      - providerId
+      - providerName
+      - standardName
+      - attestationStandard
+      - attestationType
+    InstallationEntity:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#InstallationEntity"
+      type: object
+      properties:
+        installationIdentification:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#installationIdentification"
+          $ref: "#/components/schemas/InstallationIdentificationCharacteristic"
+        emissionsRecords:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#emissionsRecords"
+          $ref: "#/components/schemas/EmissionsRecordCharacteristic"
+        attestationOfConformance:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#attestationOfConformance"
+          $ref: "#/components/schemas/AttestationOfConformanceCharacteristic"
+      required:
+      - installationIdentification
+      - emissionsRecords
+      - attestationOfConformance
+    InstallationCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#InstallationCharacteristic"
+      type: array
+      items:
+        $ref: "#/components/schemas/InstallationEntity"
+    OperatorEntity:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#OperatorEntity"
+      type: object
+      properties:
+        transactionReferenceDocumentLink:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#transactionReferenceDocumentLink"
+          $ref: "#/components/schemas/TransactionReferenceDocumentLinkCharacteristic"
+        operatorIdentification:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#operatorIdentification"
+          $ref: "#/components/schemas/OperatorIdentificationCharacteristic"
+        installation:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#installation"
+          $ref: "#/components/schemas/InstallationCharacteristic"
+      required:
+      - transactionReferenceDocumentLink
+      - operatorIdentification
+      - installation
+    OperatorListCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#OperatorListCharacteristic"
+      type: array
+      items:
+        $ref: "#/components/schemas/OperatorEntity"
+    BusinessTransactionDetailCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#BusinessTransactionDetailCharacteristic"
+      type: object
+      properties:
+        requestNetMass:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#requestNetMass"
+          $ref: "#/components/schemas/FreeNumberCharacteristic"
+        requestReferencePeriodEnd:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#requestReferencePeriodEnd"
+          $ref: "#/components/schemas/DateCharacteristic"
+        requestReferencePeriodStart:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#requestReferencePeriodStart"
+          $ref: "#/components/schemas/DateCharacteristic"
+        transactionReferenceDocuments:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#transactionReferenceDocuments"
+          $ref: "#/components/schemas/KeyValueCharacteristic"
+      required:
+      - requestNetMass
+      - requestReferencePeriodEnd
+      - requestReferencePeriodStart
+      - transactionReferenceDocuments
+    CnCodeTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#CnCodeTrait"
+      description: Characteristic for text properties without any constraints.
+      maxLength: 8
+      minLength: 8
+    GoodEntity:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#GoodEntity"
+      type: object
+      properties:
+        operator:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#operator"
+          $ref: "#/components/schemas/OperatorListCharacteristic"
+        businessTransactionDetails:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#businessTransactionDetails"
+          $ref: "#/components/schemas/BusinessTransactionDetailCharacteristic"
+        productDescription:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#productDescription"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+        productIds:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#productIds"
+          $ref: "#/components/schemas/KeyValueCharacteristic"
+        cnCode:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#cnCode"
+          $ref: "#/components/schemas/CnCodeTrait"
+      required:
+      - operator
+      - businessTransactionDetails
+      - productDescription
+      - cnCode
+    GoodsListCharaceristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#GoodsListCharaceristic"
+      type: array
+      items:
+        $ref: "#/components/schemas/GoodEntity"
+    CompanyIdsCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#CompanyIdsCharacteristic"
+      type: object
+      properties:
+        responseCompanyIds:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#responseCompanyIds"
+          $ref: "#/components/schemas/KeyValueCharacteristic"
+        requestingCompanyIds:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#requestingCompanyIds"
+          $ref: "#/components/schemas/KeyValueCharacteristic"
+      required:
+      - responseCompanyIds
+      - requestingCompanyIds
+    Cbam:
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#Cbam"
+      properties:
+        good:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#good"
+          $ref: "#/components/schemas/GoodsListCharaceristic"
+        companyIds:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#companyIds"
+          $ref: "#/components/schemas/CompanyIdsCharacteristic"
+        requestedElements:
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.cbam:0.1.0#requestedElements"
+          $ref: "#/components/schemas/FreeStringCharacteristic"
+      required:
+      - good
+      - companyIds
+      - requestedElements
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Cbam:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PagingSchema"
+      description: The request was successful.
+  requestBodies:
+    Cbam:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Cbam"
+      required: true

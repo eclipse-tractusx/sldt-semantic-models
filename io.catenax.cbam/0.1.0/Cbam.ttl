@@ -1,0 +1,368 @@
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.cbam:0.1.0#> .
+@prefix ext-codes: <urn:samm:io.catenax.shared.standard_codes:1.0.0#> .
+@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+
+:Cbam a samm:Aspect ;
+   samm:properties ( :good :companyIds :requestedElements ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:good a samm:Property ;
+   samm:characteristic :GoodsListCharaceristic .
+
+:companyIds a samm:Property ;
+   samm:characteristic :CompanyIdsCharacteristic .
+
+:requestedElements a samm:Property ;
+   samm:preferredName "requested elements"@en ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:GoodsListCharaceristic a samm-c:List ;
+   samm:dataType :GoodEntity .
+
+:CompanyIdsCharacteristic a samm:Characteristic ;
+   samm:dataType :CompanyIdsEntity .
+
+:FreeStringCharacteristic a samm:Characteristic ;
+   samm:preferredName "free string characteristic"@en ;
+   samm:description "Characteristic for text properties without any constraints."@en ;
+   samm:dataType xsd:string .
+
+:GoodEntity a samm:Entity ;
+   samm:properties ( :operator :businessTransactionDetails :productDescription [ samm:property :productIds; samm:optional true ] :cnCode ) .
+
+:CompanyIdsEntity a samm:Entity ;
+   samm:preferredName "company identifiers"@en ;
+   samm:properties ( :responseCompanyIds :requestingCompanyIds ) .
+
+:operator a samm:Property ;
+   samm:characteristic :OperatorListCharacteristic .
+
+:businessTransactionDetails a samm:Property ;
+   samm:characteristic :BusinessTransactionDetailCharacteristic .
+
+:productDescription a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:productIds a samm:Property ;
+   samm:characteristic :KeyValueCharacteristic .
+
+:cnCode a samm:Property ;
+   samm:characteristic :CnCodeTrait .
+
+:responseCompanyIds a samm:Property ;
+   samm:characteristic :KeyValueCharacteristic .
+
+:requestingCompanyIds a samm:Property ;
+   samm:characteristic :KeyValueCharacteristic .
+
+:OperatorListCharacteristic a samm-c:List ;
+   samm:dataType :OperatorEntity .
+
+:BusinessTransactionDetailCharacteristic a samm:Characteristic ;
+   samm:dataType :BusinessTransactionDetailsEntity .
+
+:KeyValueCharacteristic a samm-c:List ;
+   samm:dataType :KeyValueEntity .
+
+:CnCodeTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :FreeStringCharacteristic ;
+   samm-c:constraint :CnCodeLengthConstraint .
+
+:OperatorEntity a samm:Entity ;
+   samm:properties ( :transactionReferenceDocumentLink :operatorIdentification :installation ) .
+
+:BusinessTransactionDetailsEntity a samm:Entity ;
+   samm:properties ( :requestNetMass :requestReferencePeriodEnd :requestReferencePeriodStart :transactionReferenceDocuments ) .
+
+:KeyValueEntity a samm:Entity ;
+   samm:properties ( :key :value ) .
+
+:CnCodeLengthConstraint a samm-c:LengthConstraint ;
+   samm-c:minValue "8"^^xsd:nonNegativeInteger ;
+   samm-c:maxValue "8"^^xsd:nonNegativeInteger .
+
+:transactionReferenceDocumentLink a samm:Property ;
+   samm:characteristic :TransactionReferenceDocumentLinkCharacteristic .
+
+:operatorIdentification a samm:Property ;
+   samm:characteristic :OperatorIdentificationCharacteristic .
+
+:installation a samm:Property ;
+   samm:characteristic :InstallationCharacteristic .
+
+:requestNetMass a samm:Property ;
+   samm:characteristic :FreeNumberCharacteristic .
+
+:requestReferencePeriodEnd a samm:Property ;
+   samm:characteristic :DateCharacteristic .
+
+:requestReferencePeriodStart a samm:Property ;
+   samm:characteristic :DateCharacteristic .
+
+:transactionReferenceDocuments a samm:Property ;
+   samm:characteristic :KeyValueCharacteristic .
+
+:key a samm:Property ;
+   samm:preferredName "key"@en ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:value a samm:Property ;
+   samm:preferredName "value"@en ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:TransactionReferenceDocumentLinkCharacteristic a samm:Characteristic ;
+   samm:dataType :TransactionReferenceDocumentLink .
+
+:OperatorIdentificationCharacteristic a samm:Characteristic ;
+   samm:dataType :OperatorIdentificationEntity .
+
+:InstallationCharacteristic a samm-c:List ;
+   samm:dataType :InstallationEntity .
+
+:FreeNumberCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:float .
+
+:DateCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:date .
+
+:TransactionReferenceDocumentLink a samm:Entity ;
+   samm:properties ( :refDocElement :refDocId :refDocType ) .
+
+:OperatorIdentificationEntity a samm:Entity ;
+   samm:properties ( :operatorIsSupplier :operatorIds :operatorName :operatorContactEmailAddress :address ) .
+
+:InstallationEntity a samm:Entity ;
+   samm:properties ( :installationIdentification :emissionsRecords :attestationOfConformance ) .
+
+:refDocElement a samm:Property ;
+   samm:characteristic :KeyValueCharacteristic .
+
+:refDocId a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic ;
+   samm:exampleValue "INV-2024-12345" .
+
+:refDocType a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic ;
+   samm:exampleValue "invoice" .
+
+:operatorIsSupplier a samm:Property ;
+   samm:characteristic :BooleanCharacteristic .
+
+:operatorIds a samm:Property ;
+   samm:characteristic :OperatorIdsCharacteristic .
+
+:operatorName a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:operatorContactEmailAddress a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:address a samm:Property ;
+   samm:characteristic :AddressCharacteristic .
+
+:installationIdentification a samm:Property ;
+   samm:characteristic :InstallationIdentificationCharacteristic .
+
+:emissionsRecords a samm:Property ;
+   samm:characteristic :EmissionsRecordCharacteristic .
+
+:BooleanCharacteristic a samm:Characteristic ;
+   samm:dataType xsd:boolean .
+
+:OperatorIdsCharacteristic a samm:Characteristic ;
+   samm:dataType :OperatorIdsEntity .
+
+:AddressCharacteristic a samm:Characteristic ;
+   samm:dataType :AddressEntity .
+
+:InstallationIdentificationCharacteristic a samm:Characteristic ;
+   samm:dataType :InstallationIdentificationEntity .
+
+:EmissionsRecordCharacteristic a samm-c:List ;
+   samm:dataType :EmissionsRecordsEntity .
+
+:OperatorIdsEntity a samm:Entity ;
+   samm:properties ( :operatorBpnl :operatorCbamId :otherIds ) .
+
+:AddressEntity a samm:Entity ;
+   samm:properties ( :city :street [ samm:property :countryCode; samm:payloadName "country" ] ) .
+
+:InstallationIdentificationEntity a samm:Entity ;
+   samm:properties ( :installationIds ) .
+
+:EmissionsRecordsEntity a samm:Entity ;
+   samm:properties ( :productionMethod :directEmissions :indirectEmissions :freeAllocationFactor :carbonPricePaid ) .
+
+:operatorBpnl a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:operatorCbamId a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:otherIds a samm:Property ;
+   samm:characteristic :KeyValueCharacteristic .
+
+:city a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:street a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:countryCode a samm:Property ;
+   samm:characteristic ext-codes:CountryAlpha3Trait .
+
+:installationIds a samm:Property ;
+   samm:characteristic :InstallationIdsCharacteristic .
+
+:productionMethod a samm:Property ;
+   samm:characteristic :ProductionMethodCharacteristic .
+
+:directEmissions a samm:Property ;
+   samm:characteristic :DirectEmissionsCharacteristic .
+
+:indirectEmissions a samm:Property ;
+   samm:characteristic :IndirectEmissionsCharacteristic .
+
+:freeAllocationFactor a samm:Property ;
+   samm:characteristic :FreeNumberCharacteristic .
+
+:carbonPricePaid a samm:Property ;
+   samm:characteristic :CarbonPricePaidCharacteristic .
+
+:InstallationIdsCharacteristic a samm:Characteristic ;
+   samm:dataType :InstallationIdsEntity .
+
+:ProductionMethodCharacteristic a samm:Characteristic ;
+   samm:dataType :ProductionMethodEntity .
+
+:DirectEmissionsCharacteristic a samm:Characteristic ;
+   samm:dataType :DirectEmissionsEntity .
+
+:IndirectEmissionsCharacteristic a samm:Characteristic ;
+   samm:dataType :IndirectEmissionsEntity .
+
+:CarbonPricePaidCharacteristic a samm-c:List ;
+   samm:dataType :CarbonPricePaidEntity .
+
+:InstallationIdsEntity a samm:Entity ;
+   samm:properties ( :installationCbamId :otherIds :installationName :installationAddress ) .
+
+:ProductionMethodEntity a samm:Entity ;
+   samm:properties ( :methodId :specificSteelMillId :additionalInformation :productionMethodActivityData ) .
+
+:DirectEmissionsEntity a samm:Entity ;
+   samm:properties ( [ samm:property :additionalInformationDirectEmissions; samm:payloadName "additionalInformation" ] :specificEmbeddedEmissionsDirect :countryCode ) .
+
+:IndirectEmissionsEntity a samm:Entity ;
+   samm:properties ( :sourceOfEmissionFactor :emissionFactorTonnesCo2PerMwh :sourceOfEmissionFactorValue :specificEmbeddedEmissionIndirect :electricityConsumedMwhPerTonnesGood :sourceOfElectricity ) .
+
+:CarbonPricePaidEntity a samm:Entity ;
+   samm:properties ( :typeOfInstrument :independendPersonId :descriptionAndIndicationOfLegalAct :amountOfCarbonPricePaid ext-codes:currency ) .
+
+:installationCbamId a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:installationName a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:installationAddress a samm:Property ;
+   samm:characteristic :InstallationAddressCharacteristic .
+
+:methodId a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:specificSteelMillId a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:additionalInformation a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:productionMethodActivityData a samm:Property ;
+   samm:characteristic :ProductionMethodActivityDataCharacteristic .
+
+:additionalInformationDirectEmissions a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:specificEmbeddedEmissionsDirect a samm:Property ;
+   samm:characteristic :FreeNumberCharacteristic .
+
+:sourceOfEmissionFactor a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:emissionFactorTonnesCo2PerMwh a samm:Property ;
+   samm:characteristic :FreeNumberCharacteristic .
+
+:sourceOfEmissionFactorValue a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:specificEmbeddedEmissionIndirect a samm:Property ;
+   samm:characteristic :FreeNumberCharacteristic .
+
+:electricityConsumedMwhPerTonnesGood a samm:Property ;
+   samm:characteristic :FreeNumberCharacteristic .
+
+:sourceOfElectricity a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:typeOfInstrument a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:independendPersonId a samm:Property ;
+   samm:characteristic :KeyValueCharacteristic .
+
+:descriptionAndIndicationOfLegalAct a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:amountOfCarbonPricePaid a samm:Property ;
+   samm:characteristic :FreeNumberCharacteristic ;
+   samm:exampleValue "12000.00"^^xsd:float .
+
+:InstallationAddressCharacteristic a samm:Characteristic ;
+   samm:dataType :InstallationAddressEntity .
+
+:ProductionMethodActivityDataCharacteristic a samm:Characteristic ;
+   samm:dataType :ProductionMethodActivityDataEntity .
+
+:InstallationAddressEntity a samm:Entity ;
+   samm:properties ( :countryCode :city :longitude :latitude :typeOfCoordinates :pilotOrParcelNumber :unloCode ) .
+
+:ProductionMethodActivityDataEntity a samm:Entity ;
+   samm:properties ( :referencePeriodStart :referencePeriodEnd ) .
+
+:longitude a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:latitude a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:typeOfCoordinates a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:pilotOrParcelNumber a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:unloCode a samm:Property ;
+   samm:characteristic :FreeStringCharacteristic .
+
+:referencePeriodStart a samm:Property ;
+   samm:characteristic :DateCharacteristic .
+
+:referencePeriodEnd a samm:Property ;
+   samm:characteristic :DateCharacteristic .
+
+:OperatorCharacteristic a samm:Characteristic ;
+   samm:dataType :OperatorEntity .
+
+:GoodCharaceristic a samm:Characteristic ;
+   samm:dataType :GoodEntity .
+
