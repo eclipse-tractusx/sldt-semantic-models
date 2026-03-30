@@ -1,0 +1,208 @@
+#######################################################################
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.us_tariff_information:2.0.0#> .
+@prefix ext-classification: <urn:samm:io.catenax.shared.material_classification:1.0.0#> .
+@prefix ext-codes: <urn:samm:io.catenax.shared.standard_codes:1.0.0#> .
+@prefix ext-common: <urn:samm:io.catenax.shared.industry_core.common:1.0.0#> .
+@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+
+:UsTariffInformation a samm:Aspect ;
+   samm:preferredName "US tariff information"@en ;
+   samm:description "Information required for tariff declaration."@en ;
+   samm:properties ( :materialList [ samm:property :partWeight; samm:optional true ] :partOriginCountry [ samm:property :referenceNumber; samm:optional true ] :customsClassification :partValue ext-common:globalAssetId ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:materialList a samm:Property ;
+   samm:preferredName "material list"@en ;
+   samm:description "Includes all materials required by the data consumer to submit a U.S. tariff declaration for their component."@en ;
+   samm:characteristic :MaterialListCollection .
+
+:partWeight a samm:Property ;
+   samm:preferredName "part weight"@en ;
+   samm:description "Total weight in kg of the part."@en ;
+   samm:characteristic :WeightCharacteristic ;
+   samm:exampleValue "1000"^^xsd:float .
+
+:partOriginCountry a samm:Property ;
+   samm:preferredName "part origin country"@en ;
+   samm:description "Country of origin for the part."@en ;
+   samm:characteristic ext-codes:CountryAlpha3Trait ;
+   samm:exampleValue "USA" .
+
+:referenceNumber a samm:Property ;
+   samm:preferredName "reference number"@en ;
+   samm:description "Latest Purchase Order Number (PO) or Advanced Shipping Notice (ASN)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "774773he878" .
+
+:customsClassification a samm:Property ;
+   samm:preferredName "customs classification"@en ;
+   samm:description "Customs classification codes of the material."@en ;
+   samm:characteristic :CustomsClassificationCharacteristic .
+
+:partValue a samm:Property ;
+   samm:preferredName "part value"@en ;
+   samm:description "Total monetary value of the part."@en ;
+   samm:characteristic :ValueCharacteristic .
+
+:MaterialListCollection a samm-c:Collection ;
+   samm:preferredName "material list collection"@en ;
+   samm:description "Characteristic of the materialList property defined as a Collection."@en ;
+   samm:dataType :MaterialListEntity .
+
+:WeightCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Weight Characteristic"@en ;
+   samm:description "Characteristic for the partWeight property in kilogram."@en ;
+   samm:dataType xsd:decimal ;
+   samm-c:unit samm-u:kilogram .
+
+:CustomsClassificationCharacteristic a samm:Characteristic ;
+   samm:preferredName "customs classification characteristic"@en ;
+   samm:description "Characteristic of the customsClassification property."@en ;
+   samm:dataType :CustomsClassificationEntity .
+
+:ValueCharacteristic a samm-c:SingleEntity ;
+   samm:preferredName "value characteristic"@en ;
+   samm:description "Characteristic of value property."@en ;
+   samm:dataType :ValueEntity .
+
+:MaterialListEntity a samm:Entity ;
+   samm:preferredName "material list entity"@en ;
+   samm:description "Entity of the materialList entity."@en ;
+   samm:properties ( :processing :materialOrigin :materialValue :customsClassification ext-classification:materialClassification ) .
+
+:CustomsClassificationEntity a samm:Entity ;
+   samm:preferredName "customs classification entity"@en ;
+   samm:description "Entity of the custom classification."@en ;
+   samm:properties ( :customClassificationCode :customClassificationCodingSystem ) .
+
+:ValueEntity a samm:Entity ;
+   samm:preferredName "value entity"@en ;
+   samm:description "Value Entity to group the monetary value with the respective currency."@en ;
+   samm:properties ( :amount ext-codes:currency ) .
+
+:processing a samm:Property ;
+   samm:preferredName "processing"@en ;
+   samm:description "Processing details all operations performed during the production of the part."@en ;
+   samm:characteristic :ProcessingListCollection .
+
+:materialOrigin a samm:Property ;
+   samm:preferredName "material origin"@en ;
+   samm:description "List the countries of origin from which the material originates."@en ;
+   samm:characteristic :MaterialOriginListCollection .
+
+:materialValue a samm:Property ;
+   samm:preferredName "material value"@en ;
+   samm:description "Total value of material."@en ;
+   samm:characteristic :ValueCharacteristic .
+
+:customClassificationCode a samm:Property ;
+   samm:preferredName "custom classification code"@en ;
+   samm:description "Custom classification code according to hs or hts."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "1234.56.7890" .
+
+:customClassificationCodingSystem a samm:Property ;
+   samm:preferredName "custom classification coding system"@en ;
+   samm:description "Coding system according to which the custom classification code was created."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "HS" .
+
+:amount a samm:Property ;
+   samm:preferredName "amount"@en ;
+   samm:description "Amount of the value of the material."@en ;
+   samm:characteristic :AmountCharacteristic ;
+   samm:exampleValue "50.0"^^xsd:float .
+
+:ProcessingListCollection a samm-c:Collection ;
+   samm:preferredName "processing list collection"@en ;
+   samm:description "Characteristic of the processing information property  defined as a Collection."@en ;
+   samm:dataType :ProcessingListEntity .
+
+:MaterialOriginListCollection a samm-c:Collection ;
+   samm:preferredName "material origin list collection"@en ;
+   samm:description "Characteristic of the origin property defined as a Collection."@en ;
+   samm:dataType :MaterialOriginListEntity .
+
+:AmountCharacteristic a samm:Characteristic ;
+   samm:preferredName "amount characteristic"@en ;
+   samm:description "Characteristic of the amount."@en ;
+   samm:dataType xsd:float .
+
+:ProcessingListEntity a samm:Entity ;
+   samm:preferredName "processing list entity"@en ;
+   samm:description "Entity of the processing property."@en ;
+   samm:properties ( :processingType [ samm:property :certificateResource; samm:optional true ] :processingCountry ) .
+
+:MaterialOriginListEntity a samm:Entity ;
+   samm:preferredName "material origin list entity"@en ;
+   samm:description "Entity of the material origin property."@en ;
+   samm:properties ( :originWeight :valuePercentage :materialOriginCountry ) .
+
+:processingType a samm:Property ;
+   samm:preferredName "processing type"@en ;
+   samm:description "Description of the processing type."@en ;
+   samm:characteristic :ProcessingTypeCharacteristic ;
+   samm:exampleValue "Melting" .
+
+:processingCountry a samm:Property ;
+   samm:preferredName "processing country"@en ;
+   samm:description "Country in which a specific processing step took place."@en ;
+   samm:characteristic ext-codes:CountryAlpha3Trait ;
+   samm:exampleValue "USA" .
+
+:originWeight a samm:Property ;
+   samm:preferredName "origin weight"@en ;
+   samm:description "Total weight in kg of the material for one originCountry."@en ;
+   samm:characteristic :WeightCharacteristic ;
+   samm:exampleValue "300.0"^^xsd:float .
+
+:valuePercentage a samm:Property ;
+   samm:preferredName "value percentage"@en ;
+   samm:description "Percentage of the total value is attributed to origin property."@en ;
+   samm:characteristic :ValuePercentageCharacteristic ;
+   samm:exampleValue "80"^^xsd:float .
+
+:materialOriginCountry a samm:Property ;
+   samm:preferredName "material origin country"@en ;
+   samm:description "Country in which the material was originally produced or extracted, expressed as an ISO 3166-1 alpha-3 country code."@en ;
+   samm:characteristic ext-codes:CountryAlpha3Trait ;
+   samm:exampleValue "USA" .
+
+:ProcessingTypeCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "processing type characteristic"@en ;
+   samm:description "Enumeration of processingTypes."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Smelting" "Melting" "Casting" "Pouring" ) .
+
+:ValuePercentageCharacteristic a samm-c:Measurement ;
+   samm:preferredName "value percentage characteristic"@en ;
+   samm:description "Characteristic of the valuePercentage property."@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit samm-u:percent .
+
+:certificateResource a samm:Property ;
+   samm:preferredName "certificateResource"@en ;
+   samm:description "External reference / URI to the the corresponding certificate."@en ;
+
+   samm:characteristic samm-c:ResourcePath .

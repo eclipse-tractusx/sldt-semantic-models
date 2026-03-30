@@ -1,0 +1,222 @@
+#######################################################################
+# Copyright(c) 2025 Lisa Dräxlmaier GmbH
+# Copyright(c) 2025 Robert Bosch Manufacturing Solutions GmbH
+# Copyright(c) 2025 Robert Bosch GmbH
+# Copyright(c) 2025 Henkel AG & Co. KGaA
+# Copyright(c) 2025 BASF SE
+# Copyright(c) 2025 Schaeffler AG
+# Copyright(c) 2025 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright(c) 2025 SAP SE
+# Copyright(c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.certificate_of_analysis:1.0.0#> .
+@prefix ext-batch: <urn:samm:io.catenax.batch:3.0.1#> .
+@prefix ext-information: <urn:samm:io.catenax.delivery_information:2.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-planned: <urn:samm:io.catenax.part_as_planned:2.0.0#> .
+
+:CertificateOfAnalysis a samm:Aspect ;
+   samm:preferredName "Certificate of Analysis"@en ;
+   samm:description "The Certificate of Analysis documents the material (e.g. chemical compound) properties describing a material's quality or performance factors specific to manufacturing batch.\nThe exact material properties depend on the material type and the following manufacturing processes. They are defined bilaterally between a supplier (manufacturer) and customer."@en ;
+   samm:properties ( :customer :supplier :certificateMetaData :materialProperties :productTypeInformation :productInstanceInformation ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:customer a samm:Property ;
+   samm:preferredName "Customer"@en ;
+   samm:description "The customer as a BPNL reference."@en ;
+   samm:characteristic ext-number:BpnlTrait .
+
+:supplier a samm:Property ;
+   samm:preferredName "Supplier"@en ;
+   samm:description "The supplier (manufacturer) as a BPNL reference."@en ;
+   samm:characteristic ext-number:BpnlTrait .
+
+:certificateMetaData a samm:Property ;
+   samm:preferredName "Certificate meta data"@en ;
+   samm:description "Meta data about this certificate"@en ;
+   samm:characteristic :CertificateMetaDataCharacteristic .
+
+:materialProperties a samm:Property ;
+   samm:preferredName "Material properties"@en ;
+   samm:description "A set of material properties containing the specification and the actual material analysis measurement results.\n\nThe properties may vary based on the material type as well as the agreed specification of the material and the analysis between the customer and manufacturer (supplier)."@en ;
+   samm:characteristic :MaterialPropertiesSet .
+
+:productTypeInformation a samm:Property ;
+   samm:preferredName "Product type information"@en ;
+   samm:description "Product type related information"@en ;
+   samm:characteristic :ProductTypeInformationCharacteristic .
+
+:productInstanceInformation a samm:Property ;
+   samm:preferredName "Product instance information"@en ;
+   samm:description "Product instance related information, in the case of Certificate of Analysis a product instance refers to a batch."@en ;
+   samm:characteristic :ProductInstanceInformationCharacteristic .
+
+:CertificateMetaDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "Certificate Meta Data Characteristic"@en ;
+   samm:description "Characteristic for describing meta or header data of a Certificate of Analysis."@en ;
+   samm:dataType :CertificateMetaData .
+
+:MaterialPropertiesSet a samm-c:Set ;
+   samm:preferredName "Material Properties Set Characteristic"@en ;
+   samm:description "Set of measured material properties."@en ;
+   samm:dataType :MaterialProperty .
+
+:ProductTypeInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Product type information characteristic"@en ;
+   samm:description "Characteristic for some product type related information."@en ;
+   samm:dataType :ProductTypeInformation .
+
+:ProductInstanceInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Product instance information characteristic"@en ;
+   samm:description "Characteristic for product instance related information."@en ;
+   samm:dataType :ProductInstanceInformation .
+
+:CertificateMetaData a samm:Entity ;
+   samm:preferredName "Certificate Meta Data"@en ;
+   samm:properties ( :issueDate [ samm:property :isConformWithSpecification; samm:optional true ] [ samm:property ext-information:supplierOrderId; samm:optional true ] [ samm:property ext-information:customerOrderId; samm:optional true ] ) .
+
+:MaterialProperty a samm:Entity ;
+   samm:preferredName "Material property"@en ;
+   samm:description "A material property with its name, definition measured value and specification (limits).\nIf available, lower limit and upper limit must be given, they are only optional in the case that the limits don't exist or don't apply."@en ;
+   samm:properties ( :name :description :value [ samm:property :unit; samm:optional true ] [ samm:property :lowerLimit; samm:optional true ] [ samm:property :upperLimit; samm:optional true ] :dataType [ samm:property :method; samm:optional true ] ) .
+
+:ProductTypeInformation a samm:Entity ;
+   samm:preferredName "Product type information"@en ;
+   samm:description "Product type related information"@en ;
+   samm:properties ( ext-planned:nameAtManufacturer ext-planned:manufacturerPartId [ samm:property :customerPartId; samm:optional true ] ) .
+
+:ProductInstanceInformation a samm:Entity ;
+   samm:preferredName "Product instance information"@en ;
+   samm:description "Product instance related information"@en ;
+   samm:properties ( ext-batch:localIdentifiers ext-batch:catenaXId ext-batch:manufacturingInformation [ samm:property :expiryDate; samm:optional true ] ) .
+
+:issueDate a samm:Property ;
+   samm:preferredName "Issue date"@en ;
+   samm:description "the date and timestamp of issuing this certificate"@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:isConformWithSpecification a samm:Property ;
+   samm:preferredName "Conformity with Specification"@en ;
+   samm:description "In the case that any of the properties that are part of the Certificate of Analysis violates the defined upper or lower limit this property should be set to false."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
+
+:name a samm:Property ;
+   samm:preferredName "Property name"@en ;
+   samm:description "The name of the property"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "density" .
+
+:description a samm:Property ;
+   samm:preferredName "Property description"@en ;
+   samm:description "This field should be used to describe the property."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Density of the glue at room temperature" .
+
+:value a samm:Property ;
+   samm:preferredName "Property value"@en ;
+   samm:description "The result of the analysis for this specific property."@en ;
+   samm:characteristic :ValueCharacteristic ;
+   samm:exampleValue "2310.0" .
+
+:unit a samm:Property ;
+   samm:preferredName "Property unit"@en ;
+   samm:description "The unit of measure used for the property value and specification limits. This can be omitted for non-numerical properties, e.g. Boolean."@en ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "unit:kilogramPerCubicMetre"^^samm:curie .
+
+:lowerLimit a samm:Property ;
+   samm:preferredName "Lower limit"@en ;
+   samm:description "The lower limit of the specification with a boundary condition of \"At least\".\nValues below that limit are considered out of specification. Values exactly at the limit are considered in specification."@en ;
+   samm:characteristic :ValueCharacteristic ;
+   samm:exampleValue "2200.0" .
+
+:upperLimit a samm:Property ;
+   samm:preferredName "Upper limit"@en ;
+   samm:description "The upper limit of the specification with a boundary condition of \"At most\".\nValues above that limit are considered out of specification. Values exactly at the limit are considered in specification."@en ;
+   samm:characteristic :ValueCharacteristic ;
+   samm:exampleValue "2400.0" .
+
+:dataType a samm:Property ;
+   samm:preferredName "Data type"@en ;
+   samm:description "The data type of the properties value and limits. The data type should specify how the string value should be type casted or interpreted."@en ;
+   samm:characteristic :DataTypeEnumerationCharacteristic ;
+   samm:exampleValue "xsd:float"^^samm:curie .
+
+:method a samm:Property ;
+   samm:preferredName "Method"@en ;
+   samm:description "A set of methods that describe how the part was tested"@en ;
+   samm:characteristic :MethodSet .
+
+:customerPartId a samm:Property ;
+   samm:preferredName "Customer Part ID"@en ;
+   samm:description "Part ID as assigned by the customer."@en ;
+   samm:characteristic ext-planned:PartIdCharacteristic ;
+   samm:exampleValue "B19764234512" .
+
+:expiryDate a samm:Property ;
+   samm:preferredName "Expiry date"@en ;
+   samm:description "The expiry date of the material."@en ;
+   samm:characteristic :DateCharacteristic .
+
+:ValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "Value Characteristic"@en ;
+   samm:description "The string should be formatted in a way sp that it is easily interpretable or convertible to the xsd datatype given in the field \"data type\"."@en ;
+   samm:dataType xsd:string .
+
+:DataTypeEnumerationCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Data type enumeration"@en ;
+   samm:description "Allows specification of any xsd data type allowed in SAMM 2.1.0 without the subtypes of xsd:integer."@en ;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/datatypes.html> ;
+   samm:dataType samm:curie ;
+   samm-c:values ( "xsd:string"^^samm:curie "xsd:boolean"^^samm:curie "xsd:decimal"^^samm:curie "xsd:integer"^^samm:curie "xsd:double"^^samm:curie "xsd:date"^^samm:curie "xsd:time"^^samm:curie "xsd:dateTime"^^samm:curie "xsd:dateTimeStamp"^^samm:curie "xsd:gYear"^^samm:curie "xsd:gMonth"^^samm:curie "xsd:gDay"^^samm:curie "xsd:gYearMonth"^^samm:curie "xsd:gMonthDay"^^samm:curie "xsd:duration"^^samm:curie "xsd:yearMonthDuration"^^samm:curie "xsd:dayTimeDuration"^^samm:curie "xsd:hexBinary"^^samm:curie "xsd:base64Binary"^^samm:curie "xsd:anyURI"^^samm:curie "samm:curie"^^samm:curie "rdf:langString"^^samm:curie "xsd:float"^^samm:curie ) .
+
+:MethodSet a samm:Characteristic ;
+   samm:preferredName "Method set"@en ;
+   samm:description "Characteristic for a set of methods on how the material property was tested."@en ;
+   samm:dataType :MethodEntity .
+
+:DateCharacteristic a samm:Characteristic ;
+   samm:preferredName "Date Characteristic"@en ;
+   samm:description "A calendar date"@en ;
+   samm:dataType xsd:date .
+
+:MethodEntity a samm:Entity ;
+   samm:preferredName "Method entity"@en ;
+   samm:description "A method with its authority, ID and description"@en ;
+   samm:properties ( [ samm:property :methodStandard; samm:optional true ] :methodDescription ) .
+
+:methodStandard a samm:Property ;
+   samm:preferredName "Referenced Standard"@en ;
+   samm:description "Reference to the standard that described the method."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "DIN ISO 4711" .
+
+:methodDescription a samm:Property ;
+   samm:preferredName "Method description"@en ;
+   samm:description "This field should be used to describe the method or provide additional information to the referenced norm."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ISO norm to describe testing methods for adhesive density." .
+
+

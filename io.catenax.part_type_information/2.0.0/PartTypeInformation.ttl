@@ -1,0 +1,106 @@
+#######################################################################
+# Copyright (c) 2024 BASF SE
+# Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2024 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer ISST & Fraunhofer IML)
+# Copyright (c) 2024 German Edge Cloud GmbH & Co. KG
+# Copyright (c) 2024 Henkel AG & Co. KGaA
+# Copyright (c) 2024 Mercedes Benz AG
+# Copyright (c) 2024 Robert Bosch Manufacturing Solutions GmbH
+# Copyright (c) 2024 SAP SE
+# Copyright (c) 2024 Siemens AG
+# Copyright (c) 2024 T-Systems International GmbH
+# Copyright (c) 2024 ZF Friedrichshafen AG
+# Copyright (c) 2025 Catena-X Automotive Network e.V.
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.part_type_information:2.0.0#> .
+@prefix ext-ic: <urn:samm:io.catenax.shared.industry_core.common:1.0.0#> .
+@prefix ext-ic-pc: <urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+
+:PartTypeInformation a samm:Aspect ;
+   samm:preferredName "Part Type Information"@en ;
+   samm:description "A Part Type Information represents an item in the Catena-X Bill of Material (BOM) on a type level in a specific version."@en ;
+   samm:properties ( :partTypeInformation [ samm:property :partSitesInformationAsPlanned; samm:optional true ] ext-ic:globalAssetId ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:partTypeInformation a samm:Property ;
+   samm:preferredName "Part Type Information"@en ;
+   samm:description "The part type from which the serialized part has been instantiated."@en ;
+   samm:characteristic :PartTypeInformationCharacteristic .
+
+:partSitesInformationAsPlanned a samm:Property ;
+   samm:preferredName "Part Sites Information as Planned"@en ;
+   samm:description "A site is a delimited geographical area where a legal entity does business (geographical address with geo coordinates). A site always has a primary physical address. It is possible that further physical addresses are specified for the site. P.O. box details are only possible in addition to the physical address. A site has a 1:n relation to addresses, means at least one address is necessary and multiple addresses are possible."@en ;
+   samm:see <https://confluence.catena-x.net/x/QkBHAw> ;
+   samm:characteristic :partSitesInformationAsPlannedCharacteristic .
+
+:PartTypeInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Part Type Information Characteristic"@en ;
+   samm:description "The characteristics of the part type."@en ;
+   samm:dataType :PartTypeInformationEntity .
+
+:partSitesInformationAsPlannedCharacteristic a samm-c:Set ;
+   samm:preferredName "Part Sites Information as Planned Characteristic"@en ;
+   samm:description "The characteristic of the part site information that represents a set of possible site to a respective part."@en ;
+   samm:dataType :partSitesInformationAsPlannedEntity .
+
+:PartTypeInformationEntity a samm:Entity ;
+   samm:preferredName "Part Type Information Entity"@en ;
+   samm:description "Encapsulation for data related to the part type."@en ;
+   samm:properties ( [ samm:property ext-ic-pc:partClassification; samm:optional true ] ext-ic:nameAtManufacturer ext-ic:manufacturerPartId ) .
+
+:partSitesInformationAsPlannedEntity a samm:Entity ;
+   samm:preferredName "Part Sites Information as Planned Entity"@en ;
+   samm:description "Describes the ID, function and validity date of a site for the associated part in the AsPlanned context."@en ;
+   samm:properties ( :siteId :function [ samm:property :functionValidFrom; samm:optional true ] [ samm:property :functionValidUntil; samm:optional true ] ) .
+
+:siteId a samm:Property ;
+   samm:preferredName "site identifier"@en ;
+   samm:description "The identifier of the site according to BPDM. The siteId must be a valid BPN. The BPN is a unique, unchangeable identifier for business partners / company locations from foundation to closure, regardless of the different business relationships / structures between or within the business partners or company locations."@en ;
+   samm:characteristic ext-number:BpnsTrait ;
+   samm:exampleValue "BPNS1234567890ZZ" .
+
+:function a samm:Property ;
+   samm:preferredName "Function"@en ;
+   samm:description "The function of the site in relation to the part (i.e. the activity within the value chain of the part that is performed at the site)."@en ;
+   samm:characteristic :FunctionCharacteristic ;
+   samm:exampleValue "production" .
+
+:functionValidFrom a samm:Property ;
+   samm:preferredName "Function valid from"@en ;
+   samm:description "Timestamp, from when the site has the specified function for the given part."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2024-01-29T12:00:00.123+02:00"^^xsd:dateTime .
+
+:functionValidUntil a samm:Property ;
+   samm:preferredName "Function valid until"@en ;
+   samm:description "Timestamp, until when the site has the specified function for the given part."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2024-01-29T12:00:00.123+02:00"^^xsd:dateTime .
+
+:FunctionCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Function characteristic"@en ;
+   samm:description "Describes the characteristics of the function for a site related to the respective part."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "production" "warehouse" "spare part warehouse" ) .
+

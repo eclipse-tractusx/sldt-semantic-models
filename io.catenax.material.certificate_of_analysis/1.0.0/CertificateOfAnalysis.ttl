@@ -1,0 +1,152 @@
+#######################################################################
+# Copyright (c) 2025 BASF SE & BASF Coatings GmbH
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.material.certificate_of_analysis:1.0.0#> .
+
+:CertificateOfAnalysis a samm:Aspect ;
+   samm:preferredName "Certificate of Analysis Model"@en ;
+   samm:description "Model that represents the CertificateOfAnalysis of Chemical Materials."@en ;
+   samm:properties ( [ samm:property :hasCertificateOfAnalysisLink; samm:payloadName "certificateOfAnalysisLink" ] [ samm:property :hasCertificateOfAnalysisBinary; samm:payloadName "certificateOfAnalysisBinary" ] [ samm:property :hasCertificateOfAnalysisSheetPreFormatted; samm:payloadName "certificateOfAnalysisPreFormatted" ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:hasCertificateOfAnalysisLink a samm:Property ;
+   samm:preferredName "has certificate of analysis link"@en ;
+   samm:description "Property that references the link representation of the Certificate of Analysis."@en ;
+   samm:characteristic :CertificateOfAnalysisLinkCharacteristic .
+
+:hasCertificateOfAnalysisBinary a samm:Property ;
+   samm:preferredName "has certificate of analysis binary"@en ;
+   samm:description "Property that references the binary representation of the Certificate of Analysis."@en ;
+   samm:characteristic :CertificateOfAnalysisBinaryCharacteristic .
+
+:hasCertificateOfAnalysisSheetPreFormatted a samm:Property ;
+   samm:preferredName "has certificate of analysis sheet pre formatted"@en ;
+   samm:description "Property that references the pre formatted representation of the Certificate of Analysis."@en ;
+   samm:characteristic :CertificateOfAnalysisPreFormattedCharacteristic .
+
+:CertificateOfAnalysisLinkCharacteristic a samm-c:List ;
+   samm:preferredName "certificate of analysis link characteristic"@en ;
+   samm:description "Characteristic to describe the properties of the link representation of the Certificate of Analysis."@en ;
+   samm:dataType :CertificateOfAnalysisLink .
+
+:CertificateOfAnalysisBinaryCharacteristic a samm-c:List ;
+   samm:preferredName "certificate of analysis binary characteristic"@en ;
+   samm:description "Characteristic to describe the properties of the binary representation of the Certificate of Analysis."@en ;
+   samm:dataType :CertificateOfAnalysisBinary .
+
+:CertificateOfAnalysisPreFormattedCharacteristic a samm:Characteristic ;
+   samm:preferredName "certificate of analysis pre formatted"@en ;
+   samm:description "Characteristic to describe the properties of the pre formatted representation of the Certificate of Analysis."@en ;
+   samm:dataType :CertificateOfAnalysisPreFormatted .
+
+:CertificateOfAnalysisLink a samm:Entity ;
+   samm:extends :CertificateOfAnalysisAbstractEntity ;
+   samm:preferredName "certificate of analysis link"@en ;
+   samm:description "Represents the link of the certificate of analysis document usually supplied via paper or digitally as PDF"@en ;
+   samm:properties ( [ samm:property :link; samm:payloadName "link" ] ) .
+
+:CertificateOfAnalysisBinary a samm:Entity ;
+   samm:extends :CertificateOfAnalysisAbstractEntity ;
+   samm:preferredName "certificate of analysis binary"@en ;
+   samm:description "Represents the binary format of the certificate of analysis document usually supplied via paper or digitally as PDF"@en ;
+   samm:properties ( [ samm:property :payload; samm:payloadName "payload" ] ) .
+
+:CertificateOfAnalysisPreFormatted a samm:Entity ;
+   samm:extends :CertificateOfAnalysisAbstractEntity ;
+   samm:preferredName "certificate of analysis pre formatted"@en ;
+   samm:description "Represents the information of the Certificate of Analysis based on already defined or standardized data formats (\"pre-formatted\"). Those data formats define the structure of the data and the corresponding data is referenced as \"payload\" information here. "@en ;
+   samm:properties ( :format :formatVersion :formatLink :payloadPreFormatted ) .
+
+:CertificateOfAnalysisAbstractEntity a samm:AbstractEntity ;
+   samm:preferredName "Certificate Of Analysis Abstract Entity"@en ;
+   samm:description "Represents the certificate of analysis document usually supplied via paper or digitally as PDF"@en ;
+   samm:properties ( [ samm:property :issueDate; samm:optional true; samm:payloadName "issueDate" ] [ samm:property :issueVersion; samm:optional true ] :language ) .
+
+:link a samm:Property ;
+   samm:preferredName "link"@en ;
+   samm:description "HTTP(S) address according to RFC 3986"@en ;
+   samm:characteristic samm-c:ResourcePath ;
+   samm:exampleValue "https://www.company.com/coa/240242892.pdf"^^xsd:anyURI .
+
+:payload a samm:Property ;
+   samm:preferredName "payload"@en ;
+   samm:description "Base64-encoded string of PDF file"@en ;
+   samm:characteristic :PayloadCharacteristic .
+
+:format a samm:Property ;
+   samm:preferredName "format"@en ;
+   samm:description "Identifier of the format of the payload."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "json" .
+
+:formatVersion a samm:Property ;
+   samm:preferredName "format version"@en ;
+   samm:description "Corresponding version identifier of the given format."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "1.1.0" .
+
+:formatLink a samm:Property ;
+   samm:preferredName "format link"@en ;
+   samm:description "URL to the format definition file"@en ;
+   samm:characteristic samm-c:ResourcePath ;
+   samm:exampleValue "https://github.com/material-identity/CoA-schemas/blob/main/schema.json"^^xsd:anyURI .
+
+:payloadPreFormatted a samm:Property ;
+   samm:preferredName "payload pre formatted"@en ;
+   samm:description "Base64-encoded string of data according to format"@en ;
+   samm:characteristic :PayloadPreFormattedCharacteristic .
+
+:issueDate a samm:Property ;
+   samm:preferredName "issue date"@en ;
+   samm:description "Issue date of Certificate of Analysis"@en ;
+   samm:characteristic :IssueDateCharacteristic ;
+   samm:exampleValue "2023-03-28"^^xsd:date .
+
+:issueVersion a samm:Property ;
+   samm:preferredName "issue version"@en ;
+   samm:description "Versioning information of the Certificate of Analysis"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "8.1" .
+
+:language a samm:Property ;
+   samm:preferredName "language"@en ;
+   samm:description "ISO-639-1 code of language"@en ;
+   samm:characteristic samm-c:Language ;
+   samm:exampleValue "de" .
+
+:PayloadCharacteristic a samm:Characteristic ;
+   samm:preferredName "payload characteristic"@en ;
+   samm:description "Describes a Property which contains the Base64-encoded payload representation of the Certificate of Analysis."@en ;
+   samm:dataType xsd:base64Binary .
+
+:PayloadPreFormattedCharacteristic a samm:Characteristic ;
+   samm:preferredName "payload pre formatted characteristic"@en ;
+   samm:description "Describes a Property which contains the Base64-encoded payload pre formatted representation of the Certificate of Analysis."@en ;
+   samm:dataType xsd:base64Binary .
+
+:IssueDateCharacteristic a samm:Characteristic ;
+   samm:preferredName "issue date characteristic"@en ;
+   samm:description "Describes the date of the Property."@en ;
+   samm:dataType xsd:date .

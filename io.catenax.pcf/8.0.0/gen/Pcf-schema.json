@@ -1,0 +1,764 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#Pcf",
+  "description" : "A Product (Carbon) Footprint represents the carbon footprint of a product with values as specified in the Catena-X PCF Rulebook in accordance with the WBCSD (World Business Council for Sustainable Development) Pathfinder framework and the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD/ PACT initiative.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "UuidV4Trait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "SpecVersionCharacteristic" : {
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#SpecVersionCharacteristic",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        },
+        "uniqueItems" : true
+      },
+      "PartialFullPcfCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#PartialFullPcfCharacteristic",
+        "description" : "Characteristic for defining an indicator for partial or full PCF (Product Carbon Footprint) declaration as specified in the Catena-X PCF Rulebook.",
+        "enum" : [ "Cradle-to-gate", "Cradle-to-grave" ]
+      },
+      "PrecedingPfId" : {
+        "description" : "Entity for defining a preceding PCF (Product Carbon Footprint) identifier entity as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#PrecedingPfId",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "description" : "This ID is used to identify a specifc PCF. Therefore it has to be a gloabally unique value, following the UUID V4 specification, and should be defined at the time of declaration of the PCF. This is usually done automatically by the calculation- or sharing tool. Example generator, in case your tool does not automatically generate the PCF ID: https://www.uuidgenerator.net/version4  In case of update a new PCF ID is required.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#id",
+            "$ref" : "#/components/schemas/UuidV4Trait"
+          }
+        },
+        "required" : [ "id" ]
+      },
+      "PrecedingPfIdsCharacteristic" : {
+        "description" : "Characteristic for defining a non-empty set of product (carbon) footprint identifiers as specified in the Catena-X PCF Rulebook in accordance with the WBCSD (World Business Council for Sustainable Development) Pathfinder framework and the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD/ PACT initiative.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#PrecedingPfIdsCharacteristic",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/PrecedingPfId"
+        }
+      },
+      "ProductFootprintVersion" : {
+        "type" : "number",
+        "minimum" : 0,
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#ProductFootprintVersion",
+        "description" : "Characteristic for defining a product footprint version as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."
+      },
+      "Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Timestamp",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "PfStatusCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#PfStatusCharacteristic",
+        "description" : "Characteristic for defining a status indicator of a product (carbon) footprint as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. Enumeration with possible \"Active\" and \"Deprecated\".",
+        "enum" : [ "Active", "Deprecated" ]
+      },
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "NonEmptyStringTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#NonEmptyStringTrait",
+        "description" : "Constraint for ensuring that a string has at least one character.",
+        "minLength" : 1
+      },
+      "IdSet" : {
+        "description" : "Characteristic for defining a set of URIs (Uniform Resource Identifiers).",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#IdSet",
+        "type" : "array",
+        "items" : {
+          "type" : "string",
+          "format" : "uri"
+        },
+        "uniqueItems" : true
+      },
+      "DeclaredUnitOfMeasurementCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#DeclaredUnitOfMeasurementCharacteristic",
+        "description" : "Unit of analysis of the product with accepted values as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. For countable products/ components/ materials, Catena-X for example adds the unit \"piece\" to the value list specified by WBCSD.",
+        "enum" : [ "liter", "kilogram", "cubic meter", "kilowatt hour", "megajoule", "ton kilometer", "square meter", "piece", "hour", "megabit", "second" ]
+      },
+      "StrictlyPositiveDecimalTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#StrictlyPositiveDecimalTrait",
+        "description" : "Constraint for defining a positive, non-zero decimal.",
+        "minimum" : 0.0,
+        "exclusiveMinimum" : true
+      },
+      "PositiveDecimalWeightTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#PositiveDecimalWeightTrait",
+        "description" : "Constraint for defining a decimal equal to or greater than zero.",
+        "minimum" : 0,
+        "exclusiveMinimum" : false
+      },
+      "ExemptedEmissionsPercentTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#ExemptedEmissionsPercentTrait",
+        "description" : "Characteristic for defining the percentage of emissions excluded from a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+        "maximum" : 10.0,
+        "exclusiveMaximum" : false,
+        "minimum" : 0.0,
+        "exclusiveMinimum" : false
+      },
+      "GeographyCountrySubdivisionTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#GeographyCountrySubdivisionTrait",
+        "description" : "Constraint for defining a geography country subdivision in compliance to ISO 3166-2 as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+        "pattern" : "([A-Z]{2}-[A-Z0-9]{1,3}|)"
+      },
+      "GeographyCountryTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#GeographyCountryTrait",
+        "description" : "Constraint for defining a geography country conform to ISO 3166CC as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+        "pattern" : "([A-Z]{2})"
+      },
+      "GeographyRegionOrSubregionCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#GeographyRegionOrSubregionCharacteristic",
+        "description" : "Characteristic for defining a list of valid geographic regions as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. In Catena-X for example \"Global\" has been added to the value list.",
+        "enum" : [ "Africa", "Americas", "Asia", "Europe", "Oceania", "Australia and New Zealand", "Central Asia", "Eastern Asia", "Eastern Europe", "Latin America and the Caribbean", "Melanesia", "Micronesia", "Northern Africa", "Northern America", "Northern Europe", "Polynesia", "South-eastern Asia", "Southern Asia", "Southern Europe", "Sub-Saharan Africa", "Western Asia", "Western Europe", "Global", "Several" ]
+      },
+      "CrossSectoralStandardSet" : {
+        "description" : "Characteristic for defining the list of valid accounting standards used for product carbon footprint calculation as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#CrossSectoralStandardSet",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        }
+      },
+      "ProductOrSectorSpecificRuleSet" : {
+        "description" : "Characteristic for defining the set of product or sector specific rules of a product carbon footprint as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#ProductOrSectorSpecificRuleSet",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        },
+        "uniqueItems" : true
+      },
+      "IpccCharacterizationFactorsCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#IpccCharacterizationFactorsCharacteristic",
+        "description" : "Characteristic for defining the characterization factors of a product carbon footprint as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. In Catena-X for example specified by a default value.",
+        "enum" : [ "AR5", "AR6", "AR4", "unspecified" ]
+      },
+      "AllocationWasteIncinerationCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#AllocationWasteIncinerationCharacteristic",
+        "description" : "Characteristic for defining the allocation approach used for waste incineration as specified by the TFS (Together For Sustainability) initiative.",
+        "enum" : [ "cut-off", "reverse cut-off", "system expansion", "polluter pays principle" ]
+      },
+      "PercentTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#PercentTrait",
+        "description" : "Constraint for a decimal number in the range of and including 0 and 100.",
+        "maximum" : 100.0,
+        "exclusiveMaximum" : false,
+        "minimum" : 0.0,
+        "exclusiveMinimum" : false
+      },
+      "EmissionFactorDSSet" : {
+        "description" : "Characteristic for defining a set of emission factor sources used for calculating a product carbon footprint as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#EmissionFactorDSSet",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        },
+        "uniqueItems" : true
+      },
+      "DqiNumberTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#DqiNumberTrait",
+        "description" : "Constraint for defining a decimal between 1 and 5 including.",
+        "maximum" : 5,
+        "exclusiveMaximum" : false,
+        "minimum" : 1,
+        "exclusiveMinimum" : false
+      },
+      "DataQualityIndicators" : {
+        "description" : "Characteristic for defining the quantitative data quality indicators of a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#DataQualityIndicators",
+        "type" : "object",
+        "properties" : {
+          "technologicalDQR" : {
+            "description" : "The degree to which the data reflects the actual technology(ies) used. Refer to Table 5.14 in chapter 5.2.11.2 of v3.0 of TFS Guideline for the rating (1-5). For prospective PCF this shall not be provided.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#technologicalDQR",
+            "$ref" : "#/components/schemas/DqiNumberTrait"
+          },
+          "temporalDQR" : {
+            "description" : "The degree to which the reference period is for the data set is close to the issue date.  Refer to Table 5.16 in chapter 5.2.11.2 of v3.0 of TFS Guideline for the rating (1-5). For prospective PCF this shall not be provided.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#temporalDQR",
+            "$ref" : "#/components/schemas/DqiNumberTrait"
+          },
+          "geographicalDQR" : {
+            "description" : "Geographical representativeness. The degree to which the data reflects the actual geographic location of the manufacturing process. processes within the inventory boundary (e.g., country or region). Refer to Table 5.15 in chapter 5.2.11.2 of v3.0 of TFS Guideline for the rating (1-5). For prospective PCF this shall not be provided.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#geographicalDQR",
+            "$ref" : "#/components/schemas/DqiNumberTrait"
+          }
+        }
+      },
+      "Boolean" : {
+        "type" : "boolean",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Boolean",
+        "description" : "Represents a boolean value (i.e. a \"flag\")."
+      },
+      "PositiveEmissionsTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#PositiveEmissionsTrait",
+        "description" : "Only positive emission values (>=0) are valid ",
+        "minimum" : 0.0,
+        "exclusiveMinimum" : false
+      },
+      "PositiveOrNegativeEmission" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#PositiveOrNegativeEmission",
+        "description" : "Characteristic for defining (positive or negative) emissions in context of a PCF (Product Carbon Footprint) as specified by the WBCSD (World Business Council for Sustainable Development) Pathfinder initiative."
+      },
+      "NegativeEmissionsTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#NegativeEmissionsTrait",
+        "description" : "Only negative emission values (<=0) are valid.",
+        "maximum" : 0.0,
+        "exclusiveMaximum" : false
+      },
+      "AllocationRecycledCarbonCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#AllocationRecycledCarbonCharacteristic",
+        "enum" : [ "upstream system expansion", "cut-off" ]
+      },
+      "FreeAttributionInMassBalancingCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#FreeAttributionInMassBalancingCharacteristic",
+        "description" : "Enum values for freeAttributionInMassBalancin",
+        "enum" : [ "true", "false", "not applicable" ]
+      },
+      "ProgramCertificationShareTrait" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#ProgramCertificationShareTrait",
+        "description" : "Constarint to ensure ProgramCertificationShare is between  0-100",
+        "maximum" : 100,
+        "exclusiveMaximum" : false,
+        "minimum" : 0,
+        "exclusiveMinimum" : false
+      },
+      "NegativeEmission" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#NegativeEmission",
+        "description" : "Characteristic for defining emissions expressed as a decimal equal to or less than zero in context of a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.1.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."
+      },
+      "PcfEntity" : {
+        "description" : "Entity for defining a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#PcfEntity",
+        "type" : "object",
+        "properties" : {
+          "declaredUnitOfMeasurement" : {
+            "description" : "The declared unit defines the reference quantity to which the inputs and outputs in a Product Carbon Footprint (PCF) calculation are related, such as kilograms of product, a single piece of a component, or megajoules of electrical energy. Within Catena-X, acceptable values for the declared unit include “piece” and “kilogram,” as outlined in the Catena-X PCF Rulebook v4, chapter 4.4. The PCF is calculated per declared unit amount of the product. For example, a Battery Electric Vehicle (BEV) may be represented in two ways. In the first case, the declared unit amount is 1 and the declared unit is “piece,” resulting in a total PCF including bio uptake of 15,000 kg CO₂e. In the second case, the same BEV is described with a declared unit amount of 2,300 and the unit is “kilogram,” while still yielding a total PCF including bio uptake of 15,000 kg CO₂e.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#declaredUnitOfMeasurement",
+            "$ref" : "#/components/schemas/DeclaredUnitOfMeasurementCharacteristic"
+          },
+          "declaredUnitAmount" : {
+            "description" : "The quantity, or amount, of the declared unit is provided as a numerical value. The Product Carbon Footprint (PCF) is based on this declared unit amount, rather than assuming a default value of one unit. For example, a Battery Electric Vehicle (BEV) may be described with a declared unit amount of 1 and the unit “piece,” resulting in a total PCF including bio uptake of 15,000 kg CO₂e. Alternatively, the same BEV might be represented using a declared unit amount of 2,300 with the unit “kilogram,” yet the total PCF including bio uptake remains 15,000 kg CO₂e.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#declaredUnitAmount",
+            "$ref" : "#/components/schemas/StrictlyPositiveDecimalTrait"
+          },
+          "productMassPerDeclaredUnit" : {
+            "description" : "The mass of the product per declared unit amount in kilogram, (e.g., the declared unit of a circuitboard is one piece; one piece represents 0.123 kg). Product mass excluding packaging.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#productMassPerDeclaredUnit",
+            "$ref" : "#/components/schemas/PositiveDecimalWeightTrait"
+          },
+          "exemptedEmissionsPercent" : {
+            "description" : "Applied cut-off criteria in percent of total emissions. This specifies which percentage of emissions were excluded from the PCF in total, in order to reduce efforts in data collection of irrelevant processes. E.g. the Catena-X PCF Rulebook requires that the cut-off shall not exceed 3% (97% impacts to be considered). Do determine this, supplier data are assumed as 0% cut-off.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#exemptedEmissionsPercent",
+            "$ref" : "#/components/schemas/ExemptedEmissionsPercentTrait"
+          },
+          "exemptedEmissionsDescription" : {
+            "description" : "If cut-off criteria are applied, this text field should be used to document the rationale behind the exclusion of specific PCF emissions. Potential cut-offs are defined in the Catena-X Rulebook.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#exemptedEmissionsDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "boundaryProcessesDescription" : {
+            "description" : "Brief description of the significantly contributing manufacturing steps of the product (including general description of used technologies). This attribute is only included for compatibility reasons with TfS/PACT in the Catena-X data model. No filling is required as part of a data exchange via Catena-X. Instead, the general comment field \"Comment\" (see section 1.1) should be used as needed.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#boundaryProcessesDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "geographyCountrySubdivision" : {
+            "description" : "The location of factory gate(s) refers to the last manufacturing step. It is the location where the product is produced. State the country subdivision as subdivision code according to ISO 3166-2 (example: Germany, Bavaria = DE-BY); https://www.iso.org/ glossary-for-iso-3166.html.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#geographyCountrySubdivision",
+            "$ref" : "#/components/schemas/GeographyCountrySubdivisionTrait"
+          },
+          "geographyCountry" : {
+            "description" : "The location of factory gate(s) refers to the last manufacturing step. It is the location where the product is produced. State the country as country code according to ISO 3166-1 alpha-2 (example: US:=United States, FR:=-France); https://www.iso.org/glossa-ry-for-iso-3166.html.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#geographyCountry",
+            "$ref" : "#/components/schemas/GeographyCountryTrait"
+          },
+          "geographyRegionOrSubregion" : {
+            "description" : "Region of the supplier production site according to ISO 3166 (Example: \"Global\", \"Europe\", \"Eastern Europe\").",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#geographyRegionOrSubregion",
+            "$ref" : "#/components/schemas/GeographyRegionOrSubregionCharacteristic"
+          },
+          "referencePeriodStart" : {
+            "description" : "Start of time period of data collection for primary data sources (this does not refer to publication dates of secondary data). For prospective PCFs the reference period should be equal to start of production.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#referencePeriodStart",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "referencePeriodEnd" : {
+            "description" : "End of time period of data collection for primary data sources. For prospective PCFs the reference period end should be one year after reference period start.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#referencePeriodEnd",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "crossSectoralStandards" : {
+            "description" : "Cross-sectoral standards the PCF calculation is based on (multiple entries are possible). Please note: the PCF can be calculated according to another standard than the standards which defines the communication format.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#crossSectoralStandards",
+            "$ref" : "#/components/schemas/CrossSectoralStandardSet"
+          },
+          "productOrSectorSpecificRules" : {
+            "description" : "Name the most specific rule (sector specific guidance frameworks, such as product category rules (PCR), are sets of rules how to calculate and document life cycle assessments. They provide product category specific guidance and enhance comparabiltiy between assessments of the different suppliers for the same category (sector). The same applies to Product Environmental Footprint Category Rules (PEFCR)).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#productOrSectorSpecificRules",
+            "$ref" : "#/components/schemas/ProductOrSectorSpecificRuleSet"
+          },
+          "ipccCharacterizationFactors" : {
+            "description" : "The IPCC (Intergovernmental Panel of Climate Change) frequently releases (GWP) global warming potential values for climate gases related to CO_{2} . These GWP values are released in Assessment Reports (AR), which are numbered. The AR number can be used to track the age and accuracy of the GWP values used in reporting. The reports can be found here: https://www.ipcc.ch/assessment-report/ar6/.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#ipccCharacterizationFactors",
+            "$ref" : "#/components/schemas/IpccCharacterizationFactorsCharacteristic"
+          },
+          "allocationRulesDescription" : {
+            "description" : "Describe the allocation rules applied to your foreground data (e.g., physical, economic allocation).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#allocationRulesDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "allocationWasteIncineration" : {
+            "description" : "Material recycling and waste treatment with energy recovery are considered separate and not equal. Catena-X follows the Polluter Pays Principle which is equivalent to the reverse cut-off approach.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#allocationWasteIncineration",
+            "$ref" : "#/components/schemas/AllocationWasteIncinerationCharacteristic"
+          },
+          "primaryDataShare" : {
+            "description" : "Share of primary data in the final PCF. For prospective PCF this shall not be communicated or set \"0\"",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#primaryDataShare",
+            "$ref" : "#/components/schemas/PercentTrait"
+          },
+          "secondaryEmissionFactorSources" : {
+            "description" : "Which secondary data sources and versions have been used by you or by suppliers (e.g. data bases such as ecoinvent)?",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#secondaryEmissionFactorSources",
+            "$ref" : "#/components/schemas/EmissionFactorDSSet"
+          },
+          "dataQualityRating" : {
+            "description" : "Quantitative data quality indicators of a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#dqi",
+            "$ref" : "#/components/schemas/DataQualityIndicators"
+          },
+          "packagingEmissionsIncluded" : {
+            "description" : "Packaging emissions (covering all emissions related to the preparation and packaging of your products) are included in the system boundary. According to the Catena-X Rulebook this attribute shall always be included. Therefore this attribute is TRUE per default. packaging stage emissions are included in the production stage emissions (avoid double accounting!)",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingEmissionsIncluded",
+            "$ref" : "#/components/schemas/Boolean"
+          },
+          "pcfExcludingBiogenicUptake" : {
+            "description" : "Position T2=\n= A+C+E+F+G(negative contribution)+H. Letters refer to individual emission categories below.\nThis is also refers to the  0/0 approach.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#pcfExcludingBiogenicUptake",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "pcfIncludingBiogenicUptake" : {
+            "description" : "Position T1== A+C+D(negative contribution)+E+F+G(negative contribution)+H. Letters refer to individual emission categories below.\nThis also refers to the  -1/+1 approach.\n\"GWP total inc. bio. uptake\" may be set equal to \"GWP total excl. bio. uptake\" if the product has no or a neglectable biogenic carbon content. General cut-off criteria applies as criteria for neglectability.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#pcfIncludingBiogenicUptake",
+            "$ref" : "#/components/schemas/PositiveOrNegativeEmission"
+          },
+          "fossilGhgEmissions" : {
+            "description" : "Position A: includes all fossil emissions, including industrial processes, stationary/mobile combustion and fugitive emissions. This position inlcudes the fossil emissions associated to land management (A1: \"GWP fossil land management\") which can not be documented as a separate emission category in the Catena-X data set, but is part of PACT and TFS",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#fossilGhgEmissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "biogenicNonCO2Emissions" : {
+            "description" : "Position C: non-CO2 biogenic emissions related to agricultural activities. It encompasses emissions as described in PACT v3.0: CH4 emissions from livestock and manure; CH4 emissions from biomass burning and fires; \nCH4 emissions from rice production; CH4 emissions from transformation and degradation (e.g., combustion, digestion, composting, landfilling). It must be noted that N2O from land management activities are not included in this position and are reported in position A.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#biogenicNonCO2Emissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "landUseChangeGhgEmissions" : {
+            "description" : "Position E: Emissions from LUC constitute a release of GHG emissions due to a change in land use from one land use category or subcategory to another, such as primary forest to agricultural land, or peat land (type of wetland) to cropland. This position encompasses dLUC (direct land use change) emissions. If that data is not available, companies should account for LUC using statistical land-use change (sLUC) emissions. iLUC emissions are excluded. Refer to PACT v3.0 for details. ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#landUseChangeGhgEmissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "aircraftGhgEmissions" : {
+            "description" : "Position H: Aviation emissions which have occurred in distribution stages upstream.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#aircraftGhgEmissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "packagingPcfExcludingBiogenicUptake" : {
+            "description" : "Optional: Emissions resulting from the packaging of the product as specified in the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative. WBCSD specific extension. In Catena-X not relevant to be reported separately.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingPcfExcludingBiogenicUptake",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "distributionStagePcfExcludingBiogenicUptake" : {
+            "description" : "Position T2== A+C+E+F+G(negative contribution)+H. Letters refer to individual emission categories below.This also refers to the  0/0 approach.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#distributionStagePcfExcludingBiogenicUptake",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "distributionStagePcfIncludingBiogenicUptake" : {
+            "description" : "Position T1== A+C+D(negative contribution)+E+F+G(negative contribution)+H. Letters refer to individual emission categories below.This also refers to the  -1/+1 Approach.GWP total inc. bio. uptake may be set equal to GWP total excl. bio. uptake if the product has no or a neglectable biogenic carbon content. General Cut-off criteria applies as criteria for neglectability.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#distributionStagePcfIncludingBiogenicUptake",
+            "$ref" : "#/components/schemas/PositiveOrNegativeEmission"
+          },
+          "distributionStageFossilGhgEmissions" : {
+            "description" : "Position A: Includes all fossil emissions, including industrial processes, stationary/mobile combustion and fugitive emissions. This position inlcudes the fossil emissions associated to land management (A1: GWP fossil land management) which can not be documented as a separate emission category in the Catena-X data set, but is part of PACT and TfS. ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#distributionStageFossilGhgEmissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "distributionStageBiogenicNonCO2Emissions" : {
+            "description" : "Position C: Non-CO2 biogenic emissions related to agricultural activities. It encompasses emissions as described in PACT v3.0: CH4 emissions from livestock and manure; CH4 emissions from biomass burning and fires; CH4 emissions from rice production; CH4 emissions from transformation and degradation (e.g., combustion, digestion, composting, landfilling). It must be noted that N2O from land management activities are not included in this position and are reported in position A.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#distributionStageBiogenicNonCO2Emissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "distributionStageLandUseChangeGhgEmissions" : {
+            "description" : "Position E: Emissions from LUC constitute a release of GHG emissions due to a change in land use from one land use category or subcategory to another, such as primary forest to agricultural land, or peat land (type of wetland) to cropland. This position encompasses dLUC (direct land use change) emissions. If that data is not available, companies should account for LUC using statistical land-use change (sLUC) emissions. iLUC emissions are excluded. Refer to PACT v3.0 for details.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#distributionStageLandUseChangeGhgEmissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "carbonContentTotal" : {
+            "description" : "Total carbon content",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#carbonContentTotal",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "fossilCarbonContent" : {
+            "description" : "Carbon content defined as fossil.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#fossilCarbonContent",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "biogenicCO2Uptake" : {
+            "description" : "Position D (negative contribution): Biogenic CO2 uptake. The CO2 which was absorbed from the atmosphere during the growth period of the biomass and of which the C is now bound in the product as biogenic carbon content.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#biogenicCO2Uptake",
+            "$ref" : "#/components/schemas/NegativeEmissionsTrait"
+          },
+          "distributionStageAircraftGhgEmissions" : {
+            "description" : "Position H: Aviation emissions occurring in the reported distribution stage after the production gate until customer gate.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#distributionStageAircraftGhgEmissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "allocationRecycledCarbon" : {
+            "description" : "Declare which approach for material recycling has been applied. Possible options: not-applicable/empty, cut-off, cut-off plus, upstream system expansion (USE). Refer to Pages 74-75 of TfS PCF Guideline v3.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#allocationRecycledCarbon",
+            "$ref" : "#/components/schemas/AllocationRecycledCarbonCharacteristic"
+          },
+          "massBalancingUsed" : {
+            "description" : "If mass balancing (credit method) is used, select \"true\". If rolling average (equal distribution of different inputs among outputs) is used, select \"false\". If both is used, select \"true\"",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#massBalancingUsed",
+            "$ref" : "#/components/schemas/Boolean"
+          },
+          "freeAttributionInMassBalancing" : {
+            "description" : "True/False; Apply mandatorily only if in \"Mass Balancing used\" the option \"True\" has been selected. ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#freeAttributionInMassBalancing",
+            "$ref" : "#/components/schemas/FreeAttributionInMassBalancingCharacteristic"
+          },
+          "massBalancingCertificateScheme" : {
+            "description" : "Declare which cerification scheme has been used for mass balancing. Apply mandatorily only if in \"mass balancing used\" the option \"true\" has been selected.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#massBalancingCertificateScheme",
+            "$ref" : "#/components/schemas/NonEmptyStringTrait"
+          },
+          "programCertificationShare" : {
+            "description" : "PCF Program Certification Share (PCS) indicates the share of the PCF result which was calculated by PCF program certified suppliers. ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#programCertificationShare",
+            "$ref" : "#/components/schemas/ProgramCertificationShareTrait"
+          },
+          "productVerificationShare3rdParty" : {
+            "description" : "Third-party Product Verification Share (3PVS) represents the share of the PCF result which is based on verified data from an independent third party verifier.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#productVerificationShare3rdParty",
+            "$ref" : "#/components/schemas/ProgramCertificationShareTrait"
+          },
+          "productVerificationShare2ndParty" : {
+            "description" : "Second-party Product Verification Share (2PVS) represents the share of the PCF result which is based on verified data from a second party verifier.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#productVerificationShare2ndParty",
+            "$ref" : "#/components/schemas/ProgramCertificationShareTrait"
+          },
+          "productVerificationShare1stParty" : {
+            "description" : "First-party Product Verification Share (1PVS) represents the share of the PCF result which is based on verified data from a first party verifier.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#productVerificationShare1stParty",
+            "$ref" : "#/components/schemas/ProgramCertificationShareTrait"
+          },
+          "packagingPcfIncludingBiogenicUptake" : {
+            "description" : "Position T1 = A+C+D(negative contribution)+E+F+G(negative contribution)+H. Letters refer to individual emission categories below. This is also referred to as the -1/+1 approch. GWP total inc. bio. uptake may be set equal ot GWP total excl. bio. uptake if the product has no or a neglectable biogenic carbon content. General cut-off criteria applies as criteria for neglectability.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingPcfIncludingBiogenicUptake",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "packagingFossilGhgEmissions" : {
+            "description" : "Position A: Includes all fossil emissions, including industrial processes, stationary/mobile combustion and fugitive emissions. This position inlcudes the fossil emissions associated to land management (A1: GWP fossil land management) which can not be documented as a separate emission category in the Catena-X data set, but is part of PACT and TfS.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingFossilGhgEmissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "packagingBiogenicNonCO2Emissions" : {
+            "description" : "Position C: Non-CO2 biogenic emissions related to agricultural activities. It encompasses emissions as described in PACT v3.0: CH4 emissions from livestock and manure; CH4 emissions from biomass burning and fires; CH4 emissions from rice production; CH4 emissions from transformation and degradation (e.g., combustion, digestion, composting, landfilling). It must be noted that N2O from land management activities are not included in this position and are reported in position A.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingBiogenicNonCO2Emissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "packagingAircraftGhgEmissions" : {
+            "description" : "Position H: Aviation emissions which have occurred in distribution stages upstream.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingAircraftGhgEmissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "packagingLandUseChangeGhgEmissions" : {
+            "description" : "Position E: Emissions from LUC constitute a release of GHG emissions due to a change in land use from one land use category or subcategory to another, such as primary forest to agricultural land, or peat land (type of wetland) to cropland. This position encompasses dLUC (direct land use change) emissions. If that data is not available, companies should account for LUC using statistical land-use change (sLUC) emissions. iLUC emissions are excluded. Refer to PACT v3.0 for details.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingLandUseChangeGhgEmissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "packagingLandManagementBiogenicCO2Emissions" : {
+            "description" : "Position F: Carbon stock losses occurring within the same land use category or subcategory due to agricultural practices such as tillage, field preparations, pruning and harvest. Land management CO2 emissions measures biogenic CO2 emissions from a net loss in carbon stock within one land use category or subcategory. This includes impact on the land-carbon pools, including above- and below-ground biomass, dead organic matter, and soil carbon pools. If the carbon stock increases within the same land use category and the conditions to report removals are met, this may be calculated as a Land management CO2 removal (position G). Refer to PACT v3.0 for details.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingLandManagementBiogenicCO2Emissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "landManagementBiogenicCO2Removals" : {
+            "description" : "Position G (negative contribution): Land management removals are net CO2 removals resulting from net increases to carbon stored in land-based carbon pools (biomass, dead organic matter and soil carbon pools) due to ongoing land management practices. This extra net carbon stock is gained over the crop rotation or crop cultivation cycle (e.g., multiple years for perennial crops and multiple years in a rotation that includes annual crops). Refer to PACT v3.0 for details.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#landManagementBiogenicCO2Removals",
+            "$ref" : "#/components/schemas/NegativeEmissionsTrait"
+          },
+          "landManagementBiogenicCO2Emissions" : {
+            "description" : "Position F: Carbon stock losses occurring within the same land use category or subcategory due to agricultural practices such as tillage, field preparations, pruning and harvest. Land Management CO2 emissions measures biogenic CO2 emissions from a net loss in carbon stock within one land use category or subcategory. This includes impact on the land-carbon pools,including above- and below-ground biomass, dead organic matter, and soil carbon pools. If the carbon stock increases within the same land use category and the conditions to report removals are met, this may be calculated as a Land management CO2 removal (position G). Refer to PACT v3.0 for details.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#landManagementBiogenicCO2Emissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "packagingLandManagementBiogenicCO2Removals" : {
+            "description" : "Position G (negative contribution): Land management removals are net CO2 removals resulting from net increases to carbon stored in land-based carbon pools (biomass, dead organic matter and soil carbon pools) due to ongoing land management practices. This extra net carbon stock is gained over the crop rotation or crop cultivation cycle (e.g., multiple years for perennial crops and multiple years in a rotation that includes annual crops). Refer to PACT v3.0 for details.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingLandManagementBiogenicCO2Removals",
+            "$ref" : "#/components/schemas/NegativeEmissionsTrait"
+          },
+          "packagingBiogenicCO2Uptake" : {
+            "description" : "Position D (negative contribution): Biogenic CO2 uptake. The CO2 which was absorbed from the atmosphere during the growth period of the biomass and of which the C is now bound in the product as biogenic carbon content.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingBiogenicCO2Uptake",
+            "$ref" : "#/components/schemas/NegativeEmissionsTrait"
+          },
+          "distributionStageIncluded" : {
+            "description" : "The value \"true\" shall be selected, if emissions related to the outbound transport of your products are included in the system boundary. Mandatory, if transport is paid by reporting company. Distribution stage emissions (outbound) are to be reported separately from the production stage emissions.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#distributionStageIncluded",
+            "$ref" : "#/components/schemas/Boolean"
+          },
+          "distributionStageBiogenicCO2Uptake" : {
+            "description" : "Position D (negative contributuion): Biogenic CO2 uptake. The CO2 which was absorbed from the atmosphere during the growth period of the biomass and of which the C is now bound in the product as biogenic carbon content.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#distributionStageBiogenicCO2Uptake",
+            "$ref" : "#/components/schemas/NegativeEmission"
+          },
+          "distributionStageLandManagementBiogenicCO2Emissions" : {
+            "description" : "Position F: Carbon stock losses occurring within the same land use category or subcategory due to agricultural practices such as tillage, field preparations, pruning and harvest. Land Management CO2 emissions measures biogenic CO2 emissions from a net loss in carbon stock within one land use category or subcategory. This includes impact on the land-carbon pools, including above- and below-ground biomass, dead organic matter, and soil carbon pools. If the carbon stock increases within the same land use category and the conditions to report removals are met, this may be calculated as a Land management CO2 removal (position G). Refer to PACT v3.0 for details.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#distributionStageLandManagementBiogenicCO2Emissions",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "distributionStageLandManagementBiogenicCO2Removals" : {
+            "description" : "Position G (negative contribution): Land management removals are net CO2 removals resulting from net increases to carbon stored in land-based carbon pools (biomass, dead organic matter and soil carbon pools) due to ongoing land management practices. This extra net carbon stock is gained over the crop rotation or crop cultivation cycle (e.g., multiple years for perennial crops and multiple years in a rotation that includes annual crops). Refer to PACT v3.0 for details.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#distributionStageLandManagementBiogenicCO2Removals",
+            "$ref" : "#/components/schemas/NegativeEmissionsTrait"
+          },
+          "biogenicCarbonContent" : {
+            "description" : "Carbon content defined as biogenic. It can be attributed by means of mass balancing.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#biogenicCarbonContent",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "packagingBiogenicCarbonContent" : {
+            "description" : "Detail (if packaging included) and only optional. The biogenic carbon in the packaging should always be inlcuded in the biogenic carbon content per DU.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#packagingBiogenicCarbonContent",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          },
+          "recycledCarbonContent" : {
+            "description" : "Carbon content defined as recycled. It can be attributed by means of mass balancing: in such a case the mass balancing used must be set to TRUE. ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#recycledCarbonContent",
+            "$ref" : "#/components/schemas/PositiveEmissionsTrait"
+          }
+        },
+        "required" : [ "declaredUnitOfMeasurement", "declaredUnitAmount", "productMassPerDeclaredUnit", "exemptedEmissionsPercent", "geographyRegionOrSubregion", "referencePeriodStart", "referencePeriodEnd", "crossSectoralStandards", "productOrSectorSpecificRules", "ipccCharacterizationFactors", "allocationWasteIncineration", "secondaryEmissionFactorSources", "packagingEmissionsIncluded", "pcfExcludingBiogenicUptake", "pcfIncludingBiogenicUptake", "massBalancingUsed", "packagingPcfIncludingBiogenicUptake", "distributionStageIncluded" ]
+      },
+      "CarbonFootprint" : {
+        "description" : "Characteristic for defining a PCF (Product Carbon Footprint) as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#CarbonFootprint",
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/PcfEntity"
+        } ]
+      },
+      "ProductClassificationCharacteristic" : {
+        "description" : "Each entry should be according URN:FPI including domain name of the organization issuing the classifiaction, the entity and classifiaction system-type and the class/identifier.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#ProductClassificationCharacteristic",
+        "type" : "array",
+        "items" : {
+          "type" : "string"
+        },
+        "uniqueItems" : true
+      },
+      "RetroOrProspectivePcfTypeCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#RetroOrProspectivePcfTypeCharacteristic",
+        "description" : "Enum values for RetroOrProspectivePcfType",
+        "enum" : [ "Retrospective PCF, Prospective PCF without forerunner", "Prospective PCF without forerunner", "Prospective PCF of further developed product with forerunner", "Prospective PCF for current product for future production date", "Progressive PCF" ]
+      },
+      "AttestationOfConformanceEntity" : {
+        "description" : "Entity to group all attestation of conformance properties.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#AttestationOfConformanceEntity",
+        "type" : "object",
+        "properties" : {
+          "attestationType" : {
+            "description" : "Attestation type, which defines the type and level of trust conveyed by this attestation of conformance (PCF Program certification; PCF 3rd party verification ; PCF 2nd party verification; PCF 1st party verification; ...)",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#attestationType",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "standardName" : {
+            "description" : "The specific cross-sectoral standards or product or sector rules (PCRs) on which the attestation of conformance is based",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#standardName",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "attestationStandard" : {
+            "description" : "e.g. PCF Verification and PCF Program Certification Framework",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#attestationStandard",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "attestationOfConformanceId" : {
+            "description" : "e.g. unique number of the certificate or verification statement used for tracking and referencing, use UUID v4 if ID is newly generated.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#attestationOfConformanceId",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "providerName" : {
+            "description" : "Name of the issuing certifier’s or verifier’s legal entity",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#providerName",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "attestationOfConformanceLink" : {
+            "description" : "A link leading to the declaration of conformance, allowing for a manual option to verify the validity and authenticity of the declaration.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#attestationOfConformanceLink",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "providerId" : {
+            "description" : "A unique identifier for the entity issuing the declaration, such as a Business Partner Number (BPN) or other official registration number, issued by the appointing organization or accreditation institute.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#providerId",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "completedAt" : {
+            "description" : "Time stamp for when the attestation of conformity was issued",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#completedAt",
+            "$ref" : "#/components/schemas/Timestamp"
+          }
+        },
+        "required" : [ "attestationType", "standardName", "attestationStandard", "attestationOfConformanceId", "providerName" ]
+      },
+      "AttestationOfConformanceCollection" : {
+        "description" : "Collection of Attestation Of Conformance",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#AttestationOfConformanceCollection",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/AttestationOfConformanceEntity"
+        }
+      }
+    }
+  },
+  "properties" : {
+    "id" : {
+      "description" : "This ID is used to identify a specifc PCF. Therefore it has to be a gloabally unique value, following the UUID V4 specification, and should be defined at the time of declaration of the PCF. This is usually done automatically by the calculation- or sharing tool. Example generator, in case your tool does not automatically generate the PCF ID: https://www.uuidgenerator.net/version4  In case of update a new PCF ID is required.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#id",
+      "$ref" : "#/components/schemas/UuidV4Trait"
+    },
+    "specVersion" : {
+      "description" : "Specification of the PCF format/data model (name and version number), which is used. The required data input fields will be tailored accordingly. Multiple entries are possible. The data model and version can be selected independently of the standard or guidance document, you followed during the assessment of the PCF. Always select latest data model, if your data supports it.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#specVersion",
+      "$ref" : "#/components/schemas/SpecVersionCharacteristic"
+    },
+    "partialFullPcf" : {
+      "description" : "This attribute is an indicator for partial or full PCF (Product Carbon Footprint) declaration. A partial PCF (cradle-to-gate) is covering the emissions from resource extraction until the product leaves the gate of your organization (optionally including the distribution stage). This is defaulted for PACT, Catena-X or TFS. A full PCF (cradle-to-grave) is covering the complete life cycle of the product from resource extraction all the way to end-of-life stage.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#partialFullPcf",
+      "$ref" : "#/components/schemas/PartialFullPcfCharacteristic"
+    },
+    "precedingPfIds" : {
+      "description" : "This is only a technical parameter that ensures comparability with PACT 3.0.0, but is not used in Catena-X. For PCF data exchange via Catena-X, it must therefore be set to the default value \"0\".",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#precedingPfIds",
+      "$ref" : "#/components/schemas/PrecedingPfIdsCharacteristic"
+    },
+    "version" : {
+      "description" : "This is only a technical parameter that ensures comparability with PACT 3.0.0, but is not used in Catena-X. For PCF data exchange via Catena-X, it must therefore be set to the default value 0.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#version",
+      "$ref" : "#/components/schemas/ProductFootprintVersion"
+    },
+    "created" : {
+      "description" : "The time stamp at which the PCF has been declared, independently of when or if it has been shared. This represents the validity period start unless specified separately.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#created",
+      "$ref" : "#/components/schemas/Timestamp"
+    },
+    "status" : {
+      "description" : "This is another technical parameter that ensures comparability (\"deprecated\" only used in PACT; and it may also be used in internal systems), but is not used in Catena-X. Therefore it must be set to the default value \"active\".",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#status",
+      "$ref" : "#/components/schemas/PfStatusCharacteristic"
+    },
+    "validityPeriodStart" : {
+      "description" : "The validity period is the interval during which the product (carbon) footprint is declared as valid by the data provider. The \"start\" and \"end\" attributes define this interval. For retrospective PCFs the validity period start must be equal to or greater than the reference period end. ",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#validityPeriodStart",
+      "$ref" : "#/components/schemas/Timestamp"
+    },
+    "validityPeriodEnd" : {
+      "description" : "Time stamp declaring the expected end of the use period for this declaration or date of expected update (i.e. when does the data validity period end?).  In Catena-X there is no standard for the length of the valadity period, but it should be a year or more. The Catena-X PCF Rulebook requires an annual review of the PCF value (and an update if there are relevant changes). For prospective PCFs, the validity period end should be equal to the reference period end.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#validityPeriodEnd",
+      "$ref" : "#/components/schemas/Timestamp"
+    },
+    "pcfLegalStatement" : {
+      "description" : "In case your organization defined certain legal conditions which apply to the publication of this PCF, you can state the legal disclaimer in here. The text might include an URL link to the legal disclaimer of the PCF provider. For Catena-X this only refers to legal requirements, not negociated automatically among the EDCs.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#pcfLegalStatement",
+      "$ref" : "#/components/schemas/Text"
+    },
+    "companyName" : {
+      "description" : "State the (legal) name of the company supplying the product and reporting the PCF (data owner). The name under which the company signed up with Catena-X (via Business Partner Management service).",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#companyName",
+      "$ref" : "#/components/schemas/NonEmptyStringTrait"
+    },
+    "companyIds" : {
+      "description" : "Company identifier according to the sharing scheme you are reporting in. It is mandatory to provide the BPNL (Business Partner Number Legal; corresponding to the company name) according to Catena-X. Each value of this set is supposed to uniquely identify the PCF Data Owner and should be in the following format: E.g. urn:BPNL000000000DWF. Additionally it is recommended to enter the name of the main domain (e.g. company.com) as a second value.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#companyIds",
+      "$ref" : "#/components/schemas/IdSet"
+    },
+    "productDescription" : {
+      "description" : "A brief description of the product (for example functions and technical parameters) to help identifying the correct product. Product IDs are not always unique accross organizations or at times insufficient to identify the correct product. This information can provide additional context to secure a correct match between the purches product and its PCF declaration.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#productDescription",
+      "$ref" : "#/components/schemas/Text"
+    },
+    "productIds" : {
+      "description" : "A set of several relevant product identifiers can be provided including e.g. manufacturerPartID, customerPartID, GTIN, ISPN-number or any product specific identifier. For prospective PCFs, this may be a preliminary product id.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#productIds",
+      "$ref" : "#/components/schemas/IdSet"
+    },
+    "productNameCompany" : {
+      "description" : "Trade name of the product to make it recognizable by the receiver of the PCF information. For prospective PCFs, this may be a preliminary name.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#productNameCompany",
+      "$ref" : "#/components/schemas/NonEmptyStringTrait"
+    },
+    "pcf" : {
+      "description" : "A PCF (Product Carbon Footprint) represents the carbon footprint of a product and related data as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#pcf",
+      "$ref" : "#/components/schemas/CarbonFootprint"
+    },
+    "productClassifications" : {
+      "description" : "A list of classification or category identifiers in URN format. Use well known urn's here, or adhere to recommended urn:pact: format. For example UN CPC, CAS Number, CN-Code etc. For communication us URN fromat (e.g. urn:gtin:4712345060507).",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#productClassifications",
+      "$ref" : "#/components/schemas/ProductClassificationCharacteristic"
+    },
+    "retroOrProspectivePcfType" : {
+      "description" : "Four types of PCFs (see 5.2.1) shall be indicated in the data model: This is to identify if the PCF refers to a product that is already in series (retrospective) or a PCF for a product before SOP (prospective PCF), both based on the rules defined in the CatenaX rulebook. For the type \"progressive PCF\", these rules do not necessarily apply anymore, as here also more ambitious assumptions can be used that might be part of a bilateral agreement between supplier and customer.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#retroOrProspectivePcfType",
+      "$ref" : "#/components/schemas/RetroOrProspectivePcfTypeCharacteristic"
+    },
+    "ccsTechnologicalCO2CaptureIncluded" : {
+      "description" : "Declare if CCS/BECCS (incl. geological storage) technology has been employed. BECCS stands for bioenergy with carbon capture and storage.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#ccsTechnologicalCO2CaptureIncluded",
+      "$ref" : "#/components/schemas/Boolean"
+    },
+    "comment" : {
+      "description" : "This text field can be used to provide the recipient of the data with additional information or instructions on the calculation that is not represented by the existing attributes of the data model.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#comment",
+      "$ref" : "#/components/schemas/Text"
+    },
+    "attestationOfConformance" : {
+      "description" : "Property to collect all attestation of conformance.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.pcf:8.0.0#attestationOfConformance",
+      "$ref" : "#/components/schemas/AttestationOfConformanceCollection"
+    }
+  },
+  "required" : [ "id", "specVersion", "partialFullPcf", "version", "created", "status", "validityPeriodEnd", "companyName", "companyIds", "productIds", "productNameCompany", "pcf", "retroOrProspectivePcfType", "ccsTechnologicalCO2CaptureIncluded" ]
+}

@@ -1,0 +1,145 @@
+#######################################################################
+# Copyright (c) 2026 Catena-X Automotive Network e.V.
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.shared.industry_core.common:1.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:KeyValueList a samm:Entity ;
+   samm:preferredName "key value list"@en ;
+   samm:description "A list of key value pairs for local identifiers, which are composed of a key and a corresponding value."@en ;
+   samm:properties ( :key :value ) .
+
+:ValidityPeriodCharacteristic a samm:Characteristic ;
+   samm:preferredName "validity period characteristic"@en ;
+   samm:description "Characteristic  for a validity period defined by an (optional)start and an (optional)end timestamp."@en ;
+   samm:dataType :ValidityPeriodEntity .
+
+:value a samm:Property ;
+   samm:preferredName "identifier value"@en ;
+   samm:description "The value of an identifier."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "BID12345678" .
+
+:ListOfCustomers a samm-c:List ;
+   samm:preferredName "list of customers characteristic"@en ;
+   samm:description "A list of customers and their related parent items."@en ;
+   samm-c:elementCharacteristic ext-number:BpnlTrait .
+
+:nameAtManufacturer a samm:Property ;
+   samm:preferredName "name at manufacturer"@en ;
+   samm:description "Name of the part as assigned by the manufacturer"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Mirror left" .
+
+:lastModifiedOn a samm:Property ;
+   samm:preferredName "last modification date and time"@en ;
+   samm:description "Timestamp when the assembly or usage relationship between parent part and child part was last modified."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime .
+
+:validFrom a samm:Property ;
+   samm:preferredName "valid from"@en ;
+   samm:description "Start date and time of validity period."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2023-03-21T08:17:29.187+01:00"^^xsd:dateTime .
+
+:businessPartner a samm:Property ;
+   samm:preferredName "business partner"@en ;
+   samm:description "The supplier of the given child item."@en ;
+   samm:characteristic ext-number:BpnlTrait ;
+   samm:exampleValue "BPNL50096894aNXY" .
+
+:customerPartId a samm:Property ;
+   samm:preferredName "customer part identifier"@en ;
+   samm:description "Part ID as assigned by the customer of the part. The customer Part ID identifies the part (as designed)in the customer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number or any other instance IDs. \nIf no specific part ID exists a part family ID may be substituted for it."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "PRT-12345" .
+
+:validityPeriod a samm:Property ;
+   samm:preferredName "validity period"@en ;
+   samm:description "The period of time during which the parent-child relation is valid. This relates to whether a child part can be built into or used in the production of the parent part at a given time.\nIf no validity period is given the relation is considered valid at any point in time."@en ;
+   samm:characteristic :ValidityPeriodCharacteristic .
+
+:LocalIdentifierCharacteristic a samm-c:Set ;
+   samm:preferredName "local identifier characteristic"@en ;
+   samm:description "A part may have multiple attributes, which uniquely identify that part in a specific dataspace (e.g., the manufacturer's dataspace)"@en ;
+   samm:dataType :KeyValueList .
+
+:customers a samm:Property ;
+   samm:preferredName "customers"@en ;
+   samm:description "A list of all customers of this item. If the parent items in which this item is assembled into are known, they should be listed as well.\n\nFor serialized items the list should contain only one customer with one parent item.\nAs different subsets of a batch might be sold to different customers this is a list."@en ;
+   samm:characteristic :ListOfCustomers ;
+   samm:exampleValue "BPNL50096894aNXY" .
+
+:validTo a samm:Property ;
+   samm:preferredName "valid to"@en ;
+   samm:description "End date of validity period."@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2024-07-01T16:10:00.000+01:00"^^xsd:dateTime .
+
+:nameAtCustomer a samm:Property ;
+   samm:preferredName "name at customer"@en ;
+   samm:description "Name of the part as assigned by the customer"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "side element A" .
+
+:createdOn a samm:Property ;
+   samm:preferredName "created on"@en ;
+   samm:description "Timestamp when the relation between the parent part and the child part was created"@en ;
+   samm:characteristic samm-c:Timestamp ;
+   samm:exampleValue "2022-02-03T14:48:54.709Z"^^xsd:dateTime .
+
+:globalAssetId a samm:Property ;
+   samm:preferredName "data space identifier"@en ;
+   samm:description "The fully anonymous ID in the dataspace of the part."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait .
+
+:key a samm:Property ;
+   samm:preferredName "identifier key"@en ;
+   samm:description "The key of a local identifier."@en ;
+   samm:characteristic :AllowedKeys ;
+   samm:exampleValue "batchId" .
+
+:manufacturerPartId a samm:Property ;
+   samm:preferredName "manufacturer part identifier"@en ;
+   samm:description "Part ID as assigned by the manufacturer of the part. The Part ID identifies the part (as designed) in the manufacturer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number or batch number."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "123-0.740-3434-A" .
+
+:ValidityPeriodEntity a samm:Entity ;
+   samm:preferredName "validity period entity"@en ;
+   samm:description "If a validity period only has a start that means that the period is valid from the start date without a (yet)defined end date and vice versa."@en ;
+   samm:properties ( [ samm:property :validTo; samm:optional true ] [ samm:property :validFrom; samm:optional true ] ) .
+
+:localIdentifiers a samm:Property ;
+   samm:preferredName "local identifiers"@en ;
+   samm:description "A local identifier enables identification of a part in a specific dataspace, but is not unique in the Catena-X dataspace. Multiple local identifiers may exist."@en ;
+   samm:characteristic :LocalIdentifierCharacteristic .
+
+:AllowedKeys a samm-c:Enumeration ;
+   samm:preferredName "key characteristic"@en ;
+   samm:description "The key characteristic of a local identifier. A specific subset of keys is predefined. Custom keys are not allowed. Predefined keys:\n- \"manufacturerId\" - The Business Partner Number (BPN) of the manufacturer. Value: BPN-Nummer\n- \"batchId\" - The identifier of the batch, to which the serialized part belongs"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "manufacturerId" "batchId" "customKey" "jisNumber" "jisCallDate" "parentOrderNumber" "partInstanceId" "van" ) .
+
+

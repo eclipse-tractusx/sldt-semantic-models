@@ -2,7 +2,20 @@
 All notable changes to this model will be documented in this file.
 
 ## [Purpose of this model]
-This aspect model was created in the Catena-X use case quality. The purpose of this aspect model is to describe a quality task between two companies, to name the companies and the contact persons.
+This aspect model was created in the Catena-X use case quality. The purpose of this aspect model is to describe a quality task between companies.
+
+## [3.0.0] - 2025-05-13
+### Added
+- model feature additionalInformation key:value pair added
+
+### Changed
+- to reduce redundancies in modelling some properties are now used form share quality core model
+- listOfQualityTasks from version 2.0.0 has changed to qualityTasks only
+- qualityTasks_creationDate is now mandatory
+- qualityTasks_companies_name now mandatory
+
+### Removed
+
 
 ## [2.0.0] - 2024-01-22
 ### Added
@@ -19,7 +32,7 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 
 ### Removed
 
-## [1.0.0] - 2022-12-13 -> deprecated
+## [1.0.0] - 2022-12-13
 ### Added
 - initial version of this model
 
@@ -27,3 +40,4 @@ This aspect model was created in the Catena-X use case quality. The purpose of t
 n/a
 
 ### Removed
+

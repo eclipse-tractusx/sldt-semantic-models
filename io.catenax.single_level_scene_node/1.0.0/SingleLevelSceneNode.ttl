@@ -1,0 +1,184 @@
+#######################################################################
+# Copyright(c) 2025 Audi AG
+# Copyright(c) 2025 BMW Group
+# Copyright(c) 2025 DLR
+# Copyright(c) 2025 DRÄXLMAIER Group
+# Copyright(c) 2025 :em AG
+# Copyright(c) 2025 Mercedes-Benz AG
+# Copyright(c) 2025 Robert Bosch GmbH
+# Copyright(c) 2025 Schaeffler AG
+# Copyright(c) 2025 Threedy GmbH
+# Copyright(c) 2025 ZF Group
+# Copyright(c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#>.
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#>.
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#>.
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <urn:samm:io.catenax.single_level_scene_node:1.0.0#>.
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#>.
+
+:SingleLevelSceneNode a samm:Aspect;
+   samm:preferredName "Single Level Scene Node"@en;
+   samm:description "The Single Level Scene Node for geometry Data "@en;
+   samm:properties ( :catenaXId [ samm:property :childItems; samm:optional true ] [ samm:property :localTransform; samm:optional true ] [ samm:property :boundingVolume; samm:optional true ] [ samm:property :modelItems; samm:optional true ] );
+   samm:operations ( );
+   samm:events ( ).
+
+:catenaXId a samm:Property;
+   samm:preferredName "Catena-X ID"@en;
+   samm:description "The Catena-X ID of the given part valid for the Catena-X dataspace."@en;
+   samm:characteristic ext-uuid:UuidV4Trait;
+   samm:exampleValue "urn:uuid:055c1128-0375-47c8-98de-7cf802c3241d".
+
+:childItems a samm:Property;
+   samm:preferredName "Child Items"@en;
+   samm:description "Set of child items, of which the given parent item is assembled by (one structural level down)."@en;
+   samm:characteristic :SetOfChildItemsCharacteristic.
+
+:localTransform a samm:Property;
+   samm:preferredName "Local Transform"@en;
+   samm:description "The local transformation (position, rotation, scale) of the node relative to its parent."@en;
+   samm:characteristic :LocalTransformCharacteristic.
+
+:boundingVolume a samm:Property;
+   samm:preferredName "Bounding Volume"@en;
+   samm:description "The bounding volume that encloses the geometry object or node."@en;
+   samm:characteristic :BoundingVolumeCharacteristic.
+
+:modelItems a samm:Property;
+   samm:preferredName "Model Items"@en;
+   samm:description "The set of geometry model items associated with this node."@en;
+   samm:characteristic :SetOfModelItemsCharacteristic.
+
+:SetOfChildItemsCharacteristic a samm-c:Set;
+   samm:preferredName "Set of Child Items"@en;
+   samm:description "Set of child items the parent item is assembled by (one structural level down)."@en;
+   samm:dataType :ChildData.
+
+:LocalTransformCharacteristic a samm:Characteristic;
+   samm:preferredName "Local Transform Characteristic"@en;
+   samm:description "Characteristic describing the local transformation of a node."@en;
+   samm:dataType :MatrixTransform.
+
+:BoundingVolumeCharacteristic a samm:Characteristic;
+   samm:preferredName "Bounding Volume Characteristic"@en;
+   samm:description "Characteristic describing the bounding volume of a node."@en;
+   samm:dataType :BoundingBox.
+
+:SetOfModelItemsCharacteristic a samm-c:Set;
+   samm:preferredName "Set of Model Items"@en;
+   samm:description "Set of geometry model items associated with a node."@en;
+   samm:dataType :ExternalBinaryModelData.
+
+:ChildData a samm:Entity;
+   samm:preferredName "Child Data"@en;
+   samm:description "Catena-X ID and meta data of the assembled child item."@en;
+   samm:properties ( :catenaXId [ samm:property :semanticTags; samm:optional true ] [ samm:property :customTags; samm:optional true ] [ samm:property :localTransform; samm:optional true ] ).
+
+:MatrixTransform a samm:Entity;
+   samm:preferredName "Matrix Transform"@en;
+   samm:description "Describes a transformation matrix"@en;
+   samm:properties ( :matrix4x4 ).
+
+:BoundingBox a samm:Entity;
+   samm:preferredName "Bounding Box"@en;
+   samm:description "Axis-aligned bounding box enclosing a geometry object or node."@en;
+   samm:properties ( :minPoint :maxPoint ).
+
+:ExternalBinaryModelData a samm:Entity;
+   samm:preferredName "External Binary Model Data"@en;
+   samm:description "Links to io.catenax.binary_exchange"@en;
+   samm:properties ( [ samm:property :semanticTags; samm:optional true ] [ samm:property :customTags; samm:optional true ] :catenaXId ).
+
+:semanticTags a samm:Property;
+   samm:preferredName "Semantic Tags"@en;
+   samm:description "Used to identify the type of the linked geometry data"@en;
+   samm:characteristic :SetOfSemanticTagsCharacteristic;
+   samm:exampleValue "DetailLevel_0".
+
+:customTags a samm:Property;
+   samm:preferredName "Custom Tags"@en;
+   samm:description "Is used to use custom identifier of the geometry data"@en;
+   samm:characteristic :SetOfCustomTagsCharacteristic;
+   samm:exampleValue "Bauraum".
+
+:matrix4x4 a samm:Property;
+   samm:preferredName "Matrix 4x4"@en;
+   samm:description "Defines a 4x4 transformation matrix for the geometry object or node."@en;
+   samm:characteristic :MatrixTrait;
+   samm:exampleValue "[1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]".
+
+:minPoint a samm:Property;
+   samm:preferredName "Minimum Point"@en;
+   samm:description "The minimum corner point of the bounding box."@en;
+   samm:characteristic :Vector3Trait;
+   samm:exampleValue "[-1.0, -1.0, -1.0]".
+
+:maxPoint a samm:Property;
+   samm:preferredName "Maximum Point"@en;
+   samm:description "The maximum corner point of the bounding box."@en;
+   samm:characteristic :Vector3Trait;
+   samm:exampleValue "[1.0, 1.0, 1.0]".
+
+:SetOfSemanticTagsCharacteristic a samm-c:Set;
+   samm:preferredName "Semantic Tags Characteristic"@en;
+   samm:description "Set of Standardised Semantic Tags"@en;
+   samm:dataType xsd:string.
+
+:SetOfCustomTagsCharacteristic a samm-c:Set;
+   samm:preferredName "Custom Tags Characteristic"@en;
+   samm:description "Set of Custom Tags to define custom identifiers of geometry model type"@en;
+   samm:dataType xsd:string.
+
+:MatrixTrait a samm-c:Trait;
+   samm:preferredName "Matrix Trait"@en;
+   samm-c:baseCharacteristic :MatrixCharacteristic;
+   samm-c:constraint :MatrixConstraint.
+
+:Vector3Trait a samm-c:Trait;
+   samm:preferredName "Vector3 Trait"@en;
+   samm-c:baseCharacteristic :Vector3ListCharacteristic;
+   samm-c:constraint :Vector3Constraint.
+
+:MatrixCharacteristic a samm-c:List;
+   samm:preferredName "Matrix Characteristic"@en;
+   samm:description "Matrix4x4 (list of 16 floats)"@en;
+   samm-c:elementCharacteristic :FloatCharacteristic.
+
+:MatrixConstraint a samm-c:LengthConstraint;
+   samm:preferredName "Matrix Constraint"@en;
+   samm:description "Requires the matrix list to have exactly 16 elements."@en;
+   samm-c:minValue "16"^^xsd:nonNegativeInteger;
+   samm-c:maxValue "16"^^xsd:nonNegativeInteger.
+
+:Vector3ListCharacteristic a samm-c:List;
+   samm:preferredName "Vector3 List Characteristic"@en;
+   samm:description "Vector3 (list of 3 floats)"@en;
+   samm-c:elementCharacteristic :FloatCharacteristic.
+
+:Vector3Constraint a samm-c:LengthConstraint;
+   samm:preferredName "Vector3 Constraint"@en;
+   samm:description "Requires the vector to have exactly 3 elements."@en;
+   samm-c:minValue "3"^^xsd:nonNegativeInteger;
+   samm-c:maxValue "3"^^xsd:nonNegativeInteger.
+
+:FloatCharacteristic a samm:Characteristic;
+   samm:preferredName "Float Characteristic"@en;
+   samm:description "Characteristic for a float value."@en;
+   samm:dataType xsd:float.
+

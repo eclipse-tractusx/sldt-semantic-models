@@ -1,0 +1,196 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#SingleLevelBomAsSpecified",
+  "description" : "The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This \"top-down\" view is in contrast to the \"bottom-up\" view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "assetIdTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#assetIdTrait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens).",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "UnitReference" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#UnitReference",
+        "description" : "Describes a Property containing a reference to one of the units in the Unit Catalog."
+      },
+      "NumberOfObjects" : {
+        "type" : "number",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#NumberOfObjects",
+        "description" : "Quantifiable number of objects in reference to the measurementUnit."
+      },
+      "ItemQuantityCharacteristic" : {
+        "description" : "The characteristic of the item quantity.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#ItemQuantityCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "measurementUnit" : {
+            "description" : "Unit of measurement for the quantity of serialized objects.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#measurementUnit",
+            "$ref" : "#/components/schemas/UnitReference"
+          },
+          "quantityNumber" : {
+            "description" : "The number of objects related to the measurement unit.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#quantityNumber",
+            "$ref" : "#/components/schemas/NumberOfObjects"
+          }
+        },
+        "required" : [ "measurementUnit", "quantityNumber" ]
+      },
+      "ItemClassificationEntity" : {
+        "description" : "The entity encapsulating the properties of the item classification.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#ItemClassificationEntity",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "description" : "Key within the classification.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#key",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "value" : {
+            "description" : "Value within the classification.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#value",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "key", "value" ]
+      },
+      "ItemClassificationCharacteristic" : {
+        "description" : "The characteristic of the item classification.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#ItemClassificationCharacteristic",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ItemClassificationEntity"
+        },
+        "uniqueItems" : true
+      },
+      "Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Timestamp",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "ItemPositioningCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#ItemPositioningCharacteristic",
+        "description" : "Describes the characteristic of the left or right mark entity with its possible values (left or right)",
+        "enum" : [ "left", "right" ]
+      },
+      "ItemEntity" : {
+        "description" : "Entity encapsulating the properies describing a item",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#ItemEntity",
+        "type" : "object",
+        "properties" : {
+          "ownerItemId" : {
+            "description" : "This is the key field of the component which usually keeps the part numbers used in after-sales, e.g. when repairing broken parts and searching for a replacement. This ownerPartId itself isn't usually bound to one part version, with the assumption that all part versions with the same ownerPartId are mutually interchangeable.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#ownerItemId",
+            "$ref" : "#/components/schemas/assetIdTrait"
+          },
+          "itemVersion" : {
+            "description" : "This is the version of the item. The engineering will at times supercede an older item version by a newer one, which might have different material aspects, physical dimensions etc., still maintaining compatibility.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#itemVersion",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "itemQuantity" : {
+            "description" : "This is the quantity how often this item is in the item.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#itemQuantity",
+            "$ref" : "#/components/schemas/ItemQuantityCharacteristic"
+          },
+          "itemDescription" : {
+            "description" : "The description of the item in the primary language of the production facility of the product owner.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#itemDescription",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "itemClassification" : {
+            "description" : "The item classification.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#itemClassification",
+            "$ref" : "#/components/schemas/ItemClassificationCharacteristic"
+          },
+          "lastModifiedOn" : {
+            "description" : "The time the item was modified the last time",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#lastModifiedOn",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "createdOn" : {
+            "description" : "The time the item was created on",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#createdOn",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "itemPositioning" : {
+            "description" : "Some parts are intended to be used on either the left or right side, e.g. mirrors, hence this entity describes on which side a part is to be used",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#itemPositioning",
+            "$ref" : "#/components/schemas/ItemPositioningCharacteristic"
+          }
+        },
+        "required" : [ "ownerItemId" ]
+      },
+      "ItemCharacteristic" : {
+        "description" : "Characteristic of the item.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#ItemCharacteristic",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ItemEntity"
+        },
+        "uniqueItems" : true
+      },
+      "ChildItemEntity" : {
+        "description" : "Encapsulates the properties describing the child item",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#ChildItemEntity",
+        "type" : "object",
+        "properties" : {
+          "childItemCategory" : {
+            "description" : "The BomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This \"top-down\" view is in contrast to the \"bottom-up\" view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#childItemCategory",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "item" : {
+            "description" : "The description of the part in the primary language of the production facility of the product owner.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#item",
+            "$ref" : "#/components/schemas/ItemCharacteristic"
+          },
+          "childassetId" : {
+            "description" : "Describes the Catena-X ID of the child part",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#childassetId",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "childItemCategory", "item", "childassetId" ]
+      },
+      "ChildItemCharacteristic" : {
+        "description" : "The characteristic of the child item property",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#ChildItemCharacteristic",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ChildItemEntity"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "assetId" : {
+      "description" : "A unique reference to an asset which could be registered within Catena-X DataSpace",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#assetId",
+      "$ref" : "#/components/schemas/assetIdTrait"
+    },
+    "childItems" : {
+      "description" : "The child Items of the observed parent item",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#childItems",
+      "$ref" : "#/components/schemas/ChildItemCharacteristic"
+    },
+    "manufacturerId" : {
+      "description" : "The ID of the initial issuer of the single level BoMAsSpecified",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.single_level_bom_as_specified:2.0.1#manufacturerId",
+      "$ref" : "#/components/schemas/Text"
+    }
+  },
+  "required" : [ "assetId", "childItems", "manufacturerId" ]
+}

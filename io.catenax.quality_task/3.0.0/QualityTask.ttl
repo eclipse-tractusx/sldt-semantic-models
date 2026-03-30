@@ -1,0 +1,122 @@
+#######################################################################
+# Copyright (c) 2023 Robert Bosch GmbH
+# Copyright (c) 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2023 Volkswagen AG
+# Copyright (c) 2023 ZF Friedrichshafen AG
+# Copyright (c) 2023 SAP SE
+# Copyright (c) 2023 Siemens AG
+# Copyright (c) 2025 DENSO AUTOMOTIVE Deutschland GmbH
+# Copyright (c) 2025 WITTE Automotive GmbH
+# Copyright (c) 2025 Schaeffler Technologies AG & Co. KG
+# Copyright (c) 2025 Ford Werke GmbH
+#
+# Copyright (c) 2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.quality_task:3.0.0#> .
+@prefix ext-core: <urn:samm:io.catenax.shared.quality_core:1.0.0#> .
+@prefix ext-information: <urn:samm:io.catenax.shared.contact_information:4.0.0#> .
+@prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
+
+:QualityTask a samm:Aspect ;
+   samm:preferredName "QualityTasks"@en ;
+   samm:description "For Catena-X business case Quality Management. Supported technical features: delta update feature, meta information feature and can be used along the supply chain - also for supplier-to-supplier data exchange. The supported model features are described in detail in the Catena-X Quality KIT. This model is used to exchange quality tasks. A quality task is used to link  information from different Catena-X Quality Management data models together."@en ;
+   samm:properties ( :qualityTasks [ samm:property ext-core:metaInformation; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:qualityTasks a samm:Property ;
+   samm:preferredName "List of quality tasks"@en ;
+   samm:description "Property for the list of quality tasks."@en ;
+   samm:characteristic :QualityTaskList .
+
+:QualityTaskList a samm-c:List ;
+   samm:preferredName "List of quality tasks"@en ;
+   samm:description "The list of quality tasks itself."@en ;
+   samm:dataType :SingleQualityTask .
+
+:SingleQualityTask a samm:Entity ;
+   samm:preferredName "Single quality task"@en ;
+   samm:description "A single quality task defines why data is exchanged between 2 or more companies and what insights should be generated out of the transferred data. In addition there is a flag, what happens with the transferred data when this quality task is closed"@en ;
+   samm:properties ( ext-core:qualityTaskId :creationDate [ samm:property :dataDeletion; samm:optional true ] [ samm:property :description; samm:optional true ] [ samm:property ext-core:partName; samm:optional true ] [ samm:property :status; samm:optional true ] :title :companies [ samm:property ext-core:recordStatus; samm:optional true ] [ samm:property ext-core:additionalInformationList; samm:optional true ] ) .
+
+:creationDate a samm:Property ;
+   samm:preferredName "Creation Date"@en ;
+   samm:description "Timestamp when this quality task was created in ISO8601 local date notation."@en ;
+   samm:characteristic ext-core:ISO8601LocalDate ;
+   samm:exampleValue "2022-11-11" .
+
+:dataDeletion a samm:Property ;
+   samm:preferredName "Deletion policy"@en ;
+   samm:description "What should be done with the data after this quality task is closed"@en ;
+   samm:characteristic :DataDeletionEnumeration ;
+   samm:exampleValue "delete-data-after-closing" .
+
+:description a samm:Property ;
+   samm:preferredName "Description"@en ;
+   samm:description "Description what should be done in this quality task"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Please evaluate why there is a high number of customer complaints with ComponentA if the vehicle is between 10000-30000km." .
+
+:status a samm:Property ;
+   samm:preferredName "Status"@en ;
+   samm:description "Status of this quality task"@en ;
+   samm:characteristic :StatusCharacteristic ;
+   samm:exampleValue "new" .
+
+:title a samm:Property ;
+   samm:preferredName "Title"@en ;
+   samm:description "Working title for this quality task"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Evaluation of ComponentA in CarmodelB in country DE" .
+
+:companies a samm:Property ;
+   samm:preferredName "List of companies"@en ;
+   samm:description "A list of companies involved in this quality task"@en ;
+   samm:characteristic :Companies .
+
+:DataDeletionEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Data deletion"@en ;
+   samm:description "Enumeration of possible data deletions entries."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "delete-data-after-closing" "no-deletion-after-closing" "delete-data-after-closing" "no-deletion-after-closing" ) .
+
+:StatusCharacteristic a samm-c:Enumeration ;
+   samm:preferredName "Status Characteristic"@en ;
+   samm:description "Enumeration of the different status values"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "new" "in progress" "completed" "closed" "new" "in progress" "completed" "closed" ) .
+
+:Companies a samm-c:List ;
+   samm:preferredName "Companies"@en ;
+   samm:description "A list of all companies involved in this quality task"@en ;
+   samm:dataType :Company .
+
+:Company a samm:Entity ;
+   samm:preferredName "Company"@en ;
+   samm:description "One company involved in this quality task"@en ;
+   samm:properties ( :name ext-number:bpnlProperty [ samm:property ext-information:email; samm:optional true ] ) .
+
+:name a samm:Property ;
+   samm:preferredName "Company name"@en ;
+   samm:description "Name of the company"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Company A" .
+   

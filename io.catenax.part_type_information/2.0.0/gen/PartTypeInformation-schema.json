@@ -1,0 +1,149 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#PartTypeInformation",
+  "description" : "A Part Type Information represents an item in the Catena-X Bill of Material (BOM) on a type level in a specific version.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "ClassificationEntity" : {
+        "description" : "Encapsulates data related to the classification of the part.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#ClassificationEntity",
+        "type" : "object",
+        "properties" : {
+          "standard" : {
+            "description" : "Identified classification standards",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#standard",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "id" : {
+            "description" : "The classification ID of the part type according to the corresponding standard definition mentioned in the key value pair.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#id",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "description" : {
+            "description" : "Optional property describing the classification standard.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#description",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "standard", "id" ]
+      },
+      "PartClassificationCharacteristic" : {
+        "description" : "Classification characteristic enabling a set of further properties.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#PartClassificationCharacteristic",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ClassificationEntity"
+        },
+        "uniqueItems" : true
+      },
+      "PartTypeInformationCharacteristic" : {
+        "description" : "The characteristics of the part type.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#PartTypeInformationCharacteristic",
+        "type" : "object",
+        "properties" : {
+          "partClassification" : {
+            "description" : "Property describing the classification of a part.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.part_classification:1.0.0#partClassification",
+            "$ref" : "#/components/schemas/PartClassificationCharacteristic"
+          },
+          "nameAtManufacturer" : {
+            "description" : "Name of the part as assigned by the manufacturer",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.common:1.0.0#nameAtManufacturer",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "manufacturerPartId" : {
+            "description" : "Part ID as assigned by the manufacturer of the part. The Part ID identifies the part (as designed) in the manufacturer`s dataspace. The Part ID does not reference a specific instance of a part and thus should not be confused with the serial number or batch number.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.common:1.0.0#manufacturerPartId",
+            "$ref" : "#/components/schemas/Text"
+          }
+        },
+        "required" : [ "nameAtManufacturer", "manufacturerPartId" ]
+      },
+      "BpnsTrait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BpnsTrait",
+        "description" : "The provided regular expression ensures that the BPNS is composed of prefix 'BPNS', 10 digits and two alphanumeric letters.",
+        "pattern" : "^BPNS[a-zA-Z0-9]{12}$"
+      },
+      "FunctionCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#FunctionCharacteristic",
+        "description" : "Describes the characteristics of the function for a site related to the respective part.",
+        "enum" : [ "production", "warehouse", "spare part warehouse" ]
+      },
+      "Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Timestamp",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "partSitesInformationAsPlannedEntity" : {
+        "description" : "Describes the ID, function and validity date of a site for the associated part in the AsPlanned context.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#partSitesInformationAsPlannedEntity",
+        "type" : "object",
+        "properties" : {
+          "siteId" : {
+            "description" : "The identifier of the site according to BPDM. The siteId must be a valid BPN. The BPN is a unique, unchangeable identifier for business partners / company locations from foundation to closure, regardless of the different business relationships / structures between or within the business partners or company locations.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#siteId",
+            "$ref" : "#/components/schemas/BpnsTrait"
+          },
+          "function" : {
+            "description" : "The function of the site in relation to the part (i.e. the activity within the value chain of the part that is performed at the site).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#function",
+            "$ref" : "#/components/schemas/FunctionCharacteristic"
+          },
+          "functionValidFrom" : {
+            "description" : "Timestamp, from when the site has the specified function for the given part.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#functionValidFrom",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "functionValidUntil" : {
+            "description" : "Timestamp, until when the site has the specified function for the given part.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#functionValidUntil",
+            "$ref" : "#/components/schemas/Timestamp"
+          }
+        },
+        "required" : [ "siteId", "function" ]
+      },
+      "partSitesInformationAsPlannedCharacteristic" : {
+        "description" : "The characteristic of the part site information that represents a set of possible site to a respective part.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#partSitesInformationAsPlannedCharacteristic",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/partSitesInformationAsPlannedEntity"
+        },
+        "uniqueItems" : true
+      },
+      "UuidV4Trait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      }
+    }
+  },
+  "properties" : {
+    "partTypeInformation" : {
+      "description" : "The part type from which the serialized part has been instantiated.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#partTypeInformation",
+      "$ref" : "#/components/schemas/PartTypeInformationCharacteristic"
+    },
+    "partSitesInformationAsPlanned" : {
+      "description" : "A site is a delimited geographical area where a legal entity does business (geographical address with geo coordinates). A site always has a primary physical address. It is possible that further physical addresses are specified for the site. P.O. box details are only possible in addition to the physical address. A site has a 1:n relation to addresses, means at least one address is necessary and multiple addresses are possible.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.part_type_information:2.0.0#partSitesInformationAsPlanned",
+      "$ref" : "#/components/schemas/partSitesInformationAsPlannedCharacteristic"
+    },
+    "globalAssetId" : {
+      "description" : "The fully anonymous ID in the dataspace of the part.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.common:1.0.0#globalAssetId",
+      "$ref" : "#/components/schemas/UuidV4Trait"
+    }
+  },
+  "required" : [ "partTypeInformation", "globalAssetId" ]
+}
