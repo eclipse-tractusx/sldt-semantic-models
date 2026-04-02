@@ -1,0 +1,245 @@
+#######################################################################
+# Copyright(c) 2026 Bayerische Motoren Werke Aktiengesellschaft(BMW AG)
+# Copyright(c) 2026 HELLA GmbH & Co. KGaA
+# Copyright(c) 2026 Magna International GmbH
+# Copyright(c) 2026 msg for automotive GmbH
+# Copyright(c) 2026 sovity GmbH
+# Copyright(c) 2026 T-Systems International GmbH
+# Copyright(c) 2026 Catena-X Automotive Network e.V.
+# Copyright(c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.crypto_material:1.0.0#> .
+@prefix ext-ic: <urn:samm:io.catenax.shared.industry_core.common:1.0.0#> .
+
+:CryptoMaterial a samm:Aspect ;
+   samm:preferredName "Crypto Material"@en ;
+   samm:description "The crypto material model contains information on the set of cryptographic materials associated with a unique instance of a serialized part or just-in-sequence part, such as e.g, an Electronic Control Unit (ECU)."@en ;
+   samm:properties ( ext-ic:globalAssetId :cryptoMaterials ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:cryptoMaterials a samm:Property ;
+   samm:preferredName "Crypto Materials"@en ;
+   samm:description "Set of one or more instances of cryptographic material associated with a unique instance of a serialized part or just-in-sequence part."@en ;
+   samm:characteristic :CryptoMaterialsSet .
+
+:rfc7468 a samm:Value ;
+   samm:preferredName "RFC 7468"@en ;
+   samm:description "Textual representation of BER or DER encoded ASN.1 structures, as specified in IETF RFC 7468."@en ;
+   samm:see <https://www.rfc-editor.org/rfc/rfc7468.html> ;
+   samm:value "rfc7468" .
+
+:base64 a samm:Value ;
+   samm:preferredName "Base64"@en ;
+   samm:description "Textual representation of arbitrary binary data as a string of Base64 characters, as specified in IETF RFC 4648."@en ;
+   samm:see <https://www.rfc-editor.org/rfc/rfc4648.html> ;
+   samm:value "base64" .
+
+:hex a samm:Value ;
+   samm:preferredName "HEX"@en ;
+   samm:description "Textual representation of arbitrary binary data as a string of Base16 (also referred to as hexadecimal) characters, as specified in IETF RFC 4648."@en ;
+   samm:see <https://www.rfc-editor.org/rfc/rfc4648.html> ;
+   samm:value "hex" .
+
+:CryptoMaterialEntity a samm:Entity ;
+   samm:preferredName "Crypto Material Entity"@en ;
+   samm:description "Entity containing information describing an instance of cryptographic material."@en ;
+   samm:properties (
+      :name
+      :type
+      :value
+      :format
+      :encoding
+   ) .
+
+:certificateSigningRequest a samm:Value ;
+   samm:preferredName "Certificate Signing Request"@en ;
+   samm:description "Certificate signing request (CSR) for requesting the issuing of a digital certificate to a subject from a certificate authority (CA)."@en ;
+   samm:value "certificateSigningRequest" .
+
+:ValueCharacteristic a samm:Characteristic ;
+   samm:preferredName "Value Characteristic"@en ;
+   samm:description "String containing the textual representation the value of cryptographic material in the format and encoding specified in the respective properties."@en ;
+   samm:dataType xsd:string .
+
+:pkcs1 a samm:Value ;
+   samm:preferredName "PKCS#1"@en ;
+   samm:description """PKCS#1 ASN.1 structure format for RSA private and public keys, as specified in IETF RFC 8017.
+
+Note: The PKCS#1 format is only used for asymmetric keys with the RSA algorithm and is superseeded by algorithm agnostic formats. All RSA keys can alternatively be formatted in PKCS#8 for private keys and the X.509 SubjectPublicKeyInfo for public keys, respectively."""@en ;
+   samm:see <https://www.rfc-editor.org/rfc/rfc8017.html> ;
+   samm:value "pkcs1" .
+
+:publicKey a samm:Value ;
+   samm:preferredName "Public Key"@en ;
+   samm:description "Public key of an asymmetric key pair that is used in an asymmetric cryptographic scheme."@en ;
+   samm:value "publicKey" .
+
+:value a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "Value of cryptographic material in the format and encoding specified in the respective properties."@en ;
+   samm:characteristic :ValueCharacteristic ;
+   samm:exampleValue "-----BEGIN CERTIFICATE REQUEST-----\\nMIIBtzCCAT0CAQAwgZ8xDTALBgNVBCsMBDIwMjUxEzARBgNVBAgMClByb2R1Y3Rp...yVXgPMvdmc33ot8=\\n-----END CERTIFICATE REQUEST-----" .
+
+:pkcs8 a samm:Value ;
+   samm:preferredName "PKCS#8"@en ;
+   samm:description """PKCS#8 ASN.1 structure format for asymmetric private keys, as specified in IETF RFC 5958.
+
+Note: The PKCS#8v2 format allows to optionally bundle an asymmetric public key and/or a digital certificate with the private key. However, PKCS#8v2 cannot contain a public key or certificate on their own.
+
+Note: RFC 5958 obsoletes the PKCS#8v1 structure specified in IETF RFC 5208. However, the PKCS#8v2 ASN.1 structure is not supported in all systems and therefore PKCS#8v1 is still in use. In such case, the version information in the PKCS#8 ASN.1 structure must indicate the use of PKCS#8v1."""@en ;
+   samm:see <https://www.rfc-editor.org/rfc/rfc5958.html> ;
+   samm:value "pkcs8" .
+
+:FormatEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Format Enumeration"@en ;
+   samm:description "Enumeration defining the allowed formats for cryptographic material."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values (
+      :pkcs1
+      :pkcs8
+      :pkcs10
+      :raw
+      :subjectPublicKeyInfo
+      :x509v3
+   ) .
+
+:pkcs10 a samm:Value ;
+   samm:preferredName "PKCS#10"@en ;
+   samm:description "PKCS#10 ASN.1 structure format for certificate signing requests, as specified in IETF RFC 2986."@en ;
+   samm:see <https://www.rfc-editor.org/rfc/rfc2986.html> ;
+   samm:value "pkcs10" .
+
+:raw a samm:Value ;
+   samm:preferredName "Raw"@en ;
+   samm:description """Raw, unformatted binary data. For symmetric keys this is the binary representation of the key value.
+
+Note: This may be used for data that does not follow any specific cryptographic data format. The interpretation of the data is defined between participants."""@en ;
+   samm:value "raw" .
+
+:subjectPublicKeyInfo a samm:Value ;
+   samm:preferredName "Subject Public Key Info"@en ;
+   samm:description "SubjectPublicKeyInfo ASN.1 structure format for asymmetric public keys, as specified in IETF RFC 5280."@en ;
+   samm:see <https://www.rfc-editor.org/rfc/rfc5280.html> ;
+   samm:value "subjectPublicKeyInfo" .
+
+:x509v3 a samm:Value ;
+   samm:preferredName "X.509v3"@en ;
+   samm:description "X.509v3 ASN.1 structure format for digital certificates, as specified in IETF RFC 5280."@en ;
+   samm:see <https://www.rfc-editor.org/rfc/rfc5280.html> ;
+   samm:value "x509v3" .
+
+:EncodingEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Encoding Enumeration"@en ;
+   samm:description "Enumeration defining the allowed encodings for cryptographic material."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( :base64 :hex :rfc7468 ) .
+
+:type a samm:Property ;
+   samm:preferredName "Type"@en ;
+   samm:description """Type of cryptographic material.
+
+Provided cryptographic material must have one of the following types:
+- symmetric key
+- private key
+- public key
+- digital certificate
+- certificate signing request
+- secret material"""@en ;
+   samm:characteristic :TypeEnumeration ;
+   samm:exampleValue :certificateSigningRequest .
+
+:TypeEnumeration a samm-c:Enumeration ;
+   samm:preferredName "Type Enumeration"@en ;
+   samm:description "Enumeration defining the allowed types of cryptographic material."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values (
+      :symmetricKey
+      :privateKey
+      :publicKey
+      :certificate
+      :certificateSigningRequest
+      :secretMaterial
+   ) .
+
+:secretMaterial a samm:Value ;
+   samm:preferredName "Secret Material"@en ;
+   samm:description "Any secret cryptographic material that is not considered a symmetric key or asymmetric private key. Secret cryptographic material includes e.g., passwords, seed values for random number generators, or blobs of secret data."@en ;
+   samm:value "secretMaterial" .
+
+:encoding a samm:Property ;
+   samm:preferredName "Encoding"@en ;
+   samm:description """Encoding of cryptographic material.
+
+Provided cryptographic material must have one of the following encodings:
+- Base64
+- HEX
+- RFC 7468"""@en ;
+   samm:characteristic :EncodingEnumeration ;
+   samm:exampleValue :rfc7468 .
+
+:name a samm:Property ;
+   samm:preferredName "Name"@en ;
+   samm:description """Name assigned to the cryptographic material.
+
+This property may be used to indicate the security service  provided by the cryptographic material and the usage or application it is associated with."""@en ;
+   samm:characteristic :NameCharacteristic ;
+   samm:exampleValue "ecuIdentityCsr" .
+
+:NameCharacteristic a samm:Characteristic ;
+   samm:preferredName "Name Characteristic"@en ;
+   samm:description "String containing the name assigned to cryptographic material."@en ;
+   samm:dataType xsd:string .
+
+:format a samm:Property ;
+   samm:preferredName "Format"@en ;
+   samm:description """Format of cryptographic material.
+
+Provided cryptographic material must have one of the following formats:
+- PKCS#1
+- PKCS#8
+- PKCS#10
+- raw
+- subjectPublicKeyInfo
+- X.509v3"""@en ;
+   samm:characteristic :FormatEnumeration ;
+   samm:exampleValue :pkcs10 .
+
+:privateKey a samm:Value ;
+   samm:preferredName "Private Key"@en ;
+   samm:description "Private key of an asymmetric key pair that is used in an asymmetric cryptographic scheme."@en ;
+   samm:value "privateKey" .
+
+:symmetricKey a samm:Value ;
+   samm:preferredName "Symmetric Key"@en ;
+   samm:description "Secret key shared between all participants in a symmetric cryptographic scheme."@en ;
+   samm:value "symmetricKey" .
+
+:certificate a samm:Value ;
+   samm:preferredName "Certificate"@en ;
+   samm:description "Digital certificate associating an asymmetric public key to the identity of the certificate's subject."@en ;
+   samm:value "certificate" .
+
+:CryptoMaterialsSet a samm-c:Set ;
+   samm:preferredName "Crypto Materials Set"@en ;
+   samm:description "Set containing instances of cryptographic material."@en ;
+   samm:dataType :CryptoMaterialEntity .
+
