@@ -1,0 +1,171 @@
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:org.eclipse.esmf:1.0.0#> .
+@prefix ext-header: <urn:samm:io.catenax.shared.message_header:3.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+
+:DigitalTwinNotification a samm:Aspect ;
+   samm:preferredName "Digital Twin Notification"@en ;
+   samm:description "Aspect model describing the notification payload for Digital Twin Registry (DTR) operations. It carries a message header with routing/context metadata and a content body referencing EDC endpoints and AAS shell descriptors."@en ;
+   samm:properties ( :content ext-header:header ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:content a samm:Property ;
+   samm:preferredName "Content"@en ;
+   samm:description "Payload content of the notification, including EDC connection details and shell descriptors."@en ;
+   samm:characteristic :ContentCharacteristic .
+
+:ContentCharacteristic a samm:Characteristic ;
+   samm:preferredName "Content"@en ;
+   samm:description "The notification body carrying EDC connection information and AAS shell descriptors."@en ;
+   samm:dataType :Content .
+
+:Content a samm:Entity ;
+   samm:preferredName "Content"@en ;
+   samm:description "The notification body carrying EDC connection information and AAS shell descriptors."@en ;
+   samm:properties ( :shells :edcAssetId :edcControlPlane ) .
+
+:shells a samm:Property ;
+   samm:preferredName "Shells"@en ;
+   samm:description "List of AAS shell descriptors included in the notification."@en ;
+   samm:characteristic :ShellsList .
+
+:edcAssetId a samm:Property ;
+   samm:preferredName "EDC Asset ID"@en ;
+   samm:description "The asset identifier in the EDC catalog.\""@en ;
+   samm:characteristic :String ;
+   samm:exampleValue "registry-asset" .
+
+:edcControlPlane a samm:Property ;
+   samm:preferredName "EDC Control Plane"@en ;
+   samm:description "The EDC control-plane endpoint of the DTR where the linked shells are hosted."@en ;
+   samm:characteristic :String ;
+   samm:exampleValue "https://edc.control.plane/api/v1/dsp" .
+
+:ShellsList a samm-c:List ;
+   samm:preferredName "Shells List"@en ;
+   samm:description "A list of shell entries."@en ;
+   samm:dataType :Shell .
+
+:String a samm:Characteristic ;
+   samm:preferredName "String"@en ;
+   samm:dataType xsd:string .
+
+:Shell a samm:Entity ;
+   samm:preferredName "Shell"@en ;
+   samm:description "An Asset Administration Shell descriptor."@en ;
+   samm:properties ( :submodelDescriptors :edcDataplane ext-uuid:uuidV4Property ) .
+
+:submodelDescriptors a samm:Property ;
+   samm:preferredName "Submodel Descriptors"@en ;
+   samm:description "List of submodel descriptors associated with the shell."@en ;
+   samm:characteristic :SubmodelDescriptorsList .
+
+:edcDataplane a samm:Property ;
+   samm:preferredName "EDC Data Plane"@en ;
+   samm:description "The EDC data-plane endpoint of the shell, composed of the DTR API base URL and the shell ID."@en ;
+   samm:characteristic :String ;
+   samm:exampleValue "https://edc.data.plane/api/public/urn:uuid:7effd7f4-6353-4401-9547-c54b420a22a0" .
+
+:SubmodelDescriptorsList a samm-c:List ;
+   samm:preferredName "Submodel Descriptors List"@en ;
+   samm:dataType :SubmodelDescriptor .
+
+:SubmodelDescriptor a samm:Entity ;
+   samm:preferredName "Submodel Descriptor"@en ;
+   samm:description "Descriptor for a single submodel, including its semantic identity and access endpoints."@en ;
+   samm:properties ( :semanticId ext-uuid:uuidV4Property :endpoints ) .
+
+:semanticId a samm:Property ;
+   samm:preferredName "Semantic ID"@en ;
+   samm:description "Reference to the semantic definition of the submodel."@en ;
+   samm:characteristic :SemanticIdCharacteristic .
+
+:endpoints a samm:Property ;
+   samm:preferredName "Endpoints"@en ;
+   samm:description "List of access endpoints for the submodel."@en ;
+   samm:characteristic :EndpointsList .
+
+:SemanticIdCharacteristic a samm:Characteristic ;
+   samm:preferredName "Semantic ID"@en ;
+   samm:dataType :SemanticId .
+
+:EndpointsList a samm-c:List ;
+   samm:preferredName "Endpoints List"@en ;
+   samm:dataType :Endpoint .
+
+:SemanticId a samm:Entity ;
+   samm:preferredName "Semantic ID"@en ;
+   samm:description "An external or global reference identifying the semantic meaning of a submodel."@en ;
+   samm:properties ( :type :keys ) .
+
+:Endpoint a samm:Entity ;
+   samm:preferredName "Endpoint"@en ;
+   samm:description "An access endpoint for a submodel."@en ;
+   samm:properties ( :interface :protocolInformation ) .
+
+:type a samm:Property ;
+   samm:preferredName "Reference Type"@en ;
+   samm:description "Type of reference, e.g. ExternalReference."@en ;
+   samm:characteristic :String ;
+   samm:exampleValue "ExternalReference" .
+
+:keys a samm:Property ;
+   samm:preferredName "Keys"@en ;
+   samm:description "List of reference keys."@en ;
+   samm:characteristic :KeysList .
+
+:interface a samm:Property ;
+   samm:preferredName "Interface"@en ;
+   samm:description "The interface identifier, e.g. SUBMODEL-VALUE-3.1."@en ;
+   samm:characteristic :String ;
+   samm:exampleValue "SUBMODEL-VALUE-3.1" .
+
+:protocolInformation a samm:Property ;
+   samm:preferredName "Protocol Information"@en ;
+   samm:description "Protocol-specific connection details for the endpoint."@en ;
+   samm:characteristic :ProtocolInformationCharacteristic .
+
+:KeysList a samm-c:List ;
+   samm:preferredName "Keys List"@en ;
+   samm:dataType :Key .
+
+:ProtocolInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Protocol Information"@en ;
+   samm:dataType :ProtocolInformation .
+
+:Key a samm:Entity ;
+   samm:preferredName "Key"@en ;
+   samm:description "A single key entry within a reference."@en ;
+   samm:properties ( :type :value ) .
+
+:ProtocolInformation a samm:Entity ;
+   samm:preferredName "Protocol Information"@en ;
+   samm:description "Details for connecting to a submodel endpoint."@en ;
+   samm:properties ( :href :subprotocolBody ) .
+
+:value a samm:Property ;
+   samm:preferredName "Key Value"@en ;
+   samm:description "The value of the key, typically a URN to a semantic model."@en ;
+   samm:characteristic :String ;
+   samm:exampleValue "urn:samm:io.catenax.serial_part:4.0.0#SerialPart" .
+
+:href a samm:Property ;
+   samm:preferredName "Href"@en ;
+   samm:description "The URL of the submodel endpoint."@en ;
+   samm:characteristic :String ;
+   samm:exampleValue "https://edc.data.plane/api/public/urn%3Auuid%3A7effd7f4-6353-4401-9547-c54b420a22a0/submodel/$value" .
+
+:subprotocolBody a samm:Property ;
+   samm:preferredName "Subprotocol Body"@en ;
+   samm:description "Additional protocol details including the DSP endpoint and asset ID."@en ;
+   samm:characteristic :String ;
+   samm:exampleValue "dspEndpoint=https://edc.control.plane/api/v1/dsp;id=urn:uuid:1475f313-0a83-4e2b-b705-a100eebcb7d7" .
+
