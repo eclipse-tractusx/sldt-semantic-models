@@ -101,7 +101,7 @@
 :RequirementInformationEntity a samm:Entity ;
    samm:preferredName "Requirement Information Entity"@en ;
    samm:description "Entity to describe all information for a requirement"@en ;
-   samm:properties ( :reqIfName :reqIfType :version :description :creationDate [ samm:property :author; samm:optional true ] [ samm:property :foreignId; samm:optional true ] [ samm:property :longname; samm:optional true ] [ samm:property :metadata; samm:optional true ] [ samm:property :specification; samm:optional true ] [ samm:property :versionPredecessor; samm:optional true ] ) .
+   samm:properties ( :name :type :version :description :creationDate [ samm:property :author; samm:optional true ] [ samm:property :foreignId; samm:optional true ] [ samm:property :longname; samm:optional true ] [ samm:property :metadata; samm:optional true ] [ samm:property :specification; samm:optional true ] ) .
 
 :StatusEntity a samm:Entity ;
    samm:preferredName "Status Entity"@en ;
@@ -113,21 +113,21 @@
    samm:description "Entity to link to related requirements"@en ;
    samm:properties ( :relatedRequirementId :requirementRelationshipType ) .
 
-:reqIfName a samm:Property ;
-   samm:preferredName "ReqIF Name"@en ;
-   samm:description "Name of the requirement (from ReqIF)."@en ;
+:name a samm:Property ;
+   samm:preferredName "Name"@en ;
+   samm:description "Name of the requirement."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Plastic deformation of the bogie" .
 
-:reqIfType a samm:Property ;
-   samm:preferredName "ReqIF Type"@en ;
+:type a samm:Property ;
+   samm:preferredName "Type"@en ;
    samm:description "Type of the requirement (e.g., 'Functional', 'Non-Functional')."@en ;
-   samm:characteristic :ReqIFTypeEnum ;
+   samm:characteristic :TypeEnum ;
    samm:exampleValue "Functional" .
 
 :version a samm:Property ;
    samm:preferredName "Version"@en ;
-   samm:description "Version of the requirement with it's predecessor"@en ;
+   samm:description "Version of the requirement"@en ;
    samm:characteristic :VersionCharacteristic .
 
 :description a samm:Property ;
@@ -148,7 +148,8 @@
 :descriptionText a samm:Property ;
    samm:preferredName "Description"@en ;
    samm:description "Textual description of the requirement."@en ;
-   samm:characteristic samm-c:Text .
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "The component MUST withstand a temperature of 60 °C" .
 
 :descriptionAttachment a samm:Property ;
    samm:preferredName "Attachment"@en ;
@@ -190,11 +191,6 @@
    samm:characteristic :SpecificationList ;
    samm:exampleValue "https://www.prostep.org/fileadmin/prod-pay-download-8c1d/Recommendation_ReqIF_V2.2.pdf" .
 
-:versionPredecessor a samm:Property ;
-   samm:preferredName "Version Predecessor"@en ;
-   samm:description "Includes the informaiton to identifiy predecessor requirement (e.g., ID and Version)."@en ;
-   samm:characteristic :VersionPredecessorCharacteristic .
-
 :statusValue a samm:Property ;
    samm:preferredName "Status Value"@en ;
    samm:description "Overall status of the requirement"@en ;
@@ -228,8 +224,8 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "RequirementSpecialismOfRequirement" .
 
-:ReqIFTypeEnum a samm-c:Enumeration ;
-   samm:preferredName "ReqIF Type Characteristic"@en ;
+:TypeEnum a samm-c:Enumeration ;
+   samm:preferredName "Type Characteristic based on ReqIF"@en ;
    samm:description "Enumeration of requirement types."@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "Functional" "Non-Functional" "User Story" "Use Case" ) .
@@ -248,11 +244,6 @@
    samm:preferredName "Specification List"@en ;
    samm:description "A list of all related specifications (e.g. norms)"@en ;
    samm:dataType xsd:string .
-
-:VersionPredecessorCharacteristic a samm:Characteristic ;
-   samm:preferredName "Version Predecessor Characteristic"@en ;
-   samm:description "Describes the version of the predecessor of the requirement."@en ;
-   samm:dataType :VersionPredecessorEntity .
 
 :StatusValueEnum a samm-c:Enumeration ;
    samm:preferredName "Status Value Characteristic"@en ;
@@ -279,11 +270,6 @@
    samm:preferredName "Metadata Entity"@en ;
    samm:description "Entity for key and value of requirement metadata."@en ;
    samm:properties ( :key :value [ samm:property :metadataDescription; samm:optional true ] ) .
-
-:VersionPredecessorEntity a samm:Entity ;
-   samm:preferredName "Version Predecessor Entity"@en ;
-   samm:description "Entity containing information about the version of the predecessor of the requirement."@en ;
-   samm:properties ( :versionPredecessorNumber :versionPredecessorId ) .
 
 :CustomerStatusEntity a samm:Entity ;
    samm:preferredName "Customer Status"@en ;
@@ -324,17 +310,6 @@
    samm:description "Description of the associated metadata"@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Timestamp of the expected finalization of the requirement" .
-
-:versionPredecessorNumber a samm:Property ;
-   samm:preferredName "Version Predecessor Number"@en ;
-   samm:description "https://semver.org/"@en ;
-   samm:characteristic :VersionNumberTrait ;
-   samm:exampleValue "1.4.5" .
-
-:versionPredecessorId a samm:Property ;
-   samm:preferredName "Version Predecessor Id"@en ;
-   samm:description "The identifier of the predecessor version of the requirement represented by a UUID, valid for the Catena-X dataspace."@en ;
-   samm:characteristic ext-uuid:UuidV4Trait .
 
 :customerStatusValue a samm:Property ;
    samm:preferredName "Customer Status Value"@en ;
@@ -384,15 +359,15 @@
 
 :CustomerStatusValueEnum a samm-c:Enumeration ;
    samm:preferredName "Customer Status Value Enum"@en ;
-   samm:description "Characteristic for the value of customer status"@en ;
+   samm:description "Characteristic for the value of customer status.\n Values to be determined based on https://www.prostep.org/fileadmin/prod-pay-download-8c1d/Recommendation_ReqIF_V2.2.pdf"@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "<empty>" "NotToEvaluate" "ToEvaluate" "Accepted" "ToBeClarified" "NotAccepted" "ProposedToDeiscard" "Discarded" ) .
 
 :SupplierStatusValueEnum a samm-c:Enumeration ;
    samm:preferredName "Supplier Status Value Characteristic"@en ;
-   samm:description "Characteristic for the value of supplier status"@en ;
+   samm:description "Characteristic for the value of supplier status\n Values to be determined based on https://www.prostep.org/fileadmin/prod-pay-download-8c1d/Recommendation_ReqIF_V2.2.pdf""@en ;
    samm:dataType xsd:string ;
-   samm-c:values ( "<empty>" "Agreed" "ToBeClarified" "AgreedWithComment" "NotAgreed" "DiscardDeployed" ) .
+   samm-c:values ( "Agreed" "ToBeClarified" "AgreedWithComment" "NotAgreed" "DiscardDeployed" ) .
 
 :VersionRegularExpression a samm-c:RegularExpressionConstraint ;
    samm:preferredName "Version Regular Expression"@en ;
