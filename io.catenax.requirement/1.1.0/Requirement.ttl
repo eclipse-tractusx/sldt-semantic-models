@@ -1,0 +1,358 @@
+#######################################################################
+# Copyright(c) 2025 Lisa Dräxlmaier GmbH
+# Copyright(c) 2025 Schaeffler AG
+# Copyright(c) 2025 Mercedes-Benz AG
+# Copyright(c) 2025 ZF Friedrichshafen AG
+# Copyright(c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.requirement:1.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+
+:Requirement a samm:Aspect ;
+   samm:preferredName "Requirement"@en ;
+   samm:description "Aspect model for requirements."@en ;
+   samm:properties ( :requirementId :requirementInformation :requirementStatus [ samm:property :requirementRelations; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:requirementId a samm:Property ;
+   samm:preferredName "Requirement Id"@en ;
+   samm:description "The identifier of a requirement represented by a UUID, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df" .
+
+:requirementInformation a samm:Property ;
+   samm:preferredName "Requirement Information"@en ;
+   samm:description "Mainnode for all the Requirement related information"@en ;
+   samm:characteristic :RequirementInformationCharacteristic .
+
+:requirementStatus a samm:Property ;
+   samm:preferredName "Requirement Status"@en ;
+   samm:description "Status of the Requirement"@en ;
+   samm:characteristic :RequirementStatusCharacteristic .
+
+:requirementRelations a samm:Property ;
+   samm:preferredName "Requirement Relations"@en ;
+   samm:description "Links to related requirements"@en ;
+   samm:characteristic :RequirementRelationSet .
+
+:RequirementInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Requirement Information"@en ;
+   samm:description "Mainnode for all the Requirement related information"@en ;
+   samm:dataType :RequirementInformationEntity .
+
+:RequirementStatusCharacteristic a samm:Characteristic ;
+   samm:preferredName "Requirement Status Characteristic"@en ;
+   samm:description "Status of the Requirement"@en ;
+   samm:dataType :StatusEntity .
+
+:RequirementRelationSet a samm-c:SortedSet ;
+   samm:preferredName "Requirement Relation Entity"@en ;
+   samm:description "Entity for relations between requirements."@en ;
+   samm:dataType :RequirementRelationEntity .
+
+:RequirementInformationEntity a samm:Entity ;
+   samm:preferredName "Requirement Information Entity"@en ;
+   samm:description "Entity to describe all information for a requirement"@en ;
+   samm:properties ( :reqIfName :reqIfType :version :description :creationDate [ samm:property :author; samm:optional true ] [ samm:property :foreignId; samm:optional true ] [ samm:property :longname; samm:optional true ] [ samm:property :metadata; samm:optional true ] [ samm:property :specification; samm:optional true ] [ samm:property :versionPredecessor; samm:optional true ] ) .
+
+:StatusEntity a samm:Entity ;
+   samm:preferredName "Status Entity"@en ;
+   samm:description "Entity which defines the status of a requirement"@en ;
+   samm:properties ( :statusValue :statusTimestamp :customerStatus :supplierStatus ) .
+
+:RequirementRelationEntity a samm:Entity ;
+   samm:preferredName "Requirement Relation Entity"@en ;
+   samm:description "Entity to link to related requirements"@en ;
+   samm:properties ( :relatedRequirementId :requirementRelationshipType ) .
+
+:reqIfName a samm:Property ;
+   samm:preferredName "ReqIF Name"@en ;
+   samm:description "Name of the requirement (from ReqIF)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Plastic deformation of the bogie" .
+
+:reqIfType a samm:Property ;
+   samm:preferredName "ReqIF Type"@en ;
+   samm:description "Type of the requirement (e.g., 'Functional', 'Non-Functional')."@en ;
+   samm:characteristic :ReqIFTypeEnum ;
+   samm:exampleValue "Functional" .
+
+:version a samm:Property ;
+   samm:preferredName "Version"@en ;
+   samm:description "Version of the requirement with it's predecessor"@en ;
+   samm:characteristic :VersionCharacteristic .
+
+:description a samm:Property ;
+   samm:preferredName "Description"@en ;
+   samm:description "Textual description of the requirement."@en ;
+   samm:characteristic samm-c:Text .
+
+:creationDate a samm:Property ;
+   samm:preferredName "Creationdate"@en ;
+   samm:description "Date of requirement/version creation."@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:author a samm:Property ;
+   samm:preferredName "Author"@en ;
+   samm:description "Company that created the requirement. "@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Lisa Dräxlmaier GmbH" .
+
+:foreignId a samm:Property ;
+   samm:preferredName "Foreign Id"@en ;
+   samm:description "Identifier from an external system (e.g. the chapter in a set of requirements)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "3.1.1" .
+
+:longname a samm:Property ;
+   samm:preferredName "Longname"@en ;
+   samm:description "Descriptive name for the requirement."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Plastic deformation of the bogie" .
+
+:metadata a samm:Property ;
+   samm:preferredName "Metadata"@en ;
+   samm:description "Additional metadata that is associated with the requirement and not standardized in the aspect model."@en ;
+   samm:characteristic :MetadataList .
+
+:specification a samm:Property ;
+   samm:preferredName "Specification"@en ;
+   samm:description "Link to the specification document."@en ;
+   samm:characteristic :SpecificationList ;
+   samm:exampleValue "https://www.prostep.org/fileadmin/prod-pay-download-8c1d/Recommendation_ReqIF_V2.2.pdf" .
+
+:versionPredecessor a samm:Property ;
+   samm:preferredName "Version Predecessor"@en ;
+   samm:description "Includes the informaiton to identifiy predecessor requirement (e.g., ID and Version)."@en ;
+   samm:characteristic :VersionPredecessorCharacteristic .
+
+:statusValue a samm:Property ;
+   samm:preferredName "Status Value"@en ;
+   samm:description "Overall status of the requirement"@en ;
+   samm:characteristic :StatusValueEnum ;
+   samm:exampleValue "transition status" .
+
+:statusTimestamp a samm:Property ;
+   samm:preferredName "Status Timestamp"@en ;
+   samm:description "Timestamp of the status change."@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:customerStatus a samm:Property ;
+   samm:preferredName "Customer Status"@en ;
+   samm:description "Property for the requirement status of customer"@en ;
+   samm:characteristic :CustomerStatusList .
+
+:supplierStatus a samm:Property ;
+   samm:preferredName "Supplier Status"@en ;
+   samm:description "Property for the requirement status of supplier"@en ;
+   samm:characteristic :SupplierStatusList .
+
+:relatedRequirementId a samm:Property ;
+   samm:preferredName "Related Requirement Identifier"@en ;
+   samm:description "Id of related requirement in form of a UUID"@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:e6b31BC2-8102-64AF-034D-C2DC35E37cEE" .
+
+:requirementRelationshipType a samm:Property ;
+   samm:preferredName "Requiremement Relationship Type"@en ;
+   samm:description "The type of relationship of the two related requirements"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "RequirementSpecialismOfRequirement" .
+
+:ReqIFTypeEnum a samm-c:Enumeration ;
+   samm:preferredName "ReqIF Type Characteristic"@en ;
+   samm:description "Enumeration of requirement types."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Functional" "Non-Functional" "User Story" "Use Case" ) .
+
+:VersionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Version Characteristic"@en ;
+   samm:description "Characteristic for the version"@en ;
+   samm:dataType :VersionEntity .
+
+:MetadataList a samm-c:List ;
+   samm:preferredName "Metadata List"@en ;
+   samm:description "List of additional metadata that is associated with the requirement and not standardized in the aspect model."@en ;
+   samm:dataType :MetadataEntity .
+
+:SpecificationList a samm-c:List ;
+   samm:preferredName "Specification List"@en ;
+   samm:description "A list of all related specifications (e.g. norms)"@en ;
+   samm:dataType xsd:string .
+
+:VersionPredecessorCharacteristic a samm:Characteristic ;
+   samm:preferredName "Version Predecessor Characteristic"@en ;
+   samm:description "Describes the version of the predecessor of the requirement."@en ;
+   samm:dataType :VersionPredecessorEntity .
+
+:StatusValueEnum a samm-c:Enumeration ;
+   samm:preferredName "Status Value Characteristic"@en ;
+   samm:description "Characteristic for the status"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "transition status" "invalid transition" "final status" ) .
+
+:CustomerStatusList a samm-c:List ;
+   samm:preferredName "Customer Status Characteristic"@en ;
+   samm:description "Characteristic for the customer status"@en ;
+   samm:dataType :CustomerStatusEntity .
+
+:SupplierStatusList a samm-c:List ;
+   samm:preferredName "Supplier Status Characteristic"@en ;
+   samm:description "Characteristic for the supplier status"@en ;
+   samm:dataType :SupplierStatusEntity .
+
+:VersionEntity a samm:Entity ;
+   samm:preferredName "Version Entity"@en ;
+   samm:description "Entity for requirement version"@en ;
+   samm:properties ( :versionNumber :versionId ) .
+
+:MetadataEntity a samm:Entity ;
+   samm:preferredName "Metadata Entity"@en ;
+   samm:description "Entity for key and value of requirement metadata."@en ;
+   samm:properties ( :key :value [ samm:property :metadataDescription; samm:optional true ] ) .
+
+:VersionPredecessorEntity a samm:Entity ;
+   samm:preferredName "Version Predecessor Entity"@en ;
+   samm:description "Entity containing information about the version of the predecessor of the requirement."@en ;
+   samm:properties ( :versionPredecessorNumber :versionPredecessorId ) .
+
+:CustomerStatusEntity a samm:Entity ;
+   samm:preferredName "Customer Status"@en ;
+   samm:description "Entity for the customer status"@en ;
+   samm:properties ( :customerStatusValue [ samm:property :customerStatusComment; samm:optional true ] :customerStatusTimestamp ) .
+
+:SupplierStatusEntity a samm:Entity ;
+   samm:preferredName "Supplier Status"@en ;
+   samm:description "Entity for the supplier status"@en ;
+   samm:properties ( :supplierStatusValue [ samm:property :supplierStatusComment; samm:optional true ] :supplierStatusTimestamp ) .
+
+:versionNumber a samm:Property ;
+   samm:preferredName "Version Number"@en ;
+   samm:description "Semantic version of the requirement"@en ;
+   samm:see <https://semver.org/> ;
+   samm:characteristic :VersionNumberTrait ;
+   samm:exampleValue "2.0.0" .
+
+:versionId a samm:Property ;
+   samm:preferredName "Version Id"@en ;
+   samm:description "The identifier of this exact version of the requirement represented by a UUID, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait .
+
+:key a samm:Property ;
+   samm:preferredName "Key"@en ;
+   samm:description "The key may contain only letters, digits, underscores, and hyphens."@en ;
+   samm:characteristic :KeyTrait ;
+   samm:exampleValue "ExpectedFinalization" .
+
+:value a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "Value string for the associated metadata"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2025-11-30T00:00:00.000+02:00" .
+
+:metadataDescription a samm:Property ;
+   samm:preferredName "Metadata Description"@en ;
+   samm:description "Description of the associated metadata"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Timestamp of the expected finalization of the requirement" .
+
+:versionPredecessorNumber a samm:Property ;
+   samm:preferredName "Version Predecessor Number"@en ;
+   samm:description "https://semver.org/"@en ;
+   samm:characteristic :VersionNumberTrait ;
+   samm:exampleValue "1.4.5" .
+
+:versionPredecessorId a samm:Property ;
+   samm:preferredName "Version Predecessor Id"@en ;
+   samm:description "The identifier of the predecessor version of the requirement represented by a UUID, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait .
+
+:customerStatusValue a samm:Property ;
+   samm:preferredName "Customer Status Value"@en ;
+   samm:description "Value for customer status"@en ;
+   samm:characteristic :CustomerStatusValueEnum ;
+   samm:exampleValue "ToEvaluate" .
+
+:customerStatusComment a samm:Property ;
+   samm:preferredName "Customer Status Comment"@en ;
+   samm:description "Comment from the customer."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Requirement needs to be evaluated" .
+
+:customerStatusTimestamp a samm:Property ;
+   samm:preferredName "Customer Status Timestamp "@en ;
+   samm:description "Property for the customer status timestamp"@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:supplierStatusValue a samm:Property ;
+   samm:preferredName "Supplier Status Value"@en ;
+   samm:description "Value for the supplier status"@en ;
+   samm:characteristic :SupplierStatusValueEnum ;
+   samm:exampleValue "ToBeClarified" .
+
+:supplierStatusComment a samm:Property ;
+   samm:preferredName "Supplier Status Comment"@en ;
+   samm:description "Comment from the supplier."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "More information needed from customer" .
+
+:supplierStatusTimestamp a samm:Property ;
+   samm:preferredName "Supplier Status Timestamp"@en ;
+   samm:description "Property for the supplier status timestamp"@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:VersionNumberTrait a samm-c:Trait ;
+   samm:preferredName "Version Number Trait"@en ;
+   samm:description "String that is semantic versioning compatible"@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :VersionRegularExpression .
+
+:KeyTrait a samm-c:Trait ;
+   samm:preferredName "Key Trait"@en ;
+   samm:description "Key that only contains letters, digits, underscores, and hyphens."@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :KeyConstraint .
+
+:CustomerStatusValueEnum a samm-c:Enumeration ;
+   samm:preferredName "Customer Status Value Enum"@en ;
+   samm:description "Characteristic for the value of customer status"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "<empty>" "NotToEvaluate" "ToEvaluate" "Accepted" "ToBeClarified" "NotAccepted" "ProposedToDeiscard" "Discarded" ) .
+
+:SupplierStatusValueEnum a samm-c:Enumeration ;
+   samm:preferredName "Supplier Status Value Characteristic"@en ;
+   samm:description "Characteristic for the value of supplier status"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "<empty>" "Agreed" "ToBeClarified" "AgreedWithComment" "NotAgreed" "DiscardDeployed" ) .
+
+:VersionRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Version Regular Expression"@en ;
+   samm:description "Version number in semantic versioning"@en ;
+   samm:value "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" .
+
+:KeyConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Key Constraint"@en ;
+   samm:description "Ensure that the key only contains letters, digits, underscores, and hyphens"@en ;
+   samm:value "^[\\w-]+$" .
+
