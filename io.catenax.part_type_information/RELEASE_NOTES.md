@@ -2,6 +2,12 @@
 
 All notable changes to this model will be documented in this file.
 
+## [2.0.0] 26.09
+
+### Changed
+
+- moved the aspect model to new namespace io.catenax.industry_core.part_type/2.0.0
+
 ## [2.0.0] 26.03
 
 ### Changed
