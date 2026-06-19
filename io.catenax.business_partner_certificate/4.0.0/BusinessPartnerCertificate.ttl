@@ -26,10 +26,11 @@
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 
+
 :BusinessPartnerCertificate a samm:Aspect ;
    samm:preferredName "Business Partner certificate"@en ;
    samm:description "A business partner certifcate describes a certificate (eg ISO9001, IATF-16949) via a certifcate document  of a Catena-X business partner"@en ;
-   samm:properties ( :type :registrationNumber [ samm:property :areaOfApplication; samm:optional true ] :validFrom :validUntil [ samm:property :issuer; samm:optional true ] :trustLevel [ samm:property :validator; samm:optional true ] [ samm:property :uploader; samm:optional true ] :document :certificateId :revision :certifiedLocations ) ;
+   samm:properties ( :type :registrationNumber [ samm:property :areaOfApplication; samm:optional true ] :validFrom :validUntil [ samm:property :issuer; samm:optional true ] :trustLevel [ samm:property :validator; samm:optional true ] [ samm:property :uploader; samm:optional true ] :document :certificateId :changeCounter :certifiedLocations ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -69,7 +70,7 @@
 
 :trustLevel a samm:Property ;
    samm:preferredName "Trust level"@en ;
-   samm:description "The trust level of the given certificate - low, medium, high"@en ;
+   samm:description "The trust level of the given certificate - none,low, high, trusted"@en ;
    samm:characteristic :TrustLevelValue ;
    samm:exampleValue "high" .
 
@@ -95,10 +96,10 @@
    samm:characteristic :CertificateIdCharacteristic ;
    samm:exampleValue "052395-UM15-2024-001" .
 
-:revision a samm:Property ;
-   samm:preferredName "Revision"@en ;
+:changeCounter a samm:Property ;
+   samm:preferredName "Change Counter"@en ;
    samm:description "Content-mutation counter, starts at 1."@en ;
-   samm:characteristic :RevisionCharacteristic ;
+   samm:characteristic :ChangeCounterCharacteristic ;
    samm:exampleValue "3"^^xsd:positiveInteger .
 
 :certifiedLocations a samm:Property ;
@@ -132,7 +133,7 @@
    samm:description "The Business Partner Number (BPN) of the data service provider who validated the given certificate"@en ;
    samm:dataType :TrustValidatorEntitity .
 
-:DocumentCharacteristic a samm:Characteristic ;
+:DocumentCharacteristic a samm-c:List ;
    samm:preferredName "Document Characteristic"@en ;
    samm:description "Describes the characteristics of the attribute document."@en ;
    samm:dataType :DocumentEntity .
@@ -142,12 +143,12 @@
    samm:description "Logical Identity of an issued certificate."@en ;
    samm:dataType xsd:string .
 
-:RevisionCharacteristic a samm:Characteristic ;
-   samm:preferredName "Revision Characteristic"@en ;
+:ChangeCounterCharacteristic a samm:Characteristic ;
+   samm:preferredName "Change Counter Characteristic"@en ;
    samm:description "Content-mutation counter, starts at 1."@en ;
    samm:dataType xsd:positiveInteger .
 
-:CertifiedLocationsCharacteristic a samm:Characteristic ;
+:CertifiedLocationsCharacteristic a samm-c:List ;
    samm:preferredName "Certified Locations Characteristic"@en ;
    samm:description "All locations explicitly stated on the certificate, each with full business partner context."@en ;
    samm:dataType :CertifiedLocationsEntity .
@@ -155,7 +156,7 @@
 :CertificateTypeEntity a samm:Entity ;
    samm:preferredName "Entity of a certificate type"@en ;
    samm:description "Detailed entity of the certificate like IS09001:2015, IATF 16949:2015 or other, valid types are registered at BPN metadatacontroller"@en ;
-   samm:properties ( :certificateType [ samm:property :certificateVersion; samm:optional true ] ) .
+   samm:properties ( :certificateType [ samm:property :certificateTypeVersion; samm:optional true ] ) .
 
 :IssuerEntity a samm:Entity ;
    samm:preferredName "Issuer Entity"@en ;
@@ -170,7 +171,7 @@
 :DocumentEntity a samm:Entity ;
    samm:preferredName "Document Entity"@en ;
    samm:description "Encapsulation of all document relevant attributes."@en ;
-   samm:properties ( :createdAt :documentID :contentType :contentBase64 ) .
+   samm:properties ( :createdAt :documentID :contentType :contentBase64 :language :version ) .
 
 :CertifiedLocationsEntity a samm:Entity ;
    samm:preferredName "Certified Locations Entity"@en ;
@@ -183,9 +184,9 @@
    samm:characteristic samm-c:Text ;
    samm:exampleValue "ISO9001" .
 
-:certificateVersion a samm:Property ;
-   samm:preferredName "Certificate version"@en ;
-   samm:description "Version of the certificate as defined on the document, usually the specific version of a certification standard"@en ;
+:certificateTypeVersion a samm:Property ;
+   samm:preferredName "Certificate Type Version"@en ;
+   samm:description "Version of the certificate type as defined on the document, usually the specific version of a certification standard"@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "2015" .
 
@@ -214,7 +215,7 @@
    samm:exampleValue "BPNL00000007YREZ" .
 
 :createdAt a samm:Property ;
-   samm:preferredName "Creation Timestamp"@en ;
+   samm:preferredName "Creation timestamp"@en ;
    samm:description "The creation date of the document."@en ;
    samm:characteristic samm-c:Timestamp ;
    samm:exampleValue "2024-08-23T13:19:00.280+02:00"^^xsd:dateTime .
@@ -236,6 +237,17 @@
    samm:description "The data is encoded using the Base64 encoding scheme, which converts binary data into a string of ASCII characters. "@en ;
    samm:characteristic :ContentBase64Characteristic ;
    samm:exampleValue "iVBORw0KGgoAAdsfwerTETEfdgd" .
+
+:language a samm:Property ;
+   samm:preferredName "Document Language"@en ;
+   samm:description "The language in which the document is provided. "@en ;
+   samm:characteristic samm-c:Language ;
+   samm:exampleValue "en" .
+
+:version a samm:Property ;
+   samm:preferredName "Document Version counter"@en ;
+   samm:characteristic :VersionCharacteristic ;
+   samm:exampleValue "2"^^xsd:positiveInteger .
 
 :bpnl a samm:Property ;
    samm:preferredName "BPNL"@en ;
@@ -265,9 +277,15 @@
    samm:description "Describes the document's encoded value in a Content Base 64 String. "@en ;
    samm:dataType xsd:string .
 
+:VersionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Version Characteristic"@en ;
+   samm:description "Document version."@en ;
+   samm:dataType xsd:positiveInteger .
+
 :LocationRoleValues a samm-c:Enumeration ;
    samm:preferredName "Location Role Values"@en ;
    samm:description "Possible values of the attribite Location Role. "@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "MAIN_LOCATION" "ENCLOSED_LOCATION" "REMOTE_SUPPORT_LOCATION" "EXTENDED_MANUFACTURING_SITE" ) .
+
 
