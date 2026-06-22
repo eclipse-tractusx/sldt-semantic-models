@@ -36,118 +36,141 @@
 @prefix ext-planned: <urn:samm:io.catenax.part_as_planned:2.0.0#> .
 
 :CertificateOfAnalysis a samm:Aspect ;
-   samm:preferredName "Certificate of Analysis"@en ;
+   samm:preferredName "certificate of analysis"@en ;
    samm:description "The Certificate of Analysis documents the material (e.g. chemical compound) properties describing a material's quality or performance factors specific to manufacturing batch.\nThe exact material properties depend on the material type and the following manufacturing processes. They are defined bilaterally between a supplier (manufacturer) and customer."@en ;
-   samm:properties ( :customer :supplier :certificateMetaData :materialProperties :productTypeInformation :productInstanceInformation [ samm:property :disclaimer; samm:optional true ] [ samm:property :documentType; samm:optional true ] ) ;
+   samm:properties ( :customer :supplier :certificateMetaData :materialProperties :productTypeInformation :productInstanceInformation [ samm:property :disclaimer; samm:optional true ] [ samm:property :documentType; samm:optional true ] [ samm:property :binaryDocument; samm:optional true ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
 :customer a samm:Property ;
-   samm:preferredName "Customer"@en ;
+   samm:preferredName "customer"@en ;
    samm:description "The customer as a BPNL reference."@en ;
    samm:characteristic ext-number:BpnlTrait .
 
 :supplier a samm:Property ;
-   samm:preferredName "Supplier"@en ;
+   samm:preferredName "supplier"@en ;
    samm:description "The supplier (manufacturer) as a BPNL reference."@en ;
    samm:characteristic ext-number:BpnlTrait .
 
 :certificateMetaData a samm:Property ;
-   samm:preferredName "Certificate meta data"@en ;
+   samm:preferredName "certificate meta data"@en ;
    samm:description "Meta data about this certificate"@en ;
    samm:characteristic :CertificateMetaDataCharacteristic .
 
 :materialProperties a samm:Property ;
-   samm:preferredName "Material properties"@en ;
+   samm:preferredName "material properties"@en ;
    samm:description "A set of material properties containing the specification and the actual material analysis measurement results.\n\nThe properties may vary based on the material type as well as the agreed specification of the material and the analysis between the customer and manufacturer (supplier)."@en ;
    samm:characteristic :MaterialPropertiesSet .
 
 :productTypeInformation a samm:Property ;
-   samm:preferredName "Product type information"@en ;
+   samm:preferredName "product type information"@en ;
    samm:description "Product type related information"@en ;
    samm:characteristic :ProductTypeInformationCharacteristic .
 
 :productInstanceInformation a samm:Property ;
-   samm:preferredName "Product instance information"@en ;
+   samm:preferredName "product instance information"@en ;
    samm:description "Product instance related information, in the case of Certificate of Analysis a product instance refers to a batch."@en ;
    samm:characteristic :ProductInstanceInformationCharacteristic .
 
 :disclaimer a samm:Property ;
-   samm:preferredName "Disclaimer"@en ;
+   samm:preferredName "disclaimer"@en ;
    samm:description "A legal or technical statement that limits the liability of the issuer of the document and clarifies the scope of the information provided.\nIt usually specifies that the data is for reference only or that the user is responsible for verifying the suitability of the product."@en ;
    samm:characteristic :DisclaimerCharacteristic .
 
 :documentType a samm:Property ;
-   samm:preferredName "Document type"@en ;
+   samm:preferredName "document type"@en ;
    samm:description "Classification that identifies the nature and purpose of a document within a system.\nIt defines how it should be managed, what information it contains and what processes it is involved in."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Created digitally, valid without signature" .
+   samm:characteristic :DocumentTypeCharacteristic .
+
+:binaryDocument a samm:Property ;
+   samm:preferredName "binary document"@en ;
+   samm:description "A binary representation of the Certificate of Analysis as a Base64-encoded document (e.g., PDF). This allows embedding the original document directly within the data payload."@en ;
+   samm:characteristic :BinaryDocumentCharacteristic .
 
 :CertificateMetaDataCharacteristic a samm:Characteristic ;
-   samm:preferredName "Certificate Meta Data Characteristic"@en ;
+   samm:preferredName "certificate meta data characteristic"@en ;
    samm:description "Defines the administrative and traceability information of the Certificate of Analysis, linking issue dates with conformity assessments and bilateral order identifiers."@en ;
    samm:dataType :CertificateMetaData .
 
 :MaterialPropertiesSet a samm-c:Set ;
-   samm:preferredName "Material Properties Set Characteristic"@en ;
+   samm:preferredName "material properties set characteristic"@en ;
    samm:description "Set of measured material properties."@en ;
    samm:dataType :MaterialProperty .
 
 :ProductTypeInformationCharacteristic a samm:Characteristic ;
-   samm:preferredName "Product type information characteristic"@en ;
+   samm:preferredName "product type information characteristic"@en ;
    samm:description "Specifies the material or chemical compound identification schema used across the supply chain, reconciling manufacturer and customer part naming conventions."@en ;
    samm:dataType :ProductTypeInformation .
 
 :ProductInstanceInformationCharacteristic a samm:Characteristic ;
-   samm:preferredName "Product instance information characteristic"@en ;
+   samm:preferredName "product instance information characteristic"@en ;
    samm:description "Captures batch-specific traceability data for the analyzed material, connecting manufacturing origin to quality assessment and shelf-life parameters."@en ;
    samm:dataType :ProductInstanceInformation .
 
 :DisclaimerCharacteristic a samm:Characteristic ;
-   samm:preferredName "Disclaimer characteristic"@en ;
+   samm:preferredName "disclaimer characteristic"@en ;
    samm:description "Structures the legal framework surrounding the Certificate of Analysis, balancing analytical accuracy documentation with contractual responsibility boundaries."@en ;
    samm:dataType :DisclaimerEntity .
 
+:DocumentTypeCharacteristic a samm:Characteristic ;
+   samm:preferredName "document type characteristic"@en ;
+   samm:description "Characteristic for document type classification information."@en ;
+   samm:dataType :DocumentTypeEntity .
+
+:BinaryDocumentCharacteristic a samm:Characteristic ;
+   samm:preferredName "binary document characteristic"@en ;
+   samm:description "Characteristic for a Base64-encoded binary document attachment."@en ;
+   samm:dataType :BinaryDocumentEntity .
 
 :CertificateMetaData a samm:Entity ;
-   samm:preferredName "Certificate Meta Data"@en ;
+   samm:preferredName "certificate meta data"@en ;
    samm:description "Temporal and business context of the quality analysis, establishing when measurements were certified and whether results comply with bilaterally agreed specifications."@en ;
    samm:properties ( :issueDate [ samm:property :isConformWithSpecification; samm:optional true ] [ samm:property ext-information:supplierOrderId; samm:optional true ] [ samm:property ext-information:customerOrderId; samm:optional true ] ) .
 
 :MaterialProperty a samm:Entity ;
-   samm:preferredName "Material property"@en ;
+   samm:preferredName "material property"@en ;
    samm:description "A material property with its name, definition measured value and specification (limits).\nIf available, lower limit and upper limit must be given, they are only optional in the case that the limits don't exist or don't apply."@en ;
-   samm:properties ( :name :description :value [ samm:property :lowerLimit; samm:optional true ] [ samm:property :upperLimit; samm:optional true ] :dataType :unit ) .
+   samm:properties ( :name :description :value [ samm:property :lowerLimit; samm:optional true ] [ samm:property :upperLimit; samm:optional true ] :dataType :unit [ samm:property :method; samm:optional true ]) .
 
 :ProductTypeInformation a samm:Entity ;
-   samm:preferredName "Product type information"@en ;
+   samm:preferredName "product type information"@en ;
    samm:description "Product type related information"@en ;
    samm:properties ( ext-planned:nameAtManufacturer ext-planned:manufacturerPartId [ samm:property :customerPartId; samm:optional true ] ) .
 
 :ProductInstanceInformation a samm:Entity ;
-   samm:preferredName "Product instance information"@en ;
+   samm:preferredName "product instance information"@en ;
    samm:description "Product instance related information"@en ;
    samm:properties ( ext-batch:localIdentifiers ext-batch:manufacturingInformation [ samm:property ext-batch:catenaXId; samm:optional true ] [ samm:property :expiryDate; samm:optional true ] ) .
 
 :DisclaimerEntity a samm:Entity ;
-   samm:preferredName "Disclaimer entity"@en ;
+   samm:preferredName "disclaimer entity"@en ;
    samm:description "Legal protective framework that clarifies the certificate's informational scope versus contractual obligations, defining where analytical data ends and product suitability responsibility begins."@en ;
    samm:properties ( [ samm:property :disclaimerMetadata; samm:optional true ] [ samm:property :disclaimerRequirement; samm:optional true ] ) .
 
+:DocumentTypeEntity a samm:Entity ;
+   samm:preferredName "document type entity"@en ;
+   samm:description "Entity for document type classification containing attributes to specify document categorization and authenticity."@en ;
+   samm:properties ( [ samm:property :statement; samm:optional true ] ) .
+
+:BinaryDocumentEntity a samm:Entity ;
+   samm:preferredName "binary document entity"@en ;
+   samm:description "Entity representing a Base64-encoded binary document with its metadata. The binary file (e.g., PDF) is encoded using Base64 encoding for safe transport through text-based systems."@en ;
+   samm:properties ( :payload :documentLanguage [ samm:property :mimeType; samm:optional true ] ) .
+
 :issueDate a samm:Property ;
-   samm:preferredName "Issue date"@en ;
-   samm:description "the date and timestamp of issuing this certificate"@en ;
+   samm:preferredName "issue date"@en ;
+   samm:description "The date and timestamp of issuing this certificate."@en ;
    samm:characteristic samm-c:Timestamp .
 
 :isConformWithSpecification a samm:Property ;
-   samm:preferredName "Conformity with Specification"@en ;
+   samm:preferredName "conformity with specification"@en ;
    samm:description "In the case that any of the properties that are part of the Certificate of Analysis violates the defined upper or lower limit this property should be set to false."@en ;
    samm:characteristic samm-c:Boolean ;
    samm:exampleValue true .
 
 :name a samm:Property ;
-   samm:preferredName "Property name"@en ;
-   samm:description "The name of the property"@en ;
+   samm:preferredName "property name"@en ;
+   samm:description "The name of the property."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "density" .
 
@@ -155,84 +178,140 @@
    samm:preferredName "property description"@en ;
    samm:description "This field should be used to describe the property.\n\nIf available a reference to a public or internal norm should be provided. The norm should specify the meaning of the property as well as the specification of the analysis method used."@en ;
    samm:characteristic samm-c:Text ;
-   samm:exampleValue "according DIN ISO 4711" .
+   samm:exampleValue "Density of the glue at room temperature according to DIN ISO 4711" .
 
 :value a samm:Property ;
-   samm:preferredName "Property value"@en ;
+   samm:preferredName "property value"@en ;
    samm:description "The result of the analysis for this specific property."@en ;
    samm:characteristic :ValueCharacteristic ;
    samm:exampleValue "2310.0" .
 
+:unit a samm:Property ;
+   samm:preferredName "property unit"@en ;
+   samm:description "The unit of measure used for the property value and specification limits."@en ;
+   samm:characteristic samm-c:UnitReference ;
+   samm:exampleValue "unit:kilogramPerCubicMetre"^^samm:curie .
+
 :lowerLimit a samm:Property ;
-   samm:preferredName "Lower limit"@en ;
+   samm:preferredName "lower limit"@en ;
    samm:description "The lower limit of the specification with a boundary condition of \"At least\".\nValues below that limit are considered out of specification. Values exactly at the limit are considered in specification."@en ;
    samm:characteristic :ValueCharacteristic ;
    samm:exampleValue "2200.0" .
 
 :upperLimit a samm:Property ;
-   samm:preferredName "Upper limit"@en ;
+   samm:preferredName "upper limit"@en ;
    samm:description "The upper limit of the specification with a boundary condition of \"At most\".\nValues above that limit are considered out of specification. Values exactly at the limit are considered in specification."@en ;
    samm:characteristic :ValueCharacteristic ;
    samm:exampleValue "2400.0" .
 
 :dataType a samm:Property ;
-   samm:preferredName "Data type"@en ;
+   samm:preferredName "data type"@en ;
    samm:description "The data type of the properties value and limits. The data type should specify how the string value should be type casted or interpreted."@en ;
    samm:characteristic :DataTypeEnumerationCharacteristic ;
    samm:exampleValue "xsd:float"^^samm:curie .
 
-:unit a samm:Property ;
-   samm:preferredName "property unit"@en ;
-   samm:description "The unit of measure used for the property value and specification limits. This can be omitted for non-numerical properties, e.g. Boolean."@en ;
-   samm:characteristic samm-c:UnitReference ;
-   samm:exampleValue "unit:kilogramPerCubicMetre"^^samm:curie .
+:method a samm:Property ;
+   samm:preferredName "method"@en ;
+   samm:description "A set of methods that describe how the part was tested."@en ;
+   samm:characteristic :MethodSet .
 
 :customerPartId a samm:Property ;
-   samm:preferredName "Customer Part ID"@en ;
+   samm:preferredName "customer part ID"@en ;
    samm:description "Part ID as assigned by the customer."@en ;
    samm:characteristic ext-planned:PartIdCharacteristic ;
    samm:exampleValue "B19764234512" .
 
 :expiryDate a samm:Property ;
-   samm:preferredName "Expiry date"@en ;
+   samm:preferredName "expiry date"@en ;
    samm:description "The expiry date of the material."@en ;
    samm:characteristic :DateCharacteristic .
 
 :disclaimerMetadata a samm:Property ;
-   samm:preferredName "Disclaimer metadata"@en ;
+   samm:preferredName "disclaimer metadata"@en ;
    samm:description "A set of data describing the characteristics and context of the disclaimer within a document.\nIt includes information about its origin, purpose, language, version, scope of validity and relationship with the main document.\nThis metadata allows the disclaimer to be identified and managed as a traceable and reusable element within the document system."@en ;
    samm:characteristic :DisclaimerMetadataCharacteristic ;
    samm:exampleValue "This is a computer-generated document. A signature is not required." .
 
 :disclaimerRequirement a samm:Property ;
-   samm:preferredName "Disclaimer requirement"@en ;
+   samm:preferredName "disclaimer requirement"@en ;
    samm:description "Criteria or specifications that define the expected quality of a product or service.\nThey serve as a basis for assessing conformity and ensuring that the product complies with agreed standards or technical specifications."@en ;
    samm:characteristic :DisclaimerRequirementCharacteristic ;
    samm:exampleValue "The above information describes the relevant parameters of the product at the time of issuance of this certificate of analysis. The data are regularly checked as part of our quality assurance and are provided for reference purposes only. The contractual quality of the product at the time of transfer of risk is determined solely by our product specification. Unless the parties have expressly agreed otherwise in writing and signed by authorized representatives, no suitability of the product for any particular purpose is assumed or implied. The customer is solely responsible for verifying the suitability of the product for any specific use." .
 
+:payload a samm:Property ;
+   samm:preferredName "payload"@en ;
+   samm:description "Base64-encoded string of the binary document file (e.g., PDF)."@en ;
+   samm:characteristic :PayloadCharacteristic ;
+   samm:exampleValue "JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovVHlwZSAvUGFnZQo" ^^xsd:base64Binary .
+
+:documentLanguage a samm:Property ;
+   samm:preferredName "document language"@en ;
+   samm:description "ISO 639-1 language code of the document content."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "en" .
+
+:mimeType a samm:Property ;
+   samm:preferredName "MIME type"@en ;
+   samm:description "The MIME type of the encoded document (e.g., application/pdf)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "application/pdf" .
+
 :ValueCharacteristic a samm:Characteristic ;
-   samm:preferredName "Value Characteristic"@en ;
+   samm:preferredName "value characteristic"@en ;
    samm:description "The string should be formatted in a way sp that it is easily interpretable or convertible to the xsd datatype given in the field \"data type\"."@en ;
    samm:dataType xsd:string .
 
 :DataTypeEnumerationCharacteristic a samm-c:Enumeration ;
-   samm:preferredName "Data type enumeration"@en ;
-   samm:description "Allows specification of any xsd data type allowed in SAMM 2.1.0 without the subtypes of xsd:integer."@en ;
-   samm:see <https://eclipse-esmf.github.io/samm-specification/2.1.0/datatypes.html> ;
+   samm:preferredName "data type enumeration"@en ;
+   samm:description "Allows specification of any xsd data type allowed in SAMM 2.2.0 without the subtypes of xsd:integer."@en ;
+   samm:see <https://eclipse-esmf.github.io/samm-specification/2.2.0/datatypes.html> ;
    samm:dataType samm:curie ;
    samm-c:values ( "xsd:string"^^samm:curie "xsd:boolean"^^samm:curie "xsd:decimal"^^samm:curie "xsd:integer"^^samm:curie "xsd:double"^^samm:curie "xsd:date"^^samm:curie "xsd:time"^^samm:curie "xsd:dateTime"^^samm:curie "xsd:dateTimeStamp"^^samm:curie "xsd:gYear"^^samm:curie "xsd:gMonth"^^samm:curie "xsd:gDay"^^samm:curie "xsd:gYearMonth"^^samm:curie "xsd:gMonthDay"^^samm:curie "xsd:duration"^^samm:curie "xsd:yearMonthDuration"^^samm:curie "xsd:dayTimeDuration"^^samm:curie "xsd:hexBinary"^^samm:curie "xsd:base64Binary"^^samm:curie "xsd:anyURI"^^samm:curie "samm:curie"^^samm:curie "rdf:langString"^^samm:curie "xsd:float"^^samm:curie ) .
 
+:MethodSet a samm-c:Set ;
+   samm:preferredName "method set"@en ;
+   samm:description "Characteristic for a set of methods on how the material property was tested."@en ;
+   samm:dataType :MethodEntity .
+
 :DateCharacteristic a samm:Characteristic ;
-   samm:preferredName "Date"@en ;
+   samm:preferredName "date"@en ;
    samm:description "A calendar date"@en ;
    samm:dataType xsd:date .
 
 :DisclaimerMetadataCharacteristic a samm:Characteristic ;
-   samm:preferredName "Disclaimer metadata characteristic"@en ;
+   samm:preferredName "disclaimer metadata characteristic"@en ;
    samm:description "Contextual information about disclaimer applicability, such as automated generation notices or signature waiver statements for digital certificates."@en ;
    samm:dataType xsd:string .
 
 :DisclaimerRequirementCharacteristic a samm:Characteristic ;
-   samm:preferredName "Disclaimer requirement characteristic"@en ;
+   samm:preferredName "disclaimer requirement characteristic"@en ;
    samm:description "Formal statement delineating quality assurance boundaries and customer verification responsibilities regarding material fitness-for-purpose beyond analytical specifications."@en ;
    samm:dataType xsd:string .
+
+:PayloadCharacteristic a samm:Characteristic ;
+   samm:preferredName "payload characteristic"@en ;
+   samm:description "Base64 binary encoded content."@en ;
+   samm:dataType xsd:base64Binary .
+
+:MethodEntity a samm:Entity ;
+   samm:preferredName "method entity"@en ;
+   samm:description "A method with its authority, ID and description detailing how the material property was tested."@en ;
+   samm:properties ( [ samm:property :methodStandard; samm:optional true ] :methodDescription ) .
+
+:methodStandard a samm:Property ;
+   samm:preferredName "referenced standard"@en ;
+   samm:description "Reference to the standard that described the method."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "DIN ISO 4711" .
+
+:methodDescription a samm:Property ;
+   samm:preferredName "method description"@en ;
+   samm:description "This field should be used to describe the method or provide additional information to the referenced norm."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "ISO norm to describe testing methods for adhesive density." .
+
+:statement a samm:Property ;
+   samm:preferredName "statement"@en ;
+   samm:description "A formal declaration regarding the validity and authenticity of the document, such as whether it was automatically generated or requires a signature."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "This is a computer-generated document. A signature is not required." .
