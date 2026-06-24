@@ -37,11 +37,10 @@
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
 
 
-
 :BusinessPartnerCertificate a samm:Aspect ;
    samm:preferredName "Business Partner certificate"@en ;
    samm:description "A business partner certifcate describes a certificate (eg ISO9001, IATF-16949) via a certifcate document  of a Catena-X business partner"@en ;
-   samm:properties ( :type :registrationNumber [ samm:property :areaOfApplication; samm:optional true ] :validFrom :validUntil [ samm:property :issuer; samm:optional true ] :trustLevel [ samm:property :validator; samm:optional true ] [ samm:property :uploader; samm:optional true ] :document :certificateId :changeCounter :certifiedLocations ) ;
+   samm:properties ( :type :registrationNumber :validFrom :validUntil [ samm:property :issuer; samm:optional true ] :trustLevel [ samm:property :validator; samm:optional true ] [ samm:property :uploader; samm:optional true ] :document :certificateId :revision :certifiedLocations ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -55,12 +54,6 @@
    samm:description "The certification scheme registration, exactly as printed on the document."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "12 198 54182 TMS" .
-
-:areaOfApplication a samm:Property ;
-   samm:preferredName "Area of application"@en ;
-   samm:description "Details on which areas / application types a certificate is valid for a company and/or site."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Development, Marketing und Sales and also Procurement for interior components" .
 
 :validFrom a samm:Property ;
    samm:preferredName "Valid from"@en ;
@@ -76,7 +69,7 @@
 
 :issuer a samm:Property ;
    samm:preferredName "Issuing authority"@en ;
-   samm:description "The BPNL of the issuing authority e.g. TUEV Sued "@en ;
+   samm:description "The BPN of the issuing authority e.g. TUEV Sued "@en ;
    samm:characteristic :IssuerCharacteristics .
 
 :trustLevel a samm:Property ;
@@ -107,10 +100,10 @@
    samm:characteristic :CertificateIdCharacteristic ;
    samm:exampleValue "052395-UM15-2024-001" .
 
-:changeCounter a samm:Property ;
-   samm:preferredName "Change Counter"@en ;
-   samm:description "Content-mutation counter, starts at 1."@en ;
-   samm:characteristic :ChangeCounterCharacteristic ;
+:revision a samm:Property ;
+   samm:preferredName "Revision Counter"@en ;
+   samm:description "Revision counter, starts at 1."@en ;
+   samm:characteristic :RevisionCharacteristic ;
    samm:exampleValue "3"^^xsd:positiveInteger .
 
 :certifiedLocations a samm:Property ;
@@ -130,12 +123,12 @@
 
 :IssuerCharacteristics a samm:Characteristic ;
    samm:preferredName "Issuer Characteristics"@en ;
-   samm:description "Issuer name and the Business Partner Number (BPNL) Characteristics."@en ;
+   samm:description "Issuer name and the Business Partner Number (BPN) Characteristics."@en ;
    samm:dataType :IssuerEntity .
 
 :TrustLevelValue a samm-c:Enumeration ;
    samm:preferredName "Trust level value"@en ;
-   samm:description "The possible trust level values of a certificate."@en ;
+   samm:description "The possible trust level values of certificate."@en ;
    samm:dataType xsd:string ;
    samm-c:values ( "low" "medium" "high" ) .
 
@@ -154,9 +147,9 @@
    samm:description "Logical Identity of an issued certificate."@en ;
    samm:dataType xsd:string .
 
-:ChangeCounterCharacteristic a samm:Characteristic ;
-   samm:preferredName "Change Counter Characteristic"@en ;
-   samm:description "Content-mutation counter, starts at 1."@en ;
+:RevisionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Revision Counter Characteristic"@en ;
+   samm:description "Revision counter, starts at 1."@en ;
    samm:dataType xsd:positiveInteger .
 
 :CertifiedLocationsCharacteristic a samm-c:List ;
@@ -172,17 +165,17 @@
 :IssuerEntity a samm:Entity ;
    samm:preferredName "Issuer Entity"@en ;
    samm:description "The name and the BPNL of the Issuer. "@en ;
-   samm:properties ( :issuerName [ samm:property :issuerBpn; samm:optional true ] ) .
+   samm:properties ( :issuerName [ samm:property :issuerBpnl; samm:optional true ] ) .
 
-:TrustValidatorEntity a samm:Entity ;
+:TrustValidatorEntitity a samm:Entity ;
    samm:preferredName "Trust validator entity"@en ;
    samm:description "The Business Partner Number (BPNL) of the data service provider who validated the given certificate."@en ;
-   samm:properties ( [ samm:property :validatorName; samm:optional true ] [ samm:property :validatorBpn; samm:optional true ] ) .
+   samm:properties ( [ samm:property :validatorName; samm:optional true ] [ samm:property :validatorBpnl; samm:optional true ] ) .
 
 :DocumentEntity a samm:Entity ;
    samm:preferredName "Document Entity"@en ;
    samm:description "Encapsulation of all document relevant attributes."@en ;
-   samm:properties ( :createdAt :documentID :contentType :contentBase64 :language :version ) .
+   samm:properties ( :createdAt :documentId [ samm:property :contentType; samm:optional true ] [ samm:property :contentBase64; samm:optional true ] :language ) .
 
 :CertifiedLocationsEntity a samm:Entity ;
    samm:preferredName "Certified Locations Entity"@en ;
@@ -193,7 +186,7 @@
    samm:preferredName "Certificate type"@en ;
    samm:description "Type of the certificate as defined on the document,valid types are registered at BPN metadatacontroller"@en ;
    samm:characteristic samm-c:Text ;
-   samm:exampleValue "iso9001" .
+   samm:exampleValue "ISO9001" .
 
 :certificateTypeVersion a samm:Property ;
    samm:preferredName "Certificate Type Version"@en ;
@@ -220,7 +213,7 @@
    samm:exampleValue "Data service provider X" .
 
 :validatorBpnl a samm:Property ;
-   samm:preferredName "Certifcate validator BPNL"@en ;
+   samm:preferredName "Certifcate validator BpnL"@en ;
    samm:description "The Business Partner Number (BPNL) of the data service provider who validated the given certificate"@en ;
    samm:characteristic ext-number:BpnlTrait ;
    samm:exampleValue "BPNL00000007YREZ" .
@@ -232,8 +225,8 @@
    samm:exampleValue "2024-08-23T13:19:00.280+02:00"^^xsd:dateTime .
 
 :documentId a samm:Property ;
-   samm:preferredName "Document ID"@en ;
-   samm:description "A unique UUID of the attached binary representation (PDF) of the certificate."@en ;
+   samm:preferredName "Document Id"@en ;
+   samm:description "A unique UUID of the attached binary representation (PDF) of the certificate, generated each time a document is added or updated."@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "urn:uuid:9f6d2c1e-0000-0000-0000-000000000001" .
 
@@ -254,11 +247,6 @@
    samm:description "The language in which the document is provided. "@en ;
    samm:characteristic samm-c:Language ;
    samm:exampleValue "en" .
-
-:version a samm:Property ;
-   samm:preferredName "Document Version counter"@en ;
-   samm:characteristic :VersionCharacteristic ;
-   samm:exampleValue "2"^^xsd:positiveInteger .
 
 :bpnl a samm:Property ;
    samm:preferredName "BPNL"@en ;
@@ -281,22 +269,21 @@
    samm:preferredName "Location Role"@en ;
    samm:description "Role as stated on the certificate."@en ;
    samm:characteristic :LocationRoleValues ;
-   samm:exampleValue "MAIN_LOCATION" .
+   samm:exampleValue "Certificate Holder" .
+
+:areaOfApplication a samm:Property ;
+   samm:preferredName "Area of application"@en ;
+   samm:description "Details on which areas / application types a certificate is valid for a company and/or site."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Development, Marketing und Sales and also Procurement for interior components" .
 
 :ContentBase64Characteristic a samm:Characteristic ;
    samm:preferredName "Content Base 64 Characteristic"@en ;
    samm:description "Describes the document's encoded value in a Content Base 64 String. "@en ;
    samm:dataType xsd:string .
 
-:VersionCharacteristic a samm:Characteristic ;
-   samm:preferredName "Version Characteristic"@en ;
-   samm:description "Document version."@en ;
-   samm:dataType xsd:positiveInteger .
-
 :LocationRoleValues a samm-c:Enumeration ;
    samm:preferredName "Location Role Values"@en ;
    samm:description "Possible values of the attribite Location Role. "@en ;
    samm:dataType xsd:string ;
-   samm-c:values ( "MAIN_LOCATION" "ENCLOSED_LOCATION" "REMOTE_SUPPORT_LOCATION" "EXTENDED_MANUFACTURING_SITE" ) .
-
-
+   samm-c:values ( "Certificate Holder" "Certified Location" ) .
