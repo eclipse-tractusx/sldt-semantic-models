@@ -29,7 +29,8 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.requirements:2.0.0#> .
 @prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
-@prefix binary: <urn:samm:io.catenax.binary_exchange:1.0.0#> .
+#@prefix binary: <urn:samm:io.catenax.binary_exchange:1.0.0#> . #only with DSP endpoint
+@prefix req-shared: <urn:samm:io.catenax.requirements.shared:1.0.0#> .
 
 #####################
 ###### Top level aspect
@@ -193,10 +194,22 @@
    samm:exampleValue "Satisfies: The requirement satisfies a requirement on another level" .
 
 :descriptionAttachment a samm:Property ;
-   samm:preferredName "Attachment"@en ;
-   samm:description "Binary File to attached to the description (e.g. images, PDFs)."@en ;
-   samm:see binary:binaryFile ;
-   samm:characteristic binary:FileWithContentType .
+   samm:preferredName "Description Attachements"@en ;
+   samm:description "Supporting attachments such as images attached to a requirement."@en ;
+   samm:characteristic :descriptionAttachmentSet .
+
+
+:descriptionAttachmentSet a samm-c:SortedSet ;
+   samm:preferredName "List of Attachments"@en ;
+   samm:description "Binary Files attached to the description (e.g. images, PDFs) encoded as base64."@en ;
+   samm:dataType :descriptionAttachmentEntity .
+
+:descriptionAttachmentEntity a samm:Entity ;
+   samm:preferredName "Entity of an Attachment"@en ;
+   samm:description "Entity for requirement version"@en ;
+   samm:properties ( 
+      req-shared:binaryDocument
+   ) .
 
 :creationDate a samm:Property ;
    samm:preferredName "Creationdate"@en ;
@@ -300,7 +313,7 @@
 
 :SpecificationList a samm-c:List ;
    samm:preferredName "Specification List"@en ;
-   samm:description "A list of all related specifications (e.g. norms)"@en ;
+   samm:description "A list of all related specifications (e.g. norms or specification documents)"@en ;
    samm:dataType xsd:string .
 
 :StatusValueEnum a samm-c:Enumeration ;
