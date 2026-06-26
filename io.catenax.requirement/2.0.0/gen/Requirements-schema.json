@@ -11,10 +11,10 @@
         "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
         "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
       },
-      "Text" : {
-        "type" : "string",
-        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text",
-        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      "MultiLanguageText" : {
+        "type" : "object",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#MultiLanguageText",
+        "description" : "Describes a Property which contains plain text in multiple languages. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
       },
       "TypeEnum" : {
         "type" : "string",
@@ -46,34 +46,55 @@
         },
         "required" : [ "versionNumber", "versionId" ]
       },
-      "ResourcePath" : {
+      "PayloadCharacteristic" : {
         "type" : "string",
-        "format" : "uri",
-        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#ResourcePath",
-        "description" : "The path of a resource."
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#PayloadCharacteristic",
+        "description" : "Base64 binary encoded content."
       },
-      "MimeType" : {
+      "Text" : {
         "type" : "string",
-        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#MimeType",
-        "description" : "A MIME type as defined in RFC 2046, for example \"application/pdf\"."
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
       },
-      "FileWithContentType" : {
-        "description" : "Characteristic for handling binary file.",
-        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.binary_exchange:1.0.0#FileWithContentType",
+      "BinaryDocumentCharacteristic" : {
+        "description" : "Characteristic for a Base64-encoded binary document attachment.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#BinaryDocumentCharacteristic",
         "type" : "object",
         "properties" : {
-          "value" : {
-            "description" : "Path and name of the file (with file extension).\\n\\nThe path can be absolute or relative.",
-            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.binary_exchange:1.0.0#resourceValue",
-            "$ref" : "#/components/schemas/ResourcePath"
+          "payload" : {
+            "description" : "Base64-encoded string of the binary document file (e.g., PDF).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#payload",
+            "$ref" : "#/components/schemas/PayloadCharacteristic"
           },
-          "contentType" : {
-            "description" : "Content type of that file.",
-            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.binary_exchange:1.0.0#contentType",
-            "$ref" : "#/components/schemas/MimeType"
+          "mimeType" : {
+            "description" : "The MIME type of the encoded document (e.g., application/pdf).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#mimeType",
+            "$ref" : "#/components/schemas/Text"
           }
         },
-        "required" : [ "value", "contentType" ]
+        "required" : [ "payload", "mimeType" ]
+      },
+      "descriptionAttachmentEntity" : {
+        "description" : "Entity for requirement version",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#descriptionAttachmentEntity",
+        "type" : "object",
+        "properties" : {
+          "binaryDocument" : {
+            "description" : "A binary representation of the Certificate of Analysis as a Base64-encoded document (e.g., PDF). This allows embedding the original document directly within the data payload.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#binaryDocument",
+            "$ref" : "#/components/schemas/BinaryDocumentCharacteristic"
+          }
+        },
+        "required" : [ "binaryDocument" ]
+      },
+      "descriptionAttachmentSet" : {
+        "description" : "Binary Files attached to the description (e.g. images, PDFs) encoded as base64.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#descriptionAttachmentSet",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/descriptionAttachmentEntity"
+        },
+        "uniqueItems" : true
       },
       "descriptionCharacteristic" : {
         "description" : "Characteristic of a Description with additional content of a requirement",
@@ -83,12 +104,12 @@
           "descriptionText" : {
             "description" : "Textual description of the requirement.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#descriptionText",
-            "$ref" : "#/components/schemas/Text"
+            "$ref" : "#/components/schemas/MultiLanguageText"
           },
           "descriptionAttachment" : {
-            "description" : "Binary File to attached to the description (e.g. images, PDFs).",
+            "description" : "Supporting attachments such as images attached to a requirement.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#descriptionAttachment",
-            "$ref" : "#/components/schemas/FileWithContentType"
+            "$ref" : "#/components/schemas/descriptionAttachmentSet"
           }
         },
         "required" : [ "descriptionText" ]
@@ -137,7 +158,7 @@
         }
       },
       "SpecificationList" : {
-        "description" : "A list of all related specifications (e.g. norms)",
+        "description" : "A list of all related specifications (e.g. norms or specification documents)",
         "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#SpecificationList",
         "type" : "array",
         "items" : {
@@ -152,7 +173,7 @@
           "name" : {
             "description" : "Name of the requirement.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#name",
-            "$ref" : "#/components/schemas/Text"
+            "$ref" : "#/components/schemas/MultiLanguageText"
           },
           "type" : {
             "description" : "Type of the requirement (e.g., 'Functional', 'Non-Functional').",
@@ -180,14 +201,14 @@
             "$ref" : "#/components/schemas/Text"
           },
           "foreignId" : {
-            "description" : "Identifier from an external system (e.g. the chapter in a set of requirements)",
+            "description" : "Identifier from an external system (e.g. the Id of a requirement in another requirements tool)",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#foreignId",
             "$ref" : "#/components/schemas/Text"
           },
           "longname" : {
             "description" : "Descriptive name for the requirement.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#longname",
-            "$ref" : "#/components/schemas/Text"
+            "$ref" : "#/components/schemas/MultiLanguageText"
           },
           "metadata" : {
             "description" : "Additional metadata that is associated with the requirement and not standardized in the aspect model.",
@@ -227,7 +248,7 @@
           "customerStatusComment" : {
             "description" : "Comment from the customer.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#customerStatusComment",
-            "$ref" : "#/components/schemas/Text"
+            "$ref" : "#/components/schemas/MultiLanguageText"
           },
           "customerStatusTimestamp" : {
             "description" : "Property for the customer status timestamp",
@@ -264,7 +285,7 @@
           "supplierStatusComment" : {
             "description" : "Comment from the supplier.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#supplierStatusComment",
-            "$ref" : "#/components/schemas/Text"
+            "$ref" : "#/components/schemas/MultiLanguageText"
           },
           "supplierStatusTimestamp" : {
             "description" : "Property for the supplier status timestamp",
@@ -345,14 +366,14 @@
         "type" : "string",
         "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#RelationshipTypeEnum",
         "description" : "Characteristic for the value of supplier status\n Values to be determined based on https://www.prostep.org/fileadmin/prod-pay-download-8c1d/Recommendation_ReqIF_V2.2.pdf",
-        "enum" : [ "parentOf", "childOf", "conflictsWith", "derivedFrom", "specialized", "relatedTo" ]
+        "enum" : [ "childOf", "conflictsWith", "derivedFrom", "customRelation" ]
       },
       "RequirementRelationEntity" : {
         "description" : "Entity to link to related requirements",
         "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#RequirementRelationEntity",
         "type" : "object",
         "properties" : {
-          "requirementId" : {
+          "sourceRequirementId" : {
             "description" : "The identifier of a requirement represented by a UUID, valid for the Catena-X dataspace.",
             "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#requirementId",
             "$ref" : "#/components/schemas/UuidV4Trait"
@@ -363,17 +384,17 @@
             "$ref" : "#/components/schemas/RelationshipTypeEnum"
           },
           "requirementsRelationshipDescription" : {
-            "description" : "Textual description of the requirement.",
-            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#descriptionText",
+            "description" : "Description for custom relationships between requirements. The description must include the relationship name and explanation.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#requirementsRelationshipDescription",
             "$ref" : "#/components/schemas/Text"
           },
-          "relatedRequirementId" : {
+          "targetRequirementId" : {
             "description" : "Id of related requirement in form of a UUID",
-            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#relatedRequirementId",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.requirements:2.0.0#targetRequirementId",
             "$ref" : "#/components/schemas/UuidV4Trait"
           }
         },
-        "required" : [ "requirementId", "relationshipType", "relatedRequirementId" ]
+        "required" : [ "sourceRequirementId", "relationshipType", "targetRequirementId" ]
       },
       "RequirementRelationSet" : {
         "description" : "Entity for relations between requirements.",
