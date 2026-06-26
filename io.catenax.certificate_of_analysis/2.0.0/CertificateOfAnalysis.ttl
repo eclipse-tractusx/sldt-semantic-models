@@ -20,8 +20,6 @@
 # SPDX-License-Identifier: CC-BY-4.0
 #######################################################################
 
-
-
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
 @prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
@@ -30,10 +28,10 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.certificate_of_analysis:2.0.0#> .
-@prefix ext-batch: <urn:samm:io.catenax.batch:3.0.1#> .
 @prefix ext-information: <urn:samm:io.catenax.delivery_information:2.0.0#> .
 @prefix ext-number: <urn:samm:io.catenax.shared.business_partner_number:2.0.0#> .
-@prefix ext-planned: <urn:samm:io.catenax.part_as_planned:2.0.0#> .
+@prefix ext-ic: <urn:samm:io.catenax.shared.industry_core.common:1.0.0#> .
+@prefix ext-icmi: <urn:samm:io.catenax.shared.industry_core.manufacturing_information:1.0.0#> .
 
 :CertificateOfAnalysis a samm:Aspect ;
    samm:preferredName "certificate of analysis"@en ;
@@ -135,12 +133,12 @@
 :ProductTypeInformation a samm:Entity ;
    samm:preferredName "product type information"@en ;
    samm:description "Product type related information"@en ;
-   samm:properties ( ext-planned:nameAtManufacturer ext-planned:manufacturerPartId [ samm:property :customerPartId; samm:optional true ] ) .
+   samm:properties ( ext-ic:nameAtManufacturer ext-ic:manufacturerPartId [ samm:property ext-ic:customerPartId; samm:optional true ] ) .
 
 :ProductInstanceInformation a samm:Entity ;
    samm:preferredName "product instance information"@en ;
    samm:description "Product instance related information"@en ;
-   samm:properties ( ext-batch:localIdentifiers ext-batch:manufacturingInformation [ samm:property ext-batch:catenaXId; samm:optional true ] [ samm:property :expiryDate; samm:optional true ] ) .
+   samm:properties ( ext-ic:localIdentifiers ext-icmi:manufacturingInformation [ samm:property ext-ic:globalAssetId; samm:optional true ] [ samm:property :expiryDate; samm:optional true ] ) .
 
 :DisclaimerEntity a samm:Entity ;
    samm:preferredName "disclaimer entity"@en ;
@@ -215,12 +213,6 @@
    samm:description "A set of methods that describe how the part was tested."@en ;
    samm:characteristic :MethodSet .
 
-:customerPartId a samm:Property ;
-   samm:preferredName "customer part ID"@en ;
-   samm:description "Part ID as assigned by the customer."@en ;
-   samm:characteristic ext-planned:PartIdCharacteristic ;
-   samm:exampleValue "B19764234512" .
-
 :expiryDate a samm:Property ;
    samm:preferredName "expiry date"@en ;
    samm:description "The expiry date of the material."@en ;
@@ -242,7 +234,7 @@
    samm:preferredName "payload"@en ;
    samm:description "Base64-encoded string of the binary document file (e.g., PDF)."@en ;
    samm:characteristic :PayloadCharacteristic ;
-   samm:exampleValue "JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovVHlwZSAvUGFnZQo" ^^xsd:base64Binary .
+   samm:exampleValue "JVBERi0xLjQKJQozIDAgb2JqCjw8Ci9UeXBlIC9QYWdlCg==" ^^xsd:base64Binary .
 
 :documentLanguage a samm:Property ;
    samm:preferredName "document language"@en ;
