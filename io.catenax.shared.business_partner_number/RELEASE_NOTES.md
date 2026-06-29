@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to this model will be documented in this file.
 
+## [3.0.0] - 2024-02-05
+
+### Added
+
+- characteristics allowing BPNS or BPNA
+- characteristics allowing any BPN
+
+### Changed
+
+- renamed bpnlProperty to bpnl
+- renamed bpnsProperty to bpns
+- renamed bpnaProperty to bpna
+
+### Removed
+
+- aspect node to make the model a shared model
+
 ## [2.0.0] - 2024-02-05
 ### Added
 n/a
