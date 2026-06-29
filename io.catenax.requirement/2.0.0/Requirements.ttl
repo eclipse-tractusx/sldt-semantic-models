@@ -1,0 +1,525 @@
+#######################################################################
+# Copyright(c) 2025 Lisa Dräxlmaier GmbH
+# Copyright(c) 2025 Schaeffler AG
+# Copyright(c) 2025 Mercedes-Benz AG
+# Copyright(c) 2025 ZF Friedrichshafen AG
+# Copyright(c) 2026 Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V. (represented by Fraunhofer IPK)
+# Copyright(c) 2026 Robert Bosch GmbH
+# Copyright(c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.2.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.2.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.requirements:2.0.0#> .
+@prefix ext-uuid: <urn:samm:io.catenax.shared.uuid:2.0.0#> .
+#@prefix binary: <urn:samm:io.catenax.binary_exchange:1.0.0#> . #only with DSP endpoint
+
+#####################
+###### Top level aspect
+
+:Requirements a samm:Aspect ;
+   samm:preferredName "Requirements Engineering Aspect"@en ;
+   samm:description "Aspect model for requirements engineering in a customer supplier relationship."@en ;
+   samm:properties ( 
+      :requirements 
+      :requirementRelations 
+   ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+
+:requirements a samm:Property ;
+    samm:preferredName "Requirements"@en ;
+    samm:preferredName "Anforderungen"@de ;
+    samm:description   "related list of requirements."@en ;
+    samm:characteristic :RequirementsCollection .
+
+
+:RequirementsCollection a samm-c:List ;
+    samm:preferredName "Requirements Collection"@en ;
+    samm:description   "A list of top-level requirements."@en ;
+    samm:dataType      :Requirement .
+
+### Relationship
+:requirementRelations a samm:Property ;
+   samm:preferredName "Requirement Relations"@en ;
+   samm:description "Links to related requirements"@en ;
+   samm:characteristic :RequirementRelationSet .
+
+:RequirementRelationSet a samm-c:SortedSet ;
+   samm:preferredName "Requirement Relation Entity"@en ;
+   samm:description "Entity for relations between requirements."@en ;
+   samm:dataType :RequirementRelationEntity .
+
+:RequirementRelationEntity a samm:Entity ;
+   samm:preferredName "Requirement Relation Entity"@en ;
+   samm:description "Entity to link to related requirements"@en ;
+   samm:properties ( 
+      [ samm:property :requirementId; samm:payloadName "sourceRequirementId" ]
+      [ samm:property :requirementRelationshipType; samm:payloadName "relationshipType" ]
+      [ samm:property :requirementsRelationshipDescription; samm:optional true ] 
+      [ samm:property :targetRequirementId; samm:payloadName "targetRequirementId" ]
+   ) .
+
+
+#######################
+#### Requirements
+
+:Requirement a samm:Entity;
+   samm:preferredName "Requirement"@en ;
+   samm:description "Aspect model for requirements."@en ;
+   samm:properties ( 
+      :requirementId 
+      :requirementInformation 
+      :requirementStatus
+   ) .
+
+:requirementId a samm:Property ;
+   samm:preferredName "Requirement Id"@en ;
+   samm:description "The identifier of a requirement represented by a UUID, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:48878d48-6f1d-47f5-8ded-a441d0d879df" .
+
+:requirementInformation a samm:Property ;
+   samm:preferredName "Requirement Information"@en ;
+   samm:description "Mainnode for all the Requirement related information"@en ;
+   samm:characteristic :RequirementInformationCharacteristic .
+
+:requirementStatus a samm:Property ;
+   samm:preferredName "Requirement Status"@en ;
+   samm:description "Status of the Requirement"@en ;
+   samm:characteristic :RequirementStatusCharacteristic .
+
+
+:RequirementInformationCharacteristic a samm:Characteristic ;
+   samm:preferredName "Requirement Information"@en ;
+   samm:description "Mainnode for all the Requirement related information"@en ;
+   samm:dataType :RequirementInformationEntity .
+
+:RequirementStatusCharacteristic a samm:Characteristic ;
+   samm:preferredName "Requirement Status Characteristic"@en ;
+   samm:description "Status of the Requirement"@en ;
+   samm:dataType :StatusEntity .
+
+:RequirementInformationEntity a samm:Entity ;
+   samm:preferredName "Requirement Information Entity"@en ;
+   samm:description "Entity to describe all information for a requirement"@en ;
+   samm:properties ( 
+      :name 
+      :type 
+      :version 
+      :description 
+      :creationDate 
+      [ samm:property :author; samm:optional true ] 
+      [ samm:property :foreignId; samm:optional true ] 
+      [ samm:property :longname; samm:optional true ] 
+      [ samm:property :metadata; samm:optional true ] 
+      [ samm:property :specification; samm:optional true ] 
+   ) .
+
+:StatusEntity a samm:Entity ;
+   samm:preferredName "Status Entity"@en ;
+   samm:description "Entity which defines the status of a requirement"@en ;
+   samm:properties ( 
+      :statusValue 
+      :statusTimestamp 
+      :customerStatus 
+      :supplierStatus 
+   ) .
+
+
+:name a samm:Property ;
+   samm:preferredName "Name"@en ;
+   samm:description "Name of the requirement."@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "Plastic deformation of the bogie"@en .
+
+:type a samm:Property ;
+   samm:preferredName "Type"@en ;
+   samm:description "Type of the requirement (e.g., 'Functional', 'Non-Functional')."@en ;
+   samm:characteristic :TypeEnum ;
+   samm:exampleValue "Functional" .
+
+:version a samm:Property ;
+   samm:preferredName "Version"@en ;
+   samm:description "Version of the requirement"@en ;
+   samm:characteristic :VersionCharacteristic .
+
+:description a samm:Property ;
+   samm:preferredName "Description of the Requirement"@en ;
+   samm:description "Description of the Requirement"@en ;
+   samm:characteristic :descriptionCharacteristic . 
+
+:descriptionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Description Characteristic"@en ;
+   samm:description "Characteristic of a Description with additional content of a requirement"@en ;
+   samm:dataType :descriptionContent .
+
+:descriptionContent a samm:Entity ;
+   samm:preferredName "Description Content"@en ;
+   samm:description "Entity for the content of the requirement"@en ;
+   samm:properties ( 
+      :descriptionText 
+      [ samm:property :descriptionAttachment; samm:optional true ] 
+   ) .
+
+:descriptionText a samm:Property ;
+   samm:preferredName "Description"@en ;
+   samm:description "Textual description of the requirement."@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "The component MUST withstand a temperature of 60 °C"@en .
+
+:requirementsRelationshipDescription a samm:Property ;
+   samm:preferredName "Relationship Description"@en ;
+   samm:description "Description for custom relationships between requirements. The description must include the relationship name and explanation."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Satisfies: The requirement satisfies a requirement on another level" .
+
+:descriptionAttachment a samm:Property ;
+   samm:preferredName "Description Attachements"@en ;
+   samm:description "Supporting attachments such as images attached to a requirement."@en ;
+   samm:characteristic :descriptionAttachmentSet .
+
+
+:descriptionAttachmentSet a samm-c:SortedSet ;
+   samm:preferredName "List of Attachments"@en ;
+   samm:description "Binary Files attached to the description (e.g. images, PDFs) encoded as base64."@en ;
+   samm:dataType :descriptionAttachmentEntity .
+
+:descriptionAttachmentEntity a samm:Entity ;
+   samm:preferredName "Entity of an Attachment"@en ;
+   samm:description "Entity for requirement version"@en ;
+   samm:properties ( 
+      :binaryDocument
+   ) .
+
+:creationDate a samm:Property ;
+   samm:preferredName "Creationdate"@en ;
+   samm:description "Date of requirement/version creation."@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:author a samm:Property ;
+   samm:preferredName "Author"@en ;
+   samm:description "Company that created the requirement. "@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Lisa Dräxlmaier GmbH" .
+
+:foreignId a samm:Property ;
+   samm:preferredName "Foreign Id"@en ;
+   samm:description "Identifier from an external system (e.g. the Id of a requirement in another requirements tool)"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "3.1.1" .
+
+:longname a samm:Property ;
+   samm:preferredName "Longname"@en ;
+   samm:description "Descriptive name for the requirement."@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "Plastic deformation of the bogie"@en .
+
+:metadata a samm:Property ;
+   samm:preferredName "Metadata"@en ;
+   samm:description "Additional metadata that is associated with the requirement and not standardized in the aspect model."@en ;
+   samm:characteristic :MetadataList .
+
+:specification a samm:Property ;
+   samm:preferredName "Specification"@en ;
+   samm:description "Link to the specification document."@en ;
+   samm:characteristic :SpecificationList ;
+   samm:exampleValue "https://www.prostep.org/fileadmin/prod-pay-download-8c1d/Recommendation_ReqIF_V2.2.pdf" .
+
+:statusValue a samm:Property ;
+   samm:preferredName "Status Value"@en ;
+   samm:description "Overall status of the requirement"@en ;
+   samm:characteristic :StatusValueEnum ;
+   samm:exampleValue "transition status" .
+
+:statusTimestamp a samm:Property ;
+   samm:preferredName "Status Timestamp"@en ;
+   samm:description "Timestamp of the status change."@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:customerStatus a samm:Property ;
+   samm:preferredName "Customer Status"@en ;
+   samm:description "Property for the requirement status of customer"@en ;
+   samm:characteristic :CustomerStatusList .
+
+:supplierStatus a samm:Property ;
+   samm:preferredName "Supplier Status"@en ;
+   samm:description "Property for the requirement status of supplier"@en ;
+   samm:characteristic :SupplierStatusList .
+
+:targetRequirementId a samm:Property ;
+   samm:preferredName "Related Requirement Identifier"@en ;
+   samm:description "Id of related requirement in form of a UUID"@en ;
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "urn:uuid:e6b31BC2-8102-64AF-034D-C2DC35E37cEE" .
+
+:requirementRelationshipType a samm:Property ;
+   samm:preferredName "Requiremement Relationship Type"@en ;
+   samm:description "The type of relationship of the two related requirements"@en ;
+   samm:characteristic :RelationshipTypeEnum ;
+   samm:exampleValue "parentOf" .
+
+:RelationshipTypeEnum a samm-c:Enumeration ;
+   samm:preferredName "Requiremement Relationshiptype Characteristic"@en ;
+   samm:description "Characteristic for the value of supplier status\n Values to be determined based on https://www.prostep.org/fileadmin/prod-pay-download-8c1d/Recommendation_ReqIF_V2.2.pdf"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( 
+      "childOf"
+      "conflictsWith"
+      "derivedFrom" 
+      "customRelation"
+   ) .
+
+
+:TypeEnum a samm-c:Enumeration ;
+   samm:preferredName "Type Characteristic based on ReqIF"@en ;
+   samm:description "Enumeration of requirement types."@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( 
+      "Functional" 
+      "Non-Functional" 
+      "User Story" 
+      "Use Case" 
+   ) .
+
+:VersionCharacteristic a samm:Characteristic ;
+   samm:preferredName "Version Characteristic"@en ;
+   samm:description "Characteristic for the version"@en ;
+   samm:dataType :VersionEntity .
+
+:MetadataList a samm-c:List ;
+   samm:preferredName "Metadata List"@en ;
+   samm:description "List of additional metadata that is associated with the requirement and not standardized in the aspect model."@en ;
+   samm:dataType :MetadataEntity .
+
+:SpecificationList a samm-c:List ;
+   samm:preferredName "Specification List"@en ;
+   samm:description "A list of all related specifications (e.g. norms or specification documents)"@en ;
+   samm:dataType xsd:string .
+
+:StatusValueEnum a samm-c:Enumeration ;
+   samm:preferredName "Status Value Characteristic"@en ;
+   samm:description "Characteristic for the status\n Value based on customerStatus and supplierStatus, see https://www.prostep.org/fileadmin/prod-pay-download-8c1d/Recommendation_ReqIF_V2.2.pdf"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( 
+      "transition status" 
+      "invalid transition" 
+      "final status" 
+   ) .
+
+:CustomerStatusList a samm-c:List ;
+   samm:preferredName "Customer Status Characteristic"@en ;
+   samm:description "Characteristic for the customer status"@en ;
+   samm:dataType :CustomerStatusEntity .
+
+:SupplierStatusList a samm-c:List ;
+   samm:preferredName "Supplier Status Characteristic"@en ;
+   samm:description "Characteristic for the supplier status"@en ;
+   samm:dataType :SupplierStatusEntity .
+
+:VersionEntity a samm:Entity ;
+   samm:preferredName "Version Entity"@en ;
+   samm:description "Entity for requirement version"@en ;
+   samm:properties ( 
+      :versionNumber 
+      :versionId 
+   ) .
+
+:MetadataEntity a samm:Entity ;
+   samm:preferredName "Metadata Entity"@en ;
+   samm:description "Entity for key and value of requirement metadata."@en ;
+   samm:properties ( 
+      :key 
+      :value 
+      [ samm:property :metadataDescription; samm:optional true ] 
+   ) .
+
+:CustomerStatusEntity a samm:Entity ;
+   samm:preferredName "Customer Status"@en ;
+   samm:description "Entity for the customer status"@en ;
+   samm:properties ( 
+      :customerStatusValue 
+      [ samm:property :customerStatusComment; samm:optional true ] 
+      :customerStatusTimestamp 
+   ) .
+
+:SupplierStatusEntity a samm:Entity ;
+   samm:preferredName "Supplier Status"@en ;
+   samm:description "Entity for the supplier status"@en ;
+   samm:properties ( 
+      :supplierStatusValue 
+      [ samm:property 
+      :supplierStatusComment; samm:optional true ] 
+      :supplierStatusTimestamp 
+   ) .
+
+:versionNumber a samm:Property ;
+   samm:preferredName "Version Number"@en ;
+   samm:description "Semantic version of the requirement"@en ;
+   samm:see <https://semver.org/> ;
+   samm:characteristic :VersionNumberTrait ;
+   samm:exampleValue "2.0.0" .
+
+:versionId a samm:Property ;
+   samm:preferredName "Version Id"@en ;
+   samm:description "The identifier of this exact version of the requirement represented by a UUID, valid for the Catena-X dataspace."@en ;
+   samm:characteristic ext-uuid:UuidV4Trait .
+
+:key a samm:Property ;
+   samm:preferredName "Key"@en ;
+   samm:description "The key may contain only letters, digits, underscores, and hyphens."@en ;
+   samm:characteristic :KeyTrait ;
+   samm:exampleValue "ExpectedFinalization" .
+
+:value a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "Value string for the associated metadata"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "2025-11-30T00:00:00.000+02:00" .
+
+:metadataDescription a samm:Property ;
+   samm:preferredName "Metadata Description"@en ;
+   samm:description "Description of the associated metadata"@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "Timestamp of the expected finalization of the requirement" .
+
+:customerStatusValue a samm:Property ;
+   samm:preferredName "Customer Status Value"@en ;
+   samm:description "Value for customer status"@en ;
+   samm:characteristic :CustomerStatusValueEnum ;
+   samm:exampleValue "ToEvaluate" .
+
+:customerStatusComment a samm:Property ;
+   samm:preferredName "Customer Status Comment"@en ;
+   samm:description "Comment from the customer."@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "Requirement needs to be evaluated"@en .
+
+:customerStatusTimestamp a samm:Property ;
+   samm:preferredName "Customer Status Timestamp "@en ;
+   samm:description "Property for the customer status timestamp"@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:supplierStatusValue a samm:Property ;
+   samm:preferredName "Supplier Status Value"@en ;
+   samm:description "Value for the supplier status"@en ;
+   samm:characteristic :SupplierStatusValueEnum ;
+   samm:exampleValue "ToBeClarified" .
+
+:supplierStatusComment a samm:Property ;
+   samm:preferredName "Supplier Status Comment"@en ;
+   samm:description "Comment from the supplier."@en ;
+   samm:characteristic samm-c:MultiLanguageText ;
+   samm:exampleValue "More information needed from customer"@en .
+
+:supplierStatusTimestamp a samm:Property ;
+   samm:preferredName "Supplier Status Timestamp"@en ;
+   samm:description "Property for the supplier status timestamp"@en ;
+   samm:characteristic samm-c:Timestamp .
+
+:VersionNumberTrait a samm-c:Trait ;
+   samm:preferredName "Version Number Trait"@en ;
+   samm:description "String that is semantic versioning compatible"@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :VersionRegularExpression .
+
+:KeyTrait a samm-c:Trait ;
+   samm:preferredName "Key Trait"@en ;
+   samm:description "Key that only contains letters, digits, underscores, and hyphens."@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :KeyConstraint .
+
+:CustomerStatusValueEnum a samm-c:Enumeration ;
+   samm:preferredName "Customer Status Value Enum"@en ;
+   samm:description "Characteristic for the value of customer status.\n Values to be determined based on https://www.prostep.org/fileadmin/prod-pay-download-8c1d/Recommendation_ReqIF_V2.2.pdf"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( 
+      "<empty>" 
+      "NotToEvaluate" 
+      "ToEvaluate" 
+      "Accepted" 
+      "ToBeClarified" 
+      "NotAccepted" 
+      "ProposedToDiscarded" 
+      "Discarded" 
+      ) .
+
+:SupplierStatusValueEnum a samm-c:Enumeration ;
+   samm:preferredName "Supplier Status Value Characteristic"@en ;
+   samm:description "Characteristic for the value of supplier status\n Values to be determined based on https://www.prostep.org/fileadmin/prod-pay-download-8c1d/Recommendation_ReqIF_V2.2.pdf"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( 
+      "Agreed" 
+      "ToBeClarified" 
+      "AgreedWithComment" 
+      "NotAgreed" 
+      "DiscardDeployed" 
+   ) .
+
+:VersionRegularExpression a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Version Regular Expression"@en ;
+   samm:description "Version number in semantic versioning"@en ;
+   samm:value "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" .
+
+:KeyConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Key Constraint"@en ;
+   samm:description "Ensure that the key only contains letters, digits, underscores, and hyphens"@en ;
+   samm:value "^[\\w-]+$" .
+
+### from externals (not shared yet)
+
+### Certificate of Analysis v2.0.0
+
+:binaryDocument a samm:Property ;
+   samm:preferredName "binary document"@en ;
+   samm:description "A binary representation of the Certificate of Analysis as a Base64-encoded document (e.g., PDF). This allows embedding the original document directly within the data payload."@en ;
+   samm:characteristic :BinaryDocumentCharacteristic .
+
+:BinaryDocumentCharacteristic a samm:Characteristic ;
+   samm:preferredName "binary document characteristic"@en ;
+   samm:description "Characteristic for a Base64-encoded binary document attachment."@en ;
+   samm:dataType :BinaryDocumentEntity .
+
+:BinaryDocumentEntity a samm:Entity ;
+   samm:preferredName "binary document entity"@en ;
+   samm:description "Entity representing a Base64-encoded binary document with its metadata. The binary file (e.g., PDF) is encoded using Base64 encoding for safe transport through text-based systems."@en ;
+   samm:properties ( 
+      :payload 
+      :mimeType  
+      ) .
+
+:payload a samm:Property ;
+   samm:preferredName "payload"@en ;
+   samm:description "Base64-encoded string of the binary document file (e.g., PDF)."@en ;
+   samm:characteristic :PayloadCharacteristic ;
+   samm:exampleValue "JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovVHlwZSAvUGFnZQo" ^^xsd:base64Binary .
+
+:PayloadCharacteristic a samm:Characteristic ;
+   samm:preferredName "payload characteristic"@en ;
+   samm:description "Base64 binary encoded content."@en ;
+   samm:dataType xsd:base64Binary .
+
+:mimeType a samm:Property ;
+   samm:preferredName "MIME type"@en ;
+   samm:description "The MIME type of the encoded document (e.g., application/pdf)."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "image/jpeg" .
+
