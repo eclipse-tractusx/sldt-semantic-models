@@ -4,7 +4,7 @@ All notable changes to this model will be documented in this file.
 
 ## [4.0.0] xx.xx.2026
 ### Removed
-- businessPartnerNumber (root) - It is redundant; certificate holder is now derived from:  certifiedLocations[locationRole="MAIN_LOCATION"].bpnl
+- businessPartnerNumber (root) - It is redundant; certificate holder is now derived from:  certifiedLocations[locationRole="Certificate Holder"].bpnl
 - enclosedSites + enclosedSiteBpn - Replaced by certifiedLocations
 
 ### Added
