@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this model will be documented in this file.
 
 ## [3.0.0] 26.09
@@ -13,6 +14,7 @@ All notable changes to this model will be documented in this file.
 - renamed `bpnlProperty` to `bpnl`
 - renamed `bpnsProperty` to `bpns`
 - renamed `bpnaProperty` to `bpna`
+- overall clean up of elements
 
 ### Removed
 
