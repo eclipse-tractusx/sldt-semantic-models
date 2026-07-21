@@ -4,6 +4,12 @@ All notable changes to this model will be documented in this file.
 
 ## [10.0.0] - 26.09
 
+### Changed
+
+- `precedingPfIds`has been changed from an array of objects to an array of strings (compliant with PACT)
+- `freeAttributionInMassBalancing` was declared as an enum between `true`, `false` and `not applicable`, this has been changed to ´Boolean`
+- `DeclaredUnitOfMeasurementCharacteristic` had seperate values ("megabit" "second"), this has been corrected to ("megabit second")
+
 ## [9.0.0] - 25.09
 
 ### Changed
