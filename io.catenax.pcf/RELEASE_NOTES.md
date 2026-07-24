@@ -6,9 +6,11 @@ All notable changes to this model will be documented in this file.
 
 ### Changed
 
-- `precedingPfIds`has been changed from an array of objects to an array of strings (compliant with PACT)
+- `precedingPfIds` has been changed from an array of objects to an array of strings (compliant with PACT)
 - `freeAttributionInMassBalancing` was declared as an enum between `true`, `false` and `not applicable`, this has been changed to ´Boolean`
 - `DeclaredUnitOfMeasurementCharacteristic` had seperate values ("megabit" "second"), this has been corrected to ("megabit second")
+- `crossSectoralStandards` has been changed from an open list to a closed list with clearly defined values
+- `freeAttributionInMassBalancing` and `massBalancingCertificateScheme` have been changed from mandatory to optional with a clearly defined rule, when they are mandatory
 
 ## [9.0.0] - 25.09
 
