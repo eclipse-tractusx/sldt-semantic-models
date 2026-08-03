@@ -2,6 +2,19 @@
 
 All notable changes to this model will be documented in this file.
 
+## [5.0.0] 26.09
+
+### Changed
+
+- Update to new common.ttl
+
+
+## [4.0.1] 26.09
+
+### Added
+
+- Update SerialPart properties to include optional changeIndex
+
 ## [4.0.0] 26.03
 
 ### Changed
