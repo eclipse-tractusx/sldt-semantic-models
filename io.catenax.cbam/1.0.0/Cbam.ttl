@@ -1,20 +1,4 @@
-######################################################################
-# Copyright (c) 2026 BASF SE
-# Copyright (c) 2026 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
-# Copyright (c) 2026 SAP SE
-# Copyright (c) 2026 Siemens AG
-# Copyright (c) 2026 Catena-X Automotive Network e.V.
-# Copyright (c) 2026 Contributors to the Eclipse Foundation
-# See the NOTICE file(s) distributed with this work for additional
-# information regarding copyright ownership.
-#
-# This work is made available under the terms of the
-# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
-# which is available at
-# https://creativecommons.org/licenses/by/4.0/legalcode.
-#
-# SPDX-License-Identifier: CC-BY-4.0
-#######################################################################
+
 
 @prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
 @prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
@@ -23,214 +7,234 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <urn:samm:io.catenax.cbam:0.1.0#> .
+@prefix : <urn:samm:io.catenax.cbam:1.0.0#> .
 @prefix ext-codes: <urn:samm:io.catenax.shared.standard_codes:1.0.0#> .
+@prefix ext-bpnl: <urn:samm:io.catenax.shared.business_partner_number:3.0.0#> .
+@prefix ext-attestation: <urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#> .
 @prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
 
 :Cbam a samm:Aspect ;
-   samm:preferredName "CBAM"@en;
+   samm:preferredName "CBAM"@en ;
    samm:properties ( :good :companyIds :requestedElements ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
 :good a samm:Property ;
-   samm:preferredName "good"@en;
+   samm:preferredName "good"@en ;
    samm:description "Array of good records to be reported. Each good record represents one declared good instance identified by CN Code and business transaction details and contains the CBAM-related information for that declared good."@en ;
    samm:characteristic :GoodsListCharaceristic .
 
 :companyIds a samm:Property ;
-   samm:preferredName "company identifier"@en;
+   samm:preferredName "company identifier"@en ;
    samm:description "Object with attributes describing the identifiers of the two business exchanging this dataset, namely the requesting and the responding company."@en ;
    samm:characteristic :CompanyIdsCharacteristic .
 
 :requestedElements a samm:Property ;
    samm:preferredName "requested elements"@en ;
    samm:description "List of element identifiers that define the scope of objects and/or data attributes requested for inclusion in the supplier response. The identifiers refer to sections and attributes defined in the corresponding request type schemes, and indicate which parts of the data model are expected to be provided in the response (subject to the rules of the respective response schema, e.g., mandatory fields and conditional dependencies)."@en ;
-   samm:characteristic :FreeStringCharacteristic ;
-   samm:exampleValue "associatedReferenceDocument, operatorIdentification, operatorActivityData" .
+   samm:characteristic :RequestedElementsListCharacteristic ;
+   samm:exampleValue "cnCode" .
 
 :GoodsListCharaceristic a samm-c:List ;
-   samm:preferredName "goods list characteristic"@en;
+   samm:preferredName "goods list characteristic"@en ;
    samm:dataType :GoodEntity .
 
 :CompanyIdsCharacteristic a samm:Characteristic ;
-   samm:preferredName "company identifier characterisic"@en;
+   samm:preferredName "company identifier characterisic"@en ;
    samm:dataType :CompanyIdsEntity .
+
+:RequestedElementsListCharacteristic a samm-c:List ;
+   samm:preferredName "requested elements list characteristic"@en ;
+   samm-c:elementCharacteristic :RequestedElementsAllowList .
+
+:GoodEntity a samm:Entity ;
+   samm:preferredName "good entity"@en ;
+   samm:properties ( :operator :businessTransactionDetails :productDescription [ samm:property :productIds; samm:optional true ] :cnCode ) .
+
+:CompanyIdsEntity a samm:Entity ;
+   samm:preferredName "company identifiers entity"@en ;
+   samm:properties ( [ samm:property :respondingCompanyIds; samm:optional true ] [ samm:property :requestingCompanyIds; samm:optional true ] ) .
+
+:RequestedElementsAllowList a samm-c:Enumeration ;
+   samm:preferredName "requested elements allow list"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "respondingCompanyIds" "requestingCompanyIds" "cnCode" "productIds" "productDescription" "businessTransactionDetails" "transactionReferenceDocumentLink" "operatorIdentification" "operatorNetMass" "installationIdentification" "installationNetMass" "activityData" "productionMethod" "directEmissions" "indirectEmissions" "freeAllocationFactor" "attestationOfConformance" "carbonPricePaid" ) .
+
+:operator a samm:Property ;
+   samm:preferredName "operator"@en ;
+   samm:description "One or multiple objects containing attributes that describe an operator each that legally owns the installations producing the CBAM good that is subject of this request. Operator can be different to supplier. One supplier (business partner of this transaction) can source the good defined in the business transaction from other suppliers. This can result in multiple operators (mutliple operator objects) involved in the depicted supply chain."@en ;
+   samm:characteristic :OperatorListCharacteristic .
+
+:businessTransactionDetails a samm:Property ;
+   samm:preferredName "business transaction details"@en ;
+   samm:description "Object describing the specific business transaction between the customer (e.g. importer) and the supplier, so the request can be mapped to a real transaction."@en ;
+   samm:characteristic :BusinessTransactionDetailCharacteristic .
+
+:productDescription a samm:Property ;
+   samm:preferredName "product description"@en ;
+   samm:description "Free text describing the product and any characteristics that help identify the right business transaction per request."@en ;
+   samm:characteristic :FreeStringCharacteristic ;
+   samm:exampleValue "Hot-rolled steel coil, grade S235JR" .
+
+:productIds a samm:Property ;
+   samm:preferredName "product identifier"@en ;
+   samm:description "Set of product identifiers to identify the product from the business transaction."@en ;
+   samm:characteristic :KeyValueCharacteristic .
+
+:cnCode a samm:Property ;
+   samm:preferredName "CN code"@en ;
+   samm:description "This is the 8-digit CN code (combined nomenclature) of the reported good, refering to official CBAM value list to ensure updated content."@en ;
+   samm:characteristic :CnCodeTrait ;
+   samm:exampleValue "72011000" .
+
+:respondingCompanyIds a samm:Property ;
+   samm:preferredName "responding company identifier"@en ;
+   samm:description "Object containing one or multiple identifiers of the responding company."@en ;
+   samm:characteristic :KeyValueCharacteristic .
+
+:requestingCompanyIds a samm:Property ;
+   samm:preferredName "requesting company identifier"@en ;
+   samm:description "Object containing one or multiple pairs of identifier type and value of the requesting company."@en ;
+   samm:characteristic :KeyValueCharacteristic .
+
+:OperatorListCharacteristic a samm-c:List ;
+   samm:preferredName "operator list characteristic"@en ;
+   samm:dataType :OperatorEntity .
+
+:BusinessTransactionDetailCharacteristic a samm:Characteristic ;
+   samm:preferredName "business transaction detail characteristic"@en ;
+   samm:dataType :BusinessTransactionDetailsEntity .
 
 :FreeStringCharacteristic a samm:Characteristic ;
    samm:preferredName "free string characteristic"@en ;
    samm:description "Characteristic for text properties without any constraints."@en ;
    samm:dataType xsd:string .
 
-:GoodEntity a samm:Entity ;
-   samm:preferredName "good entity"@en;
-   samm:properties ( :operator :businessTransactionDetails :productDescription [ samm:property :productIds; samm:optional true ] :cnCode ) .
-
-:CompanyIdsEntity a samm:Entity ;
-   samm:preferredName "company identifiers entity"@en ;
-   samm:properties ( :responseCompanyIds :requestingCompanyIds ) .
-
-:operator a samm:Property ;
-   samm:preferredName "operator"@en;
-   samm:description "One or multiple objects containing attributes that describe an operator each that legally owns the installations producing the CBAM good that is subject of this request. Operator can be different to supplier. One supplier (business partner of this transaction) can source the good defined in the business transaction from other suppliers. This can result in multiple operators (mutliple operator objects) involved in the depicted supply chain."@en ;
-   samm:characteristic :OperatorListCharacteristic .
-
-:businessTransactionDetails a samm:Property ;
-   samm:preferredName "business transaction details"@en;
-   samm:description "Object describing the specific business transaction between the customer (e.g. importer) and the supplier, so the request can be mapped to a real transaction."@en ;
-   samm:characteristic :BusinessTransactionDetailCharacteristic .
-
-:productDescription a samm:Property ;
-   samm:preferredName "product description"@en;
-   samm:description "Free text describing the product and any characteristics that help identify the right business transaction per request."@en ;
-   samm:characteristic :FreeStringCharacteristic ;
-   samm:exampleValue "Hot-rolled steel coil, grade S235JR" .
-
-:productIds a samm:Property ;
-   samm:preferredName "product identifier"@en;
-   samm:description ""@en ;
-   samm:characteristic :KeyValueCharacteristic .
-
-:cnCode a samm:Property ;
-   samm:preferredName "CN code"@en;
-   samm:description "This is the 8-digit CN code (combined nomenclature) of the reported good, refering to official CBAM value list to ensure updated content."@en ;
-   samm:characteristic :CnCodeTrait ; 
-   samm:exampleValue "72011000" .
-
-:responseCompanyIds a samm:Property ;
-   samm:preferredName "response company identifier"@en;
-   samm:description "Object containing one or multiple identifiers of the responding company."@en ;
-   samm:characteristic :KeyValueCharacteristic .
-
-:requestingCompanyIds a samm:Property ;
-   samm:preferredName "requesting company identifier"@en;
-   samm:description "Object containing one or multiple pairs of identifier type and value of the requesting company."@en ;
-   samm:characteristic :KeyValueCharacteristic .
-
-:OperatorListCharacteristic a samm-c:List ;
-   samm:preferredName "operator list characteristic"@en;
-   samm:dataType :OperatorEntity .
-
-:BusinessTransactionDetailCharacteristic a samm:Characteristic ;
-   samm:preferredName "business transaction detail characteristic"@en;
-   samm:dataType :BusinessTransactionDetailsEntity .
-
 :KeyValueCharacteristic a samm-c:List ;
-   samm:preferredName "key value characteristic"@en;
+   samm:preferredName "key value characteristic"@en ;
    samm:dataType :KeyValueEntity .
 
 :CnCodeTrait a samm-c:Trait ;
-   samm:preferredName "CN code trait"@en;
+   samm:preferredName "CN code trait"@en ;
    samm-c:baseCharacteristic :FreeStringCharacteristic ;
    samm-c:constraint :CnCodeLengthConstraint .
 
 :OperatorEntity a samm:Entity ;
-   samm:preferredName "operator entity"@en;
-   samm:properties ( :transactionReferenceDocumentLink :operatorIdentification :installation ) .
+   samm:preferredName "operator entity"@en ;
+   samm:properties ( [ samm:property :transactionReferenceDocumentLink; samm:optional true ] [ samm:property :operatorIdentification; samm:optional true ] [ samm:property :installation; samm:optional true ] [ samm:property :operatorNetMass; samm:optional true ] ) .
 
 :BusinessTransactionDetailsEntity a samm:Entity ;
-   samm:preferredName "business transaction details entity"@en;
+   samm:preferredName "business transaction details entity"@en ;
    samm:properties ( :requestNetMass :requestReferencePeriodEnd :requestReferencePeriodStart :transactionReferenceDocuments ) .
 
 :KeyValueEntity a samm:Entity ;
-   samm:preferredName "key value entity"@en;
+   samm:preferredName "key value entity"@en ;
    samm:properties ( :key :value ) .
 
 :CnCodeLengthConstraint a samm-c:LengthConstraint ;
-   samm:preferredName "CN code length constraint"@en;
+   samm:preferredName "CN code length constraint"@en ;
    samm-c:minValue "8"^^xsd:nonNegativeInteger ;
    samm-c:maxValue "8"^^xsd:nonNegativeInteger .
 
 :transactionReferenceDocumentLink a samm:Property ;
-   samm:preferredName "transaction reference document link"@en;
+   samm:preferredName "transaction reference document link"@en ;
    samm:description "Pointer to a reference document previously provided in businessTransactionDetails, optionally refined to a specific part/item of that document, to indicate which document (and which part of it) the operator-related response data corresponds to."@en ;
    samm:characteristic :TransactionReferenceDocumentLinkCharacteristic .
 
 :operatorIdentification a samm:Property ;
-   samm:preferredName "operator identification"@en;
+   samm:preferredName "operator identification"@en ;
    samm:description "Object containing attributes to identify the operator."@en ;
    samm:characteristic :OperatorIdentificationCharacteristic .
 
 :installation a samm:Property ;
-   samm:preferredName "installation"@en;
+   samm:preferredName "installation"@en ;
    samm:description "One or more objects describing each installation producing the CBAM good that is the subject of this request. A single operator may own multiple installations supplying the CBAM good in this request; in that case, multiple installation objects are provided. Each installation may include multiple production methods."@en ;
    samm:characteristic :InstallationCharacteristic .
 
+:operatorNetMass a samm:Property ;
+   samm:preferredName "operator net mass"@en ;
+   samm:description "Net mass (in tonnes) of the CBAM-relevant good attributable to the specific request, summed over all installations belonging to the operator described in this object."@en ;
+   samm:characteristic :FreeNumberCharacteristic ;
+   samm:exampleValue "60.0"^^xsd:float .
+
 :requestNetMass a samm:Property ;
-   samm:preferredName "request net mass"@en;
-   samm:description ""@en ;
-   samm:characteristic :FreeNumberCharacteristic .
+   samm:preferredName "request net mass"@en ;
+   samm:description "Net mass (tonnes) of CBAM-relevant good the request relates to (e.g., from customs). Note, value shall match the sum across all corresponding production method net mass values in the response."@en ;
+   samm:characteristic :FreeNumberCharacteristic ;
+   samm:exampleValue "60"^^xsd:float .
 
 :requestReferencePeriodEnd a samm:Property ;
-   samm:preferredName "request reference period end"@en;
-   samm:description ""@en ;
-   samm:characteristic :DateCharacteristic .
+   samm:preferredName "request reference period end"@en ;
+   samm:description "End timestamp of the requested reference period; start and end must be within the same calendar year."@en ;
+   samm:characteristic :DatetimeCharacteristic ;
+   samm:exampleValue "2024-12-31T23:59:59Z"^^xsd:dateTime .
 
 :requestReferencePeriodStart a samm:Property ;
-   samm:preferredName "request reference period start"@en;
-   samm:description ""@en ;
-   samm:characteristic :DateCharacteristic .
+   samm:preferredName "request reference period start"@en ;
+   samm:description "Start timestamp of the requested reference period; start and end must be within the same calendar year."@en ;
+   samm:characteristic :DatetimeCharacteristic ;
+   samm:exampleValue "2024-01-01T00:00:00Z"^^xsd:dateTime .
 
 :transactionReferenceDocuments a samm:Property ;
-   samm:preferredName "transaction reference documents"@en;
+   samm:preferredName "transaction reference documents"@en ;
    samm:description "List of reference documents used to identify the transaction (e.g., invoice, purchase order, customs declaration, shipment); each entry provides a document type and identifier value."@en ;
    samm:characteristic :KeyValueCharacteristic .
 
 :key a samm:Property ;
    samm:preferredName "key"@en ;
-   samm:description ""@en ;
+   samm:description "Name of the identifier type."@en ;
    samm:characteristic :FreeStringCharacteristic .
 
 :value a samm:Property ;
    samm:preferredName "value"@en ;
-   samm:description ""@en ;
+   samm:description "Value of the stated identifier type."@en ;
    samm:characteristic :FreeStringCharacteristic .
 
 :TransactionReferenceDocumentLinkCharacteristic a samm:Characteristic ;
-   samm:preferredName "transaction reference document link characteristic"@en;
+   samm:preferredName "transaction reference document link characteristic"@en ;
    samm:dataType :TransactionReferenceDocumentLink .
 
 :OperatorIdentificationCharacteristic a samm:Characteristic ;
-   samm:preferredName "operator identification characteristic"@en;
+   samm:preferredName "operator identification characteristic"@en ;
    samm:dataType :OperatorIdentificationEntity .
 
 :InstallationCharacteristic a samm-c:List ;
-   samm:preferredName "installation characteristic"@en;
+   samm:preferredName "installation characteristic"@en ;
    samm:dataType :InstallationEntity .
 
 :FreeNumberCharacteristic a samm:Characteristic ;
-   samm:preferredName "free number characteristic"@en;
+   samm:preferredName "free number characteristic"@en ;
    samm:dataType xsd:float .
 
-:DateCharacteristic a samm:Characteristic ;
-   samm:preferredName "date characteristic"@en;
-   samm:dataType xsd:date .
+:DatetimeCharacteristic a samm:Characteristic ;
+   samm:preferredName "datetime characteristic"@en ;
+   samm:dataType xsd:dateTime .
 
 :TransactionReferenceDocumentLink a samm:Entity ;
-   samm:preferredName "transaction reference document link"@en;
-   samm:properties ( :refDocElement :refDocId :refDocType ) .
+   samm:preferredName "transaction reference document link"@en ;
+   samm:properties ( :refDocElement :refDocValue :refDocKey ) .
 
 :OperatorIdentificationEntity a samm:Entity ;
-   samm:preferredName "operator identification entity"@en;
-   samm:properties ( :operatorIsSupplier :operatorIds :operatorName :operatorContactEmailAddress :address ) .
+   samm:preferredName "operator identification entity"@en ;
+   samm:properties ( [ samm:property :operatorIsSupplier; samm:optional true ] [ samm:property :operatorIds; samm:optional true ] [ samm:property :operatorName; samm:optional true ] [ samm:property :operatorContactEmailAddress; samm:optional true ] [ samm:property :address; samm:optional true ] ) .
 
 :InstallationEntity a samm:Entity ;
-   samm:preferredName "installation entity"@en;
-   samm:properties ( :installationIdentification :emissionsRecords :attestationOfConformance ) .
+   samm:preferredName "installation entity"@en ;
+   samm:properties ( [ samm:property :installationIdentification; samm:optional true ] [ samm:property :emissionsRecords; samm:optional true ] :installationNetMass ) .
 
 :refDocElement a samm:Property ;
-   samm:preferredName "reference document element"@en;
+   samm:preferredName "reference document element"@en ;
    samm:description "Additional locator/metadata to identify a specific element within the referenced document (e.g., line item, position number, material code, annex section). Used when the document covers multiple goods/operators and you need to specify which part applies."@en ;
    samm:characteristic :KeyValueCharacteristic .
 
-:refDocId a samm:Property ;
+:refDocValue a samm:Property ;
    samm:preferredName "reference document identifier"@en ;
    samm:description "Identifier of the referenced document; must match the corresponding reference document value from the request."@en ;
    samm:characteristic :FreeStringCharacteristic ;
    samm:exampleValue "INV-2024-12345" .
 
-:refDocType a samm:Property ;
-   samm:preferredName "reference document type"@en ;
+:refDocKey a samm:Property ;
+   samm:preferredName "reference document key"@en ;
    samm:description "Type of the referenced document; must match a reference document type from the business transaction details object in the request."@en ;
    samm:characteristic :FreeStringCharacteristic ;
    samm:exampleValue "invoice" .
@@ -249,7 +253,7 @@
 :operatorName a samm:Property ;
    samm:preferredName "operator name"@en ;
    samm:description "Name of the operator"@en ;
-   samm:characteristic :FreeStringCharacteristic ; 
+   samm:characteristic :FreeStringCharacteristic ;
    samm:exampleValue "Steel Example Corp." .
 
 :operatorContactEmailAddress a samm:Property ;
@@ -272,6 +276,12 @@
    samm:preferredName "emission records"@en ;
    samm:description "One or more objects detailing the specific production method(s) that the emission objects refer to; each installation may include multiple production methods."@en ;
    samm:characteristic :EmissionsRecordCharacteristic .
+
+:installationNetMass a samm:Property ;
+   samm:preferredName "installation net mass"@en ;
+   samm:description "Net mass (in tonnes) of the CBAM-relevant good attributable to the specific request, produced in the stated installation, calculated as the sum across all applicable production methods within that installation."@en ;
+   samm:characteristic :FreeNumberCharacteristic ;
+   samm:exampleValue "60.0"^^xsd:float .
 
 :BooleanCharacteristic a samm:Characteristic ;
    samm:preferredName "boolean characteristic"@en ;
@@ -299,20 +309,20 @@
 
 :AddressEntity a samm:Entity ;
    samm:preferredName "address entity"@en ;
-   samm:properties ( :city :street [ samm:property :countryCode; samm:payloadName "country" ] ) .
+   samm:properties ( [ samm:property :city; samm:optional true ] [ samm:property :street; samm:optional true ] [ samm:property ext-codes:country; samm:optional true ] ) .
 
 :InstallationIdentificationEntity a samm:Entity ;
    samm:preferredName "installation identification entity"@en ;
-   samm:properties ( :installationIds ) .
+   samm:properties ( [ samm:property :installationIds; samm:optional true ] [ samm:property :installationName; samm:optional true ] [ samm:property :installationAddress; samm:optional true; samm:payloadName "address" ] ) .
 
 :EmissionsRecordsEntity a samm:Entity ;
    samm:preferredName "emissions records entity"@en ;
-   samm:properties ( :productionMethod :directEmissions :indirectEmissions :freeAllocationFactor :carbonPricePaid ) .
+   samm:properties ( ext-attestation:attestationOfConformance  [ samm:property :productionMethod; samm:optional true ] :activityData :directEmissions :indirectEmissions :freeAllocationFactor :carbonPricePaid ) .
 
 :operatorBpnl a samm:Property ;
    samm:preferredName "operator BPNL"@en ;
    samm:description "BPNL (business partner number legal) of operator, if company is registered at Catena-X."@en ;
-   samm:characteristic :FreeStringCharacteristic ;
+   samm:characteristic ext-bpnl:BpnlCharacteristic ;
    samm:exampleValue "BPNL00000000OOPR" .
 
 :operatorCbamId a samm:Property ;
@@ -323,7 +333,6 @@
 
 :otherIds a samm:Property ;
    samm:preferredName "other identifier"@en ;
-   samm:description ""@en ;
    samm:characteristic :KeyValueCharacteristic .
 
 :city a samm:Property ;
@@ -338,20 +347,29 @@
    samm:characteristic :FreeStringCharacteristic ;
    samm:exampleValue "Werkstraße 1" .
 
-:countryCode a samm:Property ;
-   samm:preferredName "country code"@en ;
-   samm:description ""@en ;
-   samm:characteristic ext-codes:CountryAlpha3Trait .
-
 :installationIds a samm:Property ;
    samm:preferredName "installation identifier"@en ;
    samm:description "Unique set of identifiers of the installation."@en ;
    samm:characteristic :InstallationIdsCharacteristic .
 
+:installationName a samm:Property ;
+   samm:preferredName "installation name"@en ;
+   samm:description "Name of the installation."@en ;
+   samm:characteristic :FreeStringCharacteristic ;
+   samm:exampleValue "Steel Manufacturing Facility - Delhi Plant" .
+
+:installationAddress a samm:Property ;
+   samm:preferredName "installation address"@en ;
+   samm:characteristic :InstallationAddressCharacteristic .
+
 :productionMethod a samm:Property ;
    samm:preferredName "product method"@en ;
-   samm:description ""@en ;
    samm:characteristic :ProductionMethodCharacteristic .
+
+:activityData a samm:Property ;
+   samm:preferredName "production method activity data"@en ;
+   samm:description "An object describing the temporal reference and the mass flow attributable to the specified production method within an installation."@en ;
+   samm:characteristic :ProductionMethodActivityDataCharacteristic .
 
 :directEmissions a samm:Property ;
    samm:preferredName "direct emissions"@en ;
@@ -378,9 +396,17 @@
    samm:preferredName "installation identification characteristic"@en ;
    samm:dataType :InstallationIdsEntity .
 
+:InstallationAddressCharacteristic a samm:Characteristic ;
+   samm:preferredName "installation address characteristic"@en ;
+   samm:dataType :InstallationAddressEntity .
+
 :ProductionMethodCharacteristic a samm:Characteristic ;
    samm:preferredName "production method characteristic"@en ;
    samm:dataType :ProductionMethodEntity .
+
+:ProductionMethodActivityDataCharacteristic a samm:Characteristic ;
+   samm:preferredName "production method activity data characteristic"@en ;
+   samm:dataType :ProductionMethodActivityDataEntity .
 
 :DirectEmissionsCharacteristic a samm:Characteristic ;
    samm:preferredName "direct emissions characteristic"@en ;
@@ -396,15 +422,23 @@
 
 :InstallationIdsEntity a samm:Entity ;
    samm:preferredName "installation identifier entity"@en ;
-   samm:properties ( :installationCbamId :otherIds :installationName :installationAddress ) .
+   samm:properties ( :installationCbamId :otherIds ) .
+
+:InstallationAddressEntity a samm:Entity ;
+   samm:preferredName "installation address entity"@en ;
+   samm:properties ( ext-codes:country :city [ samm:property :longitude; samm:optional true ] [ samm:property :latitude; samm:optional true ] [ samm:property :typeOfCoordinates; samm:optional true ] [ samm:property :pilotOrParcelNumber; samm:optional true ] [ samm:property :unLoCode; samm:optional true ] ) .
 
 :ProductionMethodEntity a samm:Entity ;
    samm:preferredName "production method entity"@en ;
-   samm:properties ( :methodId :specificSteelMillId :additionalInformation :productionMethodActivityData ) .
+   samm:properties ( :methodId [ samm:property :specificSteelMillId; samm:optional true ] [ samm:property :additionalInformation; samm:optional true ] ) .
+
+:ProductionMethodActivityDataEntity a samm:Entity ;
+   samm:preferredName "production method activity entity"@en ;
+   samm:properties ( [ samm:property :referencePeriodStart; samm:optional true ] [ samm:property :referencePeriodEnd; samm:optional true ] [ samm:property :activityDataNetMass; samm:payloadName "netMass" ] ) .
 
 :DirectEmissionsEntity a samm:Entity ;
    samm:preferredName "direct emissions entity"@en ;
-   samm:properties ( [ samm:property :additionalInformationDirectEmissions; samm:payloadName "additionalInformation" ] :specificEmbeddedEmissionsDirect :countryCode ) .
+   samm:properties ( [ samm:property :additionalInformationDirectEmissions; samm:optional true; samm:payloadName "additionalInformation" ] :specificEmbeddedEmissionsDirect ) .
 
 :IndirectEmissionsEntity a samm:Entity ;
    samm:preferredName "indirect emissions entity"@en ;
@@ -412,7 +446,7 @@
 
 :CarbonPricePaidEntity a samm:Entity ;
    samm:preferredName "carbon price paid entity"@en ;
-   samm:properties ( :typeOfInstrument :independendPersonId :descriptionAndIndicationOfLegalAct :amountOfCarbonPricePaid ext-codes:currency ) .
+   samm:properties ( [ samm:property :typeOfInstrument; samm:optional true ] :independendPersonId [ samm:property :descriptionAndIndicationOfLegalAct; samm:optional true ] [ samm:property :amountOfCarbonPricePaid; samm:optional true ] [ samm:property ext-codes:currency; samm:optional true ] [ samm:property ext-codes:country; samm:optional true; samm:payloadName "countryCode" ] ) .
 
 :installationCbamId a samm:Property ;
    samm:preferredName "installation CBAM identifier"@en ;
@@ -420,16 +454,36 @@
    samm:characteristic :FreeStringCharacteristic ;
    samm:exampleValue "O3CI-INST-654321" .
 
-:installationName a samm:Property ;
-   samm:preferredName "installation name"@en ;
-   samm:description "Name of the installation."@en ;
-   samm:characteristic :FreeStringCharacteristic ;
-   samm:exampleValue "Steel Manufacturing Facility - Delhi Plant".
+:longitude a samm:Property ;
+   samm:preferredName "longitude"@en ;
+   samm:description "The longitude where the installation is located."@en ;
+   samm:characteristic :FreeNumberCharacteristic ;
+   samm:exampleValue "77.2197"^^xsd:float .
 
-:installationAddress a samm:Property ;
-   samm:preferredName "installation address"@en ;
-   samm:description ""@en ;
-   samm:characteristic :InstallationAddressCharacteristic .
+:latitude a samm:Property ;
+   samm:preferredName "latitude"@en ;
+   samm:description "The latitude where the installation is located."@en ;
+   samm:characteristic :FreeNumberCharacteristic ;
+   samm:exampleValue "28.6139"^^xsd:float .
+
+:typeOfCoordinates a samm:Property ;
+   samm:preferredName "type of coordinates"@en ;
+   samm:description "The type of coordinates: 01 GPS, 02 GNSS."@en ;
+   samm:characteristic :FreeStringCharacteristic ;
+   samm:exampleValue "01" .
+
+:pilotOrParcelNumber a samm:Property ;
+   samm:preferredName "pilot or parcel number"@en ;
+   samm:description "The plot or parcel number of the location."@en ;
+   samm:characteristic :FreeStringCharacteristic ;
+   samm:exampleValue "PLOT-456-INDUSTRIAL-ZONE-A" .
+
+:unLoCode a samm:Property ;
+   samm:preferredName "United Nations Code for Trade and Transport Locations"@en ;
+   samm:description "The United Nations Code for Trade and Transport Locations (UN/LOCODE) as defined by UNECE list."@en ;
+   samm:see <https://unece.org/trade/uncefact/unlocode> ;
+   samm:characteristic :FreeStringCharacteristic ;
+   samm:exampleValue "INDEL" .
 
 :methodId a samm:Property ;
    samm:preferredName "method identifier"@en ;
@@ -449,10 +503,19 @@
    samm:characteristic :FreeStringCharacteristic ;
    samm:exampleValue "Uses recycled scrap as input" .
 
-:productionMethodActivityData a samm:Property ;
-   samm:preferredName "production method activity data"@en ;
-   samm:description "An object describing the temporal reference and the mass flow attributable to the specified production method within an installation."@en ;
-   samm:characteristic :ProductionMethodActivityDataCharacteristic .
+:referencePeriodStart a samm:Property ;
+   samm:preferredName "reference period start"@en ;
+   samm:characteristic :DatetimeCharacteristic .
+
+:referencePeriodEnd a samm:Property ;
+   samm:preferredName "reference period end"@en ;
+   samm:characteristic :DatetimeCharacteristic .
+
+:activityDataNetMass a samm:Property ;
+   samm:preferredName "activity data net mass"@en ;
+   samm:description "Net mass (in tonnes) of the CBAM-relevant good attributable to the specific request produced in the stated installation by the stated production method only."@en ;
+   samm:characteristic :FreeNumberCharacteristic ;
+   samm:exampleValue "60.0"^^xsd:float .
 
 :additionalInformationDirectEmissions a samm:Property ;
    samm:preferredName "addition information direct emissions"@en ;
@@ -525,68 +588,11 @@
    samm:characteristic :FreeNumberCharacteristic ;
    samm:exampleValue "12000.00"^^xsd:float .
 
-:InstallationAddressCharacteristic a samm:Characteristic ;
-   samm:preferredName "installation address characteristic"@en ;
-   samm:dataType :InstallationAddressEntity .
-
-:ProductionMethodActivityDataCharacteristic a samm:Characteristic ;
-   samm:preferredName "production method activity data characteristic"@en ;
-   samm:dataType :ProductionMethodActivityDataEntity .
-
-:InstallationAddressEntity a samm:Entity ;
-   samm:preferredName "installation address entity"@en ;
-   samm:properties ( :countryCode :city :longitude :latitude :typeOfCoordinates :pilotOrParcelNumber :unLoCode ) .
-
-:ProductionMethodActivityDataEntity a samm:Entity ;
-   samm:preferredName "production method activity entity"@en ;
-   samm:properties ( :referencePeriodStart :referencePeriodEnd ) .
-
-:longitude a samm:Property ;
-   samm:preferredName "longitude"@en ;
-   samm:description "The longitude where the installation is located."@en ;
-   samm:characteristic :FreeStringCharacteristic ;
-   samm:exampleValue "77.2197" .
-
-:latitude a samm:Property ;
-   samm:preferredName "latitude"@en ;
-   samm:description "The latitude where the installation is located."@en ;
-   samm:characteristic :FreeStringCharacteristic ;
-   samm:exampleValue "28.6139" .
-
-:typeOfCoordinates a samm:Property ;
-   samm:preferredName "type of coordinates"@en ;
-   samm:description "The type of coordinates: 01 GPS, 02 GNSS."@en ;
-   samm:characteristic :FreeStringCharacteristic ;
-   samm:exampleValue "01" .
-
-:pilotOrParcelNumber a samm:Property ;
-   samm:preferredName "pilot or parcel number"@en ;
-   samm:description "The plot or parcel number of the location."@en ;
-   samm:characteristic :FreeStringCharacteristic ;
-   samm:exampleValue "PLOT-456-INDUSTRIAL-ZONE-A" .
-
-:unLoCode a samm:Property ;
-   samm:preferredName "United Nations Code for Trade and Transport Locations"@en ;
-   samm:description "The United Nations Code for Trade and Transport Locations (UN/LOCODE) as defined by UNECE list."@en ;
-   samm:see <https://unece.org/trade/uncefact/unlocode> ;
-   samm:characteristic :FreeStringCharacteristic ; 
-   samm:exampleValue "INDEL" .
-
-:referencePeriodStart a samm:Property ;
-   samm:preferredName "reference period start"@en ;
-   samm:description ""@en ;
-   samm:characteristic :DateCharacteristic .
-
-:referencePeriodEnd a samm:Property ;
-   samm:preferredName "reference period end"@en ;
-   samm:description ""@en ;
-   samm:characteristic :DateCharacteristic .
+:GoodCharaceristic a samm:Characteristic ;
+   samm:preferredName "good characteristic"@en ;
+   samm:dataType :GoodEntity .
 
 :OperatorCharacteristic a samm:Characteristic ;
    samm:preferredName "operator characteristic"@en ;
    samm:dataType :OperatorEntity .
-
-:GoodCharaceristic a samm:Characteristic ;
-   samm:preferredName "good characteristic"@en ;
-   samm:dataType :GoodEntity .
 
