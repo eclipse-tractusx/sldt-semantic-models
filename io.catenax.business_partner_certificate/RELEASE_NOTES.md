@@ -2,6 +2,25 @@
 
 All notable changes to this model will be documented in this file.
 
+## [4.0.0] r26.09
+### Removed
+- businessPartnerNumber (root) - It is redundant; certificate holder is now derived from:  certifiedLocations[locationRole="Certificate Holder"].bpnl
+- enclosedSites + enclosedSiteBpn - Replaced by certifiedLocations
+
+### Added
+- certifiedLocations
+- certificateId
+- changeCounter
+- locationRole
+- version (document)
+- language (document)
+
+### Changed
+- trustLevel - New enumeration low / medium / high per CCM KIT Trust Level concept
+- documentId  - casing fixed to lowerCamelCase per Tractus-X naming conventions;
+- DocumentEntity can be a list of documents
+- certificateVersion changed to certificateTypeVersion
+
 ## [3.1.0] 24.03.2025
 
 ### Changed
