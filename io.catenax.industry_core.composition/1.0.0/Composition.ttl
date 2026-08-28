@@ -1,0 +1,117 @@
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.industry_core.composition:1.0.0#> .
+@prefix ext-classification: <urn:samm:io.catenax.shared.industry_core.asset_classification:1.0.0#> .
+@prefix ext-common2: <urn:samm:io.catenax.shared.industry_core.common:1.0.1#> .
+@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+
+:Composition a samm:Aspect ;
+   samm:preferredName "Composition"@en ;
+   samm:description "lists all substances contained in a material and specifies their respective proportions."@en ;
+   samm:properties ( :substances ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:substances a samm:Property ;
+   samm:preferredName "substances"@en ;
+   samm:description "lists all substances contained in a material, each linked with its respective proportion in the overall composition."@en ;
+   samm:characteristic :SetOfSubstance .
+
+:SetOfSubstance a samm-c:Set ;
+   samm:preferredName "Set of substance"@en ;
+   samm:description "Set of substance"@en ;
+   samm:dataType :SubstanceEntity .
+
+:SubstanceEntity a samm:Entity ;
+   samm:preferredName "Substance Entity"@en ;
+   samm:description "contains all properties to describe a substance that is contained in a material"@en ;
+   samm:properties ( [ samm:property :processChemType; samm:optional true ] [ samm:property :isConfidential; samm:optional true ] [ samm:property :percentage; samm:optional true ] [ samm:property ext-common:createdOn; samm:optional true ] ext-classification:classification [ samm:property ext-common2:validityPeriod; samm:optional true ] [ samm:property ext-common2:lastModifiedOn; samm:optional true ] ) .
+
+:processChemType a samm:Property ;
+   samm:preferredName "Process Chem Type"@en ;
+   samm:description "specifies whether a substance in the material is intentionally added, an impurity, or a residue resulting from the production process"@en ;
+   samm:characteristic :ProcessChemTypeEnum .
+
+:isConfidential a samm:Property ;
+   samm:preferredName "Is Confidential"@en ;
+   samm:description "indicates whether the presence or identity of a substance in the material is treated as confidential and therefore not fully disclosed to external parties"@en ;
+   samm:characteristic samm-c:Boolean .
+
+:percentage a samm:Property ;
+   samm:preferredName "percentage"@en ;
+   samm:description "specifies the proportion of a substance in the material, which can be expressed either as a fixed value or as a defined range"@en ;
+   samm:characteristic :PercentageSingleEntity .
+
+:ProcessChemTypeEnum a samm-c:Enumeration ;
+   samm:preferredName "Process Chem Type Enum"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Impurity" "Residue" "Intended" ) .
+
+:PercentageSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "Percentage Single Entity"@en ;
+   samm:description "Percentage Single Entity"@en ;
+   samm:dataType :PercentageEntity .
+
+:PercentageEntity a samm:Entity ;
+   samm:preferredName "Percentage Entity"@en ;
+   samm:description "Percentage Entity"@en ;
+   samm:properties ( :value :percentageType ) .
+
+:value a samm:Property ;
+   samm:preferredName "Value"@en ;
+   samm:description "Type = Fix: Percentage of ingredient = right\nType = Range (from-to): Weighted mean percentage of ingredient = left\nType = Rest: Calculated percentage of ingredient) = right\nType = Rest (from-to): Weighted mean percentage of ingredient) = left"@en ;
+   samm:characteristic :ValueCharacteristic .
+
+:percentageType a samm:Property ;
+   samm:preferredName "percentage type"@en ;
+   samm:description "specifies how the proportion of a substance is expressed, distinguishing whether it represents a precise value or a ranged estimate"@en ;
+   samm:characteristic :PercentageTypeEnum ;
+   samm:exampleValue "Range" .
+
+:ValueCharacteristic a samm-c:Either ;
+   samm:preferredName "ValueCharacteristic"@en ;
+   samm:description "ValueCharacteristic"@en ;
+   samm-c:left :RangeSingleEntity ;
+   samm-c:right :PercentCharacteristic .
+
+:PercentageTypeEnum a samm-c:Enumeration ;
+   samm:preferredName "Percentage Type Enum"@en ;
+   samm:description "Percentage Type Enum"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Range" "Rest-Fix" "Rest-Range" "Fix" ) .
+
+:RangeSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "Range Single Entity"@en ;
+   samm:description "Range Single Entity"@en ;
+   samm:dataType :RangeEntity .
+
+:PercentCharacteristic a samm-c:Measurement ;
+   samm:preferredName "Percent Characteristic"@en ;
+   samm:description "Percent Characteristic"@en ;
+   samm:dataType xsd:float ;
+   samm-c:unit samm-u:percent .
+
+:RangeEntity a samm:Entity ;
+   samm:preferredName "RangeEntity"@en ;
+   samm:description "RangeEntity"@en ;
+   samm:properties ( :to :from ) .
+
+:to a samm:Property ;
+   samm:preferredName "To"@en ;
+   samm:description "Maximum percentage of ingredient"@en ;
+   samm:characteristic :PercentCharacteristic ;
+   samm:exampleValue "9.4"^^xsd:float .
+
+:from a samm:Property ;
+   samm:preferredName "from"@en ;
+   samm:description "Minimum percentage of ingredient"@en ;
+   samm:characteristic :PercentCharacteristic ;
+   samm:exampleValue "5.3"^^xsd:float .
+
