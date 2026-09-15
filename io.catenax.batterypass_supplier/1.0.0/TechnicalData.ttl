@@ -25,6 +25,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <urn:samm:io.catenax.batterypass_supplier:1.0.0#> .
+@prefix tech: <urn:samm:io.admin-shell.idta.generic.technical_data:2.0.0#> .
 @prefix batteryPassTechnicalData: <urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.2#> .
 
 
@@ -32,12 +33,49 @@
    samm:description "Technical data of the asset and associated product classificatons."@en ;
    samm:see <urn:irdi:0173-1#01-AHX837#002> ;
    samm:properties ( 
-   	 [ samm:property batteryPassTechnicalData:generalInformation; samm:payloadName "GeneralInformation" ] 
-	 [ samm:property batteryPassTechnicalData:technicalPropertyAreas; samm:payloadName "TechnicalPropertyAreas" ] 
+   	 [ samm:property :generalInformation; samm:payloadName "GeneralInformation" ] 
+	 [ samm:property :technicalPropertyAreas; samm:payloadName "TechnicalPropertyAreas" ] 
 	  ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
+:generalInformation a samm:Property ;
+   samm:preferredName "general information"@en ;
+   samm:description "General information, for example ordering and manufacturer information."@en ;
+   samm:see <urn:irdi:0173-1#02-ABK161#002/0173-1#01-AHX838#002> ;
+   samm:characteristic :GeneralInformationCharacteristic .
 
+:GeneralInformationCharacteristic a samm-c:SingleEntity ;
+   samm:dataType :GeneralInformationEntity .
 
+:technicalPropertyAreas a samm:Property ;
+   samm:see <urn:irdi:0173-1#02-ABK163#002> ;
+   samm:preferredName "battery characteristics"@en ;
+   samm:description "Individual battery characteristics based on DIN DKE SPEC 99100."@en ;
+   samm:characteristic :TechnicalPropertyAreaSet .
+
+:TechnicalPropertyAreaSet a samm-c:SingleEntity ;
+   samm:dataType :TechnicalAttributes .
+   
+:GeneralInformationEntity a samm:Entity ;
+   samm:see <https://admin-shell.io/ZVEI/TechnicalData/GeneralInformation/1/1> ;
+   samm:properties ( 
+   [ samm:property tech:manufacturerName; samm:payloadName "ManufacturerName" ] 
+   [ samm:property tech:companyLogo; samm:optional true; samm:payloadName "CompanyLogo" ]
+   [ samm:property batteryPassTechnicalData:manufacturerIdentifier; samm:payloadName "ManufacturerIdentifier" ] 
+   [ samm:property batteryPassTechnicalData:warrantyInformation; samm:optional true; samm:payloadName "WarrantyInformation" ] 
+   [ samm:property batteryPassTechnicalData:batteryCategory; samm:optional true; samm:payloadName "BatteryCategory" ]  
+   [ samm:property batteryPassTechnicalData:batteryMass; samm:optional true; samm:payloadName "BatteryMass" ]   
+   [ samm:property tech:productImages; samm:optional true; samm:payloadName "ProductImages" ]   
+   ) .
   
+:TechnicalAttributes a samm:Entity ;
+  samm:see <urn:irdi:0173-1#02-ABL358#002/0173-1#01-AHX773#002> ;
+  samm:properties (
+   	[ samm:property batteryPassTechnicalData:capacityEnergyVoltage; samm:optional true; samm:payloadName "CapacityEnergyVoltage" ]
+   	[ samm:property batteryPassTechnicalData:roundTripEnergyEfficiency; samm:optional true; samm:payloadName "RoundTripEnergyEfficiency" ]
+	[ samm:property batteryPassTechnicalData:resistance; samm:optional true; samm:payloadName "Resistance" ]
+   	[ samm:property batteryPassTechnicalData:powerCapability; samm:optional true; samm:payloadName "PowerCapability" ]
+	[ samm:property batteryPassTechnicalData:temperature; samm:optional true; samm:payloadName "Temperature" ]
+   	[ samm:property batteryPassTechnicalData:lifetime; samm:optional true; samm:payloadName "Lifetime" ]
+   ) .
