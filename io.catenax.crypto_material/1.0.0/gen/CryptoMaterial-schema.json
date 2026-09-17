@@ -1,0 +1,99 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#CryptoMaterial",
+  "description" : "The crypto material model contains information on the set of cryptographic materials associated with a unique instance of a serialized part or just-in-sequence part, such as e.g, an Electronic Control Unit (ECU).",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "UuidV4Trait" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait",
+        "description" : "The provided regular expression ensures that the UUID is composed of five groups of characters separated by hyphens, in the form 8-4-4-4-12 for a total of 36 characters (32 hexadecimal characters and 4 hyphens), optionally prefixed by \"urn:uuid:\" to make it an IRI.",
+        "pattern" : "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+      },
+      "NameCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#NameCharacteristic",
+        "description" : "String containing the name assigned to cryptographic material."
+      },
+      "TypeEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#TypeEnumeration",
+        "description" : "Enumeration defining the allowed types of cryptographic material.",
+        "enum" : [ "symmetricKey", "privateKey", "privateKey", "certificate", "certificateSigningRequest", "secretMaterial" ]
+      },
+      "ValueCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#ValueCharacteristic",
+        "description" : "String containing the textual representation the value of cryptographic material in the format and encoding specified in the respective properties."
+      },
+      "FormatEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#FormatEnumeration",
+        "description" : "Enumeration defining the allowed formats for cryptographic material.",
+        "enum" : [ "pkcs1", "pkcs8", "pkcs10", "raw", "subjectPublicKeyInfo", "x509v3" ]
+      },
+      "EncodingEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#EncodingEnumeration",
+        "description" : "Enumeration defining the allowed encodings for cryptographic material.",
+        "enum" : [ "base64", "hex", "rfc7468" ]
+      },
+      "CryptoMaterialEntity" : {
+        "description" : "Entity containing information describing an instance of cryptographic material.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#CryptoMaterialEntity",
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "description" : "Name assigned to the cryptographic material.\r\n\r\nThis property may be used to indicate the security service  provided by the cryptographic material and the usage or application it is associated with.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#name",
+            "$ref" : "#/components/schemas/NameCharacteristic"
+          },
+          "type" : {
+            "description" : "Type of cryptographic material.\r\n\r\nProvided cryptographic material must have one of the following types:\r\n- symmetric key\r\n- private key\r\n- public key\r\n- digital certificate\r\n- certificate signing request\r\n- secret material",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#type",
+            "$ref" : "#/components/schemas/TypeEnumeration"
+          },
+          "value" : {
+            "description" : "Value of cryptographic material in the format and encoding specified in the respective properties.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#value",
+            "$ref" : "#/components/schemas/ValueCharacteristic"
+          },
+          "format" : {
+            "description" : "Format of cryptographic material.\r\n\r\nProvided cryptographic material must have one of the following formats:\r\n- PKCS#1\r\n- PKCS#8\r\n- PKCS#10\r\n- raw\r\n- subjectPublicKeyInfo\r\n- X.509v3",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#format",
+            "$ref" : "#/components/schemas/FormatEnumeration"
+          },
+          "encoding" : {
+            "description" : "Encoding of cryptographic material.\r\n\r\nProvided cryptographic material must have one of the following encodings:\r\n- Base64\r\n- HEX\r\n- RFC 7468",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#encoding",
+            "$ref" : "#/components/schemas/EncodingEnumeration"
+          }
+        },
+        "required" : [ "name", "type", "value", "format", "encoding" ]
+      },
+      "CryptoMaterialsSet" : {
+        "description" : "Set containing instances of cryptographic material.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#CryptoMaterialsSet",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/CryptoMaterialEntity"
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "globalAssetId" : {
+      "description" : "The fully anonymous ID in the dataspace of the part.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.industry_core.common:1.0.0#globalAssetId",
+      "$ref" : "#/components/schemas/UuidV4Trait"
+    },
+    "cryptoMaterials" : {
+      "description" : "Set of one or more instances of cryptographic material associated with a unique instance of a serialized part or just-in-sequence part.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.crypto_material:1.0.0#cryptoMaterials",
+      "$ref" : "#/components/schemas/CryptoMaterialsSet"
+    }
+  },
+  "required" : [ "globalAssetId", "cryptoMaterials" ]
+}

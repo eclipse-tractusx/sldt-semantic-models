@@ -1,0 +1,238 @@
+---
+openapi: 3.0.3
+info:
+  title: crypto material
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#CryptoMaterial"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/crypto-material:
+    get:
+      tags:
+      - CryptoMaterial
+      operationId: getCryptoMaterial
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: "#/components/responses/CryptoMaterial"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          $ref: "#/components/schemas/CryptoMaterial"
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    UuidV4Trait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.uuid:2.0.0#UuidV4Trait"
+      description: "The provided regular expression ensures that the UUID is composed\
+        \ of five groups of characters separated by hyphens, in the form 8-4-4-4-12\
+        \ for a total of 36 characters (32 hexadecimal characters and 4 hyphens),\
+        \ optionally prefixed by \"urn:uuid:\" to make it an IRI."
+      pattern: "(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)|(^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)"
+    NameCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#NameCharacteristic"
+      description: String containing the name assigned to cryptographic material.
+    TypeEnumeration:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#TypeEnumeration"
+      description: Enumeration defining the allowed types of cryptographic material.
+      enum:
+      - symmetricKey
+      - privateKey
+      - privateKey
+      - certificate
+      - certificateSigningRequest
+      - secretMaterial
+    ValueCharacteristic:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#ValueCharacteristic"
+      description: String containing the textual representation the value of cryptographic
+        material in the format and encoding specified in the respective properties.
+    FormatEnumeration:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#FormatEnumeration"
+      description: Enumeration defining the allowed formats for cryptographic material.
+      enum:
+      - pkcs1
+      - pkcs8
+      - pkcs10
+      - raw
+      - subjectPublicKeyInfo
+      - x509v3
+    EncodingEnumeration:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#EncodingEnumeration"
+      description: Enumeration defining the allowed encodings for cryptographic material.
+      enum:
+      - base64
+      - hex
+      - rfc7468
+    CryptoMaterialEntity:
+      description: Entity containing information describing an instance of cryptographic
+        material.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#CryptoMaterialEntity"
+      type: object
+      properties:
+        name:
+          description: "Name assigned to the cryptographic material.\r\n\r\nThis property\
+            \ may be used to indicate the security service  provided by the cryptographic\
+            \ material and the usage or application it is associated with."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#name"
+          $ref: "#/components/schemas/NameCharacteristic"
+        type:
+          description: "Type of cryptographic material.\r\n\r\nProvided cryptographic\
+            \ material must have one of the following types:\r\n- symmetric key\r\n\
+            - private key\r\n- public key\r\n- digital certificate\r\n- certificate\
+            \ signing request\r\n- secret material"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#type"
+          $ref: "#/components/schemas/TypeEnumeration"
+        value:
+          description: Value of cryptographic material in the format and encoding
+            specified in the respective properties.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#value"
+          $ref: "#/components/schemas/ValueCharacteristic"
+        format:
+          description: "Format of cryptographic material.\r\n\r\nProvided cryptographic\
+            \ material must have one of the following formats:\r\n- PKCS#1\r\n- PKCS#8\r\
+            \n- PKCS#10\r\n- raw\r\n- subjectPublicKeyInfo\r\n- X.509v3"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#format"
+          $ref: "#/components/schemas/FormatEnumeration"
+        encoding:
+          description: "Encoding of cryptographic material.\r\n\r\nProvided cryptographic\
+            \ material must have one of the following encodings:\r\n- Base64\r\n-\
+            \ HEX\r\n- RFC 7468"
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#encoding"
+          $ref: "#/components/schemas/EncodingEnumeration"
+      required:
+      - name
+      - type
+      - value
+      - format
+      - encoding
+    CryptoMaterialsSet:
+      description: Set containing instances of cryptographic material.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#CryptoMaterialsSet"
+      type: array
+      items:
+        $ref: "#/components/schemas/CryptoMaterialEntity"
+      uniqueItems: true
+    CryptoMaterial:
+      description: "The crypto material model contains information on the set of cryptographic\
+        \ materials associated with a unique instance of a serialized part or just-in-sequence\
+        \ part, such as e.g, an Electronic Control Unit (ECU)."
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#CryptoMaterial"
+      properties:
+        globalAssetId:
+          description: The fully anonymous ID in the dataspace of the part.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.industry_core.common:1.0.0#globalAssetId"
+          $ref: "#/components/schemas/UuidV4Trait"
+        cryptoMaterials:
+          description: Set of one or more instances of cryptographic material associated
+            with a unique instance of a serialized part or just-in-sequence part.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.crypto_material:1.0.0#cryptoMaterials"
+          $ref: "#/components/schemas/CryptoMaterialsSet"
+      required:
+      - globalAssetId
+      - cryptoMaterials
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    CryptoMaterial:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PagingSchema"
+      description: The request was successful.
+  requestBodies:
+    CryptoMaterial:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CryptoMaterial"
+      required: true
