@@ -46,12 +46,15 @@ class Criterion(base.Criterion):
                                      "<urn:samm:<namespace>:<MAJOR.MINOR.PATCH>#>", line=1))
             return findings
 
-        path_parts = Path(model.file).parts
-        version_dirs = [p for p in path_parts if re.fullmatch(r"\d+\.\d+\.\d+", p)]
-        if version_dirs and version_dirs[0] != model.version:
+        if not re.fullmatch(r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)", model.version):
+            findings.append(Finding(self.ID, self.TITLE, "FAIL", model.file,
+                                     f"URN version '{model.version}' is not valid SemVer "
+                                     f"(leading zeros are not allowed in MAJOR/MINOR/PATCH)", line=1))
+        elif model.version not in Path(model.file).parts:
             findings.append(Finding(self.ID, self.TITLE, "FAIL", model.file,
                                      f"URN version '{model.version}' does not match the "
-                                     f"version folder '{version_dirs[0]}'", line=1))
+                                     f"model's version folder in its file path", line=1))
+
         if not findings:
             findings.append(Finding(self.ID, self.TITLE, "SUCCESS", model.file,
                                      f"URN version '{model.version}' is well-formed and matches its folder"))
