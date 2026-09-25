@@ -35,17 +35,17 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Check Changes
         id: changes
         uses: Ana06/get-changed-files@25f79e676e7ea1868813e21465014798211fad8c # v2.3.0
         with:
           format: csv
           filter: "*.ttl"
-      - uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: '25'
       - name: Generate artifacts for new models
         id: generate_artifacts
         run: |
@@ -54,14 +54,17 @@ jobs:
           for added_modified_file in "${added_modified_files[@]}"; do
             if [[ $added_modified_file == *".ttl" ]]; then
               echo "Generate model artifacts for ${added_modified_file}."
-              ./generate.sh ${added_modified_file}
-              git add $(dirname "${added_modified_file}")
-              artifacts_generated=true
+              if ./scripts/generate.sh "${added_modified_file}"; then
+                git add "$(dirname "${added_modified_file}")"
+                artifacts_generated=true
+              else
+                echo "::warning::Artefact generation failed for ${added_modified_file}, skipping"
+              fi
             fi
           done
-      
+
           echo "artifacts_generated=$artifacts_generated" >> $GITHUB_OUTPUT
-      
+
       - name: Commit new artifacts
         if: steps.generate_artifacts.outputs.artifacts_generated == 'true'
         run: |
