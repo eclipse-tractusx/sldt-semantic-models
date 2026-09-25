@@ -119,8 +119,11 @@ def _extract_single(body: str, pattern: str) -> str | None:
 
 
 def parse_element(name: str, type_: str, body: str, line_no: int) -> Element:
-    see_match = re.search(r"samm:see\s+([^;.]+)", body)
-    see_refs = re.findall(r"<([^>]+)>", see_match.group(1)) if see_match else []
+    see_refs = [
+        uri
+        for see_match in re.finditer(r"samm:see\s+((?:<[^>]+>\s*)+)", body)
+        for uri in re.findall(r"<([^>]+)>", see_match.group(1))
+    ]
 
     properties: list[str] = []
     props_match = re.search(r"samm:properties\s*\(([\s\S]*?)\)\s*;", body)

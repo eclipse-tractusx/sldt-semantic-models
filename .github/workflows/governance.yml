@@ -99,10 +99,12 @@ jobs:
           # Only used by criteria with POST_COMMENT = True, to post inline
           # PR review comments (see model-validation/github_comments.py).
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TTL_FILE: ${{ matrix.ttl_file }}
+          CHANGED_FILES: ${{ needs.detect-changed-models.outputs.all_files }}
         run: |
           python .github/scripts/ms2_check.py \
-            --file "${{ matrix.ttl_file }}" \
-            --changed-files '${{ needs.detect-changed-models.outputs.all_files }}'
+            --file "$TTL_FILE" \
+            --changed-files "$CHANGED_FILES"
 
   # Fixed-name summary of the matrix above - this is the one to configure
   # as a required status check in branch protection. Always runs (even
@@ -117,8 +119,14 @@ jobs:
     steps:
       - name: Evaluate matrix result
         run: |
+          detect_result="${{ needs.detect-changed-models.result }}"
           result="${{ needs.ms2-criteria-check.result }}"
+          echo "detect-changed-models result: $detect_result"
           echo "ms2-criteria-check matrix result: $result"
+          if [ "$detect_result" = "failure" ] || [ "$detect_result" = "cancelled" ]; then
+            echo "Change detection failed, so MS2 criteria could not be evaluated."
+            exit 1
+          fi
           if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
             echo "At least one model failed its MS2 criteria check."
             exit 1

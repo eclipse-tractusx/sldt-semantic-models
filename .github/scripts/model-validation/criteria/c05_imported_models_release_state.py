@@ -41,7 +41,7 @@ def _read_metadata(folder: str, version: str) -> dict | None:
     if not meta_path.exists():
         return None
     with open(meta_path) as f:
-        return json.load(f)
+        return json.load(f)  # raises json.JSONDecodeError on malformed JSON; caller handles it
 
 class Criterion(base.Criterion):
     ID = "MS2-05"
@@ -55,7 +55,13 @@ class Criterion(base.Criterion):
             folder, version = prefix_info["folder"], prefix_info["version"]
             if folder == model.namespace and version == model.version:
                 continue  # this is the model's own namespace, see MS2-03
-            meta = _read_metadata(folder, version)
+            try:
+                meta = _read_metadata(folder, version)
+            except json.JSONDecodeError as e:
+                findings.append(Finding(self.ID, self.TITLE, "FAIL", model.file,
+                                         f"metadata.json for imported model {folder}:{version} "
+                                         f"is not valid JSON: {e}", line=1))
+                continue
             if not meta:
                 findings.append(Finding(self.ID, self.TITLE, "FAIL", model.file,
                                          f"metadata.json not found for imported model {folder}:{version}", line=1))

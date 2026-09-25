@@ -57,7 +57,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 DEFAULT_CONFIG_RELPATH = ".github/scripts/config.json"
-DEFAULT_SAMM_CLI_VERSION = "2.12.0"
+DEFAULT_SAMM_CLI_VERSION = "2.16.0"
 
 
 @dataclass(frozen=True)
