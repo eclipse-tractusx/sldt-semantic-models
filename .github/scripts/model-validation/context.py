@@ -226,16 +226,20 @@ class Context:
         # simply doesn't exist any more - parse_model() would just raise
         # FileNotFoundError on it. Deleting a model isn't an MS2 violation
         # to begin with, so it shouldn't get a check (or a crash) at all.
+        #
+        # A failed git diff (e.g. base_branch was never fetched) is *not*
+        # swallowed into an empty list here: that would be indistinguishable
+        # from a genuine "no files changed", and would make detect-changed-
+        # models silently skip the whole MS2 matrix instead of failing the
+        # job - propagate the error so it does fail.
         try:
             result = subprocess.run(
                 ["git", "diff", "--name-only", "--diff-filter=d", f"{self.base_branch}...HEAD"],
                 capture_output=True, text=True, check=True,
             )
         except subprocess.CalledProcessError as e:
-            # stderr, not stdout: --list-changed-files relies on stdout being
-            # clean JSON for the workflow to parse.
             print(f"Error running git diff: {e}", file=sys.stderr)
-            return []
+            raise
         return result.stdout.splitlines()
 
     def get_changed_ttl_files(self) -> list[str]:
