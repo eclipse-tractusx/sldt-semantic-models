@@ -41,7 +41,7 @@
 :BusinessPartnerCertificate a samm:Aspect ;
    samm:preferredName "Business Partner certificate"@en ;
    samm:description "A business partner certifcate describes a certificate (eg ISO9001, IATF-16949) via a certifcate document  of a Catena-X business partner"@en ;
-   samm:properties ( :type :registrationNumber :validFrom :validUntil [ samm:property :issuer; samm:optional true ] :trustLevel [ samm:property :validator; samm:optional true ] [ samm:property :uploader; samm:optional true ] :document :certificateId :revision :certifiedLocations ) ;
+   samm:properties ( :type :registrationNumber :validFrom :validUntil [ samm:property :issuer; samm:optional true ] :trustLevel [ samm:property :validator; samm:optional true ] [ samm:property :uploader; samm:optional true ] :document :certificateId :revision :certifiedLocations :iatfCertificateNumber ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -112,6 +112,12 @@
    samm:description "All locations explicitly stated on the certificate, each with full business partner context."@en ;
    samm:characteristic :CertifiedLocationsCharacteristic .
 
+:iatfCertificateNumber a samm:Property ;
+   samm:preferredName "IATF Certificate Number"@en ;
+   samm:description "Certificate number of the associated IATF 16949 certificate. Mandatory for IATF certificates and not applicable to other certificate types."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "123456 IATF16" .
+
 :CertificateTypeCharacteristic a samm-c:SingleEntity ;
    samm:preferredName "Certificate Type Characteristic"@en ;
    samm:description "Describes the characteristics of the Certificate Type."@en ;
@@ -176,12 +182,12 @@
 :DocumentEntity a samm:Entity ;
    samm:preferredName "Document Entity"@en ;
    samm:description "Encapsulation of all document relevant attributes."@en ;
-   samm:properties ( :createdAt :documentId [ samm:property :contentType; samm:optional true ] [ samm:property :contentBase64; samm:optional true ] :language ) .
+   samm:properties ( :createdAt :documentId :contentType :language ) .
 
 :CertifiedLocationsEntity a samm:Entity ;
    samm:preferredName "Certified Locations Entity"@en ;
    samm:description "Encapsulation of all defined attributes for certified locations."@en ;
-   samm:properties ( :bpnl :bpna [ samm:property :bpns; samm:optional true ] :locationRole [ samm:property :areaOfApplication; samm:optional true ] ) .
+   samm:properties ( :bpnl :bpna [ samm:property :bpns; samm:optional true ] :certificateHolder [ samm:property :areaOfApplication; samm:optional true ] ) .
 
 :certificateType a samm:Property ;
    samm:preferredName "Certificate type"@en ;
@@ -229,19 +235,13 @@
    samm:preferredName "document identifier"@en ;
    samm:description "A unique UUID of the attached binary representation (PDF) of the certificate, generated each time a document is added or updated."@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
-   samm:exampleValue "urn:uuid:9f6d2c1e-0000-0000-0000-000000000001" .
+   samm:exampleValue "9f6d2c1e-0000-0000-0000-000000000001" .
 
 :contentType a samm:Property ;
    samm:preferredName "Content Type"@en ;
    samm:description "The content type of the document."@en ;
    samm:characteristic samm-c:MimeType ;
    samm:exampleValue "application/pdf" .
-
-:contentBase64 a samm:Property ;
-   samm:preferredName "Content Base 64"@en ;
-   samm:description "The data is encoded using the Base64 encoding scheme, which converts binary data into a string of ASCII characters. "@en ;
-   samm:characteristic :ContentBase64Characteristic ;
-   samm:exampleValue "VGhpcyBpcyBhIHRlc3QgcGRmIGZpbGUgZm9yIGNlcnRpZmljYXRlcw=="^^xsd:base64Binary .
 
 :language a samm:Property ;
    samm:preferredName "Document Language"@en ;
@@ -267,27 +267,15 @@
    samm:characteristic ext-number:BpnsTrait ;
    samm:exampleValue "BPNS0000000ABS01" .
 
-:locationRole a samm:Property ;
-   samm:preferredName "Location Role"@en ;
-   samm:description "Role as stated on the certificate."@en ;
-   samm:characteristic :LocationRoleValues ;
-   samm:exampleValue "Certificate Holder" .
+:certificateHolder a samm:Property ;
+   samm:preferredName "Certificate Holder"@en ;
+   samm:description "Boolean flag identifying the certificate-holding location. Exactly one location per certificate may be marked as true; all additional or remote locations covered by the same certificate shall be marked as false."@en ;
+   samm:characteristic samm-c:Boolean ;
+   samm:exampleValue true .
 
 :areaOfApplication a samm:Property ;
    samm:preferredName "Area of application"@en ;
    samm:description "Details on which areas / application types a certificate is valid for a company and/or site."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Development, Marketing und Sales and also Procurement for interior components" .
-
-:ContentBase64Characteristic a samm:Characteristic ;
-   samm:preferredName "Content Base 64 Characteristic"@en ;
-   samm:description "Describes the document's encoded value in a Content Base 64 String. "@en ;
-   samm:dataType xsd:base64Binary.
-
-:LocationRoleValues a samm-c:Enumeration ;
-   samm:preferredName "Location Role Values"@en ;
-   samm:description "Possible values of the attribite Location Role. "@en ;
-   samm:dataType xsd:string ;
-   samm-c:values ( "Certificate Holder" "Certified Location" ) .
-
 
