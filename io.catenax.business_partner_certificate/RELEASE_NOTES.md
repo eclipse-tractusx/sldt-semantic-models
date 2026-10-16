@@ -8,11 +8,14 @@ All notable changes to this model will be documented in this file.
 - enclosedSites and enclosedSiteBpn - Replaced by the new certifiedLocations structure.
 - areaOfApplication (root)
 - contentBase64
+- validator
+- uploader
+- createdAt
 
 ### Added
 - certifiedLocations
 - certificateId
-- iatfCertificateNumber
+- specificProperties -> iatfCertificateNumber
 - revision
 - certificateHolder
 - language (document-level)
@@ -22,7 +25,6 @@ All notable changes to this model will be documented in this file.
 - documentId - Renamed to follow lowerCamelCase in accordance with Tractus-X naming conventions.
 - DocumentEntity - Now supports multiple documents (list instead of single instance)
 - certificateVersion → certificateTypeVersion - Renamed for improved clarity and consistency.
-- validatorBpn → validatorBpnl
 - issuerBpn → issuerBpnl
 
 ## [3.1.0] 24.03.2025
