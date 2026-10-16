@@ -4,14 +4,14 @@
 # Copyright (c) 2026 Cofinity-X GmbH
 # Copyright (c) 2026 Data Space Solutions GmbH
 # Copyright (c) 2026 DCCS GmbH
-# Copyright (c) 2026 Mercedes Benz AG
+# Copyright (c) 2024 Mercedes Benz AG
 # Copyright (c) 2026 Robert Bosch Manufacturing Solutions GmbH
 # Copyright (c) 2026 SAP SE
 # Copyright (c) 2026 sovity GmbH
 # Copyright (c) 2026 T-Systems International GmbH
 # Copyright (c) 2026 Volkswagen AG
 # Copyright (c) 2026 ZF Friedrichshafen AG
-# Copyright (c) 2026 Contributors to the Eclipse Foundation
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -41,7 +41,7 @@
 :BusinessPartnerCertificate a samm:Aspect ;
    samm:preferredName "Business Partner certificate"@en ;
    samm:description "A business partner certifcate describes a certificate (eg ISO9001, IATF-16949) via a certifcate document  of a Catena-X business partner"@en ;
-   samm:properties ( :type :registrationNumber :validFrom :validUntil [ samm:property :issuer; samm:optional true ] :trustLevel [ samm:property :validator; samm:optional true ] [ samm:property :uploader; samm:optional true ] :document :certificateId :revision :certifiedLocations [ samm:property :iatfCertificateNumber; samm:optional true ] ) ;
+   samm:properties ( :type :registrationNumber :validFrom :validUntil [ samm:property :issuer; samm:optional true ] :trustLevel :document :certificateId :revision :certifiedLocations [ samm:property :specificProperties; samm:optional true ] ) ;
    samm:operations ( ) ;
    samm:events ( ) .
 
@@ -79,17 +79,6 @@
    samm:characteristic :TrustLevelValue ;
    samm:exampleValue "high" .
 
-:validator a samm:Property ;
-   samm:preferredName "Validator"@en ;
-   samm:description "The Business Partner Number (BPNL) of the data service provider who validates the given certificate."@en ;
-   samm:characteristic :TrustValidatorCharacteristic .
-
-:uploader a samm:Property ;
-   samm:preferredName "Certifcate uploader"@en ;
-   samm:description "The Business Partner Number (BPNL) of the business partner who originally provided the certifcate data or document."@en ;
-   samm:characteristic ext-number:BpnlTrait ;
-   samm:exampleValue "BPNL00000003AYRE" .
-
 :document a samm:Property ;
    samm:preferredName "Document"@en ;
    samm:description "The content and ID of the document."@en ;
@@ -98,8 +87,8 @@
 :certificateId a samm:Property ;
    samm:preferredName "Certificate Id"@en ;
    samm:description "Logical identity key of the issued certificate (per issuance)."@en ;
-   samm:characteristic :CertificateIdCharacteristic ;
-   samm:exampleValue "052395-UM15-2024-001" .
+   samm:characteristic ext-uuid:UuidV4Trait ;
+   samm:exampleValue "5abcd2c1e-0000-0000-0000-000000000001" .
 
 :revision a samm:Property ;
    samm:preferredName "Revision Counter"@en ;
@@ -112,11 +101,10 @@
    samm:description "All locations explicitly stated on the certificate, each with full business partner context."@en ;
    samm:characteristic :CertifiedLocationsCharacteristic .
 
-:iatfCertificateNumber a samm:Property ;
-   samm:preferredName "IATF Certificate Number"@en ;
-   samm:description "Certificate number of the associated IATF 16949 certificate. Mandatory for IATF certificates and not applicable to other certificate types."@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "123456 IATF16" .
+:specificProperties a samm:Property ;
+   samm:preferredName "Specific Properties"@en ;
+   samm:description "Contains attributes that are valid only for IATF 16949 certificates. The information is not applicable to other certificate types and shall be provided only when the certificate type is \"iatf16949\""@en ;
+   samm:characteristic :SpecificPropertiesCharacteristics .
 
 :CertificateTypeCharacteristic a samm-c:SingleEntity ;
    samm:preferredName "Certificate Type Characteristic"@en ;
@@ -139,20 +127,10 @@
    samm:dataType xsd:string ;
    samm-c:values ( "low" "medium" "high" ) .
 
-:TrustValidatorCharacteristic a samm:Characteristic ;
-   samm:preferredName "Validiator caracteristic"@en ;
-   samm:description "The Business Partner Number (BPNL) of the data service provider who validated the given certificate"@en ;
-   samm:dataType :TrustValidatorEntity .
-
 :DocumentCharacteristic a samm-c:List ;
    samm:preferredName "Document Characteristic"@en ;
    samm:description "Describes the characteristics of the attribute document."@en ;
    samm:dataType :DocumentEntity .
-
-:CertificateIdCharacteristic a samm:Characteristic ;
-   samm:preferredName "Certificate Id Characteristic"@en ;
-   samm:description "Logical Identity of an issued certificate."@en ;
-   samm:dataType xsd:string .
 
 :RevisionCharacteristic a samm:Characteristic ;
    samm:preferredName "Revision Counter Characteristic"@en ;
@@ -164,6 +142,11 @@
    samm:description "All locations explicitly stated on the certificate, each with full business partner context."@en ;
    samm:dataType :CertifiedLocationsEntity .
 
+:SpecificPropertiesCharacteristics a samm:Characteristic ;
+   samm:preferredName "Specific Properties Characteristics"@en ;
+   samm:description "Contains attributes that are valid only for IATF 16949 certificates. "@en ;
+   samm:dataType :SpecificPropertiesEntity .
+
 :CertificateTypeEntity a samm:Entity ;
    samm:preferredName "Entity of a certificate type"@en ;
    samm:description "Detailed entity of the certificate like IS09001:2015, IATF 16949:2015 or other, valid types are registered at BPN metadatacontroller"@en ;
@@ -174,20 +157,20 @@
    samm:description "The name and the BPNL of the Issuer. "@en ;
    samm:properties ( :issuerName [ samm:property :issuerBpnl; samm:optional true ] ) .
 
-:TrustValidatorEntity a samm:Entity ;
-   samm:preferredName "Trust validator entity"@en ;
-   samm:description "The Business Partner Number (BPNL) of the data service provider who validated the given certificate."@en ;
-   samm:properties ( [ samm:property :validatorName; samm:optional true ] [ samm:property :validatorBpnl; samm:optional true ] ) .
-
 :DocumentEntity a samm:Entity ;
    samm:preferredName "Document Entity"@en ;
    samm:description "Encapsulation of all document relevant attributes."@en ;
-   samm:properties ( :createdAt :documentId :contentType :language ) .
+   samm:properties ( :documentId :contentType :language ) .
 
 :CertifiedLocationsEntity a samm:Entity ;
    samm:preferredName "Certified Locations Entity"@en ;
    samm:description "Encapsulation of all defined attributes for certified locations."@en ;
    samm:properties ( :bpnl :bpna [ samm:property :bpns; samm:optional true ] :certificateHolder [ samm:property :areaOfApplication; samm:optional true ] ) .
+
+:SpecificPropertiesEntity a samm:Entity ;
+   samm:preferredName "Specific Properties Entity"@en ;
+   samm:description "Contains attribute that are valid only for IATF 16949 certificates. "@en ;
+   samm:properties ( :iatfCertificateNumber ) .
 
 :certificateType a samm:Property ;
    samm:preferredName "Certificate type"@en ;
@@ -212,24 +195,6 @@
    samm:description "The Business Partner Number (BPNL) of the Issuer."@en ;
    samm:characteristic ext-number:BpnlTrait ;
    samm:exampleValue "BPNL133631123120" .
-
-:validatorName a samm:Property ;
-   samm:preferredName "Validator name"@en ;
-   samm:description "The optional name of the data service provider who validated the given certificate"@en ;
-   samm:characteristic samm-c:Text ;
-   samm:exampleValue "Data service provider X" .
-
-:validatorBpnl a samm:Property ;
-   samm:preferredName "Certifcate validator BpnL"@en ;
-   samm:description "The Business Partner Number (BPNL) of the data service provider who validated the given certificate"@en ;
-   samm:characteristic ext-number:BpnlTrait ;
-   samm:exampleValue "BPNL00000007YREZ" .
-
-:createdAt a samm:Property ;
-   samm:preferredName "Creation timestamp"@en ;
-   samm:description "The creation date of the document."@en ;
-   samm:characteristic samm-c:Timestamp ;
-   samm:exampleValue "2024-08-23T13:19:00.280+02:00"^^xsd:dateTime .
 
 :documentId a samm:Property ;
    samm:preferredName "document identifier"@en ;
@@ -278,4 +243,10 @@
    samm:description "Details on which areas / application types a certificate is valid for a company and/or site."@en ;
    samm:characteristic samm-c:Text ;
    samm:exampleValue "Development, Marketing und Sales and also Procurement for interior components" .
+
+:iatfCertificateNumber a samm:Property ;
+   samm:preferredName "IATF Certificate Number"@en ;
+   samm:description "Certificate number of the associated IATF 16949 certificate. Mandatory for IATF certificates and not applicable to other certificate types."@en ;
+   samm:characteristic samm-c:Text ;
+   samm:exampleValue "123456 IATF16" .
 
