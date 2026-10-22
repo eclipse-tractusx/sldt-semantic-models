@@ -2,7 +2,7 @@
 
 All notable changes to this model will be documented in this file.
 
-## [3.0.0] 2026-10-22
+## [3.0.0] 26.09
 
 ### Added
 - added optional property _attachmentUrl_ (xsd:anyURI) to the measurement object to reference related artifacts, e.g. images, instead of embedding links in the description text
