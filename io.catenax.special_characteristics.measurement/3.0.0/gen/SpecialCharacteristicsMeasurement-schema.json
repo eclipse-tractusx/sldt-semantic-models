@@ -1,0 +1,119 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#SpecialCharacteristicsMeasurement",
+  "description" : "Special Characteristics are measureable and these measurements are of interest for a consumer who defined these characteristics. The proposal is a data model \"result\" which represents a measurement related to a specific measurement and product. A measurement result is identified by the identification of a characteristic and the product. Identifying part-instance information (local identifiers, customer part id, revision index) is carried by the digital twin and the Industry Core submodels and is therefore not duplicated in this aspect model.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "AnyBpnCharacteristic" : {
+        "type" : "string",
+        "description" : "Generic Business Partner Number (BPN) which allows the usage of BPNA, BPNL as well BPNS.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.shared.business_partner_number:3.0.0#AnyBpnCharacteristic",
+        "pattern" : "^BPN[LSA]{1}[a-zA-Z0-9]{12}$"
+      },
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "MeasurementTypeEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#MeasurementTypeEnumeration",
+        "description" : "Enumeration of the supported special characteristic measurement types: simpleMeasurement, functionalMeasurement and qualitativeMeasurement.",
+        "enum" : [ "simpleMeasurement", "functionalMeasurement", "qualitativeMeasurement" ]
+      },
+      "Timestamp" : {
+        "type" : "string",
+        "pattern" : "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Timestamp",
+        "description" : "Describes a Property which contains the date and time with an optional timezone."
+      },
+      "ValueCharacteristic" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#ValueCharacteristic",
+        "description" : "The datatype of the measurement value, currently defined as string (open question with BMW). "
+      },
+      "UnitReference" : {
+        "type" : "string",
+        "pattern" : "[a-zA-Z]*:[a-zA-Z]+",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#UnitReference",
+        "description" : "Describes a Property containing a reference to one of the units in the Unit Catalog."
+      },
+      "AttachmentUrlCharacteristic" : {
+        "type" : "string",
+        "format" : "uri",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#AttachmentUrlCharacteristic",
+        "description" : "A URI referencing an external artifact related to the measurement."
+      },
+      "MeasurementObject" : {
+        "description" : "This Entity represents a generic Measurement Object",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#MeasurementObject",
+        "type" : "object",
+        "properties" : {
+          "identifier" : {
+            "description" : "Identifier of the individual measurement object. ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#identifier",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "measurementTimestamp" : {
+            "description" : "Timestamp when the measurement was taken",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#measurementTimestamp",
+            "$ref" : "#/components/schemas/Timestamp"
+          },
+          "value" : {
+            "description" : "The actual value of the measurement for special characteristics. NOTE: data type is an open question to be confirmed with BMW (currently xsd:string; examples use numeric values).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#value",
+            "$ref" : "#/components/schemas/ValueCharacteristic"
+          },
+          "unit" : {
+            "description" : "The unit of the measurement object, expressed via the SAMM / UNECE common unit catalog. ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#unit",
+            "$ref" : "#/components/schemas/UnitReference"
+          },
+          "description" : {
+            "description" : "Detailed description of the measurement object. ",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#description",
+            "$ref" : "#/components/schemas/Text"
+          },
+          "attachmentUrl" : {
+            "description" : "Optional reference (URI) to a related artifact, e.g. an image documenting the measurement. Replaces the previous practice of embedding image links inside the description text.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#attachmentUrl",
+            "$ref" : "#/components/schemas/AttachmentUrlCharacteristic"
+          }
+        },
+        "required" : [ "identifier", "measurementTimestamp", "value", "description" ]
+      },
+      "ResultList" : {
+        "description" : "List of result objects",
+        "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#ResultList",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/MeasurementObject"
+        }
+      }
+    }
+  },
+  "properties" : {
+    "manufacturerBpn" : {
+      "description" : "Business Partner Number (BPNL, BPNS or BPNA) of the manufacturer of the related product. Kept deliberately, although also available via the digital twin, to enable cross-referencing.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#manufacturerBpn",
+      "$ref" : "#/components/schemas/AnyBpnCharacteristic"
+    },
+    "characteristicId" : {
+      "description" : "Identifier of the special characteristic in relation to a specified part.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#characteristicId",
+      "$ref" : "#/components/schemas/Text"
+    },
+    "measurementType" : {
+      "description" : "The type of the measurement. Constrained to a fixed set of supported measurement types.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#measurementType",
+      "$ref" : "#/components/schemas/MeasurementTypeEnumeration"
+    },
+    "results" : {
+      "description" : "List of measurement objects regarding special characteristic of a specific part.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#results",
+      "$ref" : "#/components/schemas/ResultList"
+    }
+  },
+  "required" : [ "manufacturerBpn", "characteristicId", "measurementType", "results" ]
+}
