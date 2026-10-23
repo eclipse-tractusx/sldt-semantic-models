@@ -1,0 +1,206 @@
+---
+openapi: 3.0.3
+info:
+  title: AttestationOfConformance
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#AttestationOfConformance"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/attestation-of-conformance:
+    get:
+      tags:
+      - AttestationOfConformance
+      operationId: getAttestationOfConformance
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: "#/components/responses/AttestationOfConformance"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        items:
+          type: array
+          $ref: "#/components/schemas/AttestationOfConformance"
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+    Text:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text"
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    Timestamp:
+      type: string
+      pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
+        .[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Timestamp"
+      description: Describes a Property which contains the date and time with an optional
+        timezone.
+    AttestationOfConformanceEntity:
+      description: Entity to group all attestation of conformance properties.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#AttestationOfConformanceEntity"
+      type: object
+      properties:
+        attestationType:
+          description: "The specific type of the attestation, which defines its nature\
+            \ and the level of trust or authority it conveys."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#attestationType"
+          $ref: "#/components/schemas/Text"
+        standardName:
+          description: The specific cross-sectoral standards or product or sector
+            rules (PCRs) on which the attestation of conformance is based.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#standardName"
+          $ref: "#/components/schemas/Text"
+        attestationStandard:
+          description: Reference standard or rulebook which serves as the basis for
+            the attestation of conformance.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#attestationStandard"
+          $ref: "#/components/schemas/Text"
+        attestationOfConformanceId:
+          description: "A unique identifier assigned to the attestation document for\
+            \ tracking, referencing, and verification purposes."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#attestationOfConformanceId"
+          $ref: "#/components/schemas/Text"
+        attestationOfConformanceLink:
+          description: A URL or web link directing to the official digital document
+            or registry entry to verify the authenticity and status of the attestation.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#attestationOfConformanceLink"
+          $ref: "#/components/schemas/Text"
+        providerName:
+          description: The official legal name of the organization or body that issued
+            the attestation.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#providerName"
+          $ref: "#/components/schemas/Text"
+        providerId:
+          description: "A unique identifier for the entity issuing the declaration,\
+            \ such as a Business Partner Number (BPN) or other official registration\
+            \ number, issued by the appointing organization or accreditation institute."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#providerId"
+          $ref: "#/components/schemas/Text"
+        completedAt:
+          description: Time stamp for when the attestation of conformity was issued
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#completedAt"
+          $ref: "#/components/schemas/Timestamp"
+      required:
+      - attestationType
+      - standardName
+      - attestationStandard
+      - attestationOfConformanceId
+      - providerName
+    AttestationOfConformanceCollection:
+      description: Collection of Attestation of Conformance properties for a given
+        Asset.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#AttestationOfConformanceCollection"
+      type: array
+      items:
+        $ref: "#/components/schemas/AttestationOfConformanceEntity"
+    AttestationOfConformance:
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#AttestationOfConformance"
+      properties:
+        attestationOfConformance:
+          description: |-
+            Connects Asset with AttestationOfConformance to link it with AttestationOfConformanceCollection, establishing the semantic relationship and context between both entities.
+            Property to collect all attestation of conformance properties.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.shared.attestation_of_conformance:1.0.0#attestationOfConformance"
+          $ref: "#/components/schemas/AttestationOfConformanceCollection"
+      required:
+      - attestationOfConformance
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    AttestationOfConformance:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PagingSchema"
+      description: The request was successful.
+  requestBodies:
+    AttestationOfConformance:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AttestationOfConformance"
+      required: true
