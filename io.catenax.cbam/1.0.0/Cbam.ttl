@@ -304,6 +304,12 @@
    samm:characteristic :FreeNumberCharacteristic ;
    samm:exampleValue "60.0"^^xsd:float .
 
+:country a samm:Property ;
+   samm:preferredName "Geography Country"@en ;
+   samm:description "The location of factory gate(s) refers to the last manufacturing step. It is the location where the product is produced. State the country as country code according to ISO 3166-1 alpha-2 (example: US:=United States, FR:=-France); https://www.iso.org/glossa-ry-for-iso-3166.html."@en ;
+   samm:characteristic :GeographyCountryTrait ;
+   samm:exampleValue "DE" .
+
 :KeyValueSingleCharacteristic a samm:Characteristic ;
    samm:preferredName "key value single characteristic"@en ;
    samm:dataType :KeyValueEntity .
@@ -352,7 +358,7 @@
 
 :AddressEntity a samm:Entity ;
    samm:preferredName "address entity"@en ;
-   samm:properties ( [ samm:property :city; samm:optional true ] [ samm:property :street; samm:optional true ] [ samm:property ext-codes:country; samm:optional true ] ) .
+   samm:properties ( [ samm:property :city; samm:optional true ] [ samm:property :street; samm:optional true ] [ samm:property :country; samm:optional true ] ) .
 
 :InstallationIdentificationEntity a samm:Entity ;
    samm:preferredName "installation identification entity"@en ;
@@ -478,7 +484,7 @@
 
 :InstallationAddressEntity a samm:Entity ;
    samm:preferredName "installation address entity"@en ;
-   samm:properties ( ext-codes:country :city [ samm:property :longitude; samm:optional true ] [ samm:property :latitude; samm:optional true ] [ samm:property :typeOfCoordinates; samm:optional true ] [ samm:property :plotOrParcelNumber; samm:optional true ] [ samm:property :unLoCode; samm:optional true ] ) .
+   samm:properties ( :country :city [ samm:property :longitude; samm:optional true ] [ samm:property :latitude; samm:optional true ] [ samm:property :typeOfCoordinates; samm:optional true ] [ samm:property :plotOrParcelNumber; samm:optional true ] [ samm:property :unLoCode; samm:optional true ] ) .
 
 :ProductionMethodEntity a samm:Entity ;
    samm:preferredName "production method entity"@en ;
@@ -498,7 +504,7 @@
 
 :CarbonPricePaidEntity a samm:Entity ;
    samm:preferredName "carbon price paid entity"@en ;
-   samm:properties ( [ samm:property :typeOfInstrument; samm:optional true ] :independentPersonId [ samm:property :descriptionAndIndicationOfLegalAct; samm:optional true ] [ samm:property :amountOfCarbonPricePaid; samm:optional true ] [ samm:property ext-codes:currency; samm:optional true ] [ samm:property ext-codes:country; samm:optional true ] ) .
+   samm:properties ( [ samm:property :typeOfInstrument; samm:optional true ] :independentPersonId [ samm:property :descriptionAndIndicationOfLegalAct; samm:optional true ] [ samm:property :amountOfCarbonPricePaid; samm:optional true ] [ samm:property ext-codes:currency; samm:optional true ] [ samm:property :country; samm:optional true ] ) .
 
 :installationCbamId a samm:Property ;
    samm:preferredName "installation CBAM identifier"@en ;
@@ -510,13 +516,13 @@
    samm:preferredName "longitude"@en ;
    samm:description "The longitude where the installation is located."@en ;
    samm:characteristic :LongAndLatitudeTrait ;
-   samm:exampleValue "77.2197"^^xsd:decimal .
+   samm:exampleValue "77.2197" .
 
 :latitude a samm:Property ;
    samm:preferredName "latitude"@en ;
    samm:description "The latitude where the installation is located."@en ;
    samm:characteristic :LongAndLatitudeTrait ;
-   samm:exampleValue "28.6139"^^xsd:decimal .
+   samm:exampleValue "28.6139" .
 
 :typeOfCoordinates a samm:Property ;
    samm:preferredName "type of coordinates"@en ;
@@ -641,8 +647,8 @@
    samm:exampleValue "12000.00"^^xsd:float .
 
 :LongAndLatitudeTrait a samm-c:Trait ;
-   samm-c:baseCharacteristic :FreeDecimalCharacteristic ;
-   samm-c:constraint :FixPointConstraint .
+   samm-c:baseCharacteristic :FreeStringCharacteristic ;
+   samm-c:constraint :MaxLength15Constraint .
 
 :FreeTextTrait15 a samm-c:Trait ;
    samm-c:baseCharacteristic :FreeStringCharacteristic ;
@@ -651,6 +657,12 @@
 :FreeTextTrait512 a samm-c:Trait ;
    samm-c:baseCharacteristic :FreeStringCharacteristic ;
    samm-c:constraint :MaxLength512Constraint .
+
+:GeographyCountryTrait a samm-c:Trait ;
+   samm:preferredName "Geography Country Trait"@en ;
+   samm:description "Trait for defining a geography country in context of a product carbon footprint."@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :GeographyCountryConstraint .
 
 :FixPointConstraint a samm-c:FixedPointConstraint ;
    samm:preferredName "This constraint defines the length of valid longitude and latitude values."@en ;
@@ -666,6 +678,11 @@
    samm:preferredName "max length constraint"@en ;
    samm:description "Limits the length of a string to 512 chars"@en ;
    samm-c:maxValue "512"^^xsd:nonNegativeInteger .
+
+:GeographyCountryConstraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "Country Constraint"@en ;
+   samm:description "Constraint for defining a geography country conform to ISO 3166CC as specified in the Catena-X PCF Rulebook in accordance with the technical specifications for PCF Data Exchange (Version 2.0.0) from the WBCSD (World Business Council for Sustainable Development)/ PACT initiative."@en ;
+   samm:value "([A-Z]{2})" .
 
 :GoodCharaceristic a samm:Characteristic ;
    samm:preferredName "good characteristic"@en ;
