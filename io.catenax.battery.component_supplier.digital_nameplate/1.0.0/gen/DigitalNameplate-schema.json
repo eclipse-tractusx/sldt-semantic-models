@@ -1,0 +1,580 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema",
+  "x-samm-aspect-model-urn" : "urn:samm:io.catenax.batterypass.component_supplier.digital_nameplate:1.0.0#DigitalNameplate",
+  "description" : "Contains the nameplate information attached to the product within the Battery Product Passport.",
+  "type" : "object",
+  "components" : {
+    "schemas" : {
+      "Uri" : {
+        "type" : "string",
+        "format" : "uri",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.digital_nameplate:3.0.0#Uri"
+      },
+      "MultiLanguageTexts" : {
+        "description" : "A set of language-text items.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#MultiLanguageTexts",
+        "type" : "array",
+        "items" : {
+          "type" : "object",
+          "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#MultiLanguageText",
+          "description" : "Describes a Property which contains plain text in multiple languages. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+        },
+        "uniqueItems" : true
+      },
+      "RoleOfContactPersonCharacteristic" : {
+        "type" : "string"
+      },
+      "LanguageSetTrait" : {
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#LanguageSetTrait",
+        "type" : "array",
+        "items" : {
+          "type" : "string",
+          "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Locale",
+          "description" : "Describes a Property containing a locale according to IETF BCP 47, for example \"de-DE\"."
+        },
+        "uniqueItems" : true,
+        "minItems" : 1
+      },
+      "Text" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text",
+        "description" : "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."
+      },
+      "PhoneEntity" : {
+        "description" : "Phone number including type.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#PhoneEntity",
+        "type" : "object",
+        "properties" : {
+          "TelephoneNumber" : {
+            "description" : "Complete telephone number to be called to reach a business partner.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#telephoneNumber",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "TypeOfTelephone" : {
+            "description" : "Characterization of a telephone according to its location or usage.\nenumeration: 0173-1#07-AAS754#001 (office), 0173-1#07-AAS755#001 (office mobile), 0173-1#07-AAS756#001 (secretary), 0173-1#07-AAS757#001 (substitute), 0173-1#07-AAS758#001 (home), 0173-1#07-AAS759#001 (private mobile).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#typeOfTelephone",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          },
+          "AvailableTime" : {
+            "description" : "Specification of the available time window.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#availableTime",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          }
+        },
+        "required" : [ "TelephoneNumber" ]
+      },
+      "PhoneCharacteristic" : {
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#PhoneCharacteristic",
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/PhoneEntity"
+        } ]
+      },
+      "FaxEntity" : {
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#FaxEntity",
+        "type" : "object",
+        "properties" : {
+          "FaxNumber" : {
+            "description" : "Complete telephone number to be called to reach a business partner's fax machine.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#faxNumber",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "TypeOfFaxNumber" : {
+            "description" : "Characterization of the fax according its location or usage\nenumeration: 0173-1#07-AAS754#001 (office), 0173-1#07-AAS756#001 (secretary), 0173-1#07-AAS758#001 (home).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#typeOfFaxNumber",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          }
+        },
+        "required" : [ "FaxNumber" ]
+      },
+      "FaxCharacteristic" : {
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#FaxCharacteristic",
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/FaxEntity"
+        } ]
+      },
+      "EmailEntity" : {
+        "description" : "E-mail address and encryption method.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#EmailEntity",
+        "type" : "object",
+        "properties" : {
+          "EmailAddress" : {
+            "description" : "Electronic mail address of a business partner.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#emailAddress",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          },
+          "PublicKey" : {
+            "description" : "Public part of an unsymmetrical key pair to sign or encrypt text or messages.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#publicKey",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "TypeOfEmailAddress" : {
+            "description" : "Characterization of an e-mail address according to its location or usage\nenumeration: 0173-1#07-AAS754#001 (office), 0173-1#07-AAS756#001 (secretary), 0173-1#07-AAS757#001 (substitute), 0173-1#07-AAS758#001 (home).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#typeOfEmailAddress",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          },
+          "TypeOfPublicKey" : {
+            "description" : "Characterization of a public key according to its encryption process.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#typeOfPublicKey",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          }
+        },
+        "required" : [ "EmailAddress" ]
+      },
+      "EmailCharacteristic" : {
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#EmailCharacteristic",
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EmailEntity"
+        } ]
+      },
+      "IpCommunicationChannelEntity" : {
+        "description" : "IP-based communication channels, e.g. chat or video call.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#IpCommunicationChannelEntity",
+        "type" : "object",
+        "properties" : {
+          "AddressOfAdditionalLink" : {
+            "description" : "Web site address where information about the product or contact is given.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#addressOfAdditionalLinkOfIpCommunicationChannel",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          },
+          "TypeOfCommunication" : {
+            "description" : "Characterization of an IP-based communication channel.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#typeOfCommunication",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          },
+          "availableTime" : {
+            "description" : "Specification of the available time windows.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#availableTimeIpCommunicationChannel",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          }
+        },
+        "required" : [ "AddressOfAdditionalLink" ]
+      },
+      "IpCommunicationChannelSet" : {
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#IpCommunicationChannelSet",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/IpCommunicationChannelEntity"
+        },
+        "uniqueItems" : true
+      },
+      "AdressInformation" : {
+        "description" : "Contains information on how to contact the manufacturer or an authorised service provider, e.g. when a maintenance service is required.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.digital_nameplate:3.0.0#AdressInformation",
+        "type" : "object",
+        "properties" : {
+          "RoleOfContactPerson" : {
+            "description" : "Function of a contact person in a process\nenumeration: 0173-1#07-AAS927#001 (administrativ contact), 0173-1#07-AAS928#001 (commercial contact), 0173-1#07-AAS929#001 (other contact), 0173-1#07-AAS930#001 (hazardous goods contact), 0173-1#07-AAS931#001 (technical contact)\nNote: the above mentioned ECLASS enumeration should be declared as 'open' for further addition.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#roleOfContactPerson",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/RoleOfContactPersonCharacteristic"
+            } ]
+          },
+          "NationalCode" : {
+            "description" : "Code of a country (Country codes defined accord. to DIN EN ISO 3166-1).",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#nationalCode",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "Languages" : {
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#languages",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/LanguageSetTrait"
+            } ]
+          },
+          "TimeZone" : {
+            "description" : "Offsets from Coordinated Universal Time (UTC)\nNote: notation accord. to ISO 8601\nNote: for time in UTC the zone designator 'Z' is to be used.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#timeZone",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          },
+          "CityTown" : {
+            "description" : "Town or city.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#cityTown",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "Company" : {
+            "description" : "Name of the company.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#company",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "Department" : {
+            "description" : "Administrative section within an organisation where a business partner is located.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#department",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "Phone" : {
+            "description" : "Phone number including type.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#phone",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/PhoneCharacteristic"
+            } ]
+          },
+          "Fax" : {
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#fax",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/FaxCharacteristic"
+            } ]
+          },
+          "Email" : {
+            "description" : "E-mail address and encryption method.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#email",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/EmailCharacteristic"
+            } ]
+          },
+          "IPCommunicationChannels" : {
+            "description" : "IP-based communication channels, e.g. chat or video call.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#ipCommunicationChannels",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/IpCommunicationChannelSet"
+            } ]
+          },
+          "Street" : {
+            "description" : "Street name and house number.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#street",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "ZipCode" : {
+            "description" : "ZIP code of address.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#zipCode",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "POBox" : {
+            "description" : "P.O. box number.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#poBox",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "ZipCodeOfPOBox" : {
+            "description" : "ZIP code of address.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#zipCodeOfPoBox",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "StateCounty" : {
+            "description" : "Federal state, a part of a state.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#stateCounty",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "NameOfContact" : {
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#nameOfContact",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "FirstName" : {
+            "description" : "First name of a contact person.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#firstName",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "MiddleNames" : {
+            "description" : "Middle names of contact person.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#middleNames",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "Title" : {
+            "description" : "Common, formal, religious, or other title preceding a contact person's name.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#title",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "AcademicTitle" : {
+            "description" : "Academic title preceding a contact person's name.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#academicTitle",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "FurtherDetailsOfContact" : {
+            "description" : "Additional information of the contact person.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#furtherDetailsOfContact",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MultiLanguageTexts"
+            } ]
+          },
+          "AddressOfAdditionalLink" : {
+            "description" : "Web site address where information about the product or contact is given.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.contact_information:1.0.0#addressOfAdditionalLink",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          }
+        },
+        "required" : [ "NationalCode", "CityTown", "Street", "ZipCode" ]
+      },
+      "AddressInformationCharacteristic" : {
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.digital_nameplate:3.0.0#AddressInformationCharacteristic",
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AdressInformation"
+        } ]
+      },
+      "Date" : {
+        "type" : "string",
+        "format" : "date",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.digital_nameplate:3.0.0#Date"
+      },
+      "PuttingIntoServiceDate" : {
+        "type" : "string",
+        "format" : "date",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#PuttingIntoServiceDate"
+      },
+      "BatteryStatusEnumeration" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#BatteryStatusEnumeration",
+        "description" : "Lifecycle status of the battery. Status defined from a list, with the options suggested as follows: 'original', 'repurposed', 'reused', 'remanufactured', 'waste'\n\nEUBR: Annex XIII (4c)",
+        "enum" : [ "original", "repurposed", "re-used", "remanufactured", "waste" ]
+      },
+      "Date0" : {
+        "type" : "string",
+        "format" : "date",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#Date",
+        "description" : "Date in format CCYY-MM-DD."
+      },
+      "ResourcePath" : {
+        "type" : "string",
+        "format" : "uri",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#ResourcePath",
+        "description" : "The path of a resource."
+      },
+      "MimeType" : {
+        "type" : "string",
+        "x-samm-aspect-model-urn" : "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#MimeType",
+        "description" : "A MIME type as defined in RFC 2046, for example \"application/pdf\"."
+      },
+      "FileWithContentType" : {
+        "description" : "A file is a data element that represents an address to a file (a locator). The value is a URI that can represent an absolute or relative path.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#FileWithContentType",
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "description" : "Path and name of the file (with file extension).\n\nThe path can be absolute or relative.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#resourceValue",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/ResourcePath"
+            } ]
+          },
+          "contentType" : {
+            "description" : "Content type of the content of the file or blob.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#contentType",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/MimeType"
+            } ]
+          }
+        }
+      },
+      "Marking" : {
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#Marking",
+        "type" : "object",
+        "properties" : {
+          "MarkingName" : {
+            "description" : "Common name of the marking.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#markingName",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          },
+          "DesignationOfCertificateOrApproval" : {
+            "description" : "Alphanumeric character sequence identifying a certificate or approval.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#designationOfCertificateOrApproval",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          },
+          "IssueDate" : {
+            "description" : "Date, at which the specified certificate is issued. Note: format by lexical representation: CCYY-MM-DD. Note: to be specified to the day.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#issueDate",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Date0"
+            } ]
+          },
+          "ExpiryDate" : {
+            "description" : "Date, at which the specified certificate expires. Note: format by lexical representation: CCYY-MM-DD. Note: to be specified to the day.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#expiryDate",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Date0"
+            } ]
+          },
+          "MarkingFile" : {
+            "description" : "Conformity symbol of the marking.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#markingFile",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/FileWithContentType"
+            } ]
+          },
+          "MarkingAdditionalText" : {
+            "description" : "Where applicable, additional information on the marking in plain text, e.g. the ID-number of the notified body involved in the conformity process.",
+            "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#markingAdditionalText",
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Text"
+            } ]
+          }
+        },
+        "required" : [ "MarkingName", "MarkingFile" ]
+      },
+      "Markings" : {
+        "description" : "Note: CE marking is declared as mandatory according to EU Blue Guide.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#Markings",
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/Marking"
+        },
+        "uniqueItems" : true
+      },
+      "DocumentIdentifierSet" : {
+        "description" : "Each document is uniquely discoverable via its identifier. If more information is needed, please refer to the 'Handover Documentation'.",
+        "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#DocumentIdentifierSet",
+        "type" : "array",
+        "items" : {
+          "type" : "string",
+          "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.shared:3.1.0#DocumentIdentifierSetTrait",
+          "description" : "Alphanumeric character sequence uniquely identifying a document.",
+          "minLength" : 1
+        },
+        "uniqueItems" : true
+      }
+    }
+  },
+  "properties" : {
+    "URIOfTheProduct" : {
+      "description" : "Unique global identification of the product instance using an universal resource identifier (URI).\n The battery passport identifier is the unique identifier of a battery passport.\n\n DIN DKE Spec 99100 chapter reference: 6.1.2.1",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#uriOfTheProduct",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/Uri"
+      } ]
+    },
+    "ManufacturerName" : {
+      "description" : "Legally valid designation of the natural or judicial person which is directly responsible for the design, production, packaging and labeling of a product in respect to its being brought into circulation.\n\n Information identifying the manufacturer with a name.Information identifying the manufacturer with a name.\n\n DIN DKE Spec 99100 chapter reference: 6.1.2.1",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#manufacturerName",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/MultiLanguageTexts"
+      } ]
+    },
+    "AddressInformation" : {
+      "description" : "The manufacturer information postal address, indicating a single contact point. Web address, if available; and web address, if available.\n\n DIN DKE Spec 99100 chapter reference: 6.1.2.3",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#addressInformation",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/AddressInformationCharacteristic"
+      } ]
+    },
+    "SerialNumber" : {
+      "description" : "Unique combination of numbers and letters used to identify the device once it has been manufactured.\n\n The battery identifier should be serialised, i.e., identifying each battery via a serial number.\n\n DIN DKE Spec 99100 chapter reference: 6.1.2.2",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#serialNumber",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/Text"
+      } ]
+    },
+    "DateOfManufacture" : {
+      "description" : "Date when an item was manufactured.\n\n The manufacturing date should not only relate to the battery model, but to the battery item. The date code should comply with DINISO8601-1:2020-12 and ISO8601-2:2019.\n\n DIN DKE Spec 99100 chapter reference: 6.1.3.2",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#dateOfManufacture",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/Date"
+      } ]
+    },
+    "DateOfPuttingIntoService" : {
+      "description" : "Where appropriate, the battery passport must include information on the date of putting the battery into service. BR Annex VI Part A (1); Art. 3(33); Art. 38(7); ESPR Art. 2(32)\n\nDIN DKE Spec chapter reference: 6.1.3.3",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#dateOfPuttingIntoService",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/PuttingIntoServiceDate"
+      } ]
+    },
+    "UniqueFacilityIdentifier" : {
+      "description" : "Unique string of characters for the identification of locations or buildings involved in a product’s value chain or used by actors involved in a product’s value chain.\n\n The manufacturing place should be uniquely identifiable.\n\n DIN DKE Spec 99100 chapter reference: 6.1.3.1",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#uniqueFacilityIdentifier",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/Text"
+      } ]
+    },
+    "LifeCycleStage" : {
+      "description" : "A battery passport must include information on the life cycle status of the battery.\n   \n   The status of the battery must be defined as 'original' (0173-1#07-ACC020#001), 'repurposed'(0173-1#07-ACC021#001), 're-used'(0173-1#07-ACC022#001), 'remanufactured' (0173-1#07-ACC023#001) or 'waste' (0173-1#07-ACC024#001).\n   \n   A new battery passport must be issued when a battery was subject to remanufacturing, repurpose or one of the treatment operations preparing for re-use and preparing for repurpose and is placed on the market again.\n   \n   DIN DKE Spec 99100 chapter reference: 6.1.3.7",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#batteryStatus",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/BatteryStatusEnumeration"
+      } ]
+    },
+    "OperatorIdentifier" : {
+      "description" : "The unique operator identifier should comply with ISO/IEC 15459 1:2014, ISO/IEC 15459 2:2015, ISO/IEC 15459 3:2014, ISO/IEC 15459 4:2014, ISO/IEC 15459 5:2014, ISO/IEC 15459 6:2014, or their equivalent until referenced harmonised standards are listed in the OJEU.\n\n DIN DKE Spec 99100 chapter reference: 6.1.2.3",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#operatorIdentifier",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/Text"
+      } ]
+    },
+    "ManufacturerIdentifier" : {
+      "description" : "A battery passport must include information identifying the manufacturer.\n\n DIN DKE Spec 99100 chapter reference: 6.1.2.4",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.0#manufacturerIdentifier",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/Text"
+      } ]
+    },
+    "Markings" : {
+      "description" : "Should be used to provide all relevant marking information of the battery passport based on DIN DKE SPEC 99100 such as:\n\n* Separate collection symbol (6.2.2)\n* Symbols for cadmium and lead (6.2.3)\n* Carbon footprint label (6.2.4)\n* Extinguishing agent (6.2.5)\n* Meaning of labels and symbols (6.2.6)\n* EU declaration of conformity (6.2.7)\n* Results of test reports proving compliance (6.2.8)\n\nNote: CE marking is declared as mandatory according to EU Blue Guide \n   ",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#markings",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/Markings"
+      } ]
+    },
+    "EUDeclarationOfConformity" : {
+      "description" : "A battery passport must include the EU declaration of conformity.\n\n  DIN DKE Spec 99100 chapter reference: 6.2.7 \n\n Document identifiers (e.g., depending of different languages) of a document (e.g., PDF) that can be found in the Handover Documentation model.",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#euDeclarationOfConformity",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/DocumentIdentifierSet"
+      } ]
+    },
+    "ResultsOfTestReportsProvingCompliance" : {
+      "description" : "A battery passport must include the test report results that can prove the compliance with the requirements stated in the battery regulation.\n\n  DIN DKE Spec 99100 chapter reference: 6.2.8\n\n Document identifiers (e.g., depending of different languages) of a document (e.g., PDF) that can be found in the Handover Documentation model.\n\n ",
+      "x-samm-aspect-model-urn" : "urn:samm:io.admin-shell.idta.batterypass.digital_nameplate:1.0.0#resultsOfTestReportsProvingCompliance",
+      "allOf" : [ {
+        "$ref" : "#/components/schemas/DocumentIdentifierSet"
+      } ]
+    }
+  },
+  "required" : [ "URIOfTheProduct", "ManufacturerName", "ManufacturerIdentifier" ]
+}
