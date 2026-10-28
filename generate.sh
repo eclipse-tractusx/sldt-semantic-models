@@ -27,8 +27,6 @@
 # To generate files for all models in repo
 # find ./ -type f -name "*.ttl" -exec ./generate.sh "{}" \;
 
-
-
 # Adjust if SAMM CLI version changes
 JARNAME=samm-cli-2.11.1.jar
 SAMMFOLDER=.SAMMCLI/
