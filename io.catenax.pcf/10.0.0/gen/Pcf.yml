@@ -147,14 +147,15 @@ components:
       x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#NonEmptyStringTrait"
       description: Constraint for ensuring that a string has at least one character.
       minLength: 1
-    IdSet:
-      description: Characteristic for defining a set of URIs (Uniform Resource Identifiers).
-      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#IdSet"
+    IdSetTrait:
+      description: Assures that a Collection has at least one element.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#IdSetTrait"
       type: array
       items:
         type: string
         format: uri
       uniqueItems: true
+      minItems: 1
     CompanyInformationEntity:
       description: Entity to group all company information properties.
       x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#CompanyInformationEntity"
@@ -175,7 +176,7 @@ components:
             \ Additionally it is recommended to enter the name of the main domain\
             \ (e.g. company.com) as a second value."
           x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#companyIds"
-          $ref: "#/components/schemas/IdSet"
+          $ref: "#/components/schemas/IdSetTrait"
       required:
       - companyName
       - companyIds
@@ -186,6 +187,14 @@ components:
       items:
         $ref: "#/components/schemas/CompanyInformationEntity"
       minItems: 1
+    IdSet:
+      description: Characteristic for defining a set of URIs (Uniform Resource Identifiers).
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#IdSet"
+      type: array
+      items:
+        type: string
+        format: uri
+      uniqueItems: true
     ProductClassificationCharacteristic:
       description: "Each entry should be according URN:FPI including domain name of\
         \ the organization issuing the classifiaction, the entity and classifiaction\
@@ -1208,12 +1217,13 @@ components:
       required:
       - pcfIncludingBiogenicUptake
       - pcfExcludingBiogenicUptake
-    ProductionStageCollection:
-      description: Collection of Production Stage properties.
-      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#ProductionStageCollection"
+    ProductionStageCollectionTrait:
+      description: Assures that a Collection has at least one element.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#ProductionStageCollectionTrait"
       type: array
       items:
         $ref: "#/components/schemas/ProductionStageEntity"
+      minItems: 1
     PackagingStageEntity:
       description: Entity to group all packaging stage properties.
       x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#PackagingStageEntity"
@@ -1310,12 +1320,13 @@ components:
           $ref: "#/components/schemas/PositiveEmissionsTrait"
       required:
       - packagingEmissionsIncluded
-    PackagingStageCollection:
-      description: Collection of Packaging Stage properties.
-      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#PackagingStageCollection"
+    PackagingCollectionStageTrait:
+      description: Assures that a Collection has at least one element.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#PackagingCollectionStageTrait"
       type: array
       items:
         $ref: "#/components/schemas/PackagingStageEntity"
+      minItems: 1
     DistributionStageEntity:
       description: Entity to group all distribution stage properties.
       x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#DistributionStageEntity"
@@ -1408,12 +1419,13 @@ components:
           $ref: "#/components/schemas/PositiveEmissionsTrait"
       required:
       - distributionStageIncluded
-    DistributionStageCollection:
-      description: Collection of Distribution Stage properties.
-      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#DistributionStageCollection"
+    DistributionStageCollectionTrait:
+      description: Assures that a Collection has at least one element.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#DistributionStageCollectionTrait"
       type: array
       items:
         $ref: "#/components/schemas/DistributionStageEntity"
+      minItems: 1
     ProductLifeCycleStagesAndEmissionsEntity:
       description: Entity to group all product life cycle stages and emissions properties.
       x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#ProductLifeCycleStagesAndEmissionsEntity"
@@ -1424,19 +1436,19 @@ components:
             Connects ProductLifeCycleStagesAndEmissionsEntity with ProductionStage to link it with ProductionStageCollection, establishing the semantic relationship and context between both entities.
             Property to collect all production stage properties.
           x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#productionStage"
-          $ref: "#/components/schemas/ProductionStageCollection"
+          $ref: "#/components/schemas/ProductionStageCollectionTrait"
         packagingStage:
           description: |-
             Connects ProductLifeCycleStagesAndEmissionsEntity with PackagingStage to link it with PackagingStageCollection, establishing the semantic relationship and context between both entities.
             Property to collect all packaging stage properties.
           x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#packagingStage"
-          $ref: "#/components/schemas/PackagingStageCollection"
+          $ref: "#/components/schemas/PackagingCollectionStageTrait"
         distributionStage:
           description: |-
             Connects ProductLifeCycleStagesAndEmissionsEntity with DistributionStage to link it with DistributionStageCollection, establishing the semantic relationship and context between both entities.
             Property to collect all distribution stage properties.
           x-samm-aspect-model-urn: "urn:samm:io.catenax.pcf:10.0.0#distributionStage"
-          $ref: "#/components/schemas/DistributionStageCollection"
+          $ref: "#/components/schemas/DistributionStageCollectionTrait"
       required:
       - productionStage
       - packagingStage
