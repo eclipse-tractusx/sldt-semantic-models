@@ -1,0 +1,722 @@
+---
+openapi: 3.0.3
+info:
+  title: TechnicalData
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.technical_data:1.0.0#TechnicalData"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/technical-data:
+    get:
+      tags:
+      - TechnicalData
+      operationId: getTechnicalData
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          $ref: "#/components/responses/TechnicalData"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    Text:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#Text"
+      description: "Describes a Property which contains plain text. This is intended\
+        \ exclusively for human readable strings, not for identifiers, measurement\
+        \ values, etc."
+    ResourcePath:
+      type: string
+      format: uri
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#ResourcePath"
+      description: The path of a resource.
+    WarrantyPeriodTrait:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#WarrantyPeriodTrait"
+      description: ISO 8601 duration format.
+      pattern: ^P(?!$)((\d+Y)?(\d+M)?(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+S)?)?|T(?=\d)(\d+H)?(\d+M)?(\d+S)?)$
+    WarrantyInformationEntity:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#WarrantyInformationEntity"
+      type: object
+      properties:
+        WarrantyPeriod:
+          description: "\n   The battery passport must include information about the\
+            \ period for which the commercial warranty applies.\n   \n   DIN DKE Spec\
+            \ chapter reference: 6.1.3.4\n   \n   The format shall be provided in\
+            \ ISO 8601 Notation for duration.\n   "
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#warrantyPeriod"
+          allOf:
+          - $ref: "#/components/schemas/WarrantyPeriodTrait"
+      required:
+      - WarrantyPeriod
+    WarrantyInformationCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#WarrantyInformationCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/WarrantyInformationEntity"
+    BatteryCategoryEnum:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#BatteryCategoryEnum"
+      enum:
+      - lmt
+      - ev
+      - industrial
+      - stationary
+    BatteryMassMeasurable:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#BatteryMassMeasurable"
+      description: |-
+        Weight of the battery
+        EUBR: Annex XIII (1a) - Annex VI Part A (5)
+    MimeType:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#MimeType"
+      description: "A MIME type as defined in RFC 2046, for example \"application/pdf\"\
+        ."
+    FileWithContentType:
+      description: A file is a data element that represents an address to a file (a
+        locator). The value is a URI that can represent an absolute or relative path.
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.shared:3.1.1#FileWithContentType"
+      type: object
+      properties:
+        value:
+          description: |-
+            Path and name of the file (with file extension).
+
+            The path can be absolute or relative.
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.shared:3.1.1#resourceValue"
+          allOf:
+          - $ref: "#/components/schemas/ResourcePath"
+        contentType:
+          description: Content type of the content of the file or blob.
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.shared:3.1.1#contentType"
+          allOf:
+          - $ref: "#/components/schemas/MimeType"
+    MultiLanguageTexts:
+      description: A set of language-text items.
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.shared:3.1.1#MultiLanguageTexts"
+      type: array
+      items:
+        type: object
+        x-samm-aspect-model-urn: "urn:samm:org.eclipse.esmf.samm:characteristic:2.2.0#MultiLanguageText"
+        description: "Describes a Property which contains plain text in multiple languages.\
+          \ This is intended exclusively for human readable strings, not for identifiers,\
+          \ measurement values, etc."
+      uniqueItems: true
+    ProductImage:
+      description: Pictorial representation of the product related to an application.
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.generic.technical_data:2.0.1#ProductImage"
+      type: object
+      properties:
+        ImageFile:
+          description: Picture of the product (low resolution) 72 dpi / rgb (GIF or
+            JPG).
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.generic.technical_data:2.0.1#imageFile"
+          allOf:
+          - $ref: "#/components/schemas/FileWithContentType"
+        ImageNote:
+          description: Notes or explanations about the image provided.
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.generic.technical_data:2.0.1#imageNote"
+          allOf:
+          - $ref: "#/components/schemas/MultiLanguageTexts"
+      required:
+      - ImageFile
+    ProductImageSet:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.generic.technical_data:2.0.1#ProductImageSet"
+      type: array
+      items:
+        $ref: "#/components/schemas/ProductImage"
+      uniqueItems: true
+    GeneralInformationEntity:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.technical_data:1.0.0#GeneralInformationEntity"
+      type: object
+      properties:
+        ManufacturerName:
+          description: "Legally valid designation of the natural or judicial person\
+            \ which is directly responsible for the design, production, packaging\
+            \ and labeling of a product in respect to its being brought into circulation."
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.generic.technical_data:2.0.1#manufacturerName"
+          allOf:
+          - $ref: "#/components/schemas/Text"
+        CompanyLogo:
+          description: "Imagefile for logo of the company provided in common format\
+            \ (.png, .jpg)"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.generic.technical_data:2.0.1#companyLogo"
+          allOf:
+          - $ref: "#/components/schemas/ResourcePath"
+        ManufacturerIdentifier:
+          description: "\n\tA battery passport must include information identifying\
+            \ the manufacturer.\n\t\n\t\n DIN DKE Spec 99100:2025-02 chapter reference:\
+            \ 6.1.2.4\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#manufacturerIdentifier"
+          allOf:
+          - $ref: "#/components/schemas/Text"
+        WarrantyInformation:
+          description: "\n   The battery passport must include information about the\
+            \ period for which the commercial warranty applies.\n   \n   DIN DKE Spec\
+            \ chapter reference: 6.1.3.4\n   "
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#warrantyInformation"
+          allOf:
+          - $ref: "#/components/schemas/WarrantyInformationCharacteristic"
+        BatteryCategory:
+          description: |-
+            Categories relevant for the battery passport: LMT battery, electric vehicle battery, stationary or other industrial battery >2kWh.
+
+            DIN DKE Spec chapter reference: 6.1.3.5
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#batteryCategory"
+          allOf:
+          - $ref: "#/components/schemas/BatteryCategoryEnum"
+        BatteryMass:
+          description: |-
+            Mass of the entire battery in kilograms. Voluntary: if the battery is defined on pack or module level: also weight of the modules and/or cells.
+
+            DIN DKE Spec chapter reference: 6.1.3.6
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#batteryMass"
+          allOf:
+          - $ref: "#/components/schemas/BatteryMassMeasurable"
+        ProductImages:
+          description: "Image files for associated product provided in common format\
+            \ (.png, .jpg)."
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.generic.technical_data:2.0.1#productImages"
+          allOf:
+          - $ref: "#/components/schemas/ProductImageSet"
+      required:
+      - ManufacturerName
+      - ManufacturerIdentifier
+    GeneralInformationCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.technical_data:1.0.0#GeneralInformationCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GeneralInformationEntity"
+    Voltage:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#Voltage"
+    RatedCapacity:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#RatedCapacity"
+    CapacityFadeValue:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#CapacityFadeValue"
+    RatedEnergy:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#RatedEnergy"
+    CapacityEnergyVoltage:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#CapacityEnergyVoltage"
+      type: object
+      properties:
+        NominalVoltage:
+          description: "\n\tNominal voltage the battery is rated for.\n\t\n\t\nDIN\
+            \ DKE Spec 99100:2025-02 chapter reference: 6.7.2.11\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#nominalVoltage"
+          allOf:
+          - $ref: "#/components/schemas/Voltage"
+        MinVoltage:
+          description: "\n\tMinimum voltage the battery is rated for.\n\t\n\t\nDIN\
+            \ DKE Spec 99100:2025-02 chapter reference: 6.7.2.9\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#minimumVoltage"
+          allOf:
+          - $ref: "#/components/schemas/Voltage"
+        MaxVoltage:
+          description: "\n\tMaximum voltage the battery is rated for.\n\t\n\t\nDIN\
+            \ DKE Spec 99100:2025-02 chapter reference: 6.7.2.10\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#maximumVoltage"
+          allOf:
+          - $ref: "#/components/schemas/Voltage"
+        RatedCapacity:
+          description: "\n\tRated capacity is the total number of ampere-hours (Ah)\
+            \ that can be withdrawn from a fully charged battery under reference conditions\
+            \ (see BattReg Annex IV (1)).\n\t\n\t\nDIN DKE Spec 99100:2025-02 chapter\
+            \ reference: 6.7.2.2\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#ratedCapacity"
+          allOf:
+          - $ref: "#/components/schemas/RatedCapacity"
+        CapacityFade:
+          description: "\n\tThe capacity fade is the Decrease over time and upon usage\
+            \ in the amount of charge that a battery can deliver at the rated voltage,\
+            \ with respect to the original rated capacity \n\t(see BattReg Annex IV\
+            \ (2)) as declared by the manufacturer.\n\t\n\t\nDIN DKE Spec 99100:2025-02\
+            \ chapter reference: 6.7.2.4\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#capacityFade"
+          allOf:
+          - $ref: "#/components/schemas/CapacityFadeValue"
+        CertifiedUsableBatteryEnergy:
+          description: "\n\tThe certified usable battery energy is the usable battery\
+            \ energy according to the procedure in the UN GTR No 22 as determined\
+            \ during the certification of the vehicle.\n\t\n\t\nDIN DKE Spec 99100:2025-02\
+            \ chapter reference: 6.7.2.5\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#ratedEnergy"
+          allOf:
+          - $ref: "#/components/schemas/RatedEnergy"
+      required:
+      - NominalVoltage
+      - MinVoltage
+      - MaxVoltage
+      - RatedCapacity
+      - CapacityFade
+    CapacityEnergyVoltageCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#CapacityEnergyVoltageCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/CapacityEnergyVoltage"
+    EnergyEfficiency:
+      type: integer
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#EnergyEfficiency"
+    RoundTripEfficiencyAt50PercentCycleLife:
+      type: integer
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#RoundTripEfficiencyAt50PercentCycleLife"
+    energyRoundTripEfficiencyFadeValue:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#energyRoundTripEfficiencyFadeValue"
+    BatteryDischargingRate:
+      type: integer
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#BatteryDischargingRate"
+    RoundTripEnergyEfficiency:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#RoundTripEnergyEfficiency"
+      type: object
+      properties:
+        InitialRoundTripEnergyEfficiency:
+          description: Initial round trip energy efficiency means the ratio of the
+            net energy delivered by a battery during a discharge test to the total
+            energy required to restore the initial State of Charge by a standard charge.
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#initialRoundTripEnergyEfficiency"
+          allOf:
+          - $ref: "#/components/schemas/EnergyEfficiency"
+        RoundTripEnergyEfficiencyAt50PercentOfCycleLife:
+          description: "\n\tInitial round trip energy efficiency shall be measured\
+            \ at reference conditions that include the specification of 50 % of cycle-life.\n\
+            \t\n\t\nTest methods and reference conditions should separately consider\
+            \ non-cycle applications and batteries with very long cycle-life.\n\t\n\
+            \t\nDIN DKE Spec 99100:2025-02 chapter reference: 6.7.4.3\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#roundTripEfficiencyAt50PercentCycleLife"
+          allOf:
+          - $ref: "#/components/schemas/RoundTripEfficiencyAt50PercentCycleLife"
+        EnergyRoundTripEfficiencyFade:
+          description: "\n\tEnergy round trip efficiency fade is the decrease of round\
+            \ trip energy efficiency as percentage.\n\t\n\t\nDIN DKE Spec 99100:2025-02\
+            \ chapter reference: 6.7.4.5\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#energyRoundTripEfficiencyFade"
+          allOf:
+          - $ref: "#/components/schemas/energyRoundTripEfficiencyFadeValue"
+        InitialSelfDischargingRate:
+          description: Initial self-discharge in % of capacity per unit of time in
+            defined conditions (temperature range etc) as pre-use metric.
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#initialSelfDischargingRate"
+          allOf:
+          - $ref: "#/components/schemas/BatteryDischargingRate"
+      required:
+      - InitialRoundTripEnergyEfficiency
+      - RoundTripEnergyEfficiencyAt50PercentOfCycleLife
+    RoundTripEnergyEfficiencyCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#RoundTripEnergyEfficiencyCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/RoundTripEnergyEfficiency"
+    InternalResistance:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#InternalResistance"
+    ResistanceIncrease:
+      type: integer
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#ResistanceIncrease"
+    Resistance:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#Resistance"
+      type: object
+      properties:
+        InitialInternalResistanceAtBatteryCellLevel:
+          description: "\n  Internal battery cell and pack resistance / Internal resistance\
+            \ (in Ohm).\n  \n  Measure of a battery cell’s opposition to current flow\
+            \ at the beginning of its operational life, affecting its performance,\
+            \ efficiency, and heat generation (internal resistance means the absolute\
+            \ value of the quotient of the voltage drop between the terminals by the\
+            \ electric current increase in the battery circuit during a current pulse).\n\
+            \  "
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#initialInternalResistanceAtBatteryCellLevel"
+          allOf:
+          - $ref: "#/components/schemas/InternalResistance"
+        InitialInternalResistanceAtBatteryPackLevel:
+          description: "\n  Initial (Pre-Use) internal resistance at battery pack\
+            \ level.\n  \n  Measure of opposition to current flow in an entire battery\
+            \ pack at the start of its operational life, affecting overall performance,\
+            \ efficiency, and heat generation (internal resistance means the absolute\
+            \ value of the quotient of the voltage drop between the terminals by the\
+            \ electric current increase in the battery circuit during a current pulse).\n\
+            \  "
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#initialInternalResistanceAtBatteryPackLevel"
+          allOf:
+          - $ref: "#/components/schemas/InternalResistance"
+        InitialInternalResistanceAtBatteryModuleLevel:
+          description: "\n  Initial internal resistance at battery module level.\n\
+            \  \n  Initial internal resistance means the absolute beginning value\
+            \ of the quotient of the voltage drop between the terminals by the electric\
+            \ current increase in the battery circuit during a current pulse.\n  "
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#initialInternalResistanceAtBatteryModuleLevel"
+          allOf:
+          - $ref: "#/components/schemas/InternalResistance"
+        InternalResistanceIncreaseAtBatteryCellLevel:
+          description: Internal resistance increase at battery cell level.
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#internalResistanceIncreaseAtBatteryCellLevel"
+          allOf:
+          - $ref: "#/components/schemas/ResistanceIncrease"
+        InternalResistanceIncreaseAtBatteryPackLevel:
+          description: '''Internal resistance increase at battery pack level'' defined
+            by ''increase of internal resistance in % as calculated from current and
+            initial values (calculated from initial and current internal resistance
+            on battery pack level).'
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#internalResistanceIncreaseAtBatteryPackLevel"
+          allOf:
+          - $ref: "#/components/schemas/ResistanceIncrease"
+        InternalResistanceIncreaseAtBatteryModuleLevel:
+          description: "Internal resistance increase at battery module level level'\
+            \ defined by 'internal resistance increase on battery module level, calculated\
+            \ from initial and current internal resistance on battery module level."
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#internalResistanceIncreaseAtBatteryModuleLevel"
+          allOf:
+          - $ref: "#/components/schemas/ResistanceIncrease"
+      required:
+      - InitialInternalResistanceAtBatteryCellLevel
+      - InitialInternalResistanceAtBatteryPackLevel
+      - InternalResistanceIncreaseAtBatteryPackLevel
+    ResistanceCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#ResistanceCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/Resistance"
+    PowerCapabilityAtSoc:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#PowerCapabilityAtSoc"
+    PowerFade:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#PowerFade"
+    PowerCapabilityRatio:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#PowerCapabilityRatio"
+      description: Ratio between nominal allowed battery power (W) and battery energy
+        (Wh).
+    AtSoC:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#AtSoC"
+    PowerCapabilityAtSoCTrait:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#PowerCapabilityAtSoCTrait"
+      type: array
+      items:
+        description: "\n\tPower capability measured at a reference condition, for\
+          \ example at 80% or 20% state of charge (SoC).\n\t\n\t\nDIN DKE Spec 99100:2025-02\
+          \ chapter reference: 6.7.3.2\n\t"
+        x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#PowerCapabilityAtCharacteristic"
+        type: object
+        properties:
+          atSoC:
+            description: "\n\tAvailable capacity in a battery expressed as a percentage\
+              \ of remaining capacity.\n\t\n\tPower capability shall be measured at\
+              \ reference conditions, which must include measurements at 80% and 20%\
+              \ state of charge for EV and industrial batteries.\n\t"
+            x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#atSoC"
+            allOf:
+            - $ref: "#/components/schemas/AtSoC"
+          powerCapabilityAt:
+            description: Power capability.
+            x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#powerCapabilityAt"
+            allOf:
+            - $ref: "#/components/schemas/PowerCapabilityAtSoc"
+        required:
+        - atSoC
+        - powerCapabilityAt
+      minItems: 1
+    PowerCapability:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#PowerCapability"
+      type: object
+      properties:
+        MaximumPermittedBatteryPower:
+          description: "Maximum permitted power the battery is rated for, includes\
+            \ the data relevant for power limits."
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#maximumPermittedBatteryPower"
+          allOf:
+          - $ref: "#/components/schemas/PowerCapabilityAtSoc"
+        PowerFade:
+          description: "\n\tPower fade (in %) means the decrease over time and upon\
+            \ usage in the amount of power that a battery can deliver at the rated\
+            \ voltage (see BattReg Annex IV (4)).\n\t\n\t\nPower fade should be calculated\
+            \ using original and remaining power capability following the formula\
+            \ below:\nPfade(x) = (1-P(x)) / PBOL\" 100\" %\" \nwhere\nx \tis the aging\
+            \ parameter (e.g. storage time, number of cycles, etc.);\n\t\n\tP(x) \t\
+            is the power capability at aging parameter x;\nPBOL \tis the power capability\
+            \ at begin of life.\n\t\n\t\nDIN DKE Spec 99100:2025-02 chapter reference:\
+            \ 6.7.3.4\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#powerFade"
+          allOf:
+          - $ref: "#/components/schemas/PowerFade"
+        RatioNominalBatteryPowerAndBatteryEnergy:
+          description: "\n\tThe nominal battery power is the suitable approximate\
+            \ value of the power capability used to designate or identify the battery,\
+            \ while the battery energy is determined in reference conditions to be\
+            \ defined.\n   \n   \nDIN DKE Spec 99100:2025-02 chapter reference: 6.7.3.6\n\
+            \   "
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#powerCapabilityRatio"
+          allOf:
+          - $ref: "#/components/schemas/PowerCapabilityRatio"
+        OriginalPowerCapability:
+          description: "\n\tList of pre-use power capabilities (definition of power\
+            \ capability as given in Battery Regulation).\n\t\n\tPower capability\
+            \ shall be measured at reference conditions, which must include measurements\
+            \ at 80% and 20% state of charge for EV and industrial batteries. \n\t\
+            \n\t\nDIN DKE Spec 99100:2025-02 chapter reference: 6.7.3.2\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#originalPowerCapability"
+          allOf:
+          - $ref: "#/components/schemas/PowerCapabilityAtSoCTrait"
+      required:
+      - MaximumPermittedBatteryPower
+      - PowerFade
+      - RatioNominalBatteryPowerAndBatteryEnergy
+      - OriginalPowerCapability
+    PowerCapabilityCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#PowerCapabilityCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/PowerCapability"
+    TemperatureRangeBoundary:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#TemperatureRangeBoundary"
+    Temperature:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#Temperature"
+      type: object
+      properties:
+        TemperatureRangeIdleState_LowerBoundary:
+          description: "Lower boundary of the surrounding temperature range, which\
+            \ the battery can safely withstand."
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#temperatureRangeIdleStateLowerBoundary"
+          allOf:
+          - $ref: "#/components/schemas/TemperatureRangeBoundary"
+        TemperatureRangeIdleState_UpperBoundary:
+          description: "Upper boundary of the surrounding temperature range, which\
+            \ the battery can safely withstand."
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#temperatureRangeIdleStateUpperBoundary"
+          allOf:
+          - $ref: "#/components/schemas/TemperatureRangeBoundary"
+      required:
+      - TemperatureRangeIdleState_LowerBoundary
+      - TemperatureRangeIdleState_UpperBoundary
+    TemperatureCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#TemperatureCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/Temperature"
+    ExpectedLifeTime:
+      type: integer
+      minimum: 0
+      maximum: 4294967295
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#ExpectedLifeTime"
+    ExpectedNumberOfCycles:
+      type: integer
+      minimum: 0
+      maximum: 4294967295
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#ExpectedNumberOfCycles"
+    CapacityThresholdForExhaustion:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#CapacityThresholdForExhaustion"
+    DocumentIdentifierSet:
+      description: "Each document is uniquely discoverable via its identifier. If\
+        \ more information is needed, please refer to the 'Handover Documentation'."
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.shared:3.1.1#DocumentIdentifierSet"
+      type: array
+      items:
+        type: string
+        x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.shared:3.1.1#DocumentIdentifierSetTrait"
+        description: Alphanumeric character sequence uniquely identifying a document.
+        minLength: 1
+      uniqueItems: true
+    CRateLifeCycleTest:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#CRateLifeCycleTest"
+    Lifetime:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#Lifetime"
+      type: object
+      properties:
+        ExpectedLifetimeInCalendarYears:
+          description: "\n\tThe battery passport must include information about the\
+            \ expected battery lifetime in calendar years.\n\t\n\tThe update interval\
+            \ must be upon placement on the market and upon change of the battery\
+            \ status.\n\t\n\t\nDIN DKE Spec 99100:2025-02 chapter reference: 6.7.6.2\n\
+            \t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#expectedLifetime"
+          allOf:
+          - $ref: "#/components/schemas/ExpectedLifeTime"
+        ExpectedNumberOfCycles:
+          description: "\n\tExpected battery lifetime expressed in cycles.\nThe exception\
+            \ for non-cycle applications in Article 10 appears sensible, but is not\
+            \ included in the Annex XIII provision.\n\t\n\tThe data attribute is defined\
+            \ by measurement conditions of the cycle-life test such as the C-Rate\
+            \ (see below) and the depth of discharge in the cycle-life test\n\t\n\t\
+            \nDIN DKE Spec 99100:2025-02 chapter reference: 6.7.6.3\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#expectedNumberOfCycles"
+          allOf:
+          - $ref: "#/components/schemas/ExpectedNumberOfCycles"
+        CapacityThresholdExhaustion:
+          description: "\n\tThe percentage of SOCE, above which the battery is still\
+            \ considered operational as EV battery in its current life, as provided\
+            \ by the economic operator.\n\t\n\t\nDIN DKE Spec 99100:2025-02 chapter\
+            \ reference: 6.7.6.9\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#capacityThresholdForExhaustion"
+          allOf:
+          - $ref: "#/components/schemas/CapacityThresholdForExhaustion"
+        CycleLifeReferenceTest:
+          description: "\n\tThe battery passport must include information about the\
+            \ expected battery lifetime expressed in cycles, and reference test used.\
+            \ \n\t\n\t\nDIN DKE Spec 99100:2025-02 chapter reference: 6.7.6.5\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#cycleLifeReferenceTest"
+          allOf:
+          - $ref: "#/components/schemas/DocumentIdentifierSet"
+        CRateOfRelevantCycleLifeTest:
+          description: "\n\tThe C-rate should be provided separately for both the\
+            \ charge and discharge of the battery, if applicable.\n\t\n\tThe exception\
+            \ for non-cycle applications as mentioned in \"Expected lifetime: Number\
+            \ of charge-discharge cycles\" should apply to this data attribute as\
+            \ well.\n\n\t\nDIN DKE Spec 99100:2025-02 chapter reference: 6.7.6.6\n\
+            \t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#cRateLifeCycleTest"
+          allOf:
+          - $ref: "#/components/schemas/CRateLifeCycleTest"
+      required:
+      - ExpectedLifetimeInCalendarYears
+      - ExpectedNumberOfCycles
+      - CapacityThresholdExhaustion
+      - CycleLifeReferenceTest
+      - CRateOfRelevantCycleLifeTest
+    LifetimeCharacteristic:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#LifetimeCharacteristic"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/Lifetime"
+    TechnicalAttributes:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.technical_data:1.0.0#TechnicalAttributes"
+      type: object
+      properties:
+        CapacityEnergyVoltage:
+          description: "\n\tInformation on battery capacity, energy and voltage.\n\
+            \t\n\t\nDIN DKE Spec 99100:2025-02 chapter reference: 6.7.2\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#capacityEnergyVoltage"
+          allOf:
+          - $ref: "#/components/schemas/CapacityEnergyVoltageCharacteristic"
+        RoundTripEnergyEfficiency:
+          description: "\n\tInformation regarding round trip energy efficiency.\n\t\
+            \n\t\nDIN DKE Spec 99100:2025-02 chapter reference: 6.7.4\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#roundTripEnergyEfficiency"
+          allOf:
+          - $ref: "#/components/schemas/RoundTripEnergyEfficiencyCharacteristic"
+        Resistance:
+          description: "\n\tData elements regarding internal resistance and electrochemical\
+            \ impedance.\n\t\n\t\nDIN DKE Spec 99100:2025-02 chapter reference: 6.7.5\n\
+            \t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#resistance"
+          allOf:
+          - $ref: "#/components/schemas/ResistanceCharacteristic"
+        PowerCapability:
+          description: "\n\tInformation regarding power capability.\n\t\n\t\nDIN DKE\
+            \ Spec 99100:2025-02 chapter reference: 6.7.3\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#powerCapability"
+          allOf:
+          - $ref: "#/components/schemas/PowerCapabilityCharacteristic"
+        Temperature:
+          description: "\n\tInformation regarding temperature conditions.\n\t\n\t\n\
+            DIN DKE Spec 99100:2025-02 chapter reference: 6.7.7\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#temperature"
+          allOf:
+          - $ref: "#/components/schemas/TemperatureCharacteristic"
+        Lifetime:
+          description: "\n\tInformation regarding battery lifetime.\n\t\n\t\nDIN DKE\
+            \ Spec 99100:2025-02 chapter reference: 6.7.6\n\t"
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.technical_data:1.0.3#lifetime"
+          allOf:
+          - $ref: "#/components/schemas/LifetimeCharacteristic"
+    TechnicalPropertyAreaSet:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.technical_data:1.0.0#TechnicalPropertyAreaSet"
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/TechnicalAttributes"
+    TechnicalData:
+      description: Technical data of the asset and associated product classificatons.
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.technical_data:1.0.0#TechnicalData"
+      properties:
+        GeneralInformation:
+          description: "General information, for example ordering and manufacturer\
+            \ information."
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.technical_data:1.0.0#generalInformation"
+          allOf:
+          - $ref: "#/components/schemas/GeneralInformationCharacteristic"
+        TechnicalPropertyAreas:
+          description: Individual battery characteristics based on DIN DKE SPEC 99100.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.technical_data:1.0.0#technicalPropertyAreas"
+          allOf:
+          - $ref: "#/components/schemas/TechnicalPropertyAreaSet"
+      required:
+      - GeneralInformation
+      - TechnicalPropertyAreas
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    TechnicalData:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/TechnicalData"
+      description: The request was successful.
+  requestBodies:
+    TechnicalData:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/TechnicalData"
+      required: true

@@ -1,0 +1,286 @@
+---
+openapi: 3.0.3
+info:
+  title: Carbon Footprint for Battery Passport
+  version: v1
+  x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.pcf:1.0.0#CarbonFootprint"
+servers:
+- url: catenax.io/api/v1
+  variables:
+    api-version:
+      default: v1
+paths:
+  /{tenant-id}/carbon-footprint:
+    get:
+      tags:
+      - CarbonFootprint
+      operationId: getCarbonFootprint
+      parameters:
+      - name: tenant-id
+        in: path
+        description: The ID of the tenant owning the requested Twin.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: start
+        in: query
+        description: Starting index which is starting by 0
+        required: false
+        schema:
+          type: number
+      - name: count
+        in: query
+        description: Number of items to return per call.
+        required: false
+        schema:
+          type: number
+      - name: totalItemCount
+        in: query
+        description: Flag that indicates that the total counts should be returned.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "200":
+          $ref: "#/components/responses/CarbonFootprint"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+      - details
+      properties:
+        message:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+        details:
+          type: object
+          minLength: 1
+          additionalProperties:
+            type: object
+        code:
+          type: string
+          nullable: true
+    PagingSchema:
+      type: object
+      properties:
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        pageSize:
+          type: number
+        currentPage:
+          type: number
+        productCarbonFootprints:
+          type: array
+          items:
+            $ref: "#/components/schemas/CarbonFootprint"
+    PcfCalculationMethodSet:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.carbon_footprint:1.0.1#PcfCalculationMethodSet"
+      type: array
+      items:
+        type: string
+        x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.carbon_footprint:1.0.1#PcfCalculationMethodCharacteristic"
+        description: "Standard, method for determining the greenhouse gas emissions\
+          \ of a product. Multiple standards can be listed in case these standards\
+          \ are all applied to the respective PCF calculation."
+      uniqueItems: true
+    PcfCo2eqCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.carbon_footprint:1.0.0#PcfCo2eqCharacteristic"
+    ReferenceImpactUnitForCalculationEnum:
+      type: string
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.carbon_footprint:1.0.0#ReferenceImpactUnitForCalculationEnum"
+      enum:
+      - g
+      - kg
+      - t
+      - ml
+      - l
+      - cbm
+      - qm
+      - piece
+      - kwH
+    QuantityOfMeasureForCalculationCharacteristic:
+      type: number
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.carbon_footprint:1.0.0#QuantityOfMeasureForCalculationCharacteristic"
+    LifeCyclePhaseSet:
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.carbon_footprint:1.0.0#LifeCyclePhaseSet"
+      type: array
+      items:
+        type: string
+        x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.carbon_footprint:1.0.0#LifeCyclePhaseEnum"
+        enum:
+        - A1 - raw material supply (and upstream production)
+        - A1-A3
+        - A3 - production
+        - A4 - transport to final destination
+        - A4-A5
+        - A5 - Installation
+        - B1 - usage phase
+        - B1-B7
+        - B2 - maintenance
+        - B3 - repair
+        - B4 - Replacement
+        - "B5 - update/upgrade, refurbishing"
+        - B6 - usage energy consumption
+        - B7 - usage water consumption
+        - C1 - reassembly
+        - C1-C4
+        - C2 - transport to recycler
+        - C2-C4
+        - "C3 - recycling, waste treatment"
+        - C4 - landfill
+        - D - reuse
+      uniqueItems: true
+    PerformanceClassCharacteristic:
+      type: string
+    DocumentIdentifierSet:
+      description: "Each document is uniquely discoverable via its identifier. If\
+        \ more information is needed, please refer to the 'Handover Documentation'."
+      x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.shared:3.1.0#DocumentIdentifierSet"
+      type: array
+      items:
+        type: string
+        x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.shared:3.1.0#DocumentIdentifierSetTrait"
+        description: Alphanumeric character sequence uniquely identifying a document.
+        minLength: 1
+      uniqueItems: true
+    ProductCarbonFootprint:
+      description: Balance of greenhouse gas emissions along the entire life cycle
+        of a product in a defined application and in relation to a defined unit of
+        use.
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.pcf:1.0.0#ProductCarbonFootprint"
+      type: object
+      properties:
+        PcfCalculationMethods:
+          description: "Standards, methods for determining the greenhouse gas emissions\
+            \ of a product."
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.carbon_footprint:1.0.1#pcfCalculationMethods"
+          allOf:
+          - $ref: "#/components/schemas/PcfCalculationMethodSet"
+        PcfCo2eq:
+          description: |-
+            sum of all greenhouse gas emissions of a product according to the quantification requirements of the standard
+
+             DIN DKE Spec 99100 chapter reference: 6.3.2
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.carbon_footprint:1.0.1#pcfCo2eq"
+          allOf:
+          - $ref: "#/components/schemas/PcfCo2eqCharacteristic"
+        ReferenceImpactUnitForCalculation:
+          description: |-
+            Quantity unit of the product to which the PCF information on the CO2 footprint refers.
+
+             If a normalized product carbon footprint (PCF) value is provided, the reference value for calculation should be a specific unit such as 'kWh'. If the total PCF value is provided the reference value for calculation should be 'piece'.
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.carbon_footprint:1.0.1#referenceImpactUnitForCalculation"
+          allOf:
+          - $ref: "#/components/schemas/ReferenceImpactUnitForCalculationEnum"
+        QuantityOfMeasureForCalculation:
+          description: |-
+            Provides the quantity number of pieces or mass or volume to compute the impact of climate change or product carbon footprint.
+
+             If a normalized product carbon footprint (PCF) value is provided, the quantity of measure for calculation should be 1.
+             If the total PCF value is provided the quantity of measure for calculation should be 1.
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.carbon_footprint:1.0.1#quantityOfMeasureForCalculation"
+          allOf:
+          - $ref: "#/components/schemas/QuantityOfMeasureForCalculationCharacteristic"
+        LifeCyclePhases:
+          description: |-
+            Life cycle stages of the product according to the quantification requirements of the standard to which the PCF carbon footprint statement refers.
+
+            The string value in the value list is based on DIN DKE SPEC 99100: 'A1 - raw material supply (and upstream production)' (6.3.5 required lify cycle mapping), 'A3 - production' (6.3.4 Contribution of main product production/manufacturing lifecycle stage), 'A4 - transport to final destination' (6.3.5 Contribution of distribution lifecycle stage), 'C3 - recycling, waste treatment' (6.3.6 Contribution of end of life and recycling lifecycle stage)
+
+            Please note that the model should always contain at least one Product Carbon Footprint entry that reflects the total PCF value (including all life cycle phases) of the battery.
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.carbon_footprint:1.0.1#lifeCyclePhases"
+          allOf:
+          - $ref: "#/components/schemas/LifeCyclePhaseSet"
+        PerformanceClass:
+          description: "The battery passport must include the carbon footprint performance\
+            \ class in accordance with the entry into force of the delegated and implementing\
+            \ acts on the carbon footprint performance classes per Article7 of the\
+            \ Battery Regulation.\n\n DIN DKE Spec 99100 chapter reference: 6.3.7 "
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.carbon_footprint:1.0.1#performanceClass"
+          allOf:
+          - $ref: "#/components/schemas/PerformanceClassCharacteristic"
+        WebLinkToPublicCarbonFootprintStudy:
+          description: |-
+            One or more document identifiers (depending, for example, on the translation) of a specific document, which can be found in the 'HandoverDocumentation' model.
+
+             DIN DKE Spec 99100 chapter reference: 6.3.8
+          x-samm-aspect-model-urn: "urn:samm:io.admin-shell.idta.batterypass.carbon_footprint:1.0.1#webLinkToPublicCarbonFootprintStudy"
+          allOf:
+          - $ref: "#/components/schemas/DocumentIdentifierSet"
+      required:
+      - PcfCalculationMethods
+      - PcfCo2eq
+      - ReferenceImpactUnitForCalculation
+      - QuantityOfMeasureForCalculation
+      - LifeCyclePhases
+    ProductCarbonFootprintSet:
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.pcf:1.0.0#ProductCarbonFootprintSet"
+      type: array
+      items:
+        $ref: "#/components/schemas/ProductCarbonFootprint"
+      uniqueItems: true
+    CarbonFootprint:
+      description: Provides the means to access the Carbon Footprint of the asset
+        in the context of a Battery Passport.
+      type: object
+      x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.pcf:1.0.0#CarbonFootprint"
+      properties:
+        ProductCarbonFootprints:
+          description: (Set) Balance of greenhouse gas emissions along the entire
+            life cycle of a product in a defined application and in relation to a
+            defined unit of use.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.batterypass.component_supplier.pcf:1.0.0#productCarbonFootprints"
+          allOf:
+          - $ref: "#/components/schemas/ProductCarbonFootprintSet"
+      required:
+      - ProductCarbonFootprints
+  responses:
+    Unauthorized:
+      description: The requesting user or client is not authenticated.
+    Forbidden:
+      description: The requesting user or client is not authorized to access resources.
+    NotFoundError:
+      description: The requested resource has not been found.
+    ClientError:
+      description: Payload or user input is invalid. See error details in the payload
+        for more information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    CarbonFootprint:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PagingSchema"
+      description: The request was successful.
+  requestBodies:
+    CarbonFootprint:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CarbonFootprint"
+      required: true
