@@ -110,11 +110,11 @@ components:
       type: string
       x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#MeasurementTypeEnumeration"
       description: "Enumeration of the supported special characteristic measurement\
-        \ types: simpleMeasurement, functionalMeasurement and qualitativeMeasurement."
+        \ types: quantitativeMeasurement, qualitativeMeasurement and attributiveMeasurement."
       enum:
-      - simpleMeasurement
-      - functionalMeasurement
+      - quantitativeMeasurement
       - qualitativeMeasurement
+      - attributiveMeasurement
     Timestamp:
       type: string
       pattern: "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\\
@@ -125,8 +125,7 @@ components:
     ValueCharacteristic:
       type: string
       x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#ValueCharacteristic"
-      description: "The datatype of the measurement value, currently defined as string\
-        \ (open question with BMW). "
+      description: "The data type of the measurement value, defined as string."
     UnitReference:
       type: string
       pattern: "[a-zA-Z]*:[a-zA-Z]+"
@@ -139,31 +138,29 @@ components:
       x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#AttachmentUrlCharacteristic"
       description: A URI referencing an external artifact related to the measurement.
     MeasurementObject:
-      description: This Entity represents a generic Measurement Object
+      description: This entity represents a generic measurement object.
       x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#MeasurementObject"
       type: object
       properties:
         identifier:
-          description: 'Identifier of the individual measurement object. '
+          description: Identifier of the individual measurement object.
           x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#identifier"
           $ref: "#/components/schemas/Text"
         measurementTimestamp:
-          description: Timestamp when the measurement was taken
+          description: Timestamp when the measurement was taken.
           x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#measurementTimestamp"
           $ref: "#/components/schemas/Timestamp"
         value:
-          description: "The actual value of the measurement for special characteristics.\
-            \ NOTE: data type is an open question to be confirmed with BMW (currently\
-            \ xsd:string; examples use numeric values)."
+          description: The actual value of the measurement for special characteristics.
           x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#value"
           $ref: "#/components/schemas/ValueCharacteristic"
         unit:
           description: "The unit of the measurement object, expressed via the SAMM\
-            \ / UNECE common unit catalog. "
+            \ / UNECE common unit catalog."
           x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#unit"
           $ref: "#/components/schemas/UnitReference"
         description:
-          description: 'Detailed description of the measurement object. '
+          description: Detailed description of the measurement object.
           x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#description"
           $ref: "#/components/schemas/Text"
         attachmentUrl:
@@ -178,7 +175,7 @@ components:
       - value
       - description
     ResultList:
-      description: List of result objects
+      description: List of result objects.
       x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#ResultList"
       type: array
       items:
@@ -201,6 +198,11 @@ components:
             \ the digital twin, to enable cross-referencing."
           x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#manufacturerBpn"
           $ref: "#/components/schemas/AnyBpnCharacteristic"
+        revisionIndex:
+          description: This attribute contains the revision index of the special characteristic;
+            it is necessary to identify a special characteristic.
+          x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#revisionIndex"
+          $ref: "#/components/schemas/Text"
         characteristicId:
           description: Identifier of the special characteristic in relation to a specified
             part.
@@ -212,12 +214,13 @@ components:
           x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#measurementType"
           $ref: "#/components/schemas/MeasurementTypeEnumeration"
         results:
-          description: List of measurement objects regarding special characteristic
+          description: List of measurement objects regarding the special characteristic
             of a specific part.
           x-samm-aspect-model-urn: "urn:samm:io.catenax.special_characteristics.measurement:3.0.0#results"
           $ref: "#/components/schemas/ResultList"
       required:
       - manufacturerBpn
+      - revisionIndex
       - characteristicId
       - measurementType
       - results
