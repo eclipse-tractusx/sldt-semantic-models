@@ -2,14 +2,45 @@
 
 All notable changes to this model will be documented in this file.
 
+## [4.0.0] 27.03
+
+### Removed
+
+- businessPartnerNumber (root) - Removed due to redundancy. The certificate holder is now derived from: certifiedLocations[locationRole="Certificate Holder"].bpnl
+- enclosedSites and enclosedSiteBpn - Replaced by the new certifiedLocations structure.
+- areaOfApplication (root)
+- contentBase64
+- validator
+- uploader
+- createdAt
+
+### Added
+
+- certifiedLocations
+- certificateId
+- specificProperties -> iatfCertificateNumber
+- revision
+- certificateHolder
+- language (document-level)
+
+### Changed
+
+- trustLevel - Updated to a new enumeration: low, medium, high, aligned with the CCM KIT Trust Level concept.
+- documentId - Renamed to follow lowerCamelCase in accordance with Tractus-X naming conventions.
+- DocumentEntity - Now supports multiple documents (list instead of single instance)
+- certificateVersion → certificateTypeVersion - Renamed for improved clarity and consistency.
+- issuerBpn → issuerBpnl
+
 ## [3.1.0] 24.03.2025
 
 ### Changed
+
 - EnclosedSiteBpn property accepts either BPNA or BPNS. (previous version was only BPNS)
 
 ## [3.0.0] 16.12.2024
 
 ### Changed
+
 - New data attributes added for entity Document: creationDate, contentType and contentBase64
 - New data attributes for entity Issuer: issuerName and issuerBpn.
 - issuerBpn changed to optional
