@@ -11,6 +11,7 @@ All notable changes to this model will be documented in this file.
 - `DeclaredUnitOfMeasurementCharacteristic` had seperate values ("megabit" "second"), this has been corrected to ("megabit second")
 - `crossSectoralStandards` has been changed from an open list to a closed list with clearly defined values
 - `freeAttributionInMassBalancing` and `massBalancingCertificateScheme` have been changed from mandatory to optional with a clearly defined rule, when they are mandatory
+- Arrays of objects must no longer be empty (minItems: 1)
 
 ## [9.0.0] - 25.09
 
