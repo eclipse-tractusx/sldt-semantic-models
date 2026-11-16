@@ -9,6 +9,8 @@ The formal MS2 criteria are checked automatically by a script. Only review what 
 Review the human-readable texts (`samm:preferredName`, `samm:description`) of all elements in the changed aspect models.
 Read the whole model and use its structure (element names and types, links between elements, characteristics, constraints, enumeration values, units, example values) as reference to check these texts.
 
+**No findings is a valid and expected result.** Most models have none. There is no minimum and no maximum number of findings: report every finding that meets the bar below, and nothing else.
+
 ## Report only these findings
 
 - **Copy-Paste:** the text refers to or describes a different element than the one it belongs to.
@@ -24,11 +26,26 @@ Read the whole model and use its structure (element names and types, links betwe
 - **Enumeration:** an element whose name or description indicates a classification (e.g. type, category, class, classification, status, kind, level) is not modelled as an enumeration. Free values cannot be processed automatically and break interoperability.
 - **Example value (MS2-18):** the `samm:exampleValue` does not fit the description, enumeration values or constraints.
 
+## Bar for a finding
+
+Report a finding only if all of these apply:
+
+- It matches one of the categories above.
+- You can quote the exact text that is wrong.
+- You can name the concrete error, not just a possible improvement.
+- A domain expert reading the model would agree that it is an error.
+
 ## Never report
 
-If unsure, do not report.
+- Wording, style or grammar preferences when the text is correct and understandable.
+- Rephrasings that do not fix a concrete error.
+- Missing detail when the text is correct.
+- Anything outside the categories above.
+- If unsure, do not report.
 
 ## Output
+
+If there are no findings, post no comments.
 
 One inline review comment per finding on the affected line:
 
