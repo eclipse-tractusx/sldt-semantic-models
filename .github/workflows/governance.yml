@@ -13,84 +13,138 @@
 # SPDX-License-Identifier: CC-BY-4.0
 #######################################################################
 
-name: 0 Governance
+name: Model Checks
 
-
-on: 
-  push:
-    branches:
-      - 'main'
+on:
   pull_request:
 
-
 jobs:
-  synchronize-models:
-    name: 00 Determine Target Environment
+  # Determines which .ttl models changed in this PR, so the next job can
+  # check each one as its own matrix leg (own check mark in the PR UI).
+  # This is the only job that needs full repo history (for the git diff
+  # against main) - the matrix legs below get their file handed in.
+  detect-changed-models:
     runs-on: ubuntu-latest
+    name: Detect Changed Models
     outputs:
-      ADDED: ${{ steps.changes.outputs.added }}
-      MODIFIED: ${{ steps.changes.outputs.modified }}
-      REMOVED:  ${{ steps.changes.outputs.removed }}
-
+      files: ${{ steps.list.outputs.files }}
+      modified: ${{ steps.list-modified.outputs.files }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-     
-      - name: Check Changes
-        id: changes
-        uses: Ana06/get-changed-files@v2.2.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # Format of the steps output context.
-          # Can be 'space-delimited', 'csv', or 'json'.
-          # Default: 'space-delimited'
-          format: 'json'
-          
-      - name: validate changes from push
-        if: github.event.pusher
-        uses: ./.github/actions/validate
-        with:
-          ADDED: ${{ steps.changes.outputs.added }}
-          MODIFIED: ${{ steps.changes.outputs.modified }}
-          REMOVED:  ${{ steps.changes.outputs.removed }}
-          IS_MAIN: true
+          fetch-depth: 0
 
-      - name: validate changes from PR
-        if: github.event.pull_request
-        uses: ./.github/actions/validate
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          ADDED: ${{ steps.changes.outputs.added }}
-          MODIFIED: ${{ steps.changes.outputs.modified }}
-      
-      - name: Archive
-        uses: actions/upload-artifact@v4
-        with:
-          name: output
-          path: toArchive
-  validate-model-proposal:
+          python-version: '3.13'
+
+      - name: Fetch main branch
+        run: git fetch origin main
+
+      - name: List changed .ttl files
+        id: list
+        run: |
+          set -euo pipefail
+          files=$(python .github/src/model-validation/ms2_check.py --list-changed-files --base-branch origin/main)
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+
+      # Subset of the above that already exists on main, i.e. existing
+      # model versions being overwritten (MS2-25).
+      - name: List modified existing .ttl files
+        id: list-modified
+        run: |
+          set -euo pipefail
+          files=$(python .github/src/model-validation/ms2_check.py --list-modified-files --base-branch origin/main)
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+
+  # One job run per changed model - shows up as its own check mark, e.g.
+  # "Check MS2 Criteria (io.catenax.batch/4.0.0/Batch.ttl)". Do NOT mark
+  # this job itself as a required status check: its name (and how many
+  # runs of it exist) varies per PR depending on which models changed, so
+  # branch protection can't pin it down. Use ms2-criteria-gate for that.
+  #
+  # Each leg checks exactly the one file handed in via the matrix (plus the
+  # modified-files list for MS2-25) and computes no git diff of its own, so
+  # it needs no repo history at all - just a shallow checkout of the files
+  # at HEAD. The SAMM CLI jar
+  # is cached across legs/runs instead of every leg downloading it fresh.
+  ms2-criteria-check:
+    needs: detect-changed-models
+    if: needs.detect-changed-models.outputs.files != '[]'
     runs-on: ubuntu-latest
-    if: github.event.pull_request
-    name: 01 Validate new semantic model
-    needs: synchronize-models
+    # Only this job needs it (least privilege): posts/updates one PR
+    # checklist comment per model listing FAIL/WARN findings from criteria
+    # with POST_COMMENT = True (see quality_gate/github_comments.py).
+    permissions:
+      contents: read
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        ttl_file: ${{ fromJson(needs.detect-changed-models.outputs.files) }}
+    name: Check MS2 Criteria (${{ matrix.ttl_file }})
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           distribution: 'temurin'
-          java-version: '21'
-      - name: Install Node dependencies
-        working-directory: ./.github/actions/model-validation
-        run: npm install
-      - name: Validate semantic models
-        id: model_validation
-        uses: ./.github/actions/model-validation
+          java-version: '25'
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          pr_number: ${{ github.event.number }}
-          samm_version: 2.11.1
-          added: ${{needs.synchronize-models.outputs.ADDED}}
-          modified: ${{needs.synchronize-models.outputs.MODIFIED}}
-      - name: Archive
-        uses: actions/upload-artifact@v4
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: .github/src/model-validation/requirements.txt
+
+      - name: Cache SAMM CLI
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          name: validation-output
-          path: output
+          path: .SAMMCLI
+          key: samm-cli-${{ hashFiles('.github/src/config.json') }}
+
+      # Pinned with hashes, maintained by Dependabot.
+      - name: Install Python dependencies
+        run: pip install --require-hashes -r .github/src/model-validation/requirements.txt
+
+      - name: Run MS2 criteria check
+        env:
+          # Only used by criteria with POST_COMMENT = True, to post/update
+          # one PR checklist comment per model (see
+          # quality_gate/github_comments.py).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TTL_FILE: ${{ matrix.ttl_file }}
+          MODIFIED_FILES: ${{ needs.detect-changed-models.outputs.modified }}
+        run: |
+          python .github/src/model-validation/ms2_check.py --file "$TTL_FILE" --modified-files "$MODIFIED_FILES"
+
+  # Fixed-name summary of the matrix above - this is the one to configure
+  # as a required status check in branch protection. Always runs (even
+  # with zero changed models, where the matrix job above is skipped
+  # entirely), so it's always available to select and never leaves a
+  # required check stuck pending.
+  ms2-criteria-gate:
+    needs: [detect-changed-models, ms2-criteria-check]
+    if: always()
+    runs-on: ubuntu-latest
+    name: Summary Check
+    steps:
+      - name: Evaluate matrix result
+        run: |
+          detect_result="${{ needs.detect-changed-models.result }}"
+          result="${{ needs.ms2-criteria-check.result }}"
+          echo "detect-changed-models result: $detect_result"
+          echo "ms2-criteria-check matrix result: $result"
+          if [ "$detect_result" = "failure" ] || [ "$detect_result" = "cancelled" ]; then
+            echo "Change detection failed, so MS2 criteria could not be evaluated."
+            exit 1
+          fi
+          if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
+            echo "At least one model failed its MS2 criteria check."
+            exit 1
+          fi
+          echo "All changed models passed (or none changed)."

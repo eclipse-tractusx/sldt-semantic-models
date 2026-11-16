@@ -4,11 +4,7 @@ All notable changes to this model will be documented in this file.
 
 ## [3.0.0] 26.09
 
-### Changed
-
-- moved from io.catenax.single_level_usage_as_planned
-
-## [3.0.0] 25.12
+- semanticId has been changed from `io.catenax.single_level_usage_as_plan` to `io.catenax.industry_core.single_level_usage_as_plan`
 
 ### Changed
 
