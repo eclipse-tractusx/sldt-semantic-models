@@ -44,9 +44,8 @@
 #      sub-routine registered in quality_gate/criteria/, downgrading
 #      FAILs to WARN for criteria configured as non-blocking. FAIL/WARN
 #      findings from criteria that opt in via POST_COMMENT (see
-#      criteria/__init__.py) are collected and saved for a single PR
-#      checklist comment per model, posted later by ms2-comments.yml
-#      (quality_gate/github_comments.py).
+#      criteria/__init__.py) are collected and posted as a single PR
+#      checklist comment per model (quality_gate/github_comments.py).
 #   4. Collects all Findings, prints/reports them, and fails the job if any
 #      criterion reports a FAIL-level finding.
 #
@@ -158,7 +157,7 @@ def main() -> int:
             finding = report.Finding(ms2_01.id, ms2_01.title, "FAIL", ttl_file, f"not valid Turtle: {e}", line=1)
             all_findings.append(finding)
             report.print_console([finding])
-            github_comments.save_checklist(ttl_file, [finding])
+            github_comments.post_checklist_comment(ttl_file, [finding])
             continue
 
         # If the model doesn't even validate against SAMM (MS2-01), don't
@@ -178,8 +177,8 @@ def main() -> int:
             ctx.generate_artifacts(model)
 
         # Findings from POST_COMMENT-enabled criteria, collected across the
-        # whole model and saved for a single PR checklist comment after the
-        # loop below - see github_comments.save_checklist.
+        # whole model and posted as a single PR checklist comment after the
+        # loop below - see github_comments.post_checklist_comment.
         comment_findings: list[report.Finding] = []
 
         for criterion in criteria.REGISTRY:
@@ -217,7 +216,7 @@ def main() -> int:
             all_findings.extend(findings)
             report.print_console(findings)
 
-        github_comments.save_checklist(ttl_file, comment_findings)
+        github_comments.post_checklist_comment(ttl_file, comment_findings)
 
     markdown = report.render_markdown(all_findings, ttl_files_to_check, categories)
     _write_step_summary(markdown)
