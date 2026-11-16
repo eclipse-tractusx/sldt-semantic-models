@@ -1,0 +1,112 @@
+#######################################################################
+# Copyright (c) 2026 Catena-X Automotive Network e.V.
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:org.eclipse.esmf:1.0.0#> .
+@prefix ext-information: <urn:samm:io.catenax.shared.industry_core.regulatory_information:1.0.0#> .
+@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+
+:RegulatoryInformation a samm:Aspect ;
+   samm:properties ( :safeUseInstructions ext-information:reach :scip ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:safeUseInstructions a samm:Property ;
+   samm:preferredName "safeUseInstructions"@en ;
+   samm:description "provides guidance and precautions for the safe handling, use, storage, and disposal of a material to minimize risks to people, property, and the environment"@en ;
+   samm:characteristic :SafeUseInstructionsSet .
+
+:scip a samm:Property ;
+   samm:preferredName "scip "@en ;
+   samm:description "Substances of Concern In articles as such or in complex objects (Products)"@en ;
+   samm:characteristic :ScipSingleEntity .
+
+:SafeUseInstructionsSet a samm-c:Set ;
+   samm:preferredName "Safe Use Instructions Set"@en ;
+   samm:description "Safe Use Instructions Set"@en ;
+   samm:dataType :SafeUseInstructionsEntity .
+
+:ScipSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "Scip Single Entity"@en ;
+   samm:description "encapsulates scip related properties"@en ;
+   samm:dataType :ScipEntity .
+
+:SafeUseInstructionsEntity a samm:Entity ;
+   samm:preferredName "Safe Use Instructions Entity"@en ;
+   samm:description "Safe Use Instructions Entity"@en ;
+   samm:properties ( :instructionText :isRequired ) .
+
+:ScipEntity a samm:Entity ;
+   samm:preferredName "SCIP Entity"@en ;
+   samm:description "definition of an Entity of scip data"@en ;
+   samm:properties ( :productionInEu :scipNumber ) .
+
+:instructionText a samm:Property ;
+   samm:preferredName "Instruction text"@en ;
+   samm:description "provides the actual guidance, precaution, or recommendation that should be followed to ensure the safe use, handling, storage, or disposal of the material."@en ;
+   samm:characteristic :InstructionTextTrait ;
+   samm:exampleValue "Be careful!" .
+
+:isRequired a samm:Property ;
+   samm:preferredName "is required"@en ;
+   samm:description "indicates whether compliance with the associated safety instruction is mandatory or optional"@en ;
+   samm:characteristic samm-c:Boolean .
+
+:productionInEu a samm:Property ;
+   samm:preferredName "production in EU"@en ;
+   samm:description "indicates whether the article or complex object is produced within the European Union and therefore falls within the scope of SCIP reporting requirements"@en ;
+   samm:characteristic :ProductionInEuState .
+
+:scipNumber a samm:Property ;
+   samm:preferredName "scip number"@en ;
+   samm:description "specifies the unique SCIP notification number assigned by ECHA to a successfully submitted SCIP dossier for the article or complex object"@en ;
+   samm:characteristic :ScipNumberTrait .
+
+:InstructionTextTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint :InstructionLengthConstraint .
+
+:ProductionInEuState a samm-c:State ;
+   samm:preferredName "Production in EU State"@en ;
+   samm:description "Enum of states"@en ;
+   samm:dataType xsd:string ;
+   samm-c:defaultValue "NoData" ;
+   samm-c:values ( "Produced" "Imported" "ProducedAndImported" "NoData" ) .
+
+:ScipNumberTrait a samm-c:Trait ;
+   samm-c:baseCharacteristic :ScipNumber ;
+   samm-c:constraint :CharLengthConstraint .
+
+:InstructionLengthConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "Instruction Length Constraint"@en ;
+   samm-c:maxValue "10000"^^xsd:nonNegativeInteger .
+
+:ScipNumber a samm-c:Code ;
+   samm:preferredName "scip number"@en ;
+   samm:description "scip number"@en ;
+   samm:dataType xsd:string .
+
+:CharLengthConstraint a samm-c:LengthConstraint ;
+   samm:preferredName "CharLengthConstraint"@en ;
+   samm:description "36 char. length contraint"@en ;
+   samm-c:minValue "36"^^xsd:nonNegativeInteger ;
+   samm-c:maxValue "36"^^xsd:nonNegativeInteger .
+
