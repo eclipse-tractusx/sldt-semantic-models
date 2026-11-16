@@ -29,8 +29,17 @@
 # Stdlib-only (urllib), matching the rest of this package's "no external
 # dependencies beyond the optional jsonschema check" approach.
 #
+# Two steps, because pull_request runs from forks only get a read-only
+# GITHUB_TOKEN:
+#   1. save_checklist (check run, no write access): writes the findings as
+#      JSON to $MS2_COMMENTS_DIR, uploaded as artifact by governance.yml.
+#   2. post_saved_checklists (ms2-comments.yml, workflow_run with write
+#      access): reads the artifact and posts/updates the comments. The
+#      artifact is untrusted (produced by fork code), so it is validated
+#      and the comment is rendered here, not taken from the artifact.
+#
 # Silently does nothing (prints a one-line note instead) whenever posting
-# isn't possible or doesn't make sense, rather than failing the check run:
+# isn't possible or doesn't make sense, rather than failing the run:
 #   - not running on a `pull_request` event (e.g. local run, push, schedule)
 #   - no GITHUB_TOKEN available, or the token lacks `pull-requests: write`
 #   - no findings to report for this model (nothing to post/update) - an
@@ -51,11 +60,13 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import urllib.error
 import urllib.request
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from pathlib import Path
 
 from .report import Finding, ICON
 
@@ -124,20 +135,89 @@ def _render_checklist(model_file: str, findings: list[Finding], marker: str) -> 
     return "\n".join(lines)
 
 
-def post_checklist_comment(model_file: str, findings: list[Finding]) -> None:
-    if not findings:
-        return
-
-    token = os.environ.get("GITHUB_TOKEN")
-    if not token:
-        print(f"{model_file}: GITHUB_TOKEN not set - skipping PR checklist comment")
-        return
-
+def save_checklist(model_file: str, findings: list[Finding]) -> None:
+    out_dir = os.environ.get("MS2_COMMENTS_DIR")
     pr = _pr_context()
-    if pr is None:
-        # Expected for local runs and non-PR CI triggers - not worth a log line.
+    if not findings or not out_dir or pr is None:
+        # Local runs and non-PR triggers: nothing to hand over.
         return
 
+    out_path = Path(out_dir)
+    out_path.mkdir(parents=True, exist_ok=True)
+    # One file per model; hashed name, since the model path contains slashes.
+    name = hashlib.sha256(model_file.encode("utf-8")).hexdigest()[:16]
+    payload = {
+        "pull_number": pr.pull_number,
+        "model_file": model_file,
+        "findings": [asdict(f) for f in findings],
+    }
+    (out_path / f"{name}.json").write_text(json.dumps(payload), encoding="utf-8")
+
+
+def _load_saved_checklist(path: Path) -> tuple[int, str, list[Finding]]:
+    # Raises ValueError/KeyError/TypeError on anything malformed.
+    data = json.loads(path.read_text(encoding="utf-8"))
+    pull_number = data["pull_number"]
+    model_file = data["model_file"]
+    if not isinstance(pull_number, int) or isinstance(pull_number, bool) or pull_number <= 0:
+        raise ValueError("invalid pull_number")
+    if not isinstance(model_file, str) or not model_file.endswith(".ttl"):
+        raise ValueError("invalid model_file")
+
+    findings = []
+    for raw in data["findings"]:
+        if raw["level"] not in ("FAIL", "WARN"):
+            raise ValueError(f"unexpected level {raw['level']!r}")
+        line = raw.get("line")
+        if line is not None and (not isinstance(line, int) or isinstance(line, bool)):
+            raise ValueError("invalid line")
+        findings.append(Finding(
+            criterion_id=str(raw["criterion_id"]), title=str(raw["title"]), level=raw["level"],
+            file=str(raw["file"]), message=str(raw["message"]),
+            element=None if raw.get("element") is None else str(raw["element"]), line=line,
+        ))
+    return pull_number, model_file, findings
+
+
+def post_saved_checklists(in_dir: str, head_sha: str) -> int:
+    token = os.environ.get("GITHUB_TOKEN")
+    repo_slug = os.environ.get("GITHUB_REPOSITORY")
+    if not token or not repo_slug:
+        print("GITHUB_TOKEN or GITHUB_REPOSITORY not set - skipping PR checklist comments")
+        return 0
+
+    files = sorted(Path(in_dir).glob("*.json")) if Path(in_dir).is_dir() else []
+    if not files:
+        print("No saved MS2 checklists - nothing to post.")
+        return 0
+
+    owner, repo = repo_slug.split("/", 1)
+    verified_prs: dict[int, bool] = {}
+    errors = 0
+    for path in files:
+        try:
+            pull_number, model_file, findings = _load_saved_checklist(path)
+        except (ValueError, KeyError, TypeError) as e:
+            print(f"{path.name}: skipped, malformed checklist ({e})")
+            errors += 1
+            continue
+
+        # Only comment on the PR whose head commit was actually checked.
+        if pull_number not in verified_prs:
+            status, pr_data = _api_request("GET", f"/repos/{owner}/{repo}/pulls/{pull_number}", token)
+            verified_prs[pull_number] = (
+                status == 200 and isinstance(pr_data, dict)
+                and pr_data.get("head", {}).get("sha") == head_sha
+            )
+        if not verified_prs[pull_number]:
+            print(f"{model_file}: skipped, PR #{pull_number} head does not match checked commit {head_sha}")
+            continue
+
+        _post_checklist_comment(PRContext(owner, repo, pull_number), token, model_file, findings)
+    return 1 if errors else 0
+
+
+def _post_checklist_comment(pr: PRContext, token: str, model_file: str, findings: list[Finding]) -> None:
     marker = HIDDEN_MARKER.format(path=model_file)
     body = _render_checklist(model_file, findings, marker)
     existing_id = _find_existing_comment(pr, token, marker)

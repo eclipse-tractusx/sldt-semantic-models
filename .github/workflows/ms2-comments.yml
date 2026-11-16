@@ -1,0 +1,73 @@
+#######################################################################
+# Copyright (c) 2026 Catena-X Automotive Network e.V.
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+# Posts the MS2 PR checklist comments saved by governance.yml ("Model
+# Checks"). Separate workflow because pull_request runs from forks only get
+# a read-only token; workflow_run runs in the context of this repository.
+#
+# Security: only code from the default branch is checked out and executed
+# here. The downloaded artifact comes from the PR run and is treated as
+# untrusted data (validated in quality_gate/github_comments.py).
+#
+# workflow_run only triggers from the workflow file on the default branch,
+# so changes to this file take effect after merging.
+
+name: Post MS2 Comments
+
+on:
+  workflow_run:
+    workflows: ["Model Checks"]
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  post-comments:
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    name: Post MS2 Checklist Comments
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      # No artifact exists when no model changed or nothing needs a comment.
+      - name: Download PR comment findings
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: ms2-comments-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/ms2-comments
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+
+      - name: Post comments
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          COMMENTS_DIR: ${{ runner.temp }}/ms2-comments
+        run: |
+          python .github/src/model-validation/post_comments.py --dir "$COMMENTS_DIR" --head-sha "$HEAD_SHA"
