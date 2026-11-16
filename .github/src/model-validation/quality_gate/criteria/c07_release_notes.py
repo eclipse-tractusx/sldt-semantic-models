@@ -45,7 +45,7 @@ class Criterion(base.Criterion):
 
         text = release_notes.read_text(encoding="utf-8")
         if model.version and not re.search(re.escape(f"[{model.version}]"), text):
-            return [Finding(self.ID, self.TITLE, "WARN", model.file,
+            return [Finding(self.ID, self.TITLE, "FAIL", model.file,
                              f"{release_notes} has no entry mentioning '[{model.version}]'", line=1)]
 
         return [Finding(self.ID, self.TITLE, "SUCCESS", model.file,
