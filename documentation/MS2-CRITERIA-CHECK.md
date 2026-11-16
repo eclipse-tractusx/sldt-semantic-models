@@ -44,13 +44,15 @@ The four categories are independent of each other - none depends on another's re
 .github/
 ├── PULL_REQUEST_TEMPLATE.md          the 23 MS2 checklist items this check implements
 ├── workflows/
-│   └── governance.yml                the CI pipeline (3 jobs, see below)
+│   ├── governance.yml                the CI pipeline (3 jobs, see below)
+│   └── ms2-comments.yml              posts the PR checklist comments (see below)
 └── src/
     ├── config.json                   per-repo settings & criterion overrides - lives here,
     │                                 outside model-validation/, so other scripts (e.g.
     │                                 scripts/generate.sh) can share it as their config base too
     └── model-validation/             the MS2 check action
         ├── ms2_check.py              master script / CLI entry point
+        ├── post_comments.py          posts the saved PR checklist comments (ms2-comments.yml)
         ├── requirements.txt          pinned Python dependencies (Dependabot, Dash check)
         └── quality_gate/             the actual package
             ├── config.py                 loads .github/src/config.json
@@ -62,8 +64,8 @@ The four categories are independent of each other - none depends on another's re
             ├── samm_model_parser.py       Turtle parser (no RDF library): every element as
             │                             a block, queried via el.is_a(...) / el.get(...)
             ├── report.py                  Finding type + Markdown table rendering
-            ├── github_comments.py         posts/updates one PR checklist comment per
-            │                             model, for criteria with POST_COMMENT = True
+            ├── github_comments.py         saves and posts/updates one PR checklist comment
+            │                             per model, for criteria with POST_COMMENT = True
             │                             (see "Report format" below)
             └── criteria/                  one file per MS2 checklist item
                 ├── __init__.py            auto-discovers every cNN_*.py below into REGISTRY
@@ -86,6 +88,7 @@ The pipeline is split into three jobs specifically so that **every changed model
    - does a **shallow** checkout (`fetch-depth: 1`) - no repo history needed, since it checks exactly the one file handed in via the matrix and computes no git diff of its own
    - restores/saves the SAMM CLI jar from an `actions/cache` entry keyed on a hash of `config.json` (where the pinned SAMM CLI version lives), so only the first leg per version actually downloads the ~110 MB jar
    - runs `ms2_check.py --file <path> --modified-files <json>` for that one model
+   - uploads the findings for the PR checklist comment as artifact `ms2-comments-<n>` (see [PR checklist comments](#pr-checklist-comments-quality_gategithub_commentspy))
 
    This job is deliberately **not** the one you mark as a required status check: its name (and how many runs of it exist) varies per PR depending on which models changed, and GitHub branch protection can only pin down fixed, known check names.
 
@@ -203,7 +206,12 @@ In addition to the job-summary report above, criteria with `POST_COMMENT = True`
 
 This is a plain PR **issue** comment (`POST`/`PATCH .../issues/{pr}/comments`), not a diff-anchored **review** comment. An earlier version used review comments instead, but GitHub's review-comment API only accepts lines that are part of the PR's diff - a `FAIL` on an untouched, pre-existing line would then silently fail to post. Issue comments have no such constraint and are simpler to keep in sync besides: since there's at most one comment per model, a re-run just `PATCH`es it in place (matched via a hidden `<!-- ms2-check:<path> -->` marker in the body) instead of tracking "does a comment for this exact finding already exist".
 
-Needs `pull-requests: write` on the `ms2-criteria-check` job in `governance.yml` (least-privilege: only that job gets it) and `GITHUB_TOKEN` passed to the "Run MS2 criteria check" step's `env`. Silently does nothing (just a log line) when posting isn't possible or doesn't apply - no `pull_request` event, no token, or no findings for that model - never a reason to fail the check itself.
+Posting happens in two steps, because `pull_request` runs for PRs from forks only get a read-only `GITHUB_TOKEN`:
+
+1. **Save** - the `ms2-criteria-check` job (read-only) writes the findings as JSON to `MS2_COMMENTS_DIR` and uploads them as artifact.
+2. **Post** - `ms2-comments.yml` is triggered via `workflow_run` once "Model Checks" completes. It runs in the context of this repository with `pull-requests: write`, checks out only the default branch, downloads the artifact and runs `post_comments.py`. The artifact is treated as untrusted: it is validated, the comment is rendered from the findings, and it is only posted if the PR's head commit matches the checked commit.
+
+`workflow_run` only triggers from the workflow file on the default branch, so changes to `ms2-comments.yml` take effect after merging. Saving does nothing when there's no `pull_request` event or no findings for that model; posting never affects the check result.
 
 Known limitations of this first version:
 

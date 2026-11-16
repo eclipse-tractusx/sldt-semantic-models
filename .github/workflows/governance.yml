@@ -73,12 +73,10 @@ jobs:
     needs: detect-changed-models
     if: needs.detect-changed-models.outputs.files != '[]'
     runs-on: ubuntu-latest
-    # Only this job needs it (least privilege): posts/updates one PR
-    # checklist comment per model listing FAIL/WARN findings from criteria
-    # with POST_COMMENT = True (see quality_gate/github_comments.py).
+    # Read-only: PR comments are posted by ms2-comments.yml, since runs
+    # for PRs from forks never get write access here.
     permissions:
       contents: read
-      pull-requests: write
     strategy:
       fail-fast: false
       matrix:
@@ -113,14 +111,23 @@ jobs:
 
       - name: Run MS2 criteria check
         env:
-          # Only used by criteria with POST_COMMENT = True, to post/update
-          # one PR checklist comment per model (see
-          # quality_gate/github_comments.py).
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # FAIL/WARN findings for the PR checklist comment are saved here
+          # and posted by ms2-comments.yml (see quality_gate/github_comments.py).
+          MS2_COMMENTS_DIR: ms2-comments
           TTL_FILE: ${{ matrix.ttl_file }}
           MODIFIED_FILES: ${{ needs.detect-changed-models.outputs.modified }}
         run: |
           python .github/src/model-validation/ms2_check.py --file "$TTL_FILE" --modified-files "$MODIFIED_FILES"
+
+      # Runs also when the check failed - that's when findings exist.
+      - name: Upload PR comment findings
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ms2-comments-${{ strategy.job-index }}
+          path: ms2-comments/
+          if-no-files-found: ignore
+          retention-days: 1
 
   # Fixed-name summary of the matrix above - this is the one to configure
   # as a required status check in branch protection. Always runs (even
