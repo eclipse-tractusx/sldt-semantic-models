@@ -1,0 +1,65 @@
+#######################################################################
+# Copyright (c) 2026 Catena-X Automotive Network e.V.
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+# Checks the Python dependencies of the MS2 criteria check
+# (.github/src/model-validation/requirements.txt) with the Eclipse Dash license tool.
+# Manual trigger only (Actions tab -> "Dash License Check" -> Run workflow).
+
+name: Dash License Check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dash:
+    runs-on: ubuntu-latest
+    name: Check Python dependencies (Eclipse Dash)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      # Dash expects ClearlyDefined IDs: pypi/pypi/-/<name>/<version>
+      - name: Build Dash input from requirements.txt
+        run: |
+          set -euo pipefail
+          grep -E '^[A-Za-z0-9_.-]+==' .github/src/model-validation/requirements.txt \
+            | sed -E 's/^([^=]+)==([^ ]+).*/pypi\/pypi\/-\/\1\/\2/' > dash-input.txt
+          cat dash-input.txt
+
+      - name: Run Dash
+        id: dash
+        uses: eclipse-tractusx/sig-infra/.github/actions/run-dash@b1bdc19027a405213dd7758008b2cbbbfd2c10c0 # main 2026-11-03
+        with:
+          dash_input: dash-input.txt
+          dependencies_file: DEPENDENCIES_PYTHON
+          fail_on_out_of_date: "false"
+          fail_on_rejected: "true"
+          fail_on_restricted: "true"
+
+      - name: Report
+        if: always()
+        run: |
+          {
+            echo "## Eclipse Dash - Python dependencies"
+            echo
+            echo '```'
+            cat DEPENDENCIES_PYTHON 2>/dev/null || echo "no Dash output"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

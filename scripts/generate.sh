@@ -32,12 +32,18 @@
 
 
 
-# SAMM CLI version comes from .github/scripts/config.json - the same file
-# model-validation/config.py reads for the MS2 criteria check - so this
+# SAMM CLI version comes from .github/src/config.json - the same file
+# quality_gate/config.py reads for the MS2 criteria check - so this
 # can't silently drift from what CI validates models against.
-SAMM_CLI_VERSION="$(jq -r '.settings.samm_cli_version' .github/scripts/config.json 2>/dev/null)"
+SAMM_CLI_VERSION="$(jq -r '.settings.samm_cli_version' .github/src/config.json 2>/dev/null)"
 if [ -z "$SAMM_CLI_VERSION" ] || [ "$SAMM_CLI_VERSION" = "null" ]; then
-  echo "Could not read settings.samm_cli_version from .github/scripts/config.json" >&2
+  echo "Could not read settings.samm_cli_version from .github/src/config.json" >&2
+  exit 1
+fi
+
+SAMM_CLI_SHA256="$(jq -r '.settings.samm_cli_sha256' .github/src/config.json 2>/dev/null)"
+if [ -z "$SAMM_CLI_SHA256" ] || [ "$SAMM_CLI_SHA256" = "null" ]; then
+  echo "Could not read settings.samm_cli_sha256 from .github/src/config.json" >&2
   exit 1
 fi
 
@@ -64,6 +70,13 @@ if [ ! -f "$SAMMCLI" ]; then
   mkdir $SAMMFOLDER
 
   cd $SAMMFOLDER && { curl -LJO $SAMMCLIURL ; cd -; }
+fi
+
+# Verify the SAMM CLI jar against the SHA-256 pinned in config.json.
+ACTUAL_SHA256="$(shasum -a 256 "$SAMMCLI" | cut -d' ' -f1)"
+if [ "$ACTUAL_SHA256" != "$SAMM_CLI_SHA256" ]; then
+  echo "SHA-256 of $SAMMCLI ($ACTUAL_SHA256) does not match pinned $SAMM_CLI_SHA256" >&2
+  exit 1
 fi
 
 if [ ! -f "$CATENAXCSS" ]; then

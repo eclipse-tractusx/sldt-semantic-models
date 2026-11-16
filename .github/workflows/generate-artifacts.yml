@@ -56,13 +56,18 @@ jobs:
               echo "Generate model artifacts for ${added_modified_file}."
               if ./scripts/generate.sh "${added_modified_file}"; then
                 git add "$(dirname "${added_modified_file}")"
-                artifacts_generated=true
               else
                 echo "::warning::Artefact generation failed for ${added_modified_file}, skipping"
               fi
             fi
           done
 
+          # Only commit when generation actually changed something - artifacts
+          # that are already up to date leave nothing staged, and `git commit`
+          # would then fail with "nothing to commit".
+          if ! git diff --cached --quiet; then
+            artifacts_generated=true
+          fi
           echo "artifacts_generated=$artifacts_generated" >> $GITHUB_OUTPUT
 
       - name: Commit new artifacts

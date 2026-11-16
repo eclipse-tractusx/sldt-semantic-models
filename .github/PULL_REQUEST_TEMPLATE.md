@@ -33,6 +33,8 @@ Closes #
 - [ ] [MS2-21] use **Camel-Case** (e.g., "MyModelElement" or "TimeDifferenceGmtId", when in doubt follow https://google.github.io/styleguide/javaguide.html#s5.3-camel-case)
 - [ ] [MS2-22] the identifier for **properties starts with a small letter**
 - [ ] [MS2-23] Property and the referenced Characteristic should not have the same name
+- [ ] [MS2-24] the property name `catenaXId` must not be used (in any spelling, e.g. `catenaXID`, `catena_x_id`)
+- [ ] [MS2-25] existing model versions are never overwritten - every change to a model requires a new version
 
 ## MS3 Criteria
 (to be filled out by semantic modeling team before merge to main-branch)
