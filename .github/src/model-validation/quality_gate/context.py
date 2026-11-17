@@ -58,8 +58,9 @@ class Artifacts:
     # succeeded. failures: artifact label -> truncated samm-cli error, for
     # every format that didn't. A label is always in exactly one of them -
     # unless `skipped`, where generation was deliberately not attempted
-    # (no jar) and both are empty; callers report SKIP rather than FAIL for
-    # that, as it's no evidence of anything wrong with the model.
+    # (no jar, or a shared model) and both are empty;
+    # callers report SKIP rather than FAIL for that, as it's no evidence of
+    # anything wrong with the model.
     paths: dict[str, Path] = field(default_factory=dict)
     failures: dict[str, str] = field(default_factory=dict)
     skipped: bool = False
@@ -117,6 +118,12 @@ class Context:
         jar = self.samm_jar
         if jar is None:
             result = Artifacts(skipped=True, skip_reason="SAMM CLI jar unavailable (no Java / no network)")
+            self._artifacts[model.file] = result
+            return result
+
+        # Shared models have no artifacts; an Aspect in them is flagged by MS2-26.
+        if model.is_shared:
+            result = Artifacts(skipped=True, skip_reason="shared model - no artifacts to generate")
             self._artifacts[model.file] = result
             return result
 

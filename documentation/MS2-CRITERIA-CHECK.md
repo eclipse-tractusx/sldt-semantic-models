@@ -14,7 +14,7 @@ flowchart TD
     S3["3. Parse .ttl, every element as a block"]
 
     MV["Model Validation<br/>MS2-02, 03, 05, 06"]
-    FR["Formal Requirements<br/>MS2-04, 07, 08"]
+    FR["Formal Requirements<br/>MS2-04, 07, 08, 26"]
     NC["Naming Conventions<br/>MS2-14, 19, 20, 21, 22"]
     SQ["Semantic Quality<br/>MS2-09, 10, 11, 12, 13, 15, 16, 17, 18, 23"]
 
@@ -75,7 +75,8 @@ The four categories are independent of each other - none depends on another's re
                 ├── ...
                 ├── c23_property_characteristic_name_conflict.py
                 ├── c24_no_catenax_id_property.py
-                └── c25_no_version_overwrite.py
+                ├── c25_no_version_overwrite.py
+                └── c26_shared_model_no_aspect.py
 ```
 
 ## CI pipeline (`governance.yml`)
@@ -137,8 +138,8 @@ Each `Finding` has a level:
 | ID | Category | Automation | Notes |
 | --- | --- | --- | --- |
 | MS2-01 | Model Validation | ✅ automated | runs `samm-cli aspect <file> validate` for real |
-| MS2-02 | Model Validation | ✅ automated | generated JSON schema validates the generated example payload. Schema/payload come from `ctx.artifacts()` (see `context.py`), generated once per model by the master script before any criterion runs |
-| MS2-03 | Model Validation | ✅ automated | every artifact type `generate.sh` also produces (AAS XML, AASX, JSON schema, example JSON payload, OpenAPI spec, HTML doc, Parquet) generates successfully - reads the same `ctx.artifacts()` result as MS2-02, so every format is generated only once per model - a model can validate but still fail one specific format (SAMM CLI bug/limitation for that structure) |
+| MS2-02 | Model Validation | ✅ automated | generated JSON schema validates the generated example payload. Schema/payload come from `ctx.artifacts()` (see `context.py`), generated once per model by the master script before any criterion runs. `SKIP` for shared models (`io.catenax.shared.*`) |
+| MS2-03 | Model Validation | ✅ automated | every artifact type `generate.sh` also produces (AAS XML, AASX, JSON schema, example JSON payload, OpenAPI spec, HTML doc, Parquet) generates successfully - reads the same `ctx.artifacts()` result as MS2-02, so every format is generated only once per model - a model can validate but still fail one specific format (SAMM CLI bug/limitation for that structure). `SKIP` for shared models (`io.catenax.shared.*`), which have no artifacts |
 | MS2-04 | Formal Requirements | ✅ automated | own `metadata.json` exists with a status in `{release, deprecated, draft, invalidated}`; only `release` is a clean `SUCCESS`, the other three valid states are `WARN` ("please verify this is intentional"), anything else is `FAIL` |
 | MS2-05 | Model Validation | ✅ automated | imported/external models are in `release` state |
 | MS2-06 | Model Validation | ✅ automated | URN version is valid semver and matches its folder |
@@ -161,6 +162,7 @@ Each `Finding` has a level:
 | MS2-23 | Semantic Quality | ✅ automated | property and its Characteristic don't share a name |
 | MS2-24 | Naming Conventions | ✅ automated | property identifier / `payloadName` is not `catenaXId` in any spelling (compared case-insensitively, ignoring non-alphanumeric characters) |
 | MS2-25 | Model Validation | ✅ automated | an existing model version (`.ttl` that already exists on `main`) must not be modified - every change needs a new version folder. Hard `FAIL` |
+| MS2-26 | Formal Requirements | ✅ automated | a shared model (`io.catenax.shared.*`) must not define a `samm:Aspect` - imported shared Aspects break artifact generation of the importing model. `SKIP` for non-shared models |
 
 ## Config (`.github/src/config.json`)
 

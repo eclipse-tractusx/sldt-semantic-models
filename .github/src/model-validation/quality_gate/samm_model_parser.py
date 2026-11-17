@@ -137,6 +137,11 @@ class TTLModel:
     def aspect(self) -> Element | None:
         return next((el for el in self.elements if el.is_a("Aspect")), None)
 
+    @property
+    def is_shared(self) -> bool:
+        # Shared models only provide reusable elements for import.
+        return (self.namespace or "").startswith("io.catenax.shared.")
+
 
 class TurtleSyntaxError(ValueError):
     pass
