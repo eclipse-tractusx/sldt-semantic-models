@@ -77,5 +77,8 @@ def ensure_samm_cli(version: str, sha256: str, cache_dir: Path = CACHE_DIR) -> P
 
 
 def run_samm_cli(jar_path: Path, args: list[str], timeout: int = 120) -> subprocess.CompletedProcess:
-    command = ["java", "-Dpolyglot.engine.WarnInterpreterOnly=false", "-jar", str(jar_path), *args]
+    # Same JVM flags as .scripts/generate.sh: silence the JVM's native-access
+    # warnings, which otherwise bury the actual samm-cli error message.
+    command = ["java", "--enable-native-access=ALL-UNNAMED", "--sun-misc-unsafe-memory-access=allow",
+               "-Dpolyglot.engine.WarnInterpreterOnly=false", "-jar", str(jar_path), *args]
     return subprocess.run(command, capture_output=True, text=True, timeout=timeout)
