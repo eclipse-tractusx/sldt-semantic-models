@@ -17,9 +17,10 @@
 # and 'description' in English language. The description must be
 # comprehensible. [...] style should be consistent over the whole model"
 #
-# Checks that every model element has samm:preferredName and
-# samm:description in English. Comprehensibility and style are left to the
-# reviewer.
+# Checks that every named model element has samm:preferredName and
+# samm:description in English. Anonymous [ ... ] elements are attribute
+# values of their element and need none. Comprehensibility and style are
+# left to the reviewer.
 
 from __future__ import annotations
 
@@ -37,7 +38,7 @@ class Criterion(base.Criterion):
 
     def check(self, model: TTLModel, ctx: Context) -> list[Finding]:
         findings = []
-        for el in model.elements:
+        for el in model.named_elements:
             if el.text("preferredName") is None:
                 findings.append(Finding(self.ID, self.TITLE, "FAIL", model.file,
                                          f"'{el.label}' is missing samm:preferredName ... @en",
