@@ -38,7 +38,12 @@
 #
 # Anonymous nodes without a type (e.g. the ``[ samm:property :x ;
 # samm:optional true ]`` wrappers inside samm:properties) are values only,
-# not model elements, so they don't show up in ``model.elements``.
+# so they don't show up in ``model.elements``.
+#
+# Typed anonymous nodes are attribute values of the element they are
+# defined in, not model elements of their own. They are listed in
+# ``model.elements`` (name None) so criteria can see them, e.g. anonymous
+# constraints; ``model.named_elements`` leaves them out.
 
 from __future__ import annotations
 
@@ -132,6 +137,11 @@ class TTLModel:
         if isinstance(value, Element):
             return value
         return self.element(value) if isinstance(value, str) else None
+
+    @property
+    def named_elements(self) -> list[Element]:
+        # The model elements proper, without anonymous [ ... ] elements.
+        return [el for el in self.elements if el.name is not None]
 
     @property
     def aspect(self) -> Element | None:
