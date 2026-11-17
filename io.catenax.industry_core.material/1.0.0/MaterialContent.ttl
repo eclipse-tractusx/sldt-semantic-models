@@ -1,0 +1,180 @@
+#######################################################################
+# Copyright (c) 2026 Catena-X Automotive Network e.V.
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This work is made available under the terms of the
+# Creative Commons Attribution 4.0 International (CC-BY-4.0) license,
+# which is available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#######################################################################
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.industry_core.material:1.0.0#> .
+@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+
+:MaterialContent a samm:Aspect ;
+   samm:preferredName "Material Content"@en ;
+   samm:description "captures the distribution of a material between inorganic or fossil-based content and bio-based content, typically expressed as proportions of the total composition"@en ;
+   samm:properties ( [ samm:property :inorganicOrFossilBased; samm:optional true ] [ samm:property :bioBased; samm:optional true ] ) ;
+   samm:operations ( ) ;
+   samm:events ( ) .
+
+:inorganicOrFossilBased a samm:Property ;
+   samm:preferredName "inorganic or fossil based"@en ;
+   samm:description "represents the proportion of a material or product that originates from non-biogenic sources"@en ;
+   samm:characteristic :InorganicOrFossilBasedSingleEntity .
+
+:bioBased a samm:Property ;
+   samm:preferredName "bio based"@en ;
+   samm:description "indicates how much of a material comes from renewable biological sources"@en ;
+   samm:characteristic :BioBasedSingleEntity .
+
+:InorganicOrFossilBasedSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "Inorganic Or Fossil Based SingleEntity"@en ;
+   samm:description "Inorganic Or Fossil Based SingleEntity"@en ;
+   samm:dataType :InorganicOrFossilBasedEntity .
+
+:BioBasedSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "Bio Based SingleEntity"@en ;
+   samm:description "Bio Based SingleEntity"@en ;
+   samm:dataType :BioBasedEntity .
+
+:InorganicOrFossilBasedEntity a samm:Entity ;
+   samm:preferredName "Inorganic Or Fossil Based Entity"@en ;
+   samm:description "Inorganic Or Fossil Based Entity"@en ;
+   samm:properties ( :containsRecyclate [ samm:property :inorganicOrFossilBasedContent; samm:optional true ] :primaryInorganicOrFossilBasedContent :inorganicOrFossilBasedRecyclate ) .
+
+:BioBasedEntity a samm:Entity ;
+   samm:preferredName "BioBasedEntity"@en ;
+   samm:description "BioBasedEntity"@en ;
+   samm:properties ( :primaryBioBasedMaterialContent :secondaryBioBasedMaterialContent :biobasedContent :bioBasedCertificate ) .
+
+:containsRecyclate a samm:Property ;
+   samm:preferredName "contains recyclate"@en ;
+   samm:description "Defines if the material \ncontains recyclate. "@en ;
+   samm:characteristic :ContainsRecyclateEnum .
+
+:inorganicOrFossilBasedContent a samm:Property ;
+   samm:preferredName "inorganic Or Fossi lBased Content"@en ;
+   samm:description "Minimum value of the \ninorganic or fossil-based \ncontent \nMust add up to 100 percent \nto the max value of XML \nelement “BioBasedContent”. \n\nMaximum value of the \ninorganic or fossil-based \ncontent \nMust add up to 100 percent \nto the min value of XML \nelement “BioBasedContent”. "@en ;
+   samm:characteristic :RangeSingleEntity .
+
+:primaryInorganicOrFossilBasedContent a samm:Property ;
+   samm:preferredName "primary inorganic or fossil based content"@en ;
+   samm:description "Minimum value of the Inorganic or \nfossil-based primary content. \nMust add up to 100 percent to the \nmax value of \nInorganicOrFossilBasedRecyclate. \n\nMaximum value of the Inorganic or \nfossil-based primary content. \nMust add up to 100 percent to the \nmin value of \nInorganicOrFossilBasedRecyclate. "@en ;
+   samm:characteristic :RangeSingleEntity .
+
+:inorganicOrFossilBasedRecyclate a samm:Property ;
+   samm:preferredName "Inorganic Or Fossil Based Recyclate"@en ;
+   samm:description "represents the proportion of a material or product that originates from recycled non-biogenic sources"@en ;
+   samm:characteristic :InorganicOrFossilBasedRecyclateSingleEntity .
+
+:primaryBioBasedMaterialContent a samm:Property ;
+   samm:preferredName "primary bio-based material content"@en ;
+   samm:description "Minimum value of the primary bio\nbased content. \nMust add up to 100 percent to the \nmax value of BioBasedSecondary. \n\nMaximum value of the primary bio\nbased content. \nMust add up to 100 percent to the \nmin value of BioBasedSecondary. "@en ;
+   samm:characteristic :RangeSingleEntity .
+
+:secondaryBioBasedMaterialContent a samm:Property ;
+   samm:preferredName "secondary bio-based material content"@en ;
+   samm:description "Minimum value of the secondary bio\nbased content. \nMust add up to 100 percent to the \nmax value of BioBasedPrimary. \n\nMaximum value of the secondary \nbio-based content. \nMust add up to 100 percent to the \nmin value of BioBasedPrimary. "@en ;
+   samm:characteristic :RangeMassSingleEntity .
+
+:biobasedContent a samm:Property ;
+   samm:preferredName "bio based content"@en ;
+   samm:description "Minimum value of the bio-based \ncontent. \nMust add up to 100 percent to the \nmax value of \nInorganicOrFossilBasedContent. \n\nMaximum value of the bio-based \ncontent. \nMust add up to 100 percent to the \nmin value of \nInorganicOrFossilBasedContent."@en ;
+   samm:characteristic :RangeSingleEntity .
+
+:bioBasedCertificate a samm:Property ;
+   samm:preferredName "Bio Based Certificate"@en ;
+   samm:description "ID of the bio-based content \ncertificate."@en ;
+   samm:characteristic :CertificateSingleEntity .
+
+:ContainsRecyclateEnum a samm-c:Enumeration ;
+   samm:preferredName "Contains Recyclate Enum"@en ;
+   samm:dataType xsd:string ;
+   samm-c:values ( "Yes" "No" "NotYetAnswered" ) .
+
+:InorganicOrFossilBasedRecyclateSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "Inorganic Or Fossil Based Recyclate SingleEntity"@en ;
+   samm:dataType :InorganicOrFossilBasedRecyclateEntity .
+
+:InorganicOrFossilBasedRecyclateEntity a samm:Entity ;
+   samm:preferredName "Inorganic Or Fossil Based Recyclate SingleEntity"@en ;
+   samm:properties ( :mechanicalRecyclate :chemicalRecyclate ) .
+
+:mechanicalRecyclate a samm:Property ;
+   samm:preferredName "Mechanical Recyclate"@en ;
+   samm:description "represents the proportion of a material or product that is derived from mechanically recycled material"@en ;
+   samm:characteristic :MechanicalRecyclateSingleEntity .
+
+:chemicalRecyclate a samm:Property ;
+   samm:preferredName "chemical recyclate"@en ;
+   samm:description "represents the proportion of a material or product that is derived from chemically recycled material"@en ;
+   samm:characteristic :ChemicalRecyclateSingleEntity .
+
+:MechanicalRecyclateSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "Mechanical Recyclate SingleEntity"@en ;
+   samm:description "Mechanical Recyclate SingleEntity"@en ;
+   samm:dataType :MechanicalRecyclateEntity .
+
+:ChemicalRecyclateSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "Chemical Recyclate SingleEntity"@en ;
+   samm:description "Chemical Recyclate SingleEntity"@en ;
+   samm:dataType :ChemicalRecyclateEntity .
+
+:MechanicalRecyclateEntity a samm:Entity ;
+   samm:preferredName "Mechanical Recyclate Entity"@en ;
+   samm:description "Mechanical Recyclate Entity"@en ;
+   samm:properties ( [ samm:property :mechanicalPreConsumerRecyclateContent; samm:optional true ] [ samm:property :mechanicalPostConsumerRecyclateContent; samm:optional true ] :mechanicalRecyclateContent ) .
+
+:ChemicalRecyclateEntity a samm:Entity ;
+   samm:preferredName "Chemical Recyclate Entity"@en ;
+   samm:description "Chemical Recyclate Entity"@en ;
+   samm:properties ( :chemicalPostConsumerRecyclateContent :chemicalPreConsumerRecyclateContent :chemicalRecyclateContent :chemicalRecyclingCertificationId ) .
+
+:mechanicalPreConsumerRecyclateContent a samm:Property ;
+   samm:preferredName "mechanical pre-consumer recyclate content"@en ;
+   samm:description "indicates how much of a material is made from mechanically recycled waste generated before reaching the end consumer"@en ;
+   samm:characteristic :RangeSingleEntity .
+
+:mechanicalPostConsumerRecyclateContent a samm:Property ;
+   samm:preferredName "mechanical post consumer recyclate content"@en ;
+   samm:description " indicates how much of a material is made from mechanically recycled waste generated after end-user use"@en ;
+   samm:characteristic :RangeSingleEntity .
+
+:mechanicalRecyclateContent a samm:Property ;
+   samm:preferredName "mechanical recyclate content"@en ;
+   samm:description "indicates how much of a material is derived from mechanically recycled sources, independent of whether the waste is pre- or post-consumer"@en ;
+   samm:characteristic :RangeSingleEntity .
+
+:chemicalPostConsumerRecyclateContent a samm:Property ;
+   samm:preferredName "chemical post consumer recyclate content"@en ;
+   samm:description "indicates the proportion of a material derived from chemically recycled waste generated after consumer use and disposal"@en ;
+   samm:characteristic :RangeMassSingleEntity .
+
+:chemicalPreConsumerRecyclateContent a samm:Property ;
+   samm:preferredName "chemical pre-consumer recyclate content"@en ;
+   samm:description "indicates the proportion of a material derived from chemically recycled waste generated during manufacturing before reaching the end consumer"@en ;
+   samm:characteristic :RangeMassSingleEntity .
+
+:chemicalRecyclateContent a samm:Property ;
+   samm:preferredName "chemical recyclate content"@en ;
+   samm:description "indicates the proportion of a material that is derived from chemically recycled sources, where materials are broken down and reprocessed at the molecular level"@en ;
+   samm:characteristic :RangeSingleEntity .
+
+:chemicalRecyclingCertificationId a samm:Property ;
+   samm:preferredName "ID of the chemical recycling certification"@en ;
+   samm:description "specifies the identifier of a certification that verifies the use or origin of chemically recycled materials within the product or material"@en ;
+   samm:characteristic :CertificateSingleEntity .
+
