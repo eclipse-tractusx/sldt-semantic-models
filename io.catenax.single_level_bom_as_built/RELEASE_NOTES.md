@@ -2,6 +2,10 @@
 
 All notable changes to this model will be documented in this file.
 
+## [Moved] 26.09
+
+- moved to new namespace from `io.catenax.single_level_bom_as_built` to `io.catenax.industry_core.single_level_bom_as_built`
+
 ## [4.0.0] 25.12
 
 ### Changed
