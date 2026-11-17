@@ -42,7 +42,7 @@
 #
 # Typed anonymous nodes are attribute values of the element they are
 # defined in, not model elements of their own. They are listed in
-# ``model.elements`` (name None) so criteria can see them, e.g. inline
+# ``model.elements`` (name None) so criteria can see them, e.g. anonymous
 # constraints; ``model.named_elements`` leaves them out.
 
 from __future__ import annotations
@@ -140,7 +140,7 @@ class TTLModel:
 
     @property
     def named_elements(self) -> list[Element]:
-        # The model elements proper, without inline [ ... ] definitions.
+        # The model elements proper, without anonymous [ ... ] elements.
         return [el for el in self.elements if el.name is not None]
 
     @property

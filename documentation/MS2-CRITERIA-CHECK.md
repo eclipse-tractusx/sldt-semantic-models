@@ -145,7 +145,7 @@ Each `Finding` has a level:
 | MS2-06 | Model Validation | ✅ automated | URN version is valid semver and matches its folder |
 | MS2-07 | Formal Requirements | ✅ automated | `RELEASE_NOTES.md` exists and mentions this version |
 | MS2-08 | Formal Requirements | ✅ automated (partial) | only checks a copyright header exists; matching it against actual contributors isn't reliably automatable (GitHub usernames vs. company names) |
-| MS2-09 | Semantic Quality | ✅ automated | `preferredName`/`description` present, English, on every named element. Inline `[ ... ]` definitions (e.g. a constraint inside a Trait) are attribute values of their element and need none |
+| MS2-09 | Semantic Quality | ✅ automated | `preferredName`/`description` present, English, on every named element. Anonymous `[ ... ]` elements (e.g. a constraint inside a Trait) are attribute values of their element and need none |
 | MS2-10 | Semantic Quality | ⛔ not automated | "abbreviations only when necessary" is a judgement call. Always `SKIP`, no analysis attempted (same pattern as MS2-14) - stays a manual review item on purpose |
 | MS2-11 | Semantic Quality | ⚠️ heuristic | redundant property-name prefixes among sibling properties of the same Aspect/Entity - flags (`WARN`), doesn't fail. Groups by `samm:payloadName` when set (falls back to the SAMM identifier), since a payload-name override can already resolve the redundancy even if the underlying SAMM identifiers still share a prefix |
 | MS2-12 | Semantic Quality | ✅ automated | `preferredName` != `description` |

@@ -18,7 +18,7 @@
 # comprehensible. [...] style should be consistent over the whole model"
 #
 # Checks that every named model element has samm:preferredName and
-# samm:description in English. Inline [ ... ] definitions are attribute
+# samm:description in English. Anonymous [ ... ] elements are attribute
 # values of their element and need none. Comprehensibility and style are
 # left to the reviewer.
 
