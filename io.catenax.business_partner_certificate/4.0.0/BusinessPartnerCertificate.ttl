@@ -86,7 +86,7 @@
 
 :certificateId a samm:Property ;
    samm:preferredName "Certificate Id"@en ;
-   samm:description "Logical identity key of the issued certificate (per issuance)."@en ;
+   samm:description "Logical identity key of the issued certificate (per issuance). Written as a plain UUID without the urn:uuid: prefix."@en ;
    samm:characteristic ext-uuid:UuidV4Trait ;
    samm:exampleValue "5abcd2c1-0000-0000-0000-000000000001" .
 
@@ -149,7 +149,7 @@
 
 :CertificateTypeEntity a samm:Entity ;
    samm:preferredName "Entity of a certificate type"@en ;
-   samm:description "Detailed entity of the certificate like ISO9001:2015, IATF 16949:2015 or other, valid types are registered at BPN metadatacontroller"@en ;
+   samm:description "Detailed entity of the certificate like ISO9001:2015, IATF 16949:2015 or other. The type code follows the rules of CX-0135."@en ;
    samm:properties ( :certificateType [ samm:property :certificateTypeVersion; samm:optional true ] ) .
 
 :IssuerEntity a samm:Entity ;
@@ -174,8 +174,8 @@
 
 :certificateType a samm:Property ;
    samm:preferredName "Certificate type"@en ;
-   samm:description "Type of the certificate as defined on the document, valid types are registered at BPN metadatacontroller"@en ;
-   samm:characteristic samm-c:Text ;
+   samm:description "Code of the certificate type as defined in CX-0135: lowercase Latin letters and digits only."@en ;
+   samm:characteristic :CertificateTypeCodeTrait ;
    samm:exampleValue "iso9001" .
 
 :certificateTypeVersion a samm:Property ;
@@ -266,4 +266,13 @@
    samm-c:constraint [
       a samm-c:LengthConstraint ;
       samm-c:minValue "1"^^xsd:nonNegativeInteger
+   ] .
+
+:CertificateTypeCodeTrait a samm-c:Trait ;
+   samm:preferredName "Certificate Type Code Trait"@en ;
+   samm:description "Restricts the certificate type code to lowercase Latin letters and digits."@en ;
+   samm-c:baseCharacteristic samm-c:Text ;
+   samm-c:constraint [
+      a samm-c:RegularExpressionConstraint ;
+      samm:value "^[a-z0-9]+$"
    ] .
