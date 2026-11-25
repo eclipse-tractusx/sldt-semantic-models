@@ -1,0 +1,117 @@
+
+
+@prefix samm: <urn:samm:org.eclipse.esmf.samm:meta-model:2.1.0#> .
+@prefix samm-c: <urn:samm:org.eclipse.esmf.samm:characteristic:2.1.0#> .
+@prefix samm-e: <urn:samm:org.eclipse.esmf.samm:entity:2.1.0#> .
+@prefix unit: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <urn:samm:io.catenax.shared.industry_core.regulatory_information:1.0.0#> .
+@prefix samm-u: <urn:samm:org.eclipse.esmf.samm:unit:2.1.0#> .
+
+:reach a samm:Property ;
+   samm:preferredName "REACH"@en ;
+   samm:description "encapsulates reach related properties"@en ;
+   samm:characteristic :ReachRegulationSingleEntity .
+
+:ReachRegulationSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "REACH Regulation SingleEntity"@en ;
+   samm:description "REACH Regulation SingleEntity"@en ;
+   samm:dataType :ReachMaterialRegulationEntity .
+
+:ReachMaterialRegulationEntity a samm:Entity ;
+   samm:preferredName "REACH Material Regulation Entity"@en ;
+   samm:description "REACH Material Regulation Entity"@en ;
+   samm:properties ( :eeaProduced :stillInProduction :regulationId [ samm:property :regulationVersion; samm:optional true ] ) .
+
+:eeaProduced a samm:Property ;
+   samm:preferredName "EEA produced"@en ;
+   samm:description "describes if the asset was produced in the EEA"@en ;
+   samm:characteristic :Status .
+
+:stillInProduction a samm:Property ;
+   samm:preferredName "still in production"@en ;
+   samm:description "indicator if the asset is still in production"@en ;
+   samm:characteristic :Status .
+
+:regulationId a samm:Property ;
+   samm:preferredName "Regulation ID"@en ;
+   samm:description "Regulation ID"@en ;
+   samm:characteristic :RegulationIdTrait ;
+   samm:exampleValue "1223456" .
+
+:regulationVersion a samm:Property ;
+   samm:preferredName "regulation version"@en ;
+   samm:description "regulation version"@en ;
+   samm:characteristic :RegulationVersionTrait .
+
+:Status a samm-c:State ;
+   samm:preferredName "Status"@en ;
+   samm:description "state enumeration"@en ;
+   samm:dataType xsd:string ;
+   samm-c:defaultValue "Unknown" ;
+   samm-c:values ( "Yes" "No" "Unknown" "Yes" "No" "Unknown" "Yes" "No" "Unknown" "Yes" "No" "Unknown" "Yes" "No" "Unknown" "Yes" "No" "Unknown" "Yes" "No" "Unknown" "Yes" "No" "Unknown" ) .
+
+:RegulationIdTrait a samm-c:Trait ;
+   samm:preferredName "regulation Id trait"@en ;
+   samm:description "regulation Id trait"@en ;
+   samm-c:baseCharacteristic :IdCharacteristic ;
+   samm-c:constraint :N9Constraint .
+
+:RegulationVersionTrait a samm-c:Trait ;
+   samm:preferredName "Regulation Version Trait"@en ;
+   samm:description "Regulation Version Trait"@en ;
+   samm-c:baseCharacteristic :VersionCode ;
+   samm-c:constraint :N4Constraint .
+
+:IdCharacteristic a samm-c:Code ;
+   samm:preferredName "Id Characteristic"@en ;
+   samm:description "Id Characteristic"@en ;
+   samm:dataType xsd:string .
+
+:N9Constraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "N9 Constraint"@en ;
+   samm:description "regex for a 9 digit numerical string"@en ;
+   samm:value "^\\d{9}$" .
+
+:VersionCode a samm-c:Code ;
+   samm:preferredName "version code"@en ;
+   samm:description "version code"@en ;
+   samm:dataType xsd:string .
+
+:N4Constraint a samm-c:RegularExpressionConstraint ;
+   samm:preferredName "N4Constraint"@en ;
+   samm:description "regex for a 4 digit numerical string"@en ;
+   samm:value "^\\d{4}$" .
+
+:mccp a samm:Property ;
+   samm:preferredName "MCCP"@en ;
+   samm:description "encapsulates mccp related regulation properties"@en ;
+   samm:characteristic :MccpSingleEntity .
+
+:biocidal a samm:Property ;
+   samm:preferredName "biocidal"@en ;
+   samm:description "encapsulates biocidial related regulation properties"@en ;
+   samm:characteristic :BiocidalSingleEntity .
+
+:BiocidalEntity a samm:Entity ;
+   samm:preferredName "BiocidalEntity"@en ;
+   samm:description "BiocidalEntity"@en ;
+   samm:properties ( [ samm:property :regulationVersion; samm:optional true ] :regulationId :stillInProduction ) .
+
+:MccpEntity a samm:Entity ;
+   samm:preferredName "Mccp Entity"@en ;
+   samm:description "Mccp Entity"@en ;
+   samm:properties ( :regulationVersion :regulationId ) .
+
+:MccpSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "MCCP Single Entity"@en ;
+   samm:description "MCCP Single Entity"@en ;
+   samm:dataType :MccpEntity .
+
+:BiocidalSingleEntity a samm-c:SingleEntity ;
+   samm:preferredName "Biocidal Single Entity"@en ;
+   samm:description "Biocidal Single Entity"@en ;
+   samm:dataType :BiocidalEntity .
+
